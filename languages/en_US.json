@@ -3258,5 +3258,10 @@
   "TXT_CODE_AUTOUPDATE_B_NO_URL": "manifest entry has no url",
   "TXT_CODE_AUTOUPDATE_B_NO_APPJS": "app.js not found in the update package",
   "TXT_CODE_AUTOUPDATE_B_DAEMON_MISSING": "The specified daemon does not exist",
-  "TXT_CODE_AUTOUPDATE_B_APPLY_FAILED": "Failed to apply the update package"
+  "TXT_CODE_AUTOUPDATE_B_APPLY_FAILED": "Failed to apply the update package",
+  "TXT_CODE_AUTOUPDATE_TAB_TITLE": "Auto Update",
+  "TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC": "Check the current panel version and whether a newer version is available online.",
+  "TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC": "The panel fetches the version manifest and update packages from this URL.",
+  "TXT_CODE_AUTOUPDATE_WEB_ALLOW_DESC": "When enabled, the panel automatically downloads and applies an update after detecting a new version.",
+  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "Download the latest package and overlay the panel (app.js + the front-end), then restart. You will be briefly disconnected."
 }

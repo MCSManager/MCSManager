@@ -144,6 +144,11 @@ const menus = arrayFilter([
     icon: ApiOutlined
   },
   {
+    title: t("TXT_CODE_AUTOUPDATE_TAB_TITLE"),
+    key: "autoUpdate",
+    icon: CloudUploadOutlined
+  },
+  {
     title: t("TXT_CODE_46cb40d5"),
     key: "sponsor",
     icon: MoneyCollectOutlined,
@@ -560,62 +565,6 @@ onUnmounted(() => {
     </div>
     <CardPanel v-if="isReady && formData" class="CardWrapper" style="height: 100%" :padding="false">
       <template #body>
-        <div v-if="panelUpgradeInfo" class="px-16 pt-16 pb-8">
-          <a-alert type="info" show-icon>
-            <template #message>
-              <div class="flex-center" style="gap: 12px; flex-wrap: wrap">
-                <CloudUploadOutlined />
-                <span>
-                  {{ t("TXT_CODE_AUTOUPDATE_WEB_TITLE") }}:&nbsp;v{{
-                    panelUpgradeInfo.currentVersion
-                  }}
-                </span>
-                <a-tag v-if="!panelUpgradeInfo.configured" color="default">
-                  {{ t("TXT_CODE_AUTOUPDATE_WEB_NOT_CONFIGURED") }}
-                </a-tag>
-                <template v-else>
-                  <a-tag v-if="panelUpgradeInfo.updateAvailable" color="processing">
-                    {{ t("TXT_CODE_AUTOUPDATE_WEB_LATEST", { v: panelUpgradeInfo.onlineVersion }) }}
-                  </a-tag>
-                  <a-tag v-else color="success">{{ t("TXT_CODE_AUTOUPDATE_UP_TO_DATE") }}</a-tag>
-                </template>
-                <a-button
-                  size="small"
-                  :loading="panelUpgradeLoading"
-                  @click="refreshPanelUpgradeInfo"
-                >
-                  <template #icon><ReloadOutlined /></template>
-                  {{ t("TXT_CODE_AUTOUPDATE_BTN_REFRESH") }}
-                </a-button>
-                <a-button
-                  v-if="panelUpgradeInfo.configured"
-                  size="small"
-                  type="primary"
-                  :disabled="!panelUpgradeInfo.updateAvailable"
-                  @click="onUpdateWeb"
-                >
-                  {{ t("TXT_CODE_AUTOUPDATE_WEB_BTN") }}
-                </a-button>
-              </div>
-            </template>
-            <template #description>
-              <div class="flex-center" style="gap: 12px; flex-wrap: wrap; margin-top: 8px">
-                <span style="white-space: nowrap">{{ t("TXT_CODE_AUTOUPDATE_WEB_SOURCE") }}</span>
-                <a-input
-                  v-model:value="formData.updateSourceUrl"
-                  style="max-width: 360px"
-                  :placeholder="t('TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH')"
-                />
-                <a-checkbox v-model:checked="formData.allowAutoUpdate">
-                  {{ t("TXT_CODE_AUTOUPDATE_WEB_ALLOW") }}
-                </a-checkbox>
-                <a-button size="small" type="primary" @click="submit(true)">
-                  {{ t("TXT_CODE_AUTOUPDATE_WEB_SAVE") }}
-                </a-button>
-              </div>
-            </template>
-          </a-alert>
-        </div>
         <LeftMenusPanel ref="leftMenusPanelRef" :menus="menus">
           <template #baseInfo>
             <div class="content-box" :style="{ maxHeight: card.height }">
@@ -1509,6 +1458,115 @@ onUnmounted(() => {
                       {{ t("TXT_CODE_abfe9512") }}
                     </a-button>
                   </div>
+                </a-form>
+              </div>
+            </div>
+          </template>
+
+          <template #autoUpdate>
+            <div class="content-box" :style="{ maxHeight: card.height }">
+              <a-typography-title :level="4" class="mb-24">
+                {{ t("TXT_CODE_AUTOUPDATE_TAB_TITLE") }}
+              </a-typography-title>
+              <div style="text-align: left">
+                <a-form :model="formData" layout="vertical">
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_TITLE") }}
+                    </a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC") }}
+                    </a-typography-paragraph>
+                    <div class="flex" style="gap: 12px; flex-wrap: wrap">
+                      <template v-if="panelUpgradeInfo">
+                        <a-typography-text strong>
+                          v{{ panelUpgradeInfo.currentVersion }}
+                        </a-typography-text>
+                        <a-tag v-if="!panelUpgradeInfo.configured" color="default">
+                          {{ t("TXT_CODE_AUTOUPDATE_WEB_NOT_CONFIGURED") }}
+                        </a-tag>
+                        <template v-else>
+                          <a-tag v-if="panelUpgradeInfo.updateAvailable" color="processing">
+                            {{
+                              t("TXT_CODE_AUTOUPDATE_WEB_LATEST", {
+                                v: panelUpgradeInfo.onlineVersion
+                              })
+                            }}
+                          </a-tag>
+                          <a-tag v-else color="success">
+                            {{ t("TXT_CODE_AUTOUPDATE_UP_TO_DATE") }}
+                          </a-tag>
+                        </template>
+                      </template>
+                      <a-button
+                        size="small"
+                        :loading="panelUpgradeLoading"
+                        @click="refreshPanelUpgradeInfo"
+                      >
+                        <template #icon><ReloadOutlined /></template>
+                        {{ t("TXT_CODE_AUTOUPDATE_BTN_REFRESH") }}
+                      </a-button>
+                    </div>
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_SOURCE") }}
+                    </a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC") }}
+                    </a-typography-paragraph>
+                    <a-input
+                      v-model:value="formData.updateSourceUrl"
+                      style="max-width: 480px"
+                      :placeholder="t('TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH')"
+                    />
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_ALLOW") }}
+                    </a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_ALLOW_DESC") }}
+                    </a-typography-paragraph>
+                    <a-select
+                      v-model:value.prop="(formData as any).allowAutoUpdate"
+                      style="max-width: 320px"
+                    >
+                      <a-select-option
+                        v-for="item in allYesNo"
+                        :key="item.value"
+                        :value="item.value"
+                      >
+                        {{ item.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+
+                  <div class="button mb-24">
+                    <a-button type="primary" :loading="submitIsLoading" @click="submit(false)">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_SAVE") }}
+                    </a-button>
+                  </div>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_BTN") }}
+                    </a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC") }}
+                    </a-typography-paragraph>
+                    <a-button
+                      type="primary"
+                      :disabled="
+                        !panelUpgradeInfo?.configured || !panelUpgradeInfo?.updateAvailable
+                      "
+                      @click="onUpdateWeb"
+                    >
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_BTN") }}
+                    </a-button>
+                  </a-form-item>
                 </a-form>
               </div>
             </div>
