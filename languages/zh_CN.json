@@ -3247,7 +3247,7 @@
   "TXT_CODE_AUTOUPDATE_BTN_CANCEL": "取消",
   "TXT_CODE_AUTOUPDATE_BTN_REFRESH": "刷新",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE": "更新源(manifest 地址)",
-  "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "http://localhost:9999/manifest.json",
+  "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "https://mcsmanager.com/upgrade/manifest.json",
   "TXT_CODE_AUTOUPDATE_WEB_ALLOW": "允许自动更新",
   "TXT_CODE_AUTOUPDATE_WEB_SAVE": "保存",
   "TXT_CODE_AUTOUPDATE_B_ALREADY_PROGRESS": "已有升级正在进行中",

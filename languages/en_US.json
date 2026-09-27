@@ -3247,7 +3247,7 @@
   "TXT_CODE_AUTOUPDATE_BTN_CANCEL": "Cancel",
   "TXT_CODE_AUTOUPDATE_BTN_REFRESH": "Refresh",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE": "Update source (manifest URL)",
-  "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "http://localhost:9999/manifest.json",
+  "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "https://mcsmanager.com/upgrade/manifest.json",
   "TXT_CODE_AUTOUPDATE_WEB_ALLOW": "Allow auto update",
   "TXT_CODE_AUTOUPDATE_WEB_SAVE": "Save",
   "TXT_CODE_AUTOUPDATE_B_ALREADY_PROGRESS": "An upgrade is already in progress",

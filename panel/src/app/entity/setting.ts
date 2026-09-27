@@ -120,8 +120,8 @@ export default class SystemConfig {
 
   // ---- Auto update (self-update the panel app.js + public/ from a manifest) ----
   // Full URL to a manifest.json describing available updates, e.g.
-  // "http://localhost:9999/manifest.json". Empty => auto update disabled.
-  updateSourceUrl = "";
+  // "https://mcsmanager.com/upgrade/manifest.json". Empty => auto update disabled.
+  updateSourceUrl = "https://mcsmanager.com/upgrade/manifest.json";
   // Master switch: allow this panel to be updated from its own Settings page.
   allowAutoUpdate = true;
 }

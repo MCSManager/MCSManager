@@ -52,8 +52,8 @@ class Config {
 
   // ---- Auto update (self-update daemon app.js from a remote manifest) ----
   // Full URL to a manifest.json describing available updates, e.g.
-  // "http://localhost:9999/manifest.json". Empty => auto update disabled.
-  public updateSourceUrl = "";
+  // "https://mcsmanager.com/upgrade/manifest.json". Empty => auto update disabled.
+  public updateSourceUrl = "https://mcsmanager.com/upgrade/manifest.json";
   // Master switch: allow this daemon to be updated from the panel.
   public allowAutoUpdate = true;
 }
