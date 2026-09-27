@@ -211,34 +211,47 @@ const initInstancesData = async (resetPage?: boolean, daemonId?: string, instanc
   }
 };
 
+// Nodes with a "load more" request in flight. The page number only advances after the
+// request returns, so a second click in the meantime would fetch and append the same page.
+const loadingMoreNodes = new Set<string>();
+
 const loadMoreInstances = async (daemonId: string) => {
+  if (loadingMoreNodes.has(daemonId)) return;
   const targetNodeIndex = tableTreeData.value.findIndex((n) => n.key === daemonId);
   if (targetNodeIndex === -1) return;
   const nodeData = tableTreeData.value[targetNodeIndex];
 
   const nextPage = (nodeData.nodeCurrentPage || 1) + 1;
   const { execute: getInstances, state: instances } = remoteInstances();
-  await getInstances({
-    params: {
-      page: nextPage,
-      page_size: 10,
-      status: operationForm.value.status,
-      instance_name: operationForm.value.instanceName.trim(),
-      tag: JSON.stringify(selectedTags.value),
-      daemonId: daemonId
-    }
-  });
+  loadingMoreNodes.add(daemonId);
+  try {
+    await getInstances({
+      params: {
+        page: nextPage,
+        page_size: 10,
+        status: operationForm.value.status,
+        instance_name: operationForm.value.instanceName.trim(),
+        tag: JSON.stringify(selectedTags.value),
+        daemonId: daemonId
+      }
+    });
+  } finally {
+    loadingMoreNodes.delete(daemonId);
+  }
 
   if (!instances.value) return;
-  const newChildren = instances.value.data.map((inst) => {
-    const d = useInstanceMoreDetail(inst);
-    return {
-      daemonId: daemonId,
-      key: d.instanceUuid,
-      name: d.config?.nickname || d.instanceUuid,
-      inst: d
-    };
-  });
+  const existingKeys = new Set(nodeData.children.map((c: any) => c.key));
+  const newChildren = instances.value.data
+    .map((inst) => {
+      const d = useInstanceMoreDetail(inst);
+      return {
+        daemonId: daemonId,
+        key: d.instanceUuid,
+        name: d.config?.nickname || d.instanceUuid,
+        inst: d
+      };
+    })
+    .filter((child) => !existingKeys.has(child.key));
 
   nodeData.children = nodeData.children.filter((c: any) => !c.isLoadMore);
   nodeData.children.push(...newChildren);
