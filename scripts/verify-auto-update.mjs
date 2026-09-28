@@ -236,13 +236,20 @@ async function main() {
     log("  token:", global.__token);
   }
 
-  log("step 6.5: GET /api/upgrade/panel_info before configuring a source -> expect configured:false");
+  log("step 6.5: clear updateSourceUrl -> GET /api/upgrade/panel_info expect configured:false");
   {
+    // updateSourceUrl defaults to the official source ("fix: default addr"), so
+    // the "unconfigured" path must clear it first instead of assuming empty.
+    const g = await httpReq("GET", "/api/overview/setting", undefined, global.__token);
+    const merged = { ...(typeof g.data === "string" ? {} : g.data || {}) };
+    merged.updateSourceUrl = "";
+    const c = await httpReq("PUT", "/api/overview/setting", merged, global.__token);
+    assert(c.status === 200 || c.status === 204 || c.status === 201, "setting PUT ok (cleared source)");
     const r = await httpReq("GET", "/api/upgrade/panel_info", undefined, global.__token);
     assert(r.status === 200, "panel_info 200 (unconfigured)");
     assert(
       r.data?.configured === false && r.data?.updateAvailable === false,
-      "panel reports unconfigured before updateSourceUrl is set"
+      "panel reports unconfigured after updateSourceUrl is cleared"
     );
   }
 
@@ -264,6 +271,10 @@ async function main() {
     assert(r.data?.configured === true, "panel updateSource configured");
     assert(r.data?.currentVersion === BASE_WEB, "panel currentVersion = " + BASE_WEB);
     assert(r.data?.updateAvailable === true && r.data?.onlineVersion === NEW_WEB, "panel updateAvailable -> " + NEW_WEB);
+    assert(
+      typeof r.data?.onlineNotes === "string" && r.data.onlineNotes.includes(NEW_WEB),
+      "panel_info carries the manifest release notes (onlineNotes)"
+    );
   }
 
   log("step 9: find daemon uuid (wait for panel<->daemon connection)");
@@ -286,6 +297,10 @@ async function main() {
     log("  daemon_info:", JSON.stringify(r.data));
     assert(r.data?.configured === true, "daemon updateSource configured");
     assert(r.data?.updateAvailable === true && r.data?.onlineVersion === NEW_DAEMON, "daemon updateAvailable -> " + NEW_DAEMON);
+    assert(
+      typeof r.data?.onlineNotes === "string" && r.data.onlineNotes.includes(NEW_DAEMON),
+      "daemon_info carries the manifest release notes (onlineNotes)"
+    );
   }
 
   // ---- panel self-update ----

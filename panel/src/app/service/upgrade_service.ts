@@ -39,6 +39,7 @@ const errLog = (m: string) => logger.error(`[AutoUpdate Panel] ${m}`);
 interface IManifestEntry {
   version: string;
   url: string;
+  notes?: string;
 }
 interface IManifest {
   daemon?: IManifestEntry;
@@ -49,6 +50,7 @@ export interface IUpgradeInfo {
   configured: boolean;
   currentVersion: string;
   onlineVersion?: string;
+  onlineNotes?: string;
   updateAvailable: boolean;
   updateSourceUrl: string;
   error?: string;
@@ -95,6 +97,7 @@ export async function getUpgradeInfo(): Promise<IUpgradeInfo> {
       configured: true,
       currentVersion,
       onlineVersion: entry.version,
+      onlineNotes: entry.notes,
       updateAvailable: compareVersions(entry.version, currentVersion) > 0,
       updateSourceUrl
     };

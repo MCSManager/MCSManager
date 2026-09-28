@@ -3169,6 +3169,7 @@
   "TXT_CODE_AUTOUPDATE_WEB_TITLE": "パネル更新",
   "TXT_CODE_AUTOUPDATE_WEB_NOT_CONFIGURED": "自動更新が設定されていません(updateSourceUrl を設定してください)",
   "TXT_CODE_AUTOUPDATE_WEB_LATEST": "新しいバージョンがあります: {v}",
+  "TXT_CODE_AUTOUPDATE_WEB_NOTES": "リリースノート",
   "TXT_CODE_AUTOUPDATE_UP_TO_DATE": "最新版です",
   "TXT_CODE_AUTOUPDATE_ALREADY_LATEST": "すでに最新版です",
   "TXT_CODE_AUTOUPDATE_BTN_OK": "OK",

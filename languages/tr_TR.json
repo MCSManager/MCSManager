@@ -3169,6 +3169,7 @@
   "TXT_CODE_AUTOUPDATE_WEB_TITLE": "Panel Güncellemesi",
   "TXT_CODE_AUTOUPDATE_WEB_NOT_CONFIGURED": "Otomatik güncelleme yapılandırılmamış (updateSourceUrl ayarlayın)",
   "TXT_CODE_AUTOUPDATE_WEB_LATEST": "Yeni sürüm mevcut: {v}",
+  "TXT_CODE_AUTOUPDATE_WEB_NOTES": "Sürüm Notları",
   "TXT_CODE_AUTOUPDATE_UP_TO_DATE": "Güncel",
   "TXT_CODE_AUTOUPDATE_ALREADY_LATEST": "Zaten en son sürüm",
   "TXT_CODE_AUTOUPDATE_BTN_OK": "Tamam",

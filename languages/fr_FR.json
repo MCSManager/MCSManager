@@ -3169,6 +3169,7 @@
   "TXT_CODE_AUTOUPDATE_WEB_TITLE": "Mise à jour du panneau",
   "TXT_CODE_AUTOUPDATE_WEB_NOT_CONFIGURED": "La mise à jour automatique n'est pas configurée (définir updateSourceUrl)",
   "TXT_CODE_AUTOUPDATE_WEB_LATEST": "Nouvelle version disponible : {v}",
+  "TXT_CODE_AUTOUPDATE_WEB_NOTES": "Notes de version",
   "TXT_CODE_AUTOUPDATE_UP_TO_DATE": "À jour",
   "TXT_CODE_AUTOUPDATE_ALREADY_LATEST": "Déjà la dernière version",
   "TXT_CODE_AUTOUPDATE_BTN_OK": "OK",

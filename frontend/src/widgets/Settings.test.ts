@@ -196,6 +196,44 @@ describe("Settings.vue auto update tab", () => {
     expect(wrapper.text()).toContain("TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC");
   });
 
+  it("shows the new version release notes when an update is scanned", async () => {
+    mocks.upgradeInfoExecute.mockResolvedValue({
+      value: upgradeInfo({ onlineNotes: "note line 1\nnote line 2" })
+    });
+    await mountSettings();
+    await openAutoUpdateTab();
+
+    expect(wrapper.text()).toContain("TXT_CODE_AUTOUPDATE_WEB_NOTES");
+    expect(wrapper.text()).toContain("note line 1");
+    expect(wrapper.text()).toContain("note line 2");
+    expect(wrapper.find(".update-notes-body").exists()).toBe(true);
+  });
+
+  it("hides the release notes box when there is no update or no notes", async () => {
+    mocks.upgradeInfoExecute.mockResolvedValue({
+      value: upgradeInfo({
+        onlineNotes: "note line 1",
+        updateAvailable: false,
+        onlineVersion: "10.0.0"
+      })
+    });
+    await mountSettings();
+    await openAutoUpdateTab();
+
+    expect(wrapper.find(".update-notes-box").exists()).toBe(false);
+    expect(wrapper.text()).not.toContain("note line 1");
+
+    wrapper.unmount();
+    mocks.upgradeInfoExecute.mockResolvedValue({
+      value: upgradeInfo({ onlineNotes: undefined })
+    });
+    await mountSettings();
+    await openAutoUpdateTab();
+
+    expect(wrapper.find(".update-notes-box").exists()).toBe(false);
+    expect(wrapper.text()).not.toContain("TXT_CODE_AUTOUPDATE_WEB_NOTES");
+  });
+
   it("disables the update button when no update is available or not configured", async () => {
     mocks.upgradeInfoExecute.mockResolvedValue({
       value: upgradeInfo({ updateAvailable: false, onlineVersion: "10.0.0" })

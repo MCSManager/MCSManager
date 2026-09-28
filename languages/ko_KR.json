@@ -3169,6 +3169,7 @@
   "TXT_CODE_AUTOUPDATE_WEB_TITLE": "패널 업데이트",
   "TXT_CODE_AUTOUPDATE_WEB_NOT_CONFIGURED": "자동 업데이트가 설정되지 않았습니다(updateSourceUrl을 설정하세요)",
   "TXT_CODE_AUTOUPDATE_WEB_LATEST": "새 버전이 있습니다: {v}",
+  "TXT_CODE_AUTOUPDATE_WEB_NOTES": "릴리스 노트",
   "TXT_CODE_AUTOUPDATE_UP_TO_DATE": "최신 버전입니다",
   "TXT_CODE_AUTOUPDATE_ALREADY_LATEST": "이미 최신 버전입니다",
   "TXT_CODE_AUTOUPDATE_BTN_OK": "확인",

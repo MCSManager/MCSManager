@@ -21,6 +21,16 @@ const DAEMON_NEW_VERSION = "4.18.4";
 const WEB_NEW_VERSION = "10.18.4";
 const PORT = 9999;
 
+// Per-entry release notes ("notes") shown by the web UI after a version scan.
+const DAEMON_NOTES = `MCSManager Daemon v${DAEMON_NEW_VERSION}
+- Auto Update: manifest entries now carry release notes for the new version
+- Improved instance startup stability
+- Bug fixes and performance improvements`;
+const WEB_NOTES = `MCSManager Panel v${WEB_NEW_VERSION}
+- Auto Update: the Settings page now shows the new version's release notes when an update is scanned
+- Improved auto-update reliability and error reporting
+- UI fixes and performance improvements`;
+
 function bumpPkg(src, newVersion) {
   const pkg = JSON.parse(fs.readFileSync(src, "utf-8"));
   pkg.version = newVersion;
@@ -66,8 +76,16 @@ stageAndZip("daemon", DAEMON_NEW_VERSION, false);
 stageAndZip("web", WEB_NEW_VERSION, true);
 
 const manifest = {
-  daemon: { version: DAEMON_NEW_VERSION, url: `http://localhost:${PORT}/daemon.zip` },
-  web: { version: WEB_NEW_VERSION, url: `http://localhost:${PORT}/web.zip` }
+  daemon: {
+    version: DAEMON_NEW_VERSION,
+    url: `http://localhost:${PORT}/daemon.zip`,
+    notes: DAEMON_NOTES
+  },
+  web: {
+    version: WEB_NEW_VERSION,
+    url: `http://localhost:${PORT}/web.zip`,
+    notes: WEB_NOTES
+  }
 };
 fs.writeFileSync(path.join(outDir, "manifest.json"), JSON.stringify(manifest, null, 2));
 console.log(`manifest.json written.\n\nUpdate packages ready in: ${outDir}`);

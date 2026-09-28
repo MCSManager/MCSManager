@@ -3170,6 +3170,7 @@
   "TXT_CODE_AUTOUPDATE_WEB_TITLE": "อัปเดตแผงควบคุม",
   "TXT_CODE_AUTOUPDATE_WEB_NOT_CONFIGURED": "ยังไม่ได้ตั้งค่าการอัปเดตอัตโนมัติ (กำหนด updateSourceUrl)",
   "TXT_CODE_AUTOUPDATE_WEB_LATEST": "มีเวอร์ชันใหม่: {v}",
+  "TXT_CODE_AUTOUPDATE_WEB_NOTES": "บันทึกประจำรุ่น",
   "TXT_CODE_AUTOUPDATE_UP_TO_DATE": "เป็นเวอร์ชันล่าสุดแล้ว",
   "TXT_CODE_AUTOUPDATE_ALREADY_LATEST": "เป็นเวอร์ชันล่าสุดอยู่แล้ว",
   "TXT_CODE_AUTOUPDATE_BTN_OK": "ตกลง",

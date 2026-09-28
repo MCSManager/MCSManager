@@ -1507,6 +1507,15 @@ onUnmounted(() => {
                         {{ t("TXT_CODE_AUTOUPDATE_BTN_REFRESH") }}
                       </a-button>
                     </div>
+                    <div
+                      v-if="panelUpgradeInfo?.updateAvailable && panelUpgradeInfo?.onlineNotes"
+                      class="update-notes-box"
+                    >
+                      <div class="update-notes-title">
+                        {{ t("TXT_CODE_AUTOUPDATE_WEB_NOTES") }}
+                      </div>
+                      <div class="update-notes-body">{{ panelUpgradeInfo.onlineNotes }}</div>
+                    </div>
                   </a-form-item>
 
                   <a-form-item>
@@ -1648,5 +1657,24 @@ div {
     display: flex;
     align-items: center;
   }
+}
+
+.update-notes-box {
+  margin-top: 12px;
+  max-width: 640px;
+  padding: 12px;
+  border-radius: 6px;
+  background: var(--color-gray-2);
+  border: 1px solid var(--color-gray-4);
+}
+
+.update-notes-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.update-notes-body {
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 </style>

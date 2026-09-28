@@ -318,6 +318,7 @@ export interface IUpgradeInfo {
   configured: boolean;
   currentVersion: string;
   onlineVersion?: string;
+  onlineNotes?: string;
   updateAvailable: boolean;
   updateSourceUrl: string;
   error?: string;

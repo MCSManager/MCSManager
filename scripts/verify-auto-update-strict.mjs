@@ -41,6 +41,7 @@ const NOAPP_WEB = "10.18.5"; // > current so performUpgrade proceeds to applyUpg
 
 const APP_MARKER = (name) => `MCSM_STRICT_APP_MARKER_${name}`;
 const ROBOTS_MARKER = "MCSM_STRICT_ROBOTS_MARKER_panel";
+const STRICT_WEB_NOTES = `strict release notes for ${NEW_WEB}`;
 
 const cookies = {};
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -228,10 +229,10 @@ function buildPackages() {
       JSON.stringify({ daemon: { version: NOAPP_WEB, url: `http://localhost:${PORT}/strict/noapp.zip` }, web: { version: NOAPP_WEB, url: `http://localhost:${PORT}/strict/noapp.zip` } }, null, 2)
     );
   }
-  // manifest-strict.json
+  // manifest-strict.json (web entry carries release notes -> onlineNotes passthrough)
   fs.writeFileSync(
     path.join(outDir, "manifest-strict.json"),
-    JSON.stringify({ daemon: { version: NEW_DAEMON, url: `http://localhost:${PORT}/strict/daemon.zip` }, web: { version: NEW_WEB, url: `http://localhost:${PORT}/strict/web.zip` } }, null, 2)
+    JSON.stringify({ daemon: { version: NEW_DAEMON, url: `http://localhost:${PORT}/strict/daemon.zip` }, web: { version: NEW_WEB, url: `http://localhost:${PORT}/strict/web.zip`, notes: STRICT_WEB_NOTES } }, null, 2)
   );
   // manifest-same.json (web version == current baseline -> "already latest")
   fs.writeFileSync(
@@ -319,6 +320,24 @@ async function main() {
   // ----- SCENARIO 0: no update source configured (no mutation) -----
   log("\n== SCENARIO 0: no update source configured ==");
   {
+    // updateSourceUrl defaults to the official source ("fix: default addr") on
+    // BOTH sides, so the unconfigured path must clear the panel source and the
+    // daemon's local source (config is read at boot -> restart the daemon).
+    const g = await httpReq("GET", "/api/overview/setting", undefined, token);
+    const merged = { ...(typeof g.data === "string" ? {} : g.data || {}) };
+    merged.updateSourceUrl = "";
+    const put = await httpReq("PUT", "/api/overview/setting", merged, token);
+    assert(put.status === 200 || put.status === 204, "cleared panel updateSourceUrl");
+    killChild(procDaemon);
+    killPort(24444);
+    await sleep(500);
+    const daemonCfgPath = path.join(daemonDir, "data", "Config", "global.json");
+    const dCfg = JSON.parse(fs.readFileSync(daemonCfgPath, "utf-8"));
+    dCfg.updateSourceUrl = "";
+    fs.writeFileSync(daemonCfgPath, JSON.stringify(dCfg, null, 2));
+    procDaemon = spawnProc("daemon", process.execPath, ["app.js"], daemonDir);
+    await waitForPort(24444);
+
     const info = await httpReq("GET", "/api/upgrade/panel_info", undefined, token);
     assert(info.data?.configured === false, "panel_info: configured=false when no source");
     assert(info.data?.updateAvailable === false, "panel_info: no update when no source");
@@ -390,6 +409,7 @@ async function main() {
   {
     const info = await httpReq("GET", "/api/upgrade/panel_info", undefined, token);
     assert(info.data?.updateAvailable === true && info.data?.onlineVersion === NEW_WEB, "strict manifest: update available " + NEW_WEB);
+    assert(info.data?.onlineNotes === STRICT_WEB_NOTES, "strict manifest: release notes passthrough (onlineNotes)");
     const r = await httpReq("POST", "/api/upgrade/panel", undefined, token);
     assert(r.status === 200 && r.data?.started === true, "strict panel: update started");
   }

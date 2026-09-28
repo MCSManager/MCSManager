@@ -3184,6 +3184,7 @@
   "TXT_CODE_AUTOUPDATE_WEB_TITLE": "Обновление панели",
   "TXT_CODE_AUTOUPDATE_WEB_NOT_CONFIGURED": "Автообновление не настроено (укажите updateSourceUrl)",
   "TXT_CODE_AUTOUPDATE_WEB_LATEST": "Доступна новая версия: {v}",
+  "TXT_CODE_AUTOUPDATE_WEB_NOTES": "Примечания к выпуску",
   "TXT_CODE_AUTOUPDATE_UP_TO_DATE": "Актуально",
   "TXT_CODE_AUTOUPDATE_ALREADY_LATEST": "Уже последняя версия",
   "TXT_CODE_AUTOUPDATE_BTN_OK": "ОК",
