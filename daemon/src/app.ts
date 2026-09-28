@@ -6,6 +6,7 @@ import path from "path";
 import { Server, Socket } from "socket.io";
 import { GOLANG_ZIP_PATH, LOCAL_PRESET_LANG_PATH, PTY_PATH } from "./const";
 import { globalConfiguration } from "./entity/config";
+import StorageSubsystem from "./common/system_storage";
 import { $t, i18next } from "./i18n";
 import "./service/async_task_service";
 import "./service/async_task_service/quick_install";
@@ -40,6 +41,9 @@ _  /_/ // /_/ //  __/  / / / / / /_/ /  / / /
  + Copyright ${new Date().getFullYear()} MCSManager Dev <https://github.com/MCSManager>
  + Version ${VERSION}
 `);
+
+// Restrict permissions of secret files written by older versions
+StorageSubsystem.hardenPrivatePermissions();
 
 // Initialize the global configuration service
 globalConfiguration.load();

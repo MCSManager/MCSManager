@@ -13,6 +13,7 @@ import path from "path";
 import { v4 } from "uuid";
 import RedisStorage from "./app/common/storage/redis_storage";
 import Storage from "./app/common/storage/sys_storage";
+import storageSubsystem from "./app/common/system_storage";
 import { $t } from "./app/i18n";
 import { mountRouters } from "./app/index";
 import { preCheckMiddleware } from "./app/middleware/precheck";
@@ -94,6 +95,9 @@ process.stdin.on("data", (v) => {
 });
 
 async function main() {
+  // Restrict permissions of secret files written by older versions
+  storageSubsystem.hardenPrivatePermissions();
+
   // load global configuration file
   initSystemConfig();
 
