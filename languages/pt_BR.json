@@ -3161,6 +3161,7 @@
   "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "Atualizar este daemon remoto agora? O pacote mais recente será baixado, sobrescrito e reiniciado. O nó se reconecta automaticamente.",
   "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "Atualização iniciada. O daemon está baixando e reiniciando; ele se reconectará em breve.",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "Falha ao iniciar a atualização do daemon.",
+  "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "Nova versão disponível: v{v}. Clique no botão \"Atualizar daemon\" no canto superior direito para atualizar.",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "Atualizar painel",
   "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "Atualizar o painel de controle agora? O pacote mais recente será baixado, os arquivos sobrescritos (app.js + front-end) e o painel será reiniciado. A conexão será interrompida brevemente.",
   "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "Painel atualizado. Reconectando...",

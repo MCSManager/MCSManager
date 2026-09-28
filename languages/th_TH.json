@@ -3162,6 +3162,7 @@
   "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "อัปเดต daemon ระยะไกลนี้ทันทีหรือไม่? จะดาวน์โหลดแพ็กเกจล่าสุด ทับไฟล์เดิม และเริ่มใหม่ โหนดจะเชื่อมต่อใหม่โดยอัตโนมัติ",
   "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "เริ่มการอัปเดตแล้ว daemon กำลังดาวน์โหลดและเริ่มใหม่ จะเชื่อมต่อใหม่ในเร็ว ๆ นี้",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "ไม่สามารถเริ่มการอัปเดต daemon ได้",
+  "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "มีเวอร์ชันใหม่: v{v} คลิกปุ่ม \"อัปเดต Daemon\" ที่มุมขวาบนเพื่ออัปเดต",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "อัปเดตแผงควบคุม",
   "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "อัปเดตแผงควบคุมทันทีหรือไม่? จะดาวน์โหลดแพ็กเกจล่าสุด ทับไฟล์ (app.js และส่วนหน้า) แล้วเริ่มใหม่ การเชื่อมต่อจะขาดชั่วคราว",
   "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "อัปเดตแผงควบคุมแล้ว กำลังเชื่อมต่อใหม่...",

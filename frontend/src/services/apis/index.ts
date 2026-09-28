@@ -318,7 +318,9 @@ export interface IUpgradeInfo {
   configured: boolean;
   currentVersion: string;
   onlineVersion?: string;
-  onlineNotes?: string;
+  // Release notes of the online version: locale -> text map (keys like "en_us")
+  // or a plain string used as a language-neutral fallback.
+  onlineNotes?: string | Record<string, string>;
   updateAvailable: boolean;
   updateSourceUrl: string;
   error?: string;

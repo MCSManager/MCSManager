@@ -22,14 +22,30 @@ const WEB_NEW_VERSION = "10.18.4";
 const PORT = 9999;
 
 // Per-entry release notes ("notes") shown by the web UI after a version scan.
-const DAEMON_NOTES = `MCSManager Daemon v${DAEMON_NEW_VERSION}
-- Auto Update: manifest entries now carry release notes for the new version
+// notes is a locale -> text map keyed by RUNTIME locale codes (lowercase region,
+// e.g. "en_us", "zh_cn"); the UI picks the user's panel language and falls back
+// to English ("en_us") when missing. A plain string is also accepted as a
+// language-neutral fallback.
+const DAEMON_NOTES = {
+  en_us: `MCSManager Daemon v${DAEMON_NEW_VERSION}
+- Auto Update: manifest entries now carry multi-language release notes for the new version
 - Improved instance startup stability
-- Bug fixes and performance improvements`;
-const WEB_NOTES = `MCSManager Panel v${WEB_NEW_VERSION}
-- Auto Update: the Settings page now shows the new version's release notes when an update is scanned
+- Bug fixes and performance improvements`,
+  zh_cn: `MCSManager 守护进程 v${DAEMON_NEW_VERSION}
+- 自动更新：manifest 条目现携带多语言的新版本更新说明
+- 提升实例启动稳定性
+- 问题修复与性能改进`
+};
+const WEB_NOTES = {
+  en_us: `MCSManager Panel v${WEB_NEW_VERSION}
+- Auto Update: the Settings page now shows the new version's multi-language release notes when an update is scanned
 - Improved auto-update reliability and error reporting
-- UI fixes and performance improvements`;
+- UI fixes and performance improvements`,
+  zh_cn: `MCSManager 面板 v${WEB_NEW_VERSION}
+- 自动更新：设置页扫描到新版本时展示新版本的多语言更新说明
+- 提升自动更新可靠性与错误反馈
+- 界面修复与性能改进`
+};
 
 function bumpPkg(src, newVersion) {
   const pkg = JSON.parse(fs.readFileSync(src, "utf-8"));

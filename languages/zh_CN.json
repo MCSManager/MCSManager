@@ -3233,6 +3233,7 @@
   "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "立即更新此远程守护进程?将下载最新安装包并整包覆盖后重启,节点会自动重连。",
   "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "更新已开始,守护进程正在下载并重启,稍后将自动重连。",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "启动守护进程更新失败。",
+  "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "发现新版本：v{v}，可点击右上角\"更新守护进程\"按钮进行更新。",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "更新面板",
   "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "立即更新主控面板?将下载最新安装包并整包覆盖(app.js 与前端)后重启,期间会短暂断开连接。",
   "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "面板已更新,正在重连...",

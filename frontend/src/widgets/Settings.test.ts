@@ -67,6 +67,7 @@ vi.mock("@/lang/i18n", () => ({
           .join(" ")
       : key,
   isCN: () => true,
+  getCurrentLang: () => "zh_cn",
   SUPPORTED_LANGS: [{ label: "English", value: "en_us" }]
 }));
 
@@ -196,23 +197,35 @@ describe("Settings.vue auto update tab", () => {
     expect(wrapper.text()).toContain("TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC");
   });
 
-  it("shows the new version release notes when an update is scanned", async () => {
+  it("shows the release notes matching the current panel language", async () => {
     mocks.upgradeInfoExecute.mockResolvedValue({
-      value: upgradeInfo({ onlineNotes: "note line 1\nnote line 2" })
+      value: upgradeInfo({ onlineNotes: { zh_cn: "zh line 1\nzh line 2", en_us: "en line 1" } })
     });
     await mountSettings();
     await openAutoUpdateTab();
 
     expect(wrapper.text()).toContain("TXT_CODE_AUTOUPDATE_WEB_NOTES");
-    expect(wrapper.text()).toContain("note line 1");
-    expect(wrapper.text()).toContain("note line 2");
+    expect(wrapper.text()).toContain("zh line 1");
+    expect(wrapper.text()).toContain("zh line 2");
+    expect(wrapper.text()).not.toContain("en line 1");
     expect(wrapper.find(".update-notes-body").exists()).toBe(true);
+  });
+
+  it("falls back to English release notes when the panel language is missing", async () => {
+    mocks.upgradeInfoExecute.mockResolvedValue({
+      value: upgradeInfo({ onlineNotes: { en_us: "en fallback line", ja_jp: "ja line" } })
+    });
+    await mountSettings();
+    await openAutoUpdateTab();
+
+    expect(wrapper.text()).toContain("en fallback line");
+    expect(wrapper.text()).not.toContain("ja line");
   });
 
   it("hides the release notes box when there is no update or no notes", async () => {
     mocks.upgradeInfoExecute.mockResolvedValue({
       value: upgradeInfo({
-        onlineNotes: "note line 1",
+        onlineNotes: { zh_cn: "note line 1" },
         updateAvailable: false,
         onlineVersion: "10.0.0"
       })

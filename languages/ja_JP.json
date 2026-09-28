@@ -3161,6 +3161,7 @@
   "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "このリモートデーモンを今すぐ更新しますか?最新パッケージをダウンロードして上書きし、再起動します。ノードは自動的に再接続します。",
   "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "更新を開始しました。デーモンはダウンロードと再起動を行っています。まもなく再接続します。",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "デーモンの更新を開始できませんでした。",
+  "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "新しいバージョン v{v} があります。右上の「デーモンを更新」ボタンから更新できます。",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "パネルを更新",
   "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "管理パネルを今すぐ更新しますか?最新パッケージをダウンロードしてファイル(app.js とフロントエンド)を上書きし、再起動します。接続は一時的に切断されます。",
   "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "パネルを更新しました。再接続中...",

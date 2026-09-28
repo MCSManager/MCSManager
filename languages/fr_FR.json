@@ -3161,6 +3161,7 @@
   "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "Mettre à jour ce daemon distant maintenant ? Le dernier paquet sera téléchargé, écrasé, puis le daemon redémarrera. Le nœud se reconnectera automatiquement.",
   "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "Mise à jour démarrée. Le daemon télécharge et redémarre ; il se reconnectera bientôt.",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "Échec du lancement de la mise à jour du daemon.",
+  "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "Nouvelle version disponible : v{v}. Cliquez sur le bouton \"Mettre à jour le daemon\" en haut à droite pour mettre à jour.",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "Mettre à jour le panneau",
   "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "Mettre à jour le panneau de contrôle maintenant ? Le dernier paquet sera téléchargé, les fichiers écrasés (app.js + front-end), puis le panneau redémarrera. La connexion sera brièvement interrompue.",
   "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "Panneau mis à jour. Reconnexion...",

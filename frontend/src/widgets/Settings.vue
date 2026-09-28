@@ -5,7 +5,7 @@ import LeftMenusPanel from "@/components/LeftMenusPanel.vue";
 import Loading from "@/components/Loading.vue";
 import { useUploadFileDialog } from "@/components/fc";
 import { router } from "@/config/router";
-import { SUPPORTED_LANGS, isCN, t } from "@/lang/i18n";
+import { SUPPORTED_LANGS, getCurrentLang, isCN, t } from "@/lang/i18n";
 import {
   getPanelUpgradeInfo,
   setSettingInfo,
@@ -17,6 +17,7 @@ import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { arrayFilter } from "@/tools/array";
+import { pickLocalizedNotes } from "@/tools/localizedNotes";
 import { reportErrorMsg } from "@/tools/validator";
 import type { LayoutCard, Settings } from "@/types";
 import {
@@ -431,6 +432,12 @@ const toTemplate = {
 const panelUpgradeInfo = ref<IUpgradeInfo>();
 const panelUpgradeLoading = ref(false);
 const panelRestarting = ref(false);
+
+// Release notes of the online version, matched against the current panel
+// language (falls back to English when that locale is missing).
+const panelUpgradeNotes = computed(() =>
+  pickLocalizedNotes(panelUpgradeInfo.value?.onlineNotes, getCurrentLang())
+);
 
 const refreshPanelUpgradeInfo = async () => {
   if (panelUpgradeLoading.value) return;
@@ -1508,13 +1515,13 @@ onUnmounted(() => {
                       </a-button>
                     </div>
                     <div
-                      v-if="panelUpgradeInfo?.updateAvailable && panelUpgradeInfo?.onlineNotes"
+                      v-if="panelUpgradeInfo?.updateAvailable && panelUpgradeNotes"
                       class="update-notes-box"
                     >
                       <div class="update-notes-title">
                         {{ t("TXT_CODE_AUTOUPDATE_WEB_NOTES") }}
                       </div>
-                      <div class="update-notes-body">{{ panelUpgradeInfo.onlineNotes }}</div>
+                      <div class="update-notes-body">{{ panelUpgradeNotes }}</div>
                     </div>
                   </a-form-item>
 

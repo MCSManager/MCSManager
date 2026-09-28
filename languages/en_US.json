@@ -3233,6 +3233,7 @@
   "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "Update this remote daemon now? It will download the latest package, overlay it, and restart. The node reconnects automatically.",
   "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "Update started. The daemon is downloading and restarting; it will reconnect shortly.",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "Failed to start the daemon update.",
+  "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "New version available: v{v}. Click the \"Update Daemon\" button at the top right to update.",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "Update Panel",
   "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "Update the control panel now? It will download the latest package, overlay files (app.js + the front-end), then restart. You will be briefly disconnected.",
   "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "Panel updated. Reconnecting...",

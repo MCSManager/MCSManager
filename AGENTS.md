@@ -84,3 +84,7 @@ const errorMsgWithParams = $t("TXT_CODE_INSTANCE_ERROR", {
 - Only `common` and `frontend` have test suites (vitest). `common`: `cd common && npm test`; `frontend`: `cd frontend && npm test` (files `src/**/*.test.ts`, node env by default; add `// @vitest-environment jsdom` for DOM tests).
 - `common/src/system_storage.test.ts` must `process.chdir(tmpDir)` **before** importing the module — `DATA_PATH` is derived from `process.cwd()` at import time (module-level constant). Follow the same pattern in new tests touching `StorageSubsystem`.
 - Windows: `fs.chmod` only toggles the read-only bit — POSIX mode assertions are meaningless there; gate such tests with `process.platform === "win32"` skips and assert mocked `fs.chmodSync` call arguments instead.
+
+## 9. Feature Deep-Dives
+
+- **Auto-update (panel & daemon self-update)**: read [`docs/auto-update.md`](docs/auto-update.md) before touching `**/upgrade_*`, `common/src/upgrade.ts`, `scripts/*update*`, or the update UI (`Settings.vue` / `NodeItem.vue`). It documents the architecture, manifest schema (incl. multi-language `notes`), design rationale, and the E2E test harnesses.

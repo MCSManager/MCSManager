@@ -272,8 +272,12 @@ async function main() {
     assert(r.data?.currentVersion === BASE_WEB, "panel currentVersion = " + BASE_WEB);
     assert(r.data?.updateAvailable === true && r.data?.onlineVersion === NEW_WEB, "panel updateAvailable -> " + NEW_WEB);
     assert(
-      typeof r.data?.onlineNotes === "string" && r.data.onlineNotes.includes(NEW_WEB),
-      "panel_info carries the manifest release notes (onlineNotes)"
+      typeof r.data?.onlineNotes?.en_us === "string" && r.data.onlineNotes.en_us.includes(NEW_WEB),
+      "panel_info carries the manifest release notes (onlineNotes.en_us)"
+    );
+    assert(
+      typeof r.data?.onlineNotes?.zh_cn === "string" && r.data.onlineNotes.zh_cn.includes(NEW_WEB),
+      "panel_info onlineNotes contains the zh_cn locale"
     );
   }
 
@@ -298,8 +302,12 @@ async function main() {
     assert(r.data?.configured === true, "daemon updateSource configured");
     assert(r.data?.updateAvailable === true && r.data?.onlineVersion === NEW_DAEMON, "daemon updateAvailable -> " + NEW_DAEMON);
     assert(
-      typeof r.data?.onlineNotes === "string" && r.data.onlineNotes.includes(NEW_DAEMON),
-      "daemon_info carries the manifest release notes (onlineNotes)"
+      typeof r.data?.onlineNotes?.en_us === "string" && r.data.onlineNotes.en_us.includes(NEW_DAEMON),
+      "daemon_info carries the manifest release notes (onlineNotes.en_us)"
+    );
+    assert(
+      typeof r.data?.onlineNotes?.zh_cn === "string" && r.data.onlineNotes.zh_cn.includes(NEW_DAEMON),
+      "daemon_info onlineNotes contains the zh_cn locale"
     );
   }
 

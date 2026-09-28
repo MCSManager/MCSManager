@@ -40,7 +40,9 @@ const errLog = (m: string) => logger.error(`[AutoUpdate Daemon] ${m}`);
 interface IManifestEntry {
   version: string;
   url: string;
-  notes?: string;
+  // Release notes of the new version: a locale -> text map (keys like "en_us")
+  // or a plain string used as a language-neutral fallback.
+  notes?: string | Record<string, string>;
 }
 interface IManifest {
   daemon?: IManifestEntry;
@@ -51,7 +53,7 @@ export interface IUpgradeInfo {
   configured: boolean;
   currentVersion: string;
   onlineVersion?: string;
-  onlineNotes?: string;
+  onlineNotes?: string | Record<string, string>;
   updateAvailable: boolean;
   updateSourceUrl: string;
   error?: string;

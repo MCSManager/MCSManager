@@ -3161,6 +3161,7 @@
   "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "Bu uzak daemon şimdi güncellensin mi? En yeni paket indirilir, üzerine yazılır ve yeniden başlatılır. Düğüm otomatik olarak yeniden bağlanır.",
   "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "Güncelleme başladı. Daemon indiriliyor ve yeniden başlatılıyor; kısa süre sonra yeniden bağlanacak.",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "Daemon güncellemesi başlatılamadı.",
+  "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "Yeni sürüm mevcut: v{v}. Güncellemek için sağ üstteki \"Daemon'ı Güncelle\" düğmesine tıklayın.",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "Paneli Güncelle",
   "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "Kontrol paneli şimdi güncellensin mi? En yeni paket indirilir, dosyaların üzerine yazılır (app.js + ön yüz) ve yeniden başlatılır. Bağlantı kısa süre kesilecek.",
   "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "Panel güncellendi. Yeniden bağlanılıyor...",

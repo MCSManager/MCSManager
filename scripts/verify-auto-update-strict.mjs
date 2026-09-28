@@ -41,7 +41,10 @@ const NOAPP_WEB = "10.18.5"; // > current so performUpgrade proceeds to applyUpg
 
 const APP_MARKER = (name) => `MCSM_STRICT_APP_MARKER_${name}`;
 const ROBOTS_MARKER = "MCSM_STRICT_ROBOTS_MARKER_panel";
-const STRICT_WEB_NOTES = `strict release notes for ${NEW_WEB}`;
+const STRICT_WEB_NOTES = {
+  en_us: `strict release notes for ${NEW_WEB}`,
+  zh_cn: `strict 更新说明 ${NEW_WEB}`
+};
 
 const cookies = {};
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -409,7 +412,10 @@ async function main() {
   {
     const info = await httpReq("GET", "/api/upgrade/panel_info", undefined, token);
     assert(info.data?.updateAvailable === true && info.data?.onlineVersion === NEW_WEB, "strict manifest: update available " + NEW_WEB);
-    assert(info.data?.onlineNotes === STRICT_WEB_NOTES, "strict manifest: release notes passthrough (onlineNotes)");
+    assert(
+      JSON.stringify(info.data?.onlineNotes) === JSON.stringify(STRICT_WEB_NOTES),
+      "strict manifest: multi-language release notes passthrough (onlineNotes)"
+    );
     const r = await httpReq("POST", "/api/upgrade/panel", undefined, token);
     assert(r.status === 200 && r.data?.started === true, "strict panel: update started");
   }

@@ -3161,6 +3161,7 @@
   "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "Diesen Remote-Daemon jetzt aktualisieren? Es wird das neueste Paket heruntergeladen, überschrieben und neu gestartet. Die Node verbindet sich automatisch wieder.",
   "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "Aktualisierung gestartet. Der Daemon lädt herunter und startet neu; die Verbindung wird in Kürze wiederhergestellt.",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "Daemon-Aktualisierung konnte nicht gestartet werden.",
+  "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "Neue Version verfügbar: v{v}. Klicken Sie oben rechts auf \"Daemon aktualisieren\", um zu aktualisieren.",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "Panel aktualisieren",
   "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "Kontroll-Panel jetzt aktualisieren? Es wird das neueste Paket heruntergeladen, Dateien überschrieben (app.js + Front-End) und dann neu gestartet. Die Verbindung wird kurz unterbrochen.",
   "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "Panel aktualisiert. Verbindung wird wiederhergestellt ...",
