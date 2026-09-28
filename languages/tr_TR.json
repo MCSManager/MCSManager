@@ -3176,11 +3176,8 @@
   "TXT_CODE_AUTOUPDATE_BTN_REFRESH": "Yenile",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE": "Güncelleme kaynağı (manifest URL'si)",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "https://mcsmanager.com/upgrade/manifest.json",
-  "TXT_CODE_AUTOUPDATE_WEB_ALLOW": "Otomatik güncellemeye izin ver",
   "TXT_CODE_AUTOUPDATE_WEB_SAVE": "Kaydet",
   "TXT_CODE_AUTOUPDATE_B_ALREADY_PROGRESS": "Zaten bir güncelleme devam ediyor",
-  "TXT_CODE_AUTOUPDATE_B_DISABLED_DAEMON": "Bu daemon'da otomatik güncelleme devre dışı",
-  "TXT_CODE_AUTOUPDATE_B_DISABLED_PANEL": "Bu panelde otomatik güncelleme devre dışı",
   "TXT_CODE_AUTOUPDATE_B_LATEST_VER": "Zaten güncel (v{{v}})",
   "TXT_CODE_AUTOUPDATE_B_MANIFEST_MISSING": "manifest'te {{key}} girişi eksik",
   "TXT_CODE_AUTOUPDATE_B_NO_URL": "manifest girişinde url yok",
@@ -3190,6 +3187,5 @@
   "TXT_CODE_AUTOUPDATE_TAB_TITLE": "Otomatik Güncelleme",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC": "Mevcut panel sürümünü ve çevrimiçi olarak daha yeni bir sürümün bulunup bulunmadığını kontrol eder.",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC": "Panel, sürüm manifestini ve güncelleme paketlerini bu URL'den alır.",
-  "TXT_CODE_AUTOUPDATE_WEB_ALLOW_DESC": "Etkinleştirildiğinde, panel yeni bir sürüm algılandığında otomatik olarak indirir ve uygular.",
   "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "En yeni paketi indirir, panelin üzerine yazar (app.js + ön yüz) ve yeniden başlatır. Bağlantı kısa süre kesilecek."
 }

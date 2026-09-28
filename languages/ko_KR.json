@@ -3176,11 +3176,8 @@
   "TXT_CODE_AUTOUPDATE_BTN_REFRESH": "새로고침",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE": "업데이트 소스(manifest URL)",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "https://mcsmanager.com/upgrade/manifest.json",
-  "TXT_CODE_AUTOUPDATE_WEB_ALLOW": "자동 업데이트 허용",
   "TXT_CODE_AUTOUPDATE_WEB_SAVE": "저장",
   "TXT_CODE_AUTOUPDATE_B_ALREADY_PROGRESS": "이미 업데이트가 진행 중입니다",
-  "TXT_CODE_AUTOUPDATE_B_DISABLED_DAEMON": "이 데몬에서는 자동 업데이트가 비활성화되어 있습니다",
-  "TXT_CODE_AUTOUPDATE_B_DISABLED_PANEL": "이 패널에서는 자동 업데이트가 비활성화되어 있습니다",
   "TXT_CODE_AUTOUPDATE_B_LATEST_VER": "이미 최신 버전입니다 (v{{v}})",
   "TXT_CODE_AUTOUPDATE_B_MANIFEST_MISSING": "manifest에 {{key}} 항목이 없습니다",
   "TXT_CODE_AUTOUPDATE_B_NO_URL": "manifest 항목에 url이 없습니다",
@@ -3190,6 +3187,5 @@
   "TXT_CODE_AUTOUPDATE_TAB_TITLE": "자동 업데이트",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC": "패널의 현재 버전과 온라인에서 최신 버전이 있는지 확인합니다.",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC": "패널이 이 URL에서 버전 매니페스트와 업데이트 패키지를 가져옵니다.",
-  "TXT_CODE_AUTOUPDATE_WEB_ALLOW_DESC": "활성화하면 새 버전이 감지될 때 패널이 자동으로 다운로드하여 업데이트를 적용합니다.",
   "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "최신 패키지를 다운로드하여 패널(app.js 및 프런트엔드)을 덮어쓴 후 다시 시작합니다. 연결이 잠시 끊깁니다."
 }

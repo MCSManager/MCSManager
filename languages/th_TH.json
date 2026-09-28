@@ -3177,11 +3177,8 @@
   "TXT_CODE_AUTOUPDATE_BTN_REFRESH": "รีเฟรช",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE": "แหล่งอัปเดต (URL ของ manifest)",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "https://mcsmanager.com/upgrade/manifest.json",
-  "TXT_CODE_AUTOUPDATE_WEB_ALLOW": "อนุญาตการอัปเดตอัตโนมัติ",
   "TXT_CODE_AUTOUPDATE_WEB_SAVE": "บันทึก",
   "TXT_CODE_AUTOUPDATE_B_ALREADY_PROGRESS": "มีการอัปเดตกำลังดำเนินการอยู่",
-  "TXT_CODE_AUTOUPDATE_B_DISABLED_DAEMON": "ปิดการอัปเดตอัตโนมัติบน daemon นี้",
-  "TXT_CODE_AUTOUPDATE_B_DISABLED_PANEL": "ปิดการอัปเดตอัตโนมัติบนแผงควบคุมนี้",
   "TXT_CODE_AUTOUPDATE_B_LATEST_VER": "เป็นเวอร์ชันล่าสุดแล้ว (v{{v}})",
   "TXT_CODE_AUTOUPDATE_B_MANIFEST_MISSING": "manifest ไม่มีรายการ {{key}}",
   "TXT_CODE_AUTOUPDATE_B_NO_URL": "รายการใน manifest ไม่มี url",
@@ -3191,6 +3188,5 @@
   "TXT_CODE_AUTOUPDATE_TAB_TITLE": "อัปเดตอัตโนมัติ",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC": "ตรวจสอบเวอร์ชันปัจจุบันของแผงควบคุมและว่ามีเวอร์ชันใหม่ทางออนไลน์หรือไม่",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC": "แผงควบคุมจะดึงรายการเวอร์ชัน (manifest) และแพ็กเกจอัปเดตจาก URL นี้",
-  "TXT_CODE_AUTOUPDATE_WEB_ALLOW_DESC": "เมื่อเปิดใช้งาน แผงควบคุมจะดาวน์โหลดและใช้การอัปเดตโดยอัตโนมัติเมื่อตรวจพบเวอร์ชันใหม่",
   "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "ดาวน์โหลดแพ็กเกจล่าสุด ทับไฟล์แผงควบคุม (app.js และส่วนหน้า) แล้วเริ่มใหม่ การเชื่อมต่อจะขาดชั่วคราว"
 }

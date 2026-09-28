@@ -3176,11 +3176,8 @@
   "TXT_CODE_AUTOUPDATE_BTN_REFRESH": "Actualizar",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE": "Fuente de actualización (URL del manifest)",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "https://mcsmanager.com/upgrade/manifest.json",
-  "TXT_CODE_AUTOUPDATE_WEB_ALLOW": "Permitir actualización automática",
   "TXT_CODE_AUTOUPDATE_WEB_SAVE": "Guardar",
   "TXT_CODE_AUTOUPDATE_B_ALREADY_PROGRESS": "Ya hay una actualización en curso",
-  "TXT_CODE_AUTOUPDATE_B_DISABLED_DAEMON": "La actualización automática está deshabilitada en este daemon",
-  "TXT_CODE_AUTOUPDATE_B_DISABLED_PANEL": "La actualización automática está deshabilitada en este panel",
   "TXT_CODE_AUTOUPDATE_B_LATEST_VER": "Ya está actualizado (v{{v}})",
   "TXT_CODE_AUTOUPDATE_B_MANIFEST_MISSING": "Falta la entrada {{key}} en el manifest",
   "TXT_CODE_AUTOUPDATE_B_NO_URL": "La entrada del manifest no tiene url",
@@ -3190,6 +3187,5 @@
   "TXT_CODE_AUTOUPDATE_TAB_TITLE": "Actualización automática",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC": "Comprueba la versión actual del panel y si hay una versión más reciente disponible en línea.",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC": "El panel obtiene el manifiesto de versiones y los paquetes de actualización desde esta URL.",
-  "TXT_CODE_AUTOUPDATE_WEB_ALLOW_DESC": "Cuando está habilitada, el panel descarga y aplica automáticamente la actualización tras detectar una nueva versión.",
   "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "Descarga el paquete más reciente, sobrescribe el panel (app.js + front-end) y lo reinicia. La conexión se interrumpirá brevemente."
 }

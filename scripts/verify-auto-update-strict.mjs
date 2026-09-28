@@ -310,7 +310,6 @@ async function main() {
     const g = await httpReq("GET", "/api/overview/setting", undefined, token);
     const merged = { ...(typeof g.data === "string" ? {} : g.data || {}) };
     merged.updateSourceUrl = `http://localhost:${PORT}/strict/${manifestFile}`;
-    merged.allowAutoUpdate = true;
     const r = await httpReq("PUT", "/api/overview/setting", merged, token);
     assert(r.status === 200 || r.status === 204, `set source -> ${manifestFile}`);
   };
@@ -383,25 +382,6 @@ async function main() {
     assert(JSON.parse(fs.readFileSync(path.join(webDir, "package.json"), "utf-8")).version === BASE_WEB, "noapp: panel version still baseline");
     assert(!baselineAppHasMarker(webDir, "web"), "noapp: panel app.js untouched (no content marker)");
     assert(!fs.existsSync(path.join(webDir, "OVERLAY_MARKER.txt")), "noapp: rejected BEFORE any overlay (no marker written)");
-  }
-
-  // ----- SCENARIO B3: auto-update disabled (guarded, no mutation) -----
-  log("\n== SCENARIO B3: auto-update disabled ==");
-  {
-    const g = await httpReq("GET", "/api/overview/setting", undefined, token);
-    const merged = { ...(typeof g.data === "string" ? {} : g.data || {}) };
-    merged.updateSourceUrl = `http://localhost:${PORT}/strict/manifest-strict.json`;
-    merged.allowAutoUpdate = false;
-    const put = await httpReq("PUT", "/api/overview/setting", merged, token);
-    assert(put.status === 200 || put.status === 204, "disabled: settings saved");
-    const r = await httpReq("POST", "/api/upgrade/panel", undefined, token);
-    assert(r.status === 200, "disabled: 200");
-    log("  result:", JSON.stringify(r.data));
-    assert(r.data?.started === false, "disabled: started=false");
-    assert(/disabled/i.test(String(r.data?.message || "")), "disabled: message mentions disabled");
-    assert(await panelUp(), "disabled: panel stayed up (no restart)");
-    assert(JSON.parse(fs.readFileSync(path.join(webDir, "package.json"), "utf-8")).version === BASE_WEB, "disabled: panel version still baseline");
-    assert(!fs.existsSync(path.join(webDir, "OVERLAY_MARKER.txt")), "disabled: no overlay performed");
   }
 
   // ----- SCENARIO C: panel happy content-update (REAL content replaced) -----

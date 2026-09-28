@@ -119,9 +119,6 @@ export async function performUpgrade(): Promise<IUpgradeResult> {
   if (upgradeInProgress) {
     return { started: false, message: $t("TXT_CODE_AUTOUPDATE_B_ALREADY_PROGRESS") };
   }
-  if (!systemConfig || !systemConfig.allowAutoUpdate) {
-    return { started: false, message: $t("TXT_CODE_AUTOUPDATE_B_DISABLED_PANEL") };
-  }
 
   upgradeInProgress = true;
   const cwd = process.cwd();

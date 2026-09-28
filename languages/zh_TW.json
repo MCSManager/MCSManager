@@ -3176,11 +3176,8 @@
   "TXT_CODE_AUTOUPDATE_BTN_REFRESH": "重新整理",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE": "更新源(manifest 位址)",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "https://mcsmanager.com/upgrade/manifest.json",
-  "TXT_CODE_AUTOUPDATE_WEB_ALLOW": "允許自動更新",
   "TXT_CODE_AUTOUPDATE_WEB_SAVE": "儲存",
   "TXT_CODE_AUTOUPDATE_B_ALREADY_PROGRESS": "已有升級正在進行中",
-  "TXT_CODE_AUTOUPDATE_B_DISABLED_DAEMON": "此守護進程已停用自動更新",
-  "TXT_CODE_AUTOUPDATE_B_DISABLED_PANEL": "此面板已停用自動更新",
   "TXT_CODE_AUTOUPDATE_B_LATEST_VER": "已是最新版本 (v{{v}})",
   "TXT_CODE_AUTOUPDATE_B_MANIFEST_MISSING": "manifest 缺少 {{key}} 條目",
   "TXT_CODE_AUTOUPDATE_B_NO_URL": "manifest 條目缺少 url",
@@ -3190,6 +3187,5 @@
   "TXT_CODE_AUTOUPDATE_TAB_TITLE": "自動更新",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC": "查看面板目前版本,並線上檢測是否有新版本可用。",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC": "面板將從此位址取得版本清單(manifest)與更新包。",
-  "TXT_CODE_AUTOUPDATE_WEB_ALLOW_DESC": "啟用後,面板偵測到新版本時將自動下載並套用更新。",
   "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "下載最新安裝包並整包覆蓋面板(app.js 與前端)後重啟,期間會短暫斷開連接。"
 }

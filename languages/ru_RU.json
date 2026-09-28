@@ -3191,11 +3191,8 @@
   "TXT_CODE_AUTOUPDATE_BTN_REFRESH": "Обновить",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE": "Источник обновления (URL манифеста)",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "https://mcsmanager.com/upgrade/manifest.json",
-  "TXT_CODE_AUTOUPDATE_WEB_ALLOW": "Разрешить автообновление",
   "TXT_CODE_AUTOUPDATE_WEB_SAVE": "Сохранить",
   "TXT_CODE_AUTOUPDATE_B_ALREADY_PROGRESS": "Обновление уже выполняется",
-  "TXT_CODE_AUTOUPDATE_B_DISABLED_DAEMON": "Автообновление отключено на этом демоне",
-  "TXT_CODE_AUTOUPDATE_B_DISABLED_PANEL": "Автообновление отключено на этой панели",
   "TXT_CODE_AUTOUPDATE_B_LATEST_VER": "Уже последняя версия (v{{v}})",
   "TXT_CODE_AUTOUPDATE_B_MANIFEST_MISSING": "В манифесте отсутствует запись {{key}}",
   "TXT_CODE_AUTOUPDATE_B_NO_URL": "В записи манифеста отсутствует url",
@@ -3205,6 +3202,5 @@
   "TXT_CODE_AUTOUPDATE_TAB_TITLE": "Автообновление",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC": "Проверяет текущую версию панели и наличие более новой версии в сети.",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC": "Панель получает манифест версий и пакеты обновления по этому URL.",
-  "TXT_CODE_AUTOUPDATE_WEB_ALLOW_DESC": "Если включено, панель автоматически загружает и применяет обновление после обнаружения новой версии.",
   "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "Загружает последний пакет, поверх него устанавливает файлы панели (app.js и фронтенд) и перезапускает её. Соединение будет ненадолго разорвано."
 }

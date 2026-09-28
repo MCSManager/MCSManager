@@ -118,10 +118,8 @@ export default class SystemConfig {
   // SSL private key file path (.key)
   sslKeyPath = "";
 
-  // ---- Auto update (self-update the panel app.js + public/ from a manifest) ----
+  // ---- Update source (manifest URL for manual self-update) ----
   // Full URL to a manifest.json describing available updates, e.g.
-  // "https://mcsmanager.com/upgrade/manifest.json". Empty => auto update disabled.
+  // "https://mcsmanager.com/upgrade/manifest.json". Empty => update info unavailable.
   updateSourceUrl = "https://mcsmanager.com/upgrade/manifest.json";
-  // Master switch: allow this panel to be updated from its own Settings page.
-  allowAutoUpdate = true;
 }

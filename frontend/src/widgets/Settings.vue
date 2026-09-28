@@ -1523,27 +1523,6 @@ onUnmounted(() => {
                     />
                   </a-form-item>
 
-                  <a-form-item>
-                    <a-typography-title :level="5">
-                      {{ t("TXT_CODE_AUTOUPDATE_WEB_ALLOW") }}
-                    </a-typography-title>
-                    <a-typography-paragraph type="secondary">
-                      {{ t("TXT_CODE_AUTOUPDATE_WEB_ALLOW_DESC") }}
-                    </a-typography-paragraph>
-                    <a-select
-                      v-model:value.prop="(formData as any).allowAutoUpdate"
-                      style="max-width: 320px"
-                    >
-                      <a-select-option
-                        v-for="item in allYesNo"
-                        :key="item.value"
-                        :value="item.value"
-                      >
-                        {{ item.label }}
-                      </a-select-option>
-                    </a-select>
-                  </a-form-item>
-
                   <div class="button mb-24">
                     <a-button type="primary" :loading="submitIsLoading" @click="submit(false)">
                       {{ t("TXT_CODE_AUTOUPDATE_WEB_SAVE") }}

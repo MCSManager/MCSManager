@@ -3248,11 +3248,8 @@
   "TXT_CODE_AUTOUPDATE_BTN_REFRESH": "Refresh",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE": "Update source (manifest URL)",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "https://mcsmanager.com/upgrade/manifest.json",
-  "TXT_CODE_AUTOUPDATE_WEB_ALLOW": "Allow auto update",
   "TXT_CODE_AUTOUPDATE_WEB_SAVE": "Save",
   "TXT_CODE_AUTOUPDATE_B_ALREADY_PROGRESS": "An upgrade is already in progress",
-  "TXT_CODE_AUTOUPDATE_B_DISABLED_DAEMON": "Auto update is disabled on this daemon",
-  "TXT_CODE_AUTOUPDATE_B_DISABLED_PANEL": "Auto update is disabled on this panel",
   "TXT_CODE_AUTOUPDATE_B_LATEST_VER": "Already up to date (v{{v}})",
   "TXT_CODE_AUTOUPDATE_B_MANIFEST_MISSING": "manifest is missing the {{key}} entry",
   "TXT_CODE_AUTOUPDATE_B_NO_URL": "manifest entry has no url",
@@ -3262,6 +3259,5 @@
   "TXT_CODE_AUTOUPDATE_TAB_TITLE": "Auto Update",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC": "Check the current panel version and whether a newer version is available online.",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC": "The panel fetches the version manifest and update packages from this URL.",
-  "TXT_CODE_AUTOUPDATE_WEB_ALLOW_DESC": "When enabled, the panel automatically downloads and applies an update after detecting a new version.",
   "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "Download the latest package and overlay the panel (app.js + the front-end), then restart. You will be briefly disconnected."
 }

@@ -132,9 +132,6 @@ export async function performUpgrade(data?: IUpgradeRequestData): Promise<IUpgra
   if (upgradeInProgress) {
     return { started: false, message: $t("TXT_CODE_AUTOUPDATE_B_ALREADY_PROGRESS") };
   }
-  if (!globalConfiguration.config.allowAutoUpdate) {
-    return { started: false, message: $t("TXT_CODE_AUTOUPDATE_B_DISABLED_DAEMON") };
-  }
 
   upgradeInProgress = true;
   const cwd = process.cwd();

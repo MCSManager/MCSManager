@@ -202,7 +202,7 @@ async function main() {
   procServer = spawnProc("server", "node", ["scripts/update-test-server.mjs"], repo);
   await waitForPort(9999);
 
-  log("step 3: start daemon (writes config with random key; defaults: allowAutoUpdate=true, updateSourceUrl empty)");
+  log("step 3: start daemon (writes config with random key; updateSourceUrl empty)");
   procDaemon = spawnProc("daemon", process.execPath, ["app.js"], daemonDir);
   await waitForPort(24444);
   await sleep(800); // let config persist
@@ -252,7 +252,6 @@ async function main() {
     assert(g.status === 200, "GET setting 200");
     const merged = { ...(typeof g.data === "string" ? {} : g.data || {}) };
     merged.updateSourceUrl = MANIFEST_URL;
-    merged.allowAutoUpdate = true;
     const r = await httpReq("PUT", "/api/overview/setting", merged, global.__token);
     assert(r.status === 200 || r.status === 204 || r.status === 201, "setting PUT ok (" + r.status + ")");
   }
