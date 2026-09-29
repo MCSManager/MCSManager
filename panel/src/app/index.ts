@@ -21,6 +21,7 @@ import overviewRouter from "./routers/overview_router";
 import scheduleRouter from "./routers/schedule_router";
 import settingsRouter from "./routers/settings_router";
 import ssoRouter from "./routers/sso_router";
+import upgradeRouter from "./routers/upgrade_router";
 import userRouter from "./routers/user_overview_router";
 
 export function mountRouters(app: Koa<Koa.DefaultState, Koa.DefaultContext>) {
@@ -41,6 +42,7 @@ export function mountRouters(app: Koa<Koa.DefaultState, Koa.DefaultContext>) {
   apiRouter.use(exchangeRouter.routes()).use(exchangeRouter.allowedMethods());
   apiRouter.use(javaManagerRouter.routes()).use(javaManagerRouter.allowedMethods());
   apiRouter.use(modManagerRouter.routes()).use(modManagerRouter.allowedMethods());
+  apiRouter.use(upgradeRouter.routes()).use(upgradeRouter.allowedMethods());
 
   app.use(apiRouter.routes()).use(apiRouter.allowedMethods());
 }

@@ -5,12 +5,19 @@ import LeftMenusPanel from "@/components/LeftMenusPanel.vue";
 import Loading from "@/components/Loading.vue";
 import { useUploadFileDialog } from "@/components/fc";
 import { router } from "@/config/router";
-import { SUPPORTED_LANGS, isCN, t } from "@/lang/i18n";
-import { setSettingInfo, settingInfo } from "@/services/apis";
+import { SUPPORTED_LANGS, getCurrentLang, isCN, t } from "@/lang/i18n";
+import {
+  getPanelUpgradeInfo,
+  setSettingInfo,
+  settingInfo,
+  upgradePanel,
+  type IUpgradeInfo
+} from "@/services/apis";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { arrayFilter } from "@/tools/array";
+import { pickLocalizedNotes } from "@/tools/localizedNotes";
 import { reportErrorMsg } from "@/tools/validator";
 import type { LayoutCard, Settings } from "@/types";
 import {
@@ -18,6 +25,7 @@ import {
   BankOutlined,
   BookOutlined,
   BugOutlined,
+  CloudUploadOutlined,
   EditOutlined,
   FileProtectOutlined,
   GithubOutlined,
@@ -27,7 +35,8 @@ import {
   PicLeftOutlined,
   PlusOutlined,
   ProjectOutlined,
-  QuestionCircleOutlined
+  QuestionCircleOutlined,
+  ReloadOutlined
 } from "@ant-design/icons-vue";
 import { Modal, message, notification } from "ant-design-vue";
 import { computed, onMounted, onUnmounted, ref } from "vue";
@@ -134,6 +143,11 @@ const menus = arrayFilter([
     title: t("TXT_CODE_SSO_TAB_TITLE"),
     key: "sso",
     icon: ApiOutlined
+  },
+  {
+    title: t("TXT_CODE_AUTOUPDATE_TAB_TITLE"),
+    key: "autoUpdate",
+    icon: CloudUploadOutlined
   },
   {
     title: t("TXT_CODE_46cb40d5"),
@@ -414,6 +428,83 @@ const toTemplate = {
     })
 };
 
+// ---- Panel self-update (web) ----
+const panelUpgradeInfo = ref<IUpgradeInfo>();
+const panelUpgradeLoading = ref(false);
+const panelRestarting = ref(false);
+
+// Release notes of the online version, matched against the current panel
+// language (falls back to English when that locale is missing).
+const panelUpgradeNotes = computed(() =>
+  pickLocalizedNotes(panelUpgradeInfo.value?.onlineNotes, getCurrentLang())
+);
+
+const refreshPanelUpgradeInfo = async () => {
+  if (panelUpgradeLoading.value) return;
+  panelUpgradeLoading.value = true;
+  try {
+    const { execute } = getPanelUpgradeInfo();
+    panelUpgradeInfo.value = (await execute({})).value;
+  } catch (error: any) {
+    // silent: keep last known state
+  } finally {
+    panelUpgradeLoading.value = false;
+  }
+};
+
+// After POST /upgrade/panel the panel restarts ~1s later, dropping this
+// HTTP/socket connection. Poll the panel's own /api/auth/status endpoint
+// (a JSON 200 is only served by the panel process — a reverse-proxy root would
+// not falsely satisfy this) until it responds again, then reload to pick up
+// the new frontend bundle. Rejects on timeout so the caller does NOT report a
+// false "updated successfully" when the panel actually failed to come back.
+const waitForPanelRestart = (timeoutMs = 90000) =>
+  new Promise<void>((resolve, reject) => {
+    const deadline = Date.now() + timeoutMs;
+    const poll = () => {
+      fetch(window.location.origin + "/api/auth/status", { cache: "no-store" })
+        .then(async (r) => {
+          if (r.ok && String(r.headers.get("content-type") || "").includes("application/json")) {
+            resolve();
+            return;
+          }
+          if (Date.now() > deadline) reject(new Error("Panel did not come back online"));
+          else setTimeout(poll, 1500);
+        })
+        .catch(() => {
+          if (Date.now() > deadline) reject(new Error("Panel did not come back online"));
+          else setTimeout(poll, 1500);
+        });
+    };
+    setTimeout(poll, 3000);
+  });
+
+const onUpdateWeb = () => {
+  Modal.confirm({
+    title: t("TXT_CODE_AUTOUPDATE_WEB_BTN"),
+    content: t("TXT_CODE_AUTOUPDATE_WEB_CONFIRM"),
+    okText: t("TXT_CODE_AUTOUPDATE_BTN_OK"),
+    cancelText: t("TXT_CODE_AUTOUPDATE_BTN_CANCEL"),
+    onOk: async () => {
+      try {
+        const { execute } = upgradePanel();
+        const res = await execute({});
+        if (!res.value?.started) {
+          message.info(res.value?.message || t("TXT_CODE_AUTOUPDATE_ALREADY_LATEST"));
+          return;
+        }
+        panelRestarting.value = true;
+        await waitForPanelRestart();
+        message.success(t("TXT_CODE_AUTOUPDATE_WEB_SUCCESS"));
+        setTimeout(() => window.location.reload(), 800);
+      } catch (error: any) {
+        panelRestarting.value = false;
+        reportErrorMsg(error?.message ? error.message : t("TXT_CODE_AUTOUPDATE_WEB_FAILED"));
+      }
+    }
+  });
+};
+
 onMounted(async () => {
   const res = await execute();
   const cfg = await getSettingsConfig();
@@ -444,6 +535,8 @@ onMounted(async () => {
       leftMenusPanelRef.value?.setActiveKey("pro");
     }
   }, 100);
+
+  refreshPanelUpgradeInfo();
 });
 
 onUnmounted(() => {
@@ -459,6 +552,24 @@ onUnmounted(() => {
 
 <template>
   <div>
+    <div
+      v-if="panelRestarting"
+      style="
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <a-spin size="large" />
+      <div style="margin-top: 16px; color: #fff; font-size: 16px">
+        {{ t("TXT_CODE_AUTOUPDATE_WEB_RESTARTING") }}
+      </div>
+    </div>
     <CardPanel v-if="isReady && formData" class="CardWrapper" style="height: 100%" :padding="false">
       <template #body>
         <LeftMenusPanel ref="leftMenusPanelRef" :menus="menus">
@@ -1359,6 +1470,103 @@ onUnmounted(() => {
             </div>
           </template>
 
+          <template #autoUpdate>
+            <div class="content-box" :style="{ maxHeight: card.height }">
+              <a-typography-title :level="4" class="mb-24">
+                {{ t("TXT_CODE_AUTOUPDATE_TAB_TITLE") }}
+              </a-typography-title>
+              <div style="text-align: left">
+                <a-form :model="formData" layout="vertical">
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_TITLE") }}
+                    </a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC") }}
+                    </a-typography-paragraph>
+                    <div class="flex" style="gap: 12px; flex-wrap: wrap">
+                      <template v-if="panelUpgradeInfo">
+                        <a-typography-text strong>
+                          v{{ panelUpgradeInfo.currentVersion }}
+                        </a-typography-text>
+                        <a-tag v-if="!panelUpgradeInfo.configured" color="default">
+                          {{ t("TXT_CODE_AUTOUPDATE_WEB_NOT_CONFIGURED") }}
+                        </a-tag>
+                        <template v-else>
+                          <a-tag v-if="panelUpgradeInfo.updateAvailable" color="processing">
+                            {{
+                              t("TXT_CODE_AUTOUPDATE_WEB_LATEST", {
+                                v: panelUpgradeInfo.onlineVersion
+                              })
+                            }}
+                          </a-tag>
+                          <a-tag v-else color="success">
+                            {{ t("TXT_CODE_AUTOUPDATE_UP_TO_DATE") }}
+                          </a-tag>
+                        </template>
+                      </template>
+                      <a-button
+                        size="small"
+                        :loading="panelUpgradeLoading"
+                        @click="refreshPanelUpgradeInfo"
+                      >
+                        <template #icon><ReloadOutlined /></template>
+                        {{ t("TXT_CODE_AUTOUPDATE_BTN_REFRESH") }}
+                      </a-button>
+                    </div>
+                    <div
+                      v-if="panelUpgradeInfo?.updateAvailable && panelUpgradeNotes"
+                      class="update-notes-box"
+                    >
+                      <div class="update-notes-title">
+                        {{ t("TXT_CODE_AUTOUPDATE_WEB_NOTES") }}
+                      </div>
+                      <div class="update-notes-body">{{ panelUpgradeNotes }}</div>
+                    </div>
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_SOURCE") }}
+                    </a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC") }}
+                    </a-typography-paragraph>
+                    <a-input
+                      v-model:value="formData.updateSourceUrl"
+                      style="max-width: 480px"
+                      :placeholder="t('TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH')"
+                    />
+                  </a-form-item>
+
+                  <div class="button mb-24">
+                    <a-button type="primary" :loading="submitIsLoading" @click="submit(false)">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_SAVE") }}
+                    </a-button>
+                  </div>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_BTN") }}
+                    </a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC") }}
+                    </a-typography-paragraph>
+                    <a-button
+                      type="primary"
+                      :disabled="
+                        !panelUpgradeInfo?.configured || !panelUpgradeInfo?.updateAvailable
+                      "
+                      @click="onUpdateWeb"
+                    >
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_BTN") }}
+                    </a-button>
+                  </a-form-item>
+                </a-form>
+              </div>
+            </div>
+          </template>
+
           <template #pro>
             <IframeBox :src="getProPanelUrl('/status')" :height="card.height" />
           </template>
@@ -1456,5 +1664,24 @@ div {
     display: flex;
     align-items: center;
   }
+}
+
+.update-notes-box {
+  margin-top: 12px;
+  max-width: 640px;
+  padding: 12px;
+  border-radius: 6px;
+  background: var(--color-gray-2);
+  border: 1px solid var(--color-gray-4);
+}
+
+.update-notes-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.update-notes-body {
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 </style>

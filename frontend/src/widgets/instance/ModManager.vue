@@ -22,6 +22,7 @@ import ModVersionModal from "./mod-manager/ModVersionModal.vue";
 import SearchModTable from "./mod-manager/SearchModTable.vue";
 
 import { Flex, message } from "ant-design-vue";
+import { throttle } from "lodash";
 import { useDeferredTasks } from "./mod-manager/useDeferredTasks";
 import { useLocalMods } from "./mod-manager/useLocalMods";
 import { useModConfig } from "./mod-manager/useModConfig";
@@ -180,8 +181,15 @@ const getCurrentFolder = () => {
 
 const loadMods = async (folder?: string) => {
   const targetFolder = folder !== undefined ? folder : getCurrentFolder();
-  await originalLoadMods(targetFolder);
+  await originalLoadMods(targetFolder, headerSearchQuery.value);
 };
+
+const searchMods = throttle(() => {
+  tablePagination.current = 1;
+  loadMods();
+}, 600);
+
+watch(headerSearchQuery, searchMods);
 
 const {
   searchFilters,
@@ -268,8 +276,8 @@ watch(
 );
 
 const filterBySearch = (list: any[]) => {
-  if (!headerSearchQuery.value) return list;
-  const query = headerSearchQuery.value.toLowerCase();
+  const query = headerSearchQuery.value.trim().toLowerCase();
+  if (!query) return list;
   return list.filter(
     (m) =>
       (m.name || "").toLowerCase().includes(query) || (m.file || "").toLowerCase().includes(query)

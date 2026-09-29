@@ -15,6 +15,10 @@ production/
 .DS_Store
 production-code/
 test.js
+# Auto-update verification artifacts (regenerable zips + logs)
+scripts/update-packages/
+# Auto-update staging dir created during an in-place update
+__upgrade_staging
 .idea/
 ai-api.key
 .vs/

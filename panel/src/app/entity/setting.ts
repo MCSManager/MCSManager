@@ -117,4 +117,9 @@ export default class SystemConfig {
   sslPemPath = "";
   // SSL private key file path (.key)
   sslKeyPath = "";
+
+  // ---- Update source (manifest URL for manual self-update) ----
+  // Full URL to a manifest.json describing available updates, e.g.
+  // "https://mcsmanager.com/upgrade/manifest.json". Empty => update info unavailable.
+  updateSourceUrl = "https://mcsmanager.com/upgrade/manifest.json";
 }

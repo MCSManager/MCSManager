@@ -13,6 +13,7 @@ export const modListApi = useDefineApi<
       page?: number;
       pageSize?: number;
       folder?: string;
+      search?: string;
     };
   },
   {

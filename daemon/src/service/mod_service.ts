@@ -185,7 +185,8 @@ export class ModService {
     instanceUuid: string,
     page: number = 1,
     pageSize: number = 50,
-    folder?: string
+    folder?: string,
+    search?: string
   ): Promise<ModListResult> {
     // Enforce max page size of 50
     if (pageSize > 50) pageSize = 50;
@@ -293,9 +294,18 @@ export class ModService {
     );
 
     // Filter by folder if specified
-    const filteredResult = folder
-      ? uniqueResult.filter((m) => m.folder === folder.toLowerCase())
-      : uniqueResult;
+    const normalizedSearch = search?.trim().toLowerCase();
+    const filteredResult = uniqueResult
+      .filter((m) => !folder || m.folder === folder.toLowerCase())
+      .filter(
+        (m) =>
+          !normalizedSearch ||
+          [m.name, m.id, m.file].some((value) =>
+            String(value || "")
+              .toLowerCase()
+              .includes(normalizedSearch)
+          )
+      );
 
     // Sort by name for consistent pagination
     filteredResult.sort((a, b) => (a.name || "").localeCompare(b.name || ""));

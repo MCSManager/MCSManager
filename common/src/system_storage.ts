@@ -106,12 +106,10 @@ export default class StorageSubsystem {
   public list(category: string) {
     const dirPath = path.join(StorageSubsystem.DATA_PATH, category);
     if (!fs.existsSync(dirPath)) fs.mkdirsSync(dirPath);
-    const files = fs.readdirSync(dirPath);
-    const result = new Array<string>();
-    files.forEach((name) => {
-      result.push(name.replace(path.extname(name), ""));
-    });
-    return result;
+    return fs
+      .readdirSync(dirPath, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && entry.name.endsWith(".json"))
+      .map((entry) => entry.name.slice(0, -".json".length));
   }
 
   /**

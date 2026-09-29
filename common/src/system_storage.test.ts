@@ -77,3 +77,16 @@ describe("StorageSubsystem.store atomicity", () => {
     expect(files.some((f) => f.endsWith(".tmp"))).toBe(false);
   });
 });
+
+describe("StorageSubsystem.list", () => {
+  it("only returns identifiers for JSON files", () => {
+    const dirPath = path.join(tmpDir, "data", "dummy_category");
+    fs.mkdirsSync(dirPath);
+    fs.writeFileSync(path.join(dirPath, "valid-uuid.json"), "{}");
+    fs.writeFileSync(path.join(dirPath, "valid-uuid.json.tmp"), "{}");
+    fs.writeFileSync(path.join(dirPath, "README"), "ignored");
+    fs.mkdirsSync(path.join(dirPath, "nested.json"));
+
+    expect(StorageSubsystem.list("dummy_category")).toEqual(["valid-uuid"]);
+  });
+});

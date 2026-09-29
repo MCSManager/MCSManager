@@ -26,6 +26,7 @@ export function useLocalMods(
   const fileStatus = ref<any>({});
   const totalMods = ref(0);
   const currentFolder = ref<string | undefined>(undefined);
+  const currentSearch = ref("");
 
   const tablePagination = reactive({
     current: 1,
@@ -47,9 +48,10 @@ export function useLocalMods(
     }
   });
 
-  const loadMods = async (folder?: string) => {
+  const loadMods = async (folder?: string, search?: string) => {
     loading.value = true;
     currentFolder.value = folder;
+    if (search !== undefined) currentSearch.value = search.trim();
     try {
       const { execute } = modListApi();
       const res = await execute({
@@ -58,7 +60,8 @@ export function useLocalMods(
           daemonId: daemonId,
           page: tablePagination.current,
           pageSize: tablePagination.pageSize,
-          folder
+          folder,
+          search: currentSearch.value || undefined
         }
       });
       const newMods = res.value?.mods || [];
@@ -206,7 +209,8 @@ export function useLocalMods(
             daemonId: daemonId,
             page: tablePagination.current,
             pageSize: tablePagination.pageSize,
-            folder: currentFolder.value
+            folder: currentFolder.value,
+            search: currentSearch.value || undefined
           }
         });
         fileStatus.value = res.value || {};
