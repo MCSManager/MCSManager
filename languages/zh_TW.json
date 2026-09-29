@@ -3188,5 +3188,20 @@
   "TXT_CODE_AUTOUPDATE_TAB_TITLE": "自動更新",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC": "查看面板目前版本,並線上檢測是否有新版本可用。",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC": "面板將從此位址取得版本清單(manifest)與更新包。",
-  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "下載最新安裝包並整包覆蓋面板檔案(app.js 與前端),更新後需手動重啟面板方可生效。"
+  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "下載最新安裝包並整包覆蓋面板檔案(app.js 與前端),更新後需手動重啟面板方可生效。",
+  "TXT_CODE_ea1600d2": "稽核日誌",
+  "TXT_CODE_3c7c9297": "啟用操作稽核",
+  "TXT_CODE_16a4e557": "記錄使用者在面板的敏感操作（應用程式執行個體、檔案、使用者、節點、設定等），用於安全稽核，修改後立即生效。",
+  "TXT_CODE_186e1ce1": "記錄範圍",
+  "TXT_CODE_3effdfb0": "關閉某一分類後，該類操作將不再寫入稽核日誌。",
+  "TXT_CODE_dbbaf16e": "使用者登入",
+  "TXT_CODE_b68c8da6": "應用程式執行個體操作",
+  "TXT_CODE_500fed5c": "使用者管理",
+  "TXT_CODE_36b3a6b": "節點與系統",
+  "TXT_CODE_68f99fdf": "單一檔案的記錄條數",
+  "TXT_CODE_507be396": "每個日誌檔案寫入指定條數後自動切割成新檔案，跨天時也會自動切割，預設為 200 條。",
+  "TXT_CODE_dda5f944": "日誌保留天數",
+  "TXT_CODE_8d88f625": "超過該天數的日誌檔案將自動刪除，0 表示永久保留。",
+  "TXT_CODE_706b201e": "最大記錄總數",
+  "TXT_CODE_7ef4ecf4": "當記錄總數超過該值時，自動刪除最舊的日誌檔案，0 表示不限制。"
 }
