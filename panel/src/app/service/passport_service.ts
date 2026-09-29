@@ -6,6 +6,12 @@ import { ROLE, User } from "../entity/user";
 import { $t } from "../i18n";
 import { systemConfig } from "../setting";
 import { checkSafeName } from "../utils/safe";
+import {
+  IP_BAN_DURATION_MS,
+  IpFailureRecord,
+  registerFailureAttempt,
+  resetFailure
+} from "./login_ban";
 import { logger } from "./log";
 import { timeUuid } from "./password";
 import userSystem from "./user_service";
@@ -29,9 +35,6 @@ export function login(
   try {
     const totpDriftToleranceSteps = systemConfig?.totpDriftToleranceSteps || 0;
     userSystem.checkUser({ userName, passWord }, twoFACode, totpDriftToleranceSteps);
-    // The number of errors to reset this IP after successful login
-    const ipMap = GlobalVariable.get(LOGIN_FAILED_KEY);
-    if (ipMap) delete ipMap[ip || ""];
 
     // Session Session state changes to logged in
     return loginSuccess(ctx, userName);
@@ -53,6 +56,11 @@ export function loginSuccess(ctx: Koa.ParameterizedContext, userName: string) {
   const user = userSystem.getUserByUserName(userName);
   if (!user) throw new Error($t("TXT_CODE_router.login.nameOrPassError"));
   if (!ctx.session) throw new Error("Session is Null!");
+
+  // A successful authentication (password or SSO) resets this IP's failure
+  // counter. All login paths funnel through here, so SSO resets it too.
+  const ipMap = GlobalVariable.get(LOGIN_FAILED_KEY);
+  if (ipMap) resetFailure(ipMap, ip || "");
 
   user.loginTime = new Date().toLocaleString();
   ctx.session["login"] = true;
@@ -199,29 +207,28 @@ export function isAjax(ctx: Koa.ParameterizedContext) {
 export function checkBanIp(ctx: Koa.ParameterizedContext) {
   if (!GlobalVariable.map.has(LOGIN_FAILED_KEY)) GlobalVariable.set(LOGIN_FAILED_KEY, {});
   // This IpMap also needs to be used when logging in
-  const ipMap = GlobalVariable.get(LOGIN_FAILED_KEY);
+  const ipMap: Record<string, IpFailureRecord> = GlobalVariable.get(LOGIN_FAILED_KEY);
 
   const ip = getLoginIp(ctx);
 
-  if (ipMap[ip] > 10 && systemConfig?.loginCheckIp === true) {
-    if (ipMap[ip] != 999) {
-      // record the number of bans
-      GlobalVariable.set(BAN_IP_COUNT, GlobalVariable.get(BAN_IP_COUNT, 0) + 1);
-      setTimeout(
-        () => {
-          delete ipMap[ip];
-          // delete the number of bans
-          GlobalVariable.set(BAN_IP_COUNT, GlobalVariable.get(BAN_IP_COUNT, 1) - 1);
-        },
-        1000 * 60 * 10
-      );
-    }
-    ipMap[ip] = 999;
-    return false;
+  const { decision, newlyBanned } = registerFailureAttempt(ipMap, ip, {
+    loginCheckIp: systemConfig?.loginCheckIp === true
+  });
+
+  if (newlyBanned) {
+    // record the number of bans
+    GlobalVariable.set(BAN_IP_COUNT, GlobalVariable.get(BAN_IP_COUNT, 0) + 1);
+    // Once the ban window elapses, clean up the record and the ban counter.
+    // Only remove the record if it is still the one we banned, so a stale timer
+    // cannot wipe out a newer ban for the same IP.
+    const bannedRecord = ipMap[ip];
+    setTimeout(() => {
+      if (ipMap[ip] === bannedRecord) delete ipMap[ip];
+      GlobalVariable.set(BAN_IP_COUNT, Math.max(0, GlobalVariable.get(BAN_IP_COUNT, 1) - 1));
+    }, IP_BAN_DURATION_MS);
   }
-  if (!isNaN(Number(ipMap[ip]))) ipMap[ip] = Number(ipMap[ip]) + 1;
-  else ipMap[ip] = 1;
-  return true;
+
+  return decision === "allow";
 }
 
 export function getUuidByApiKey(unsafeApiKey: string) {
