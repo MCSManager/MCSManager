@@ -113,6 +113,8 @@ export interface Settings {
   operationLogRecordFile: boolean;
   operationLogRecordUser: boolean;
   operationLogRecordSystem: boolean;
+  // Auto update (panel self-update)
+  updateSourceUrl: string;
 }
 
 export interface ImageInfo {

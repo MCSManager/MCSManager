@@ -7,9 +7,10 @@ import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import { SocketStatus, useSocketIoClient } from "@/hooks/useSocketIo";
-import { t } from "@/lang/i18n";
-import { connectNode } from "@/services/apis";
+import { getCurrentLang, t } from "@/lang/i18n";
+import { connectNode, getDaemonUpgradeInfo, upgradeDaemon, type IUpgradeInfo } from "@/services/apis";
 import { arrayFilter } from "@/tools/array";
+import { pickLocalizedNotes } from "@/tools/localizedNotes";
 import { reportErrorMsg } from "@/tools/validator";
 import { hasVersionUpdate } from "@/tools/version";
 import type { LayoutCard } from "@/types";
@@ -17,6 +18,7 @@ import {
   BlockOutlined,
   CheckCircleOutlined,
   CloudServerOutlined,
+  CloudUploadOutlined,
   CodeOutlined,
   FolderOpenOutlined,
   InfoCircleOutlined,
@@ -24,8 +26,8 @@ import {
   ReloadOutlined,
   SettingOutlined
 } from "@ant-design/icons-vue";
-import { message } from "ant-design-vue";
-import { computed, onMounted, ref } from "vue";
+import { message, Modal } from "ant-design-vue";
+import { computed, onMounted, ref, watch } from "vue";
 import NodeDetailDialog from "./NodeDetailDialog.vue";
 
 const { testFrontendSocket, socketStatus } = useSocketIoClient();
@@ -71,7 +73,56 @@ const tryConnectNode = async (uuid: string, showMsg = true) => {
   }
 };
 
+// Self-update the daemon: download latest package, overlay it, restart the node.
+const triggerDaemonUpdate = (uuid: string) => {
+  Modal.confirm({
+    title: t("TXT_CODE_AUTOUPDATE_DAEMON_BTN"),
+    content: t("TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM"),
+    okText: t("TXT_CODE_AUTOUPDATE_BTN_OK"),
+    cancelText: t("TXT_CODE_AUTOUPDATE_BTN_CANCEL"),
+    onOk: async () => {
+      try {
+        const { execute } = upgradeDaemon();
+        const res = await execute({ params: { uuid } });
+        if (res.value?.started) {
+          message.success(t("TXT_CODE_AUTOUPDATE_DAEMON_STARTED"));
+        } else {
+          message.info(res.value?.message || t("TXT_CODE_AUTOUPDATE_ALREADY_LATEST"));
+        }
+      } catch (error: any) {
+        reportErrorMsg(error?.message ? error.message : t("TXT_CODE_AUTOUPDATE_DAEMON_FAILED"));
+      }
+    }
+  });
+};
+
 const { toPage } = useAppRouters();
+
+// Upgrade availability of this daemon according to the update manifest
+// (updateSourceUrl). Drives the update icon next to the version number and the
+// "Update Daemon" button group entry.
+const daemonUpgradeInfo = ref<IUpgradeInfo>();
+
+const daemonUpdateAvailable = computed(() =>
+  Boolean(remoteNode.value?.available && daemonUpgradeInfo.value?.updateAvailable)
+);
+
+// Release notes of the online version, matched against the current panel
+// language (falls back to English when that locale is missing).
+const daemonUpdateNotes = computed(() =>
+  pickLocalizedNotes(daemonUpgradeInfo.value?.onlineNotes, getCurrentLang())
+);
+
+const refreshDaemonUpgradeInfo = async () => {
+  const uuid = remoteNode.value?.uuid;
+  if (!uuid || !remoteNode.value?.available) return;
+  try {
+    const { execute } = getDaemonUpgradeInfo();
+    daemonUpgradeInfo.value = (await execute({ params: { uuid } })).value;
+  } catch (error: any) {
+    // silent: keep last known state
+  }
+};
 
 const detailList = (node: ComputedNodeInfo) => [
   {
@@ -108,9 +159,16 @@ const detailList = (node: ComputedNodeInfo) => [
   {
     title: t("TXT_CODE_81634069"),
     value: node.version,
-    success: !hasVersionUpdate(specifiedDaemonVersion.value, node.version),
-    warn: hasVersionUpdate(specifiedDaemonVersion.value, node.version) && node.available,
-    warnText: t("TXT_CODE_e520908a")
+    success:
+      !daemonUpdateAvailable.value && !hasVersionUpdate(specifiedDaemonVersion.value, node.version),
+    warn:
+      !daemonUpdateAvailable.value &&
+      hasVersionUpdate(specifiedDaemonVersion.value, node.version) &&
+      node.available,
+    warnText: t("TXT_CODE_e520908a"),
+    update: daemonUpdateAvailable.value,
+    updateVersion: daemonUpgradeInfo.value?.onlineVersion ?? "",
+    updateNotes: daemonUpdateNotes.value
   },
   {
     title: "Daemon ID",
@@ -168,6 +226,14 @@ const nodeOperations = computed(() =>
       condition: () => remoteNode.value!.available
     },
     {
+      title: t("TXT_CODE_AUTOUPDATE_DAEMON_BTN"),
+      icon: CloudUploadOutlined,
+      click: (item: ComputedNodeInfo) => {
+        triggerDaemonUpdate(item.uuid);
+      },
+      condition: () => remoteNode.value!.available
+    },
+    {
       title: t("TXT_CODE_f8b28901"),
       icon: ReloadOutlined,
       click: async (node: ComputedNodeInfo) => {
@@ -187,7 +253,16 @@ const nodeOperations = computed(() =>
 
 onMounted(() => {
   testFrontendSocket(remoteNode.value);
+  refreshDaemonUpgradeInfo();
 });
+
+// Overview data is polled every few seconds: once the daemon restarts on a new
+// version (after a self-update) the version below changes, so refresh the
+// upgrade info then and the update icon disappears.
+watch(
+  () => [remoteNode.value?.version, remoteNode.value?.available] as const,
+  () => refreshDaemonUpgradeInfo()
+);
 </script>
 
 <template>
@@ -231,7 +306,27 @@ onMounted(() => {
                 <a-typography-text :copyable="{ text: detail.value ?? '' }"></a-typography-text>
               </div>
               <div v-else style="font-size: 13px">
-                <a-tooltip v-if="detail.warn && detail.value">
+                <a-tooltip v-if="detail.update && detail.value">
+                  <template #title>
+                    <div style="max-width: 320px">
+                      <div>
+                        {{
+                          t("TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP", {
+                            v: detail.updateVersion
+                          })
+                        }}
+                      </div>
+                      <div v-if="detail.updateNotes" class="daemon-update-notes">
+                        {{ detail.updateNotes }}
+                      </div>
+                    </div>
+                  </template>
+                  <span class="color-warning">
+                    {{ detail.value }}
+                    <CloudUploadOutlined class="daemon-update-icon" />
+                  </span>
+                </a-tooltip>
+                <a-tooltip v-else-if="detail.warn && detail.value">
                   <template #title>
                     {{ detail.warnText }}
                   </template>
@@ -282,5 +377,15 @@ onMounted(() => {
 
 .search-input:hover {
   width: 100%;
+}
+
+.daemon-update-icon {
+  margin-left: 4px;
+  cursor: help;
+}
+
+.daemon-update-notes {
+  margin-top: 8px;
+  white-space: pre-wrap;
 }
 </style>

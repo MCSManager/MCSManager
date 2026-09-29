@@ -82,5 +82,6 @@ import "../routers/java_manager_router";
 import "../routers/passport_router";
 import "../routers/schedule_router";
 import "../routers/stream_router";
+import "../routers/upgrade_router";
 
 logger.info($t("TXT_CODE_router.initComplete"));

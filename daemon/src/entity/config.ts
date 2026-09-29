@@ -49,6 +49,11 @@ class Config {
   ssl = false;
   sslPemPath = "";
   sslKeyPath = "";
+
+  // ---- Update source (manifest URL for manual self-update) ----
+  // Full URL to a manifest.json describing available updates, e.g.
+  // "https://mcsmanager.com/upgrade/manifest.json". Empty => update info unavailable.
+  public updateSourceUrl = "https://mcsmanager.com/upgrade/manifest.json";
 }
 
 // daemon configuration class

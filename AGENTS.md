@@ -2,41 +2,46 @@
 description: Core project rules for all AI assistants (Claude, Cursor, etc.)
 ---
 
-## 1. Project Overview
+## 1. Project Layout
 
-- **Structure**
-  - **Web backend**: `panel/*.*`
-  - **Daemon / node worker**: `daemon/*.*`
-  - **Web frontend**: `frontend/*.*`
-- **Responsibilities**
-  - **Daemon**: instance processes, containers, files, terminal management.
-  - **Web backend**: user management, node connections, auth, API.
-  - **Web frontend**: UI, talks to backend; some features talk directly to daemon to reduce load.
+- **`panel/`** — Web backend (Koa): users, nodes, auth, API. Entry `panel/src/app.ts`, webpack → `production/app.js`.
+- **`daemon/`** — Node worker: instance processes, containers, files, terminal. Entry `daemon/src/app.ts`.
+- **`frontend/`** — Vue 3 + Vite UI. Talks to panel; some features talk directly to daemon to reduce load.
+- **`common/`** — Shared library published as `mcsmanager-common`. panel/daemon alias it to **source** (`common/src/index.ts`) via tsconfig `paths` + webpack `resolve.alias`, so edits are compiled directly into both apps — no publish step needed, but each app must be rebuilt to pick up changes.
+- **`languages/`** — Root-level i18n JSON shared by all three subprojects (`@languages` alias). Filenames use capital region (`en_US.json`); runtime locale codes are lowercase (`en_us`) — don't mix them up.
 
-## 2. General Coding Rules
+## 2. Commands
 
-- **Minimal changes**: Prefer small, focused edits. Before adding new logic, check existing `hooks`, `services`, `stores`, `utils` in the relevant subproject and reuse when possible.
-- **Language for code & comments**: All **code and comments must be written in English**.
-- **User-facing text & i18n**
-  - Do **not** hardcode user-facing strings (UI labels, messages, errors, etc.).
-  - Always use the project i18n flow (backend logs are the only common exception).
-- **Design quality**
-  - Aim for **high cohesion, low coupling, reusable** code.
+- Setup: `./install-dependents.sh` (or `.bat`) — installs all packages and builds `common` (root `npm run preview-build` = build common despite the name). Node.js 16+ (CI runs 16.x/20.x).
+- Dev: `npm run dev` (all three concurrently) or `npm run panel` / `npm run daemon` / `npm run frontend` (each = nodemon → `npm run build` → run `production/app.js`).
+- Build per package: `cd panel|daemon && npm run build` (webpack + ts-loader); `cd frontend && npm run build` (`type-check` + vite); `cd common && npm run build` (tsc → `dist/`).
+- **Verification before finishing** — panel/daemon have no tests or lint; their webpack build IS the type check. Frontend: `npm run type-check`, `npm run lint` (eslint `--fix`), `npm test`. Common: `npm test` (vitest). Do frontend type-check before lint/test when touching TS types.
+- Release package: `./build.sh` / `build.bat` → `production-code/` (`BUNDLE=1` inlines all deps + language packs into a single self-contained `app.js`). Platform binaries (`daemon/lib` PTY / Zip-Tools, see `lib-urls.txt`) are NOT bundled — required at runtime for terminal & compression, see DEVELOPMENT.md. Full build & deploy guide: the project Agent Skill [`mcsmanager-build`](.agents/skills/mcsmanager-build/SKILL.md) (in-repo, tool-neutral `.agents/skills/`, shared by all AI tools; short summary in [`docs/build-production.md`](docs/build-production.md)).
+- i18n tooling: `npm run i18n`, `npm run sort-lang-keys`, `npm run scan-useless-key` (see §4).
+- Prettier: `printWidth: 100`, `trailingComma: "none"`.
 
-## 3. i18n Conventions
+## 3. Persistence
 
-- **Frontend (Vue)**: use `t()` from `@/lang/i18n` for all translatable text.
-- **Backend / Daemon**: use `$t()` (e.g. from `daemon/src/i18n/index.ts`) for all user-facing text and error messages.
-- **Source language**: Add/keep source strings as short, correct English in `languages/en_us.json`. Other locales (e.g. `zh_CN`, `zh_TW`) are translations.
+- All JSON data models persist through `StorageSubsystem` (`common/src/system_storage.ts`): atomic tmp-file + rename into `data/<Category>/<uuid>.json`. Do not hand-roll `fs.writeFile` for config/data storage.
+- Panel side: use `Storage.getStorage().store(...)` (`panel/src/app/common/storage/sys_storage.ts`) — it transparently swaps to Redis when `redisUrl` is configured. Daemon uses the `StorageSubsystem` singleton directly.
+- Sensitive files (never log their contents): `daemon/data/Config/global.json` (panel↔daemon key), `panel/data/User/*.json` (apiKey, password hash, 2FA secret), `panel/data/RemoteServiceConfig/*.json` (node apiKey).
 
-### 3.1 Parameterized Strings
+## 4. General Coding Rules
 
-- Keys for dynamic / parameterized messages use the `TXT_CODE_*` prefix.
-- **Different placeholder syntax**:
-  - **Frontend**: one pair of braces: `{name}`.
-  - **Backend / Daemon**: double braces: `{{uuid}}`, `{{err}}`, etc.
+- **Minimal changes**: prefer small, focused edits. Before adding new logic, check existing `hooks`, `services`, `stores`, `utils` in the relevant subproject and reuse when possible.
+- **Code & comments in English**; user-facing text goes through i18n (backend logs excepted).
+- Aim for high cohesion, low coupling, reusable code.
 
-Example definition:
+## 5. i18n Conventions
+
+- **Frontend (Vue)**: `t()` from `@/lang/i18n` (vue-i18n). **Backend/daemon**: `$t()` from `panel/src/app/i18n` / `daemon/src/i18n` (i18next).
+- Keys use the `TXT_CODE_` prefix. Two styles coexist: manual descriptive keys (`TXT_CODE_system_instance.autoStart`) and auto-generated `TXT_CODE_<crc32hex>` keys.
+- Source strings: short, correct English in `languages/en_US.json`; other locales are translations.
+
+### 5.1 Parameterized strings — DIFFERENT placeholder syntax
+
+- **Frontend**: one pair of braces `{name}` (vue-i18n).
+- **Backend/daemon**: double braces `{{uuid}}` (i18next).
 
 ```json
 {
@@ -45,13 +50,9 @@ Example definition:
 }
 ```
 
-Example usage (frontend):
-
 ```vue
 <template>{{ t("TXT_CODE_FILE_ERROR", { name: props.fileName }) }}</template>
 ```
-
-Example usage (backend / daemon):
 
 ```ts
 const errorMsgWithParams = $t("TXT_CODE_INSTANCE_ERROR", {
@@ -60,70 +61,31 @@ const errorMsgWithParams = $t("TXT_CODE_INSTANCE_ERROR", {
 });
 ```
 
-## 4. Backend (Daemon & Panel) Conventions
+### 5.2 `npm run i18n` rewrites source files
 
-- **Scope**
-  - Applies to backend code in `daemon/src/**/*.ts` and `panel/src/app/**/*.ts`.
+`i18next-scanner` (`i18-scanner.config.js`) finds literal strings in `t()`/`$t()` calls and **rewrites the source file in place**, replacing the literal with a generated `TXT_CODE_<crc32>` key, then writes `languages/zh_CN.json` + `en_US.json` only (other locales are maintained separately, e.g. `scripts/auto-translate.mjs`). Run it deliberately; review the diff it produces in `src/`.
 
-### 4.1 Directory / Layering
+## 6. Backend Conventions (`daemon/src/**`, `panel/src/app/**`)
 
-- Folder names under `daemon/src/*` and `panel/src/app/*` express layers:
-  - routes, middleware, services, instances, etc.
-- When adding backend logic, place it in the appropriate layer and keep responsibilities clear.
+- Folder names express layers (routes, middleware, services, instances, …) — put new code in the right layer.
+- Use the project **logger**, not raw `console.*`; pick severity by context.
+- External resources (files, network, containers, shell): validate inputs/boundaries first; on failure log and rethrow or return a typed result — never silently swallow.
+- Security: strictly parse/validate container & command config (length, format, allowed values); never pass unvalidated frontend input into shell args or path operations.
+- Long-lived structures (Map, queues, buffers, streams) need corresponding cleanup — avoid unbounded growth.
 
-### 4.2 Logging & Exceptions
+## 7. Frontend Conventions (`frontend/src/**/*.vue`)
 
-- Use the project **logger** (not raw `console.*`).
-  - Use severity (`info`, `error`, etc.) according to context.
-- For external resources (files, network, containers, shell):
-  - Validate inputs and boundaries before acting.
-  - On failure, log relevant context and then either:
-    - Rethrow, or
-    - Return a clear, typed result that the caller can handle.
-  - Do **not** silently swallow exceptions.
+- Vue 3 `<script setup lang="ts">`; prefer `const` with explicit types.
+- Extract complex logic into `hooks/` (composables) grouped by responsibility; extract complex template blocks into components.
+- One-way data flow: props down, events up — never mutate parent state directly.
 
-### 4.3 Security
+## 8. Testing Quirks
 
-- For containers and command execution:
-  - Strictly parse and validate configuration (length, format, allowed values).
-  - Never pass unvalidated input into shell command arguments or container config fields.
-- When reading files or running commands with arguments from the frontend:
-  - Validate paths, IDs, and other inputs for security risks.
+- Only `common` and `frontend` have test suites (vitest). `common`: `cd common && npm test`; `frontend`: `cd frontend && npm test` (files `src/**/*.test.ts`, node env by default; add `// @vitest-environment jsdom` for DOM tests).
+- `common/src/system_storage.test.ts` must `process.chdir(tmpDir)` **before** importing the module — `DATA_PATH` is derived from `process.cwd()` at import time (module-level constant). Follow the same pattern in new tests touching `StorageSubsystem`.
+- Windows: `fs.chmod` only toggles the read-only bit — POSIX mode assertions are meaningless there; gate such tests with `process.platform === "win32"` skips and assert mocked `fs.chmodSync` call arguments instead.
 
-### 4.4 Memory & Resource Management
+## 9. Feature Deep-Dives
 
-- When introducing new long-lived structures (e.g. `Map`, queues, buffers, arrays, streams):
-  - Ensure there is corresponding cleanup / release logic.
-  - Avoid unbounded growth (e.g. clear maps, trim logs, close streams).
-
-## 5. Frontend (Vue 3) Conventions
-
-- **Scope**
-  - Applies to Vue components under `frontend/src/**/*.vue`.
-
-### 5.1 Components & Scripts
-
-- Use **Vue 3** with `<script setup lang="ts">`.
-- Prefer `const` and explicit TypeScript types to clarify intent.
-- Keep component logic small and focused:
-  - Extract complex logic into dedicated **hooks** (composables) grouped by responsibility for reuse.
-
-### 5.2 Templates & Structure
-
-- Keep templates as simple and readable as possible.
-- If the template becomes large or complex:
-  - Extract parts into smaller reusable components.
-
-### 5.3 Data Flow
-
-- Follow Vue’s recommended one-way data flow:
-  - Pass data via **props**.
-  - Emit events upward instead of mutating parent state directly.
-
-## 6. How AI Assistants Should Behave in This Repo
-
-- Respect all rules above when proposing or editing code.
-- Use the appropriate i18n helper instead of hardcoding user-visible text.
-- Prefer minimal, focused diffs and reuse existing utilities / services when possible.
-- Keep code and comments in English even if conversation language is different.
-
+- **Auto-update (panel & daemon self-update)**: read [`docs/auto-update.md`](docs/auto-update.md) before touching `**/upgrade_*`, `common/src/upgrade.ts`, `scripts/*update*`, or the update UI (`Settings.vue` / `NodeItem.vue`). It documents the architecture, manifest schema (incl. multi-language `notes`), design rationale, and the E2E test harnesses.
+- **Production build & deploy**: read the project Agent Skill [`.agents/skills/mcsmanager-build/SKILL.md`](.agents/skills/mcsmanager-build/SKILL.md) before touching `build.bat` / `build.sh`, `prod-scripts/`, or deploying `production-code/`. It documents the `BUNDLE=1` bundling model, `daemon/lib` external binaries, runtime `data/` layout (incl. sensitive files & paired key migration), run/stop commands, and the post-deploy verification checklist. It lives in the in-repo, tool-neutral `.agents/skills/` directory (auto-discovered by opencode and other agent-compatible tools), so keywords like 构建 / 编译 / build trigger it automatically in supporting tools; a short summary lives in [`docs/build-production.md`](docs/build-production.md).
