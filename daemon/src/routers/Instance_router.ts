@@ -4,7 +4,7 @@ import Instance from "../entity/instance/instance";
 import { $t } from "../i18n";
 import logger from "../service/log";
 import * as protocol from "../service/protocol";
-import { routerApp } from "../service/router";
+import { routerApp } from "../service/router_app";
 import InstanceSubsystem from "../service/system_instance";
 
 import { arrayUnique, toNumber } from "mcsmanager-common";

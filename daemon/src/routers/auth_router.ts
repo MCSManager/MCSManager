@@ -6,7 +6,7 @@ import { $t } from "../i18n";
 import logger from "../service/log";
 import { LOGIN_BY_TOP_LEVEL, loginSuccessful } from "../service/mission_passport";
 import * as protocol from "../service/protocol";
-import { routerApp } from "../service/router";
+import { routerApp } from "../service/router_app";
 
 // latest verification time
 const AUTH_TIMEOUT = 6000;
