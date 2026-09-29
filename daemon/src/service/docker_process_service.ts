@@ -1,3 +1,16 @@
+/**
+ * MANDATORY TEST GATE — DO NOT MODIFY WITHOUT RE-RUNNING THE INTEGRATION TESTS.
+ *
+ * This service is exercised by the real instance/Docker integration suite in
+ * `src/routers/Instance_router.integration.test.ts` (real Docker containers,
+ * real attach streams). Any change here can break container startup, output
+ * capture, PTY attach, termination or destruction.
+ *
+ * After editing this file, AI assistants and developers MUST run the
+ * `mcsmanager-docker-instance-test` skill and confirm the Docker + instance
+ * cases pass before finishing.
+ *   Skill: `.agents/skills/mcsmanager-docker-instance-test/SKILL.md`
+ */
 import { t } from "i18next";
 import { commandStringToArray } from "../entity/commands/base/command_parser";
 import DockerPullCommand from "../entity/commands/docker/docker_pull";

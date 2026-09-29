@@ -12,6 +12,12 @@ export default defineConfig({
   test: {
     include: ["src/**/*.test.ts", "test/**/*.test.ts"],
     environment: "node",
-    passWithNoTests: true
+    passWithNoTests: true,
+    // Instance_router.integration.test.ts calls process.chdir() to isolate
+    // StorageSubsystem.DATA_PATH (derived from process.cwd() at import time),
+    // which Node does not support inside worker_threads. Disabling worker
+    // threads runs tests in forked child processes instead, where chdir works
+    // (same approach as the common/ vitest config).
+    threads: false
   }
 });
