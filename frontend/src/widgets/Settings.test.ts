@@ -4,7 +4,7 @@
 // - version/status/source/allow controls render and bind to settings
 // - update button enable/disable logic
 // - save persists updateSourceUrl / allowAutoUpdate through setSettingInfo
-// - update flow: Modal.confirm -> upgradePanel() -> restart overlay
+// - update flow: Modal.confirm -> upgradePanel() -> restart-required modal
 import { flushPromises, mount, type VueWrapper } from "@vue/test-utils";
 import { Modal, message } from "ant-design-vue";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
@@ -303,54 +303,39 @@ describe("Settings.vue auto update tab", () => {
     expect(mocks.upgradeInfoExecute.mock.calls.length).toBe(before + 1);
   });
 
-  it("runs the panel update flow: confirm -> upgradePanel -> restart overlay -> success", async () => {
-    vi.useFakeTimers();
-    try {
-      mocks.upgradePanelExecute.mockResolvedValue({ value: { started: true } });
-      const fetchMock = vi.fn(async () => ({
-        ok: true,
-        headers: { get: () => "application/json" }
-      }));
-      (global as any).fetch = fetchMock;
+  it("runs the panel update flow: confirm -> upgradePanel -> restart-required modal", async () => {
+    mocks.upgradePanelExecute.mockResolvedValue({
+      value: { started: true, onlineVersion: "10.18.4" }
+    });
 
-      await mountSettings();
-      await openAutoUpdateTab();
+    await mountSettings();
+    await openAutoUpdateTab();
 
-      let confirmOptions: any = null;
-      const confirmSpy = vi
-        .spyOn(Modal, "confirm")
-        .mockImplementation(((opts: any) => {
-          confirmOptions = opts;
-          return {} as any;
-        }) as any);
-      const messageSuccessSpy = vi
-        .spyOn(message, "success")
-        .mockImplementation((() => ({})) as any);
+    let confirmOptions: any = null;
+    const confirmSpy = vi
+      .spyOn(Modal, "confirm")
+      .mockImplementation(((opts: any) => {
+        confirmOptions = opts;
+        return {} as any;
+      }) as any);
+    const successSpy = vi.spyOn(Modal, "success").mockImplementation((() => ({})) as any);
 
-      await findButton("TXT_CODE_AUTOUPDATE_WEB_BTN")!.trigger("click");
-      expect(confirmSpy).toHaveBeenCalledTimes(1);
-      expect(confirmOptions.title).toBe("TXT_CODE_AUTOUPDATE_WEB_BTN");
-      expect(confirmOptions.content).toBe("TXT_CODE_AUTOUPDATE_WEB_CONFIRM");
+    await findButton("TXT_CODE_AUTOUPDATE_WEB_BTN")!.trigger("click");
+    expect(confirmSpy).toHaveBeenCalledTimes(1);
+    expect(confirmOptions.title).toBe("TXT_CODE_AUTOUPDATE_WEB_BTN");
+    expect(confirmOptions.content).toBe("TXT_CODE_AUTOUPDATE_WEB_CONFIRM");
 
-      const done = confirmOptions.onOk();
-      await flushPromises();
+    await confirmOptions.onOk();
+    await flushPromises();
 
-      // panel accepted the update -> full-screen restart overlay is shown
-      expect(mocks.upgradePanelExecute).toHaveBeenCalledTimes(1);
-      expect(wrapper.text()).toContain("TXT_CODE_AUTOUPDATE_WEB_RESTARTING");
-
-      // panel comes back after the probe succeeds
-      await vi.advanceTimersByTimeAsync(3000);
-      await done;
-
-      expect(fetchMock).toHaveBeenCalledWith(
-        expect.stringContaining("/api/auth/status"),
-        expect.anything()
-      );
-      expect(messageSuccessSpy).toHaveBeenCalledWith("TXT_CODE_AUTOUPDATE_WEB_SUCCESS");
-    } finally {
-      vi.useRealTimers();
-    }
+    // update applied on disk; the panel is NOT restarted automatically ->
+    // a modal tells the operator to restart it manually
+    expect(mocks.upgradePanelExecute).toHaveBeenCalledTimes(1);
+    expect(successSpy).toHaveBeenCalledTimes(1);
+    expect(String(successSpy.mock.calls[0][0]?.content)).toContain(
+      "TXT_CODE_AUTOUPDATE_WEB_SUCCESS"
+    );
+    expect(String(successSpy.mock.calls[0][0]?.content)).toContain("{v}=10.18.4");
   });
 
   it("keeps the panel offline message when the update is not started", async () => {
@@ -365,6 +350,7 @@ describe("Settings.vue auto update tab", () => {
       confirmOptions = opts;
       return {} as any;
     }) as any);
+    const successSpy = vi.spyOn(Modal, "success").mockImplementation((() => ({})) as any);
     const messageInfoSpy = vi.spyOn(message, "info").mockImplementation((() => ({})) as any);
 
     await findButton("TXT_CODE_AUTOUPDATE_WEB_BTN")!.trigger("click");
@@ -373,6 +359,6 @@ describe("Settings.vue auto update tab", () => {
 
     expect(mocks.upgradePanelExecute).toHaveBeenCalledTimes(1);
     expect(messageInfoSpy).toHaveBeenCalledWith("TXT_CODE_AUTOUPDATE_ALREADY_LATEST");
-    expect(wrapper.text()).not.toContain("TXT_CODE_AUTOUPDATE_WEB_RESTARTING");
+    expect(successSpy).not.toHaveBeenCalled();
   });
 });

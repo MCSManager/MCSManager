@@ -3230,15 +3230,14 @@
   "TXT_CODE_9a26aa70": "向 Token 端点提交 client_id / client_secret 的方式。",
   "TXT_CODE_2f56b56e": "**已启用**",
   "TXT_CODE_AUTOUPDATE_DAEMON_BTN": "更新守护进程",
-  "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "立即更新此远程守护进程?将下载最新安装包并整包覆盖后重启,节点会自动重连。",
-  "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "更新已开始,守护进程正在下载并重启,稍后将自动重连。",
+  "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "立即更新此远程守护进程?将下载最新安装包并整包覆盖,更新后需手动重启该守护进程方可生效。",
+  "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "守护进程已更新至 v{v},请手动重启该守护进程后生效。",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "启动守护进程更新失败。",
   "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "发现新版本：v{v}，可点击右上角\"更新守护进程\"按钮进行更新。",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "更新面板",
-  "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "立即更新主控面板?将下载最新安装包并整包覆盖(app.js 与前端)后重启,期间会短暂断开连接。",
-  "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "面板已更新,正在重连...",
+  "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "立即更新主控面板?将下载最新安装包并整包覆盖面板文件(app.js 与前端),更新后需手动重启面板方可生效。",
+  "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "面板已更新至 v{v},请手动重启面板后生效。",
   "TXT_CODE_AUTOUPDATE_WEB_FAILED": "启动面板更新失败。",
-  "TXT_CODE_AUTOUPDATE_WEB_RESTARTING": "面板正在重启,请稍候...",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE": "面板更新",
   "TXT_CODE_AUTOUPDATE_WEB_NOT_CONFIGURED": "未配置自动更新(需设置 updateSourceUrl)",
   "TXT_CODE_AUTOUPDATE_WEB_LATEST": "发现新版本:{v}",
@@ -3261,5 +3260,5 @@
   "TXT_CODE_AUTOUPDATE_TAB_TITLE": "自动更新",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC": "查看面板当前版本,并在线检测是否有新版本可用。",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC": "面板将从此地址获取版本清单(manifest)与更新包。",
-  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "下载最新安装包并整包覆盖面板(app.js 与前端)后重启,期间会短暂断开连接。"
+  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "下载最新安装包并整包覆盖面板文件(app.js 与前端),更新后需手动重启面板方可生效。"
 }

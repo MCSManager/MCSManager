@@ -1,6 +1,14 @@
 import fs from "fs-extra";
 import log4js from "log4js";
 
+// The auto-update restarter may relaunch this process detached with inherited
+// stdio (interactive console mode). If that terminal is closed later, the
+// handles become invalid and stream writes emit "error" (EPIPE/EIO); swallow
+// those so the process keeps running and the file appender keeps working.
+process.stdout.on("error", () => {});
+process.stderr.on("error", () => {});
+process.stdin.on("error", () => {});
+
 const LOG_FILE_PATH = "logs/current.log";
 
 // save the log file separately on each startup

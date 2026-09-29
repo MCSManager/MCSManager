@@ -73,7 +73,8 @@ const tryConnectNode = async (uuid: string, showMsg = true) => {
   }
 };
 
-// Self-update the daemon: download latest package, overlay it, restart the node.
+// Self-update the daemon: download the latest package and overlay it. The new
+// build only takes effect after a manual daemon restart (no auto-restart).
 const triggerDaemonUpdate = (uuid: string) => {
   Modal.confirm({
     title: t("TXT_CODE_AUTOUPDATE_DAEMON_BTN"),
@@ -85,7 +86,11 @@ const triggerDaemonUpdate = (uuid: string) => {
         const { execute } = upgradeDaemon();
         const res = await execute({ params: { uuid } });
         if (res.value?.started) {
-          message.success(t("TXT_CODE_AUTOUPDATE_DAEMON_STARTED"));
+          // Update files are applied on disk; ask the operator to restart the
+          // daemon manually for the new version to take effect.
+          Modal.success({
+            content: t("TXT_CODE_AUTOUPDATE_DAEMON_STARTED", { v: res.value?.onlineVersion })
+          });
         } else {
           message.info(res.value?.message || t("TXT_CODE_AUTOUPDATE_ALREADY_LATEST"));
         }

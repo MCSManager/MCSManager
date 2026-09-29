@@ -3158,15 +3158,14 @@
   "TXT_CODE_2b2ff3ff": "限制容器特定區塊裝置的寫入速率。格式：/dev/sda:5MB。多個裝置請用逗號分隔。",
   "TXT_CODE_f0dc9eca": "範例：/dev/sda:5MB",
   "TXT_CODE_AUTOUPDATE_DAEMON_BTN": "更新守護進程",
-  "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "立即更新此遠端守護進程?將下載最新安裝包並整包覆蓋後重啟,節點會自動重連。",
-  "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "更新已開始,守護進程正在下載並重啟,稍後將自動重連。",
+  "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "立即更新此遠端守護進程?將下載最新安裝包並整包覆蓋,更新後需手動重啟該守護進程方可生效。",
+  "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "守護進程已更新至 v{v},請手動重啟該守護進程後生效。",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "啟動守護進程更新失敗。",
   "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "發現新版本：v{v}，可點擊右上角\"更新守護進程\"按鈕進行更新。",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "更新面板",
-  "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "立即更新主控面板?將下載最新安裝包並整包覆蓋(app.js 與前端)後重啟,期間會短暫斷開連接。",
-  "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "面板已更新,正在重新連線...",
+  "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "立即更新主控面板?將下載最新安裝包並整包覆蓋面板檔案(app.js 與前端),更新後需手動重啟面板方可生效。",
+  "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "面板已更新至 v{v},請手動重啟面板後生效。",
   "TXT_CODE_AUTOUPDATE_WEB_FAILED": "啟動面板更新失敗。",
-  "TXT_CODE_AUTOUPDATE_WEB_RESTARTING": "面板正在重啟,請稍候...",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE": "面板更新",
   "TXT_CODE_AUTOUPDATE_WEB_NOT_CONFIGURED": "未配置自動更新(需設定 updateSourceUrl)",
   "TXT_CODE_AUTOUPDATE_WEB_LATEST": "發現新版本:{v}",
@@ -3189,5 +3188,5 @@
   "TXT_CODE_AUTOUPDATE_TAB_TITLE": "自動更新",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC": "查看面板目前版本,並線上檢測是否有新版本可用。",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC": "面板將從此位址取得版本清單(manifest)與更新包。",
-  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "下載最新安裝包並整包覆蓋面板(app.js 與前端)後重啟,期間會短暫斷開連接。"
+  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "下載最新安裝包並整包覆蓋面板檔案(app.js 與前端),更新後需手動重啟面板方可生效。"
 }

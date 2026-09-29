@@ -3158,15 +3158,14 @@
   "TXT_CODE_2b2ff3ff": "Limite le débit d'écriture de périphériques bloc spécifiques pour le conteneur. Format : /dev/sda:5Mo. Séparez plusieurs périphériques par des virgules.",
   "TXT_CODE_f0dc9eca": "Exemple : /dev/sda:5Mo",
   "TXT_CODE_AUTOUPDATE_DAEMON_BTN": "Mettre à jour le daemon",
-  "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "Mettre à jour ce daemon distant maintenant ? Le dernier paquet sera téléchargé, écrasé, puis le daemon redémarrera. Le nœud se reconnectera automatiquement.",
-  "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "Mise à jour démarrée. Le daemon télécharge et redémarre ; il se reconnectera bientôt.",
+  "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "Mettre à jour ce daemon distant maintenant ? Le dernier paquet sera téléchargé et écrasé. Redémarrez ensuite le daemon manuellement pour appliquer les modifications.",
+  "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "Daemon mis à jour vers v{v}. Redémarrez le daemon manuellement pour appliquer les modifications.",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "Échec du lancement de la mise à jour du daemon.",
   "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "Nouvelle version disponible : v{v}. Cliquez sur le bouton \"Mettre à jour le daemon\" en haut à droite pour mettre à jour.",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "Mettre à jour le panneau",
-  "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "Mettre à jour le panneau de contrôle maintenant ? Le dernier paquet sera téléchargé, les fichiers écrasés (app.js + front-end), puis le panneau redémarrera. La connexion sera brièvement interrompue.",
-  "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "Panneau mis à jour. Reconnexion...",
+  "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "Mettre à jour le panneau de contrôle maintenant ? Le dernier paquet sera téléchargé et les fichiers du panneau (app.js + le front-end) écrasés. Redémarrez ensuite le panneau manuellement pour appliquer les modifications.",
+  "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "Panneau mis à jour vers v{v}. Redémarrez le panneau manuellement pour appliquer les modifications.",
   "TXT_CODE_AUTOUPDATE_WEB_FAILED": "Échec du lancement de la mise à jour du panneau.",
-  "TXT_CODE_AUTOUPDATE_WEB_RESTARTING": "Le panneau redémarre, veuillez patienter...",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE": "Mise à jour du panneau",
   "TXT_CODE_AUTOUPDATE_WEB_NOT_CONFIGURED": "La mise à jour automatique n'est pas configurée (définir updateSourceUrl)",
   "TXT_CODE_AUTOUPDATE_WEB_LATEST": "Nouvelle version disponible : {v}",
@@ -3189,5 +3188,5 @@
   "TXT_CODE_AUTOUPDATE_TAB_TITLE": "Mise à jour automatique",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC": "Vérifie la version actuelle du panneau et l'existence d'une version plus récente en ligne.",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC": "Le panneau récupère le manifeste des versions et les paquets de mise à jour depuis cette URL.",
-  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "Télécharge le dernier paquet, écrase les fichiers du panneau (app.js + front-end) puis le redémarre. La connexion sera brièvement interrompue."
+  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "Télécharge le dernier paquet et écrase les fichiers du panneau (app.js + le front-end). Redémarrez ensuite le panneau manuellement pour appliquer les modifications."
 }

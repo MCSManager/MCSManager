@@ -3,6 +3,14 @@ import * as log4js from "log4js";
 import { systemInfo } from "mcsmanager-common";
 import { $t } from "../i18n";
 
+// The auto-update restarter may relaunch this process detached with inherited
+// stdio (interactive console mode). If that terminal is closed later, the
+// handles become invalid and stream writes emit "error" (EPIPE/EIO); swallow
+// those so the process keeps running and the file appender keeps working.
+process.stdout.on("error", () => {});
+process.stderr.on("error", () => {});
+process.stdin.on("error", () => {});
+
 const LOG_FILE_PATH = "logs/current.log";
 const LOG_SYS_INFO_FILE_PATH = "logs/sysinfo.log";
 

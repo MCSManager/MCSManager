@@ -5,7 +5,8 @@
 // online version against its own package.json version, downloads the web zip,
 // extracts it, then OVERLAYS the entire package onto the install directory
 // (every file/dir the package ships — app.js, package.json, public/, etc. — is
-// copied over), and finally restarts itself so the new build loads.
+// copied over). The new build only takes effect after a manual restart — the
+// UI and the log tell the operator to restart the panel.
 //
 // Replacement is NOT a fixed whitelist; runtime-state directories (data/,
 // logs/) are skipped. The overlay + transactional backup/rollback lives in
@@ -18,8 +19,7 @@ import {
   compareVersions,
   downloadToFile,
   extractZip,
-  fetchJson,
-  selfRestartProcess
+  fetchJson
 } from "mcsmanager-common";
 import { $t } from "../i18n";
 import { systemConfig } from "../setting";
@@ -31,7 +31,6 @@ const ZIP_NAME = "web.zip";
 const EXTRACT_DIR_NAME = "extracted";
 const BACKUP_DIR_NAME = "backup";
 const DOWNLOAD_TIMEOUT_MS = 5 * 60 * 1000; // total download deadline (anti-TARPIT)
-const RESTART_DELAY_MS = 1000;
 
 const log = (m: string) => logger.info(`[AutoUpdate Panel] ${m}`);
 const errLog = (m: string) => logger.error(`[AutoUpdate Panel] ${m}`);
@@ -116,9 +115,9 @@ export async function getUpgradeInfo(): Promise<IUpgradeInfo> {
 
 /**
  * Perform the full panel self-update. Resolves with a result the caller can
- * respond over HTTP BEFORE the process actually restarts. On success a delayed
- * selfRestartProcess() is scheduled, then this process exits. applyUpgradePackage
- * is transactional, so this catch only cleans staging.
+ * respond over HTTP. On success the new files are on disk and the operator is
+ * told (UI + log) to restart the panel manually — no automatic restart.
+ * applyUpgradePackage is transactional, so this catch only cleans staging.
  */
 export async function performUpgrade(): Promise<IUpgradeResult> {
   if (upgradeInProgress) {
@@ -176,14 +175,14 @@ export async function performUpgrade(): Promise<IUpgradeResult> {
     } catch (e) {
       throw new Error(`${$t("TXT_CODE_AUTOUPDATE_B_APPLY_FAILED")}: ${(e as Error).message}`);
     }
-    log(`Overlay complete: ${overlays.length} file(s) replaced (${overlays.slice(0, 12).join(", ")}${overlays.length > 12 ? ", ..." : ""}). Scheduling restart...`);
+    log(`Overlay complete: ${overlays.length} file(s) replaced (${overlays.slice(0, 12).join(", ")}${overlays.length > 12 ? ", ..." : ""}).`);
 
     await fs.remove(STAGING_DIR);
 
-    setTimeout(() => {
-      selfRestartProcess({ logger: log, port: systemConfig?.httpPort });
-    }, RESTART_DELAY_MS);
-
+    log(
+      "Update applied on disk. The panel is still running the old build — restart it manually to load the new version."
+    );
+    upgradeInProgress = false;
     return { started: true, onlineVersion: entry.version };
   } catch (e: any) {
     errLog(`Upgrade failed: ${e?.message || e}`);
