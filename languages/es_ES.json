@@ -3158,15 +3158,14 @@
   "TXT_CODE_2b2ff3ff": "Limitar la velocidad de escritura de dispositivos de bloque específicos del contenedor. Formato: /dev/sda:5MB. Separe varios dispositivos con comas.",
   "TXT_CODE_f0dc9eca": "Ejemplo: /dev/sda:5MB",
   "TXT_CODE_AUTOUPDATE_DAEMON_BTN": "Actualizar daemon",
-  "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "¿Actualizar este daemon remoto ahora? Se descargará el paquete más reciente, se sobrescribirá y se reiniciará. El nodo se reconecta automáticamente.",
-  "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "Actualización iniciada. El daemon está descargando y reiniciando; se reconectará en breve.",
+  "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "¿Actualizar este daemon remoto ahora? Se descargará el paquete más reciente y se sobrescribirá. Reinicie el daemon manualmente después para aplicar los cambios.",
+  "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "Daemon actualizado a v{v}. Reinicie el daemon manualmente para aplicar los cambios.",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "No se pudo iniciar la actualización del daemon.",
   "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "Nueva versión disponible: v{v}. Haz clic en el botón \"Actualizar daemon\" arriba a la derecha para actualizar.",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "Actualizar panel",
-  "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "¿Actualizar el panel de control ahora? Se descargará el paquete más reciente, se sobrescribirán los archivos (app.js + front-end) y se reiniciará. La conexión se interrumpirá brevemente.",
-  "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "Panel actualizado. Reconectando...",
+  "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "¿Actualizar el panel de control ahora? Se descargará el paquete más reciente y se sobrescribirán los archivos del panel (app.js + front-end). Reinicie el panel manualmente después para aplicar los cambios.",
+  "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "Panel actualizado a v{v}. Reinicie el panel manualmente para aplicar los cambios.",
   "TXT_CODE_AUTOUPDATE_WEB_FAILED": "No se pudo iniciar la actualización del panel.",
-  "TXT_CODE_AUTOUPDATE_WEB_RESTARTING": "El panel se está reiniciando, por favor espera...",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE": "Actualización del panel",
   "TXT_CODE_AUTOUPDATE_WEB_NOT_CONFIGURED": "La actualización automática no está configurada (establece updateSourceUrl)",
   "TXT_CODE_AUTOUPDATE_WEB_LATEST": "Nueva versión disponible: {v}",
@@ -3189,5 +3188,5 @@
   "TXT_CODE_AUTOUPDATE_TAB_TITLE": "Actualización automática",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC": "Comprueba la versión actual del panel y si hay una versión más reciente disponible en línea.",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC": "El panel obtiene el manifiesto de versiones y los paquetes de actualización desde esta URL.",
-  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "Descarga el paquete más reciente, sobrescribe el panel (app.js + front-end) y lo reinicia. La conexión se interrumpirá brevemente."
+  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "Descarga el paquete más reciente y sobrescribe los archivos del panel (app.js + front-end). Reinicie el panel manualmente después para aplicar los cambios."
 }

@@ -6,8 +6,8 @@
 //   3. A fresh panel  (product-code/web)
 //   4. Real HTTP calls against the panel API (install -> login -> upgrade endpoints)
 //      EXACTLY the endpoints the new web UI buttons hit, then asserts:
-//        - panel self-update: package overlaid (incl. an OVERLAY_MARKER), panel restarts, version -> 10.18.4
-//        - daemon self-update (forwarded panel->daemon): package overlaid, daemon restarts, version -> 4.18.4
+//        - panel self-update: package overlaid (incl. an OVERLAY_MARKER), process stays up,\n//          a simulated manual restart makes the new version take effect (-> 10.18.4)
+//        - daemon self-update (forwarded panel->daemon): package overlaid, process stays up,\n//          a simulated manual restart makes the new version take effect (-> 4.18.4)
 //
 // Usage:  node scripts/verify-auto-update.mjs
 //
@@ -90,6 +90,8 @@ function waitForPort(port, host = "127.0.0.1", timeout = 30000) {
 // Track spawned children so cleanup can terminate them directly (a detached
 // re-launch after an update is not a direct child and is handled via killPort).
 let procServer, procDaemon, procPanel;
+let panelExited = false;
+let daemonExited = false;
 function cleanup() {
   log("cleanup: killing children + processes + :9999 :23333 :24444");
   killChild(procServer);
@@ -203,8 +205,9 @@ async function main() {
   await waitForPort(9999);
 
   log("step 3: start daemon (writes config with random key; updateSourceUrl empty)");
-  procDaemon = spawnProc("daemon", process.execPath, ["app.js"], daemonDir);
-  await waitForPort(24444);
+procDaemon = spawnProc("daemon", process.execPath, ["app.js"], daemonDir);
+procDaemon.on("exit", () => (daemonExited = true));
+await waitForPort(24444);
   await sleep(800); // let config persist
   const daemonCfgPath = path.join(daemonDir, "data", "Config", "global.json");
   assert(fs.existsSync(daemonCfgPath), "daemon config file created");
@@ -217,8 +220,9 @@ async function main() {
   log("step 4: (skipped — daemon uses panel-forwarded updateSourceUrl, no local config)");
 
   log("step 5: start panel (23333)");
-  procPanel = spawnProc("panel", process.execPath, ["app.js"], webDir);
-  await waitForPort(23333);
+procPanel = spawnProc("panel", process.execPath, ["app.js"], webDir);
+procPanel.on("exit", () => (panelExited = true));
+await waitForPort(23333);
 
   log("step 6: install + login (panel)");
   {
@@ -312,73 +316,79 @@ async function main() {
   }
 
   // ---- panel self-update ----
-  log("step 11: POST /api/upgrade/panel -> trigger panel self-update + restart");
+  log("step 11: POST /api/upgrade/panel -> trigger panel self-update (files on disk)");
   {
     const r = await httpReq("POST", "/api/upgrade/panel", undefined, global.__token);
     assert(r.status === 200, "panel upgrade 200");
     log("  panel upgrade result:", JSON.stringify(r.data));
     assert(r.data?.started === true && r.data?.onlineVersion === NEW_WEB, "panel upgrade started -> " + NEW_WEB);
   }
-  log("step 12: wait for panel restart, verify on-disk package.json -> " + NEW_WEB);
-  await sleep(3000); // let panel exit + restarter relaunch
-  await pollUntil("panel http back", async () => {
-    try {
-      const res = await fetch(PANEL + "/api/auth/status");
-      return res.ok || res.status === 200;
-    } catch {
-      return false;
-    }
-  }, 60000, 2000);
+  log("step 12: verify overlay on disk + panel stays up (no auto-restart)");
+  await sleep(2000);
   {
+    assert(!panelExited, "panel process stayed up during the update (no auto-restart)");
     const pkg = JSON.parse(fs.readFileSync(path.join(webDir, "package.json"), "utf-8"));
     assert(pkg.version === NEW_WEB, "panel package.json on disk -> " + NEW_WEB);
-    // The marker ships at the package root and is NOT in any fixed file list —
+    // The marker ships at the package root and is NOT in any fixed file list -
     // its presence proves the WHOLE package was overlaid, not just app.js/public.
     assert(
       fs.existsSync(path.join(webDir, "OVERLAY_MARKER.txt")),
       "panel OVERLAY_MARKER.txt overlaid (whole-package overlay)"
     );
+    const res = await fetch(PANEL + "/api/auth/status");
+    assert(res.ok || res.status === 200, "panel still serving after the update");
   }
-  global.__token = null;
-  // re-login on the new panel (fresh session store)
+  log("step 12.5: simulate the operator's manual restart -> version becomes " + NEW_WEB);
   {
+    killChild(procPanel);
+    await sleep(1000);
+    procPanel = spawnProc("panel", process.execPath, ["app.js"], webDir);
+    procPanel.on("exit", () => (panelExited = true));
+    await waitForPort(23333);
+    global.__token = null;
     const login = await httpReq("POST", "/api/auth/login", { username: ADMIN_USER, password: ADMIN_PASS });
-    assert(login.status === 200 && typeof login.data === "string", "re-login after panel restart ok");
+    assert(login.status === 200 && typeof login.data === "string", "re-login after manual panel restart ok");
     global.__token = login.data;
   }
   log("step 13: GET /api/upgrade/panel_info -> currentVersion now " + NEW_WEB);
   {
     const r = await httpReq("GET", "/api/upgrade/panel_info", undefined, global.__token);
-    assert(r.status === 200, "panel_info 200 (after update)");
+    assert(r.status === 200, "panel_info 200 (after manual restart)");
     log("  panel_info:", JSON.stringify(r.data));
     assert(r.data?.currentVersion === NEW_WEB, "panel currentVersion = " + NEW_WEB);
     assert(r.data?.updateAvailable === false, "panel no longer updateAvailable");
   }
 
   // ---- daemon self-update (panel forwards) ----
-  log("step 14: POST /api/upgrade/daemon -> trigger daemon self-update + restart");
+  log("step 14: POST /api/upgrade/daemon -> trigger daemon self-update (files on disk)");
   {
     const r = await httpReq("POST", "/api/upgrade/daemon?uuid=" + daemonUuid, undefined, global.__token);
     assert(r.status === 200, "daemon upgrade forward 200");
     log("  daemon upgrade result:", JSON.stringify(r.data));
     assert(r.data?.started === true && r.data?.onlineVersion === NEW_DAEMON, "daemon upgrade started -> " + NEW_DAEMON);
   }
-  log("step 15: wait for daemon reconnect + version -> " + NEW_DAEMON);
-  await sleep(3000);
-  const ok = await pollUntil("daemon available & version " + NEW_DAEMON, async () => {
-    const r = await httpReq("GET", "/api/overview", undefined, global.__token);
-    if (r.status !== 200 || !r.data || !Array.isArray(r.data.remote)) return false;
-    const node = r.data.remote.find((n) => n && n.uuid === daemonUuid);
-    return !!node && node.available === true && node.version === NEW_DAEMON;
-  }, 90000, 2000);
-  assert(ok, "daemon came back online with version " + NEW_DAEMON);
+  log("step 15: verify overlay on disk + daemon stays up, then simulate a manual restart");
+  await sleep(2000);
   {
+    assert(!daemonExited, "daemon process stayed up during the update (no auto-restart)");
     const pkg = JSON.parse(fs.readFileSync(path.join(daemonDir, "package.json"), "utf-8"));
     assert(pkg.version === NEW_DAEMON, "daemon package.json on disk -> " + NEW_DAEMON);
     assert(
       fs.existsSync(path.join(daemonDir, "OVERLAY_MARKER.txt")),
       "daemon OVERLAY_MARKER.txt overlaid (whole-package overlay)"
     );
+    killChild(procDaemon);
+    await sleep(1000);
+    procDaemon = spawnProc("daemon", process.execPath, ["app.js"], daemonDir);
+    procDaemon.on("exit", () => (daemonExited = true));
+    await waitForPort(24444);
+    const ok = await pollUntil("daemon available & version " + NEW_DAEMON, async () => {
+      const r = await httpReq("GET", "/api/overview", undefined, global.__token);
+      if (r.status !== 200 || !r.data || !Array.isArray(r.data.remote)) return false;
+      const node = r.data.remote.find((n) => n && n.uuid === daemonUuid);
+      return !!node && node.available === true && node.version === NEW_DAEMON;
+    }, 90000, 2000);
+    assert(ok, "daemon came back online with version " + NEW_DAEMON + " after manual restart");
   }
 
   log("\n================ RESULT ================");

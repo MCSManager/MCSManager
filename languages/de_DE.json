@@ -3158,15 +3158,14 @@
   "TXT_CODE_2b2ff3ff": "Begrenzt die Schreibrate bestimmter Blockgeräte für den Container. Format: /dev/sda:5MB. Mehrere Geräte durch Kommas trennen.",
   "TXT_CODE_f0dc9eca": "Beispiel: /dev/sda:5MB",
   "TXT_CODE_AUTOUPDATE_DAEMON_BTN": "Daemon aktualisieren",
-  "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "Diesen Remote-Daemon jetzt aktualisieren? Es wird das neueste Paket heruntergeladen, überschrieben und neu gestartet. Die Node verbindet sich automatisch wieder.",
-  "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "Aktualisierung gestartet. Der Daemon lädt herunter und startet neu; die Verbindung wird in Kürze wiederhergestellt.",
+  "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "Diesen Remote-Daemon jetzt aktualisieren? Das neueste Paket wird heruntergeladen und überschrieben. Starten Sie den Daemon anschließend manuell neu, um die Änderungen zu übernehmen.",
+  "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "Daemon auf v{v} aktualisiert. Starten Sie den Daemon manuell neu, um die Änderungen zu übernehmen.",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "Daemon-Aktualisierung konnte nicht gestartet werden.",
   "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "Neue Version verfügbar: v{v}. Klicken Sie oben rechts auf \"Daemon aktualisieren\", um zu aktualisieren.",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "Panel aktualisieren",
-  "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "Kontroll-Panel jetzt aktualisieren? Es wird das neueste Paket heruntergeladen, Dateien überschrieben (app.js + Front-End) und dann neu gestartet. Die Verbindung wird kurz unterbrochen.",
-  "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "Panel aktualisiert. Verbindung wird wiederhergestellt ...",
+  "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "Das Kontrollpanel jetzt aktualisieren? Das neueste Paket wird heruntergeladen und die Paneldateien (app.js + Front-end) überschrieben. Starten Sie das Panel anschließend manuell neu, um die Änderungen zu übernehmen.",
+  "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "Panel auf v{v} aktualisiert. Starten Sie das Panel manuell neu, um die Änderungen zu übernehmen.",
   "TXT_CODE_AUTOUPDATE_WEB_FAILED": "Panel-Aktualisierung konnte nicht gestartet werden.",
-  "TXT_CODE_AUTOUPDATE_WEB_RESTARTING": "Das Panel wird neu gestartet, bitte warten ...",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE": "Panel-Aktualisierung",
   "TXT_CODE_AUTOUPDATE_WEB_NOT_CONFIGURED": "Auto-Update ist nicht konfiguriert (updateSourceUrl festlegen)",
   "TXT_CODE_AUTOUPDATE_WEB_LATEST": "Neue Version verfügbar: {v}",
@@ -3189,5 +3188,5 @@
   "TXT_CODE_AUTOUPDATE_TAB_TITLE": "Auto-Update",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC": "Aktuelle Panel-Version prüfen und online nach einer neueren Version suchen.",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC": "Das Panel lädt das Versions-Manifest und die Aktualisierungspakete von dieser URL.",
-  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "Lädt das neueste Paket herunter, überschreibt das Panel (app.js + Front-End) und startet neu. Die Verbindung wird kurz unterbrochen."
+  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "Lädt das neueste Paket herunter und überschreibt die Paneldateien (app.js + Front-end). Starten Sie das Panel anschließend manuell neu, um die Änderungen zu übernehmen."
 }

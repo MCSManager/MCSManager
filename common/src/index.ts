@@ -30,9 +30,7 @@ export {
   compareVersions,
   downloadToFile,
   extractZip,
-  fetchJson,
-  isSupervisedProcess,
-  selfRestartProcess
+  fetchJson
 } from "./upgrade";
 
 export { removeTrail } from "./string_utils";

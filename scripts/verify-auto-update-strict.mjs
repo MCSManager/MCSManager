@@ -419,15 +419,10 @@ async function main() {
     const r = await httpReq("POST", "/api/upgrade/panel", undefined, token);
     assert(r.status === 200 && r.data?.started === true, "strict panel: update started");
   }
-  await sleep(3000);
-  await pollUntil("panel http back", panelUp, 60000, 2000);
-  // re-login (session store is in-memory; lost on restart)
+  await sleep(1500);
   {
-    const login = await httpReq("POST", "/api/auth/login", { username: ADMIN_USER, password: ADMIN_PASS });
-    assert(login.status === 200 && typeof login.data === "string", "re-login after strict panel update");
-    token = login.data;
-  }
-  {
+    // Files are on disk; the running process keeps the old build in memory
+    // (no auto-restart).
     const pkg = JSON.parse(fs.readFileSync(path.join(webDir, "package.json"), "utf-8"));
     assert(pkg.version === NEW_WEB, "panel package.json -> " + NEW_WEB);
     const appContent = fs.readFileSync(path.join(webDir, "app.js"), "utf-8");
@@ -436,8 +431,22 @@ async function main() {
     assert(fs.existsSync(path.join(webDir, "public", "UPDATE_ASSET.txt")), "panel NEW public file overlaid (UPDATE_ASSET.txt)");
     const robots = fs.readFileSync(path.join(webDir, "public", "robots.txt"), "utf-8");
     assert(robots.includes(ROBOTS_MARKER), "panel EXISTING public file OVERWRITTEN (robots.txt has new content)");
+    assert(await panelUp(), "panel stayed up during the update (no auto-restart)");
+  }
+  // Simulate the operator's manual restart: the new build must take effect.
+  log("  simulating manual panel restart...");
+  {
+    killChild(procPanel);
+    killPort(23333);
+    await sleep(500);
+    procPanel = spawnProc("panel", process.execPath, ["app.js"], webDir);
+    await waitForPort(23333);
+    // re-login (session store is in-memory; lost on restart)
+    const login = await httpReq("POST", "/api/auth/login", { username: ADMIN_USER, password: ADMIN_PASS });
+    assert(login.status === 200 && typeof login.data === "string", "re-login after manual panel restart");
+    token = login.data;
     const info = await httpReq("GET", "/api/upgrade/panel_info", undefined, token);
-    assert(info.data?.currentVersion === NEW_WEB, "panel now reports " + NEW_WEB);
+    assert(info.data?.currentVersion === NEW_WEB, "panel now reports " + NEW_WEB + " after manual restart");
   }
 
   // ----- SCENARIO D: daemon happy content-update (forwarded) -----
@@ -450,21 +459,29 @@ async function main() {
     const r = await httpReq("POST", "/api/upgrade/daemon?uuid=" + daemonUuid, undefined, token);
     assert(r.status === 200 && r.data?.started === true && r.data?.onlineVersion === NEW_DAEMON, "daemon update started");
   }
-  await sleep(3000);
-  const recon = await pollUntil("daemon reconnect v" + NEW_DAEMON, async () => {
-    const r = await httpReq("GET", "/api/overview", undefined, token);
-    if (r.status !== 200 || !Array.isArray(r.data?.remote)) return false;
-    const n = r.data.remote.find((x) => x?.uuid === daemonUuid);
-    return !!n && n.available === true && n.version === NEW_DAEMON;
-  }, 90000, 2000);
-  assert(recon, "daemon came back online at " + NEW_DAEMON);
+  await sleep(1500);
   {
+    // Files are on disk; the running daemon keeps the old build (no auto-restart).
     const pkg = JSON.parse(fs.readFileSync(path.join(daemonDir, "package.json"), "utf-8"));
     assert(pkg.version === NEW_DAEMON, "daemon package.json -> " + NEW_DAEMON);
     const appContent = fs.readFileSync(path.join(daemonDir, "app.js"), "utf-8");
     assert(appContent.includes(APP_MARKER("daemon")), "daemon app.js CONTENT replaced (unique marker present)");
     assert(fs.existsSync(path.join(daemonDir, "OVERLAY_MARKER.txt")), "daemon OVERLAY_MARKER.txt overlaid");
   }
+  // Simulate the operator's manual restart: the new build must take effect.
+  log("  simulating manual daemon restart...");
+  killChild(procDaemon);
+  killPort(24444);
+  await sleep(500);
+  procDaemon = spawnProc("daemon", process.execPath, ["app.js"], daemonDir);
+  await waitForPort(24444);
+  const recon = await pollUntil("daemon reconnect v" + NEW_DAEMON, async () => {
+    const r = await httpReq("GET", "/api/overview", undefined, token);
+    if (r.status !== 200 || !Array.isArray(r.data?.remote)) return false;
+    const n = r.data.remote.find((x) => x?.uuid === daemonUuid);
+    return !!n && n.available === true && n.version === NEW_DAEMON;
+  }, 90000, 2000);
+  assert(recon, "daemon came back online at " + NEW_DAEMON + " after manual restart");
 
   log("\n================ STRICT RESULT ================");
   log("0 no source configured: configured=false, no update                   OK");

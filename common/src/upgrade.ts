@@ -1,17 +1,14 @@
-// Shared auto-update utilities for MCSManager daemon & panel.
+﻿// Shared auto-update utilities for MCSManager daemon & panel.
 //
 // No new external dependencies are introduced here: everything uses Node
-// built-ins (http/https/child_process/fs/os/path/stream/net) plus packages that
-// `common` already declares (fs-extra, node-stream-zip). Both daemon and panel
-// consume `common` from source (see webpack `resolve.alias` -> ../common/src),
-// so exporting from here makes these helpers available to both bundles.
+// built-ins (http/https/fs/path/stream) plus packages that `common` already
+// declares (fs-extra, node-stream-zip). Both daemon and panel consume `common`
+// from source (see webpack `resolve.alias` -> ../common/src), so exporting from
+// here makes these helpers available to both bundles.
 
-import child_process from "child_process";
 import fs from "fs-extra";
 import http from "http";
 import https from "https";
-import net from "net";
-import os from "os";
 import path from "path";
 import { pipeline } from "stream";
 
@@ -273,10 +270,10 @@ async function rollbackOverlays(rels: string[], cwd: string, backupBase: string,
  *
  * The package root is the directory (root of the extracted zip, or a single
  * top-level wrapper folder) that contains one of `requiredFiles` (e.g.
- * "app.js") — used only as a VALIDITY GATE so a malformed/empty package is
+ * "app.js") 鈥?used only as a VALIDITY GATE so a malformed/empty package is
  * rejected before anything changes. Every file under the package root is then
  * copied onto its matching relative path in `cwd` (overwriting), recreating
- * directories — i.e. "whatever the package ships, gets overlaid". Runtime-state
+ * directories 鈥?i.e. "whatever the package ships, gets overlaid". Runtime-state
  * directories at the install root (data/, logs/, __upgrade_staging/,
  * node_modules/) are never touched.
  *
@@ -330,122 +327,4 @@ export async function applyUpgradePackage(opts: {
     }
   }
   return { overlays, packageRoot };
-}
-
-/**
- * Detect whether the current process is managed by a process supervisor that
- * will restart it automatically after exit (systemd, pm2). When true, the
- * self-update just exits and lets the supervisor relaunch the updated app.js.
- *
- * NOTE: `npm_lifecycle_event` is intentionally NOT treated as a supervisor — it
- * is set by every `npm run`/`npm start`, but plain npm does NOT restart a
- * process that calls `process.exit(0)`, so treating it as supervised would
- * brick the service on `npm start`.
- */
-export function isSupervisedProcess(): boolean {
-  return Boolean(process.env.INVOCATION_ID) || Object.prototype.hasOwnProperty.call(process.env, "pm_id");
-}
-
-// CommonJS helper script the parent spawns detached. It waits for the parent to
-// release its listening port (more reliable than polling the parent PID, which
-// can be reused by the OS shortly after the parent exits), then relaunches
-// `node <flags> app.js` detached from the same cwd, and finally exits itself.
-// If no port is provided, it falls back to polling the parent PID.
-const RESTARTER_SOURCE = [
-  "const cp = require('child_process');",
-  "const fsp = require('fs');",
-  "const net = require('net');",
-  "const parentPid = parseInt(String(process.argv[2]), 10) || 0;",
-  "const nodeExec = process.argv[3];",
-  "const script = process.argv[4] || 'app.js';",
-  "const execArgv = JSON.parse(process.argv[5] || '[]');",
-  "const scriptArgs = JSON.parse(process.argv[6] || '[]');",
-  "const cwd = process.argv[7] || process.cwd();",
-  "const helperPath = process.argv[8] || '';",
-  "const port = parseInt(process.argv[9] || '0', 10);",
-  "const cleanup = () => { try { fsp.unlink(helperPath, () => {}); } catch (e) {} };",
-  "function spawnChild() { cleanup(); const args = [].concat(execArgv, [script]).concat(scriptArgs); const child = cp.spawn(nodeExec, args, { detached: true, stdio: 'ignore', cwd: cwd }); child.unref(); process.exit(0); }",
-  "function portFree(cb) {",
-  "  if (!port) return cb(false);",
-  "  const s = net.connect(port, '127.0.0.1');",
-  "  s.setTimeout(800);",
-  "  s.once('connect', () => { s.destroy(); cb(false); });",
-  "  s.once('error', () => { s.destroy(); cb(true); });",
-  "  s.once('timeout', () => { s.destroy(); cb(true); });",
-  "}",
-  "function parentGoneByPid(cb) {",
-  "  if (!parentPid) return cb(true);",
-  "  try { process.kill(parentPid, 0); return cb(false); } catch (e) { return cb(true); }",
-  "}",
-  "function tick() {",
-  "  const check = port ? portFree : parentGoneByPid;",
-  "  check(function(gone) { if (gone) spawnChild(); else setTimeout(tick, 150); });",
-  "}",
-  "setTimeout(tick, 300);"
-].join("\n");
-
-/**
- * Restart the current Node process so it re-loads the updated app.js from disk.
- *
- * Behaviour:
- *  - If running under a supervisor (systemd/pm2) just exit; the supervisor
- *    relaunches the updated file.
- *  - Otherwise spawn a detached helper that waits for the parent to release its
- *    listening port (or, if no port given, for the parent PID to exit), then
- *    relaunches `node <execArgv> app.js <argv...>` from the same cwd, and then
- *    exits.
- *  - If the restarter helper cannot be written/spawned AND there is no
- *    supervisor, do NOT exit: keep the current (old-code) process alive so the
- *    service stays up; the on-disk app.js is already the new build and will
- *    load on the next manual restart.
- *
- * `.js` source files are read-then-closed by Node (unlike `.node`/`.exe`, which
- * are locked while loaded), so the caller is expected to have already replaced
- * app.js on disk BEFORE calling this; the running process keeps the old code in
- * memory until it exits, then restarts with the new code. Provide `port` for the
- * most reliable relaunch detection.
- */
-export function selfRestartProcess(opts?: { logger?: LogFn; port?: number }): void {
-  const log: LogFn = opts?.logger || (() => {});
-  if (isSupervisedProcess()) {
-    log("Supervisor detected (systemd/pm2); exiting to let it restart the updated build.");
-    process.exit(0);
-    return;
-  }
-  const helperPath = path.join(os.tmpdir(), `mcsm-restart-${process.pid}-${Date.now()}.js`);
-  const nodeExec = process.execPath;
-  const script = process.argv[1] || "app.js";
-  const execArgv = process.execArgv || [];
-  const scriptArgs = process.argv.slice(2) || [];
-  const restartCwd = process.cwd();
-  const port = (opts?.port && Number(opts.port) > 0) ? Number(opts.port) : 0;
-  try {
-    fs.writeFileSync(helperPath, RESTARTER_SOURCE);
-  } catch (e) {
-    log(`Cannot write restarter helper (${(e as Error).message}); aborting restart and keeping the current process alive.`);
-    return;
-  }
-  try {
-    const child = child_process.spawn(
-      nodeExec,
-      [
-        helperPath,
-        String(process.pid),
-        nodeExec,
-        script,
-        JSON.stringify(execArgv),
-        JSON.stringify(scriptArgs),
-        restartCwd,
-        helperPath,
-        String(port)
-      ],
-      { detached: true, stdio: "ignore", cwd: restartCwd }
-    );
-    child.unref();
-    log(`Spawned detached restarter (pid=${child.pid}, port=${port}); exiting to relaunch updated build.`);
-    process.exit(0);
-  } catch (e) {
-    log(`Failed to spawn restarter (${(e as Error).message}); aborting restart and keeping the current process alive.`);
-    // Intentionally do NOT exit: the service stays up with the old code.
-  }
 }

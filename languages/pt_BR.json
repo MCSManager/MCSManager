@@ -3158,15 +3158,14 @@
   "TXT_CODE_2b2ff3ff": "Limita a taxa de gravação de dispositivos de bloco específicos para o contêiner. Formato: /dev/sda:5MB. Separe vários dispositivos com vírgulas.",
   "TXT_CODE_f0dc9eca": "Exemplo: /dev/sda:5MB",
   "TXT_CODE_AUTOUPDATE_DAEMON_BTN": "Atualizar daemon",
-  "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "Atualizar este daemon remoto agora? O pacote mais recente será baixado, sobrescrito e reiniciado. O nó se reconecta automaticamente.",
-  "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "Atualização iniciada. O daemon está baixando e reiniciando; ele se reconectará em breve.",
+  "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "Atualizar este daemon remoto agora? O pacote mais recente será baixado e sobrescrito. Reinicie o daemon manualmente depois para aplicar as alterações.",
+  "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "Daemon atualizado para v{v}. Reinicie o daemon manualmente para aplicar as alterações.",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "Falha ao iniciar a atualização do daemon.",
   "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "Nova versão disponível: v{v}. Clique no botão \"Atualizar daemon\" no canto superior direito para atualizar.",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "Atualizar painel",
-  "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "Atualizar o painel de controle agora? O pacote mais recente será baixado, os arquivos sobrescritos (app.js + front-end) e o painel será reiniciado. A conexão será interrompida brevemente.",
-  "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "Painel atualizado. Reconectando...",
+  "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "Atualizar o painel de controle agora? O pacote mais recente será baixado e os arquivos do painel (app.js + front-end) sobrescritos. Reinicie o painel manualmente depois para aplicar as alterações.",
+  "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "Painel atualizado para v{v}. Reinicie o painel manualmente para aplicar as alterações.",
   "TXT_CODE_AUTOUPDATE_WEB_FAILED": "Falha ao iniciar a atualização do painel.",
-  "TXT_CODE_AUTOUPDATE_WEB_RESTARTING": "O painel está reiniciando, aguarde...",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE": "Atualização do painel",
   "TXT_CODE_AUTOUPDATE_WEB_NOT_CONFIGURED": "A atualização automática não está configurada (defina updateSourceUrl)",
   "TXT_CODE_AUTOUPDATE_WEB_LATEST": "Nova versão disponível: {v}",
@@ -3189,5 +3188,5 @@
   "TXT_CODE_AUTOUPDATE_TAB_TITLE": "Atualização automática",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC": "Verifica a versão atual do painel e se há uma versão mais recente disponível online.",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC": "O painel obtém o manifesto de versões e os pacotes de atualização desta URL.",
-  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "Baixa o pacote mais recente, sobrescreve o painel (app.js + front-end) e o reinicia. A conexão será interrompida brevemente."
+  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "Baixa o pacote mais recente e sobrescreve os arquivos do painel (app.js + front-end). Reinicie o painel manualmente depois para aplicar as alterações."
 }
