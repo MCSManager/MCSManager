@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { copySync } from "fs-extra";
 import path from "node:path";
 import os from "node:os";
 import { spawn, type ChildProcess } from "node:child_process";
@@ -34,7 +35,7 @@ export async function startAll(): Promise<Runtime> {
   fs.mkdirSync(path.join(panelDir, "data"), { recursive: true });
 
   // Copy daemon native binaries (file_zip / pty) — cwd-relative at runtime.
-  fs.cpSync(path.join(REPO, "daemon/lib"), path.join(daemonDir, "lib"), { recursive: true });
+  copySync(path.join(REPO, "daemon/lib"), path.join(daemonDir, "lib"));
   // Copy cached market list so quick_install_list works offline.
   const mc = path.join(REPO, "panel/data/market_cache.json");
   if (fs.existsSync(mc)) fs.copyFileSync(mc, path.join(panelDir, "data", "market_cache.json"));
