@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createTerminalHistoryReplayGate } from "./terminalHistoryReplayGate";
+import { createTerminalHistoryReplayGate } from "../terminalHistoryReplayGate";
 
 describe("createTerminalHistoryReplayGate", () => {
   it("starts not replaying", () => {

@@ -1,3 +1,17 @@
+/**
+ * MANDATORY TEST GATE — DO NOT MODIFY WITHOUT RE-RUNNING THE INTEGRATION TESTS.
+ *
+ * This entity is the core of the real instance/Docker integration suite in
+ * `src/routers/__test__/Instance_router.integration.test.ts` (real containers and child
+ * processes, and the interactive `test/fixtures/test.mjs` app). Any change here
+ * can break the instance lifecycle: startup, status transitions, output capture,
+ * termination and destruction.
+ *
+ * After editing this file, AI assistants and developers MUST run the
+ * `mcsmanager-docker-instance-test` skill and confirm the Docker + general
+ * process instance cases pass before finishing.
+ *   Skill: `.agents/skills/mcsmanager-docker-instance-test/SKILL.md`
+ */
 import { randomUUID } from "crypto";
 import { EventEmitter } from "events";
 import { t } from "i18next";

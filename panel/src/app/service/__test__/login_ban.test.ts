@@ -7,8 +7,8 @@ import {
   LOGIN_FAILED_WINDOW_MS,
   registerFailureAttempt,
   resetFailure
-} from "./login_ban";
-import type { FailureResult, IpFailureRecord } from "./login_ban";
+} from "../login_ban";
+import type { FailureResult, IpFailureRecord } from "../login_ban";
 
 const IP = "203.0.113.7";
 const OTHER_IP = "203.0.113.8";

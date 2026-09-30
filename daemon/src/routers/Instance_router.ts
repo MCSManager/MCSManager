@@ -1,10 +1,24 @@
+/**
+ * MANDATORY TEST GATE — DO NOT MODIFY WITHOUT RE-RUNNING THE INTEGRATION TESTS.
+ *
+ * This router is exercised by the real instance/Docker integration suite in
+ * `src/routers/__test__/Instance_router.integration.test.ts` (real containers, real child
+ * processes, and the interactive `test/fixtures/test.mjs` app). Any change here
+ * can break container/process startup, output capture, termination or
+ * destruction.
+ *
+ * After editing this file, AI assistants and developers MUST run the
+ * `mcsmanager-docker-instance-test` skill and confirm the Docker + general
+ * process instance cases pass before finishing.
+ *   Skill: `.agents/skills/mcsmanager-docker-instance-test/SKILL.md`
+ */
 import fs from "fs-extra";
 import path from "path";
 import Instance from "../entity/instance/instance";
 import { $t } from "../i18n";
 import logger from "../service/log";
 import * as protocol from "../service/protocol";
-import { routerApp } from "../service/router";
+import { routerApp } from "../service/router_app";
 import InstanceSubsystem from "../service/system_instance";
 
 import { arrayUnique, toNumber } from "mcsmanager-common";

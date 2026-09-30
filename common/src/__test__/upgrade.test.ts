@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { compareVersions } from "./upgrade";
+import { compareVersions } from "../upgrade";
 
 describe("compareVersions", () => {
   it("compares segment-wise numerically", () => {

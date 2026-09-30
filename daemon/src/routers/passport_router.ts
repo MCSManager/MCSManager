@@ -1,5 +1,5 @@
 import { $t } from "../i18n";
-import { routerApp } from "../service/router";
+import { routerApp } from "../service/router_app";
 import { missionPassport } from "../service/mission_passport";
 import * as protocol from "../service/protocol";
 

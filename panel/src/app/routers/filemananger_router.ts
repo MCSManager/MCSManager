@@ -22,7 +22,7 @@ router.use(async (ctx, next) => {
   const userUuid = getUserUuid(ctx);
   if (systemConfig?.canFileManager === false && getUserPermission(ctx) < 10) {
     ctx.status = 403;
-    ctx.body = new Error($t("TXT_CODE_router.file.off"));
+    ctx.body = $t("TXT_CODE_router.file.off");
     return;
   }
   if (isHaveInstanceByUuid(userUuid, daemonId, instanceUuid)) {

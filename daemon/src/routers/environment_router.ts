@@ -5,7 +5,7 @@ import { $t } from "../i18n";
 import { DockerManager } from "../service/docker_service";
 import logger from "../service/log";
 import * as protocol from "../service/protocol";
-import { routerApp } from "../service/router";
+import { routerApp } from "../service/router_app";
 
 // Get the image list of this system
 routerApp.on("environment/images", async (ctx, data) => {

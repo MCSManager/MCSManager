@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { pickLocalizedNotes } from "./localizedNotes";
+import { pickLocalizedNotes } from "../localizedNotes";
 
 describe("pickLocalizedNotes", () => {
   it("returns a plain string as-is (language-neutral fallback)", () => {

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { describe, expect, it } from "vitest";
-import { matchesLanguage, resetSearchForm, type SearchForm } from "./useMarketPackages";
+import { matchesLanguage, resetSearchForm, type SearchForm } from "../useMarketPackages";
 
 describe("matchesLanguage", () => {
   it("keeps every language when the filter is reset", () => {

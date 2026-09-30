@@ -37,5 +37,6 @@
   "include": [
     "src/**/*",
     "../common/global.d.ts"
-  ]
+  ],
+  "exclude": ["src/**/*.test.ts", "test/**"]
 }

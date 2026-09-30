@@ -8,7 +8,7 @@ import downloadManager from "../service/download_manager";
 import { getFileManager, getWindowsDisks } from "../service/file_router_service";
 import logger from "../service/log";
 import * as protocol from "../service/protocol";
-import { routerApp } from "../service/router";
+import { routerApp } from "../service/router_app";
 import InstanceSubsystem from "../service/system_instance";
 import uploadManager from "../service/upload_manager";
 import { checkSafeUrl } from "../utils/url";
@@ -243,6 +243,9 @@ routerApp.on("file/copy", async (ctx, data) => {
     const targets = data.targets;
     const fileManager = getFileManager(data.instanceUuid);
     for (const target of targets) {
+      // Intentionally NOT awaited: copying very large files can take far longer
+      // than the client request timeout, so the copy runs detached in the
+      // background and the response returns immediately.
       fileManager.copy(target[0], target[1]);
     }
     protocol.response(ctx, true);

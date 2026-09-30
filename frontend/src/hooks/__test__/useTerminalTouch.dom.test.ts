@@ -2,7 +2,7 @@
 
 import type { IBuffer, IMarker, Terminal } from "@xterm/xterm";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { attachTerminalTouchControls } from "./useTerminalTouch";
+import { attachTerminalTouchControls } from "../useTerminalTouch";
 
 vi.mock("@/lang/i18n", () => ({
   t: (key: string) => key

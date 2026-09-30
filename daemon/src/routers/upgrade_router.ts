@@ -6,7 +6,7 @@
 // Triggered by the panel via RemoteRequest (panel forwards the web UI click).
 
 import * as protocol from "../service/protocol";
-import { routerApp } from "../service/router";
+import { routerApp } from "../service/router_app";
 import { getUpgradeInfo, performUpgrade } from "../service/upgrade_service";
 
 // Report whether a daemon self-update is available. The panel may forward its
