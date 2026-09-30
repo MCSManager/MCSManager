@@ -12,8 +12,11 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
  * all REAL. This is what actually spawns containers / child processes.
  *
  * Three suites live here:
- *  - "Docker instance lifecycle (real)" — real `alpine:3.20` containers
- *    (Linux + reachable Docker daemon only, otherwise the cases return early);
+ *  - "Docker instance lifecycle (real)" — the same interactive fixture
+ *    `test/fixtures/test.mjs` running inside a real `node:20-alpine` container
+ *    (started as `node test.mjs` with the instance workspace bind-mounted at
+ *    `/data`) (Linux + reachable Docker daemon only, otherwise the cases return
+ *    early);
  *  - "General (non-Docker) instance lifecycle (real)" — real `bash` + `ping`
  *    (POSIX only);
  *  - "General process instance interactive lifecycle (real)" — the interactive
@@ -80,6 +83,11 @@ const FIXTURE_APP = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
   "../../../test/fixtures/test.mjs"
 );
+
+// Node Docker image used by the Docker suite. It ships `node`, so every Docker
+// case runs the very same interactive fixture as the non-Docker process suite
+// (`node test.mjs`) instead of a throw-away shell loop.
+const DOCKER_NODE_IMAGE = "node:20-alpine";
 
 let tmpDir = "";
 let dockerOk = false;
@@ -164,17 +172,68 @@ async function listLabeledContainers(uuid: string): Promise<any[]> {
   );
 }
 
-function dockerConfig(name: string, startCommand: string) {
+// Send a stdin line to a running instance through the real router and return the
+// fake socket that will record the ack packet.
+function sendCommand(instanceUuid: string, command: string) {
+  return invoke("instance/command", { instanceUuid, command }).socket;
+}
+
+// The interactive fixture appends a heartbeat every 200ms while it is alive.
+function heartbeatFileOf(cfg: any) {
+  return path.join(cfg.cwd, "heartbeat.txt");
+}
+
+// Cross-platform liveness probe: signal 0 only checks for existence
+// (ESRCH when the pid is gone, on POSIX and Windows alike).
+function isPidAlive(pid?: number | string | null): boolean {
+  if (pid == null) return false;
+  try {
+    process.kill(Number(pid), 0);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+// The fixture is alive as long as it keeps appending to its heartbeat file.
+async function expectHeartbeatGrows(file: string) {
+  const before = fs.existsSync(file) ? fs.statSync(file).size : 0;
+  await waitFor(
+    () => fs.existsSync(file) && fs.statSync(file).size > before,
+    10000,
+    "heartbeat file grows"
+  );
+}
+
+// Once the process dies the heartbeat file must stop growing.
+async function expectHeartbeatFrozen(file: string) {
+  const before = fs.statSync(file).size;
+  await new Promise((r) => setTimeout(r, 700));
+  expect(fs.statSync(file).size).toBe(before);
+}
+
+// Docker lifecycle config: run the interactive fixture inside a Node container.
+// The instance workspace (holding the copied `test.mjs`) is bind-mounted at
+// `/data`, which is also the container working directory, so `node test.mjs`
+// starts the same fixture as the non-Docker process suite.
+function dockerConfig(name: string) {
+  const cwd = path.join(tmpDir, name);
+  fs.mkdirpSync(cwd);
+  fs.copyFileSync(FIXTURE_APP, path.join(cwd, "test.mjs"));
   return {
     nickname: name,
     type: "universal",
     processType: "docker",
-    cwd: path.join(tmpDir, name),
-    startCommand,
-    stopCommand: "^C",
+    cwd,
+    startCommand: "node test.mjs",
+    // Graceful stop: the fixture answers `exit` with BYE + exit(0).
+    stopCommand: "exit",
+    stopTimeout: 5,
     docker: {
-      image: "alpine:3.20",
-      containerName: `mcsm-int-${name}-${Date.now()}`
+      image: DOCKER_NODE_IMAGE,
+      containerName: `mcsm-int-${name}-${Date.now()}`,
+      workingDir: "/data",
+      changeWorkdir: true
     }
   };
 }
@@ -237,14 +296,15 @@ afterAll(async () => {
 }, 60000);
 
 describe("Docker instance lifecycle (real)", () => {
-  it("opens a Docker instance: container reaches RUNNING and emits start output", async () => {
+  // The container is created/started *before* the attach stream is wired up, so
+  // the fixture's one-shot `READY:` banner can be lost. Liveness is therefore
+  // proven out-of-band by the heartbeat file, and command I/O by real
+  // stdin/stdout round-trips after RUNNING.
+  it("opens a Docker instance: container reaches RUNNING and answers stdin/stdout commands", async () => {
     if (!dockerOk) return;
 
-    // Continuous output: the container starts *before* the attach stream is
-    // wired up, so a one-shot echo would be emitted (and lost) too early.
-    const { inst, output, uuid } = createInstance(
-      dockerConfig("docker-start", 'sh -c "while true; do echo MCSM_DOCKER_STARTED; sleep 1; done"')
-    );
+    const cfg = dockerConfig("docker-start");
+    const { inst, output, uuid } = createInstance(cfg);
 
     const { socket } = invoke("instance/open", { instanceUuids: [uuid] });
 
@@ -253,7 +313,6 @@ describe("Docker instance lifecycle (real)", () => {
       45000,
       "docker instance RUNNING"
     );
-    await waitOutputContains(output, "MCSM_DOCKER_STARTED");
 
     expect(inst.status()).toBe(Instance.STATUS_RUNNING);
     expect(inst.process).toBeTruthy();
@@ -265,10 +324,30 @@ describe("Docker instance lifecycle (real)", () => {
     expect(pkt.status).toBe(200);
     expect(pkt.data.instanceUuid).toBe(uuid);
 
-    // The container must actually exist and be running on the daemon.
+    // The container must actually exist with the Node image and be running.
     const containers = await listLabeledContainers(uuid);
     expect(containers).toHaveLength(1);
     expect(containers[0].State).toBe("running");
+    expect(containers[0].Image).toContain("node");
+
+    // The fixture really runs inside the container: it keeps appending
+    // heartbeats to the bind-mounted instance workspace.
+    await expectHeartbeatGrows(heartbeatFileOf(cfg));
+
+    // Real stdin/stdout round-trip through the Docker attach stream.
+    const echoSocket = sendCommand(uuid, "echo MCSM_DOCKER_STDIO");
+    await waitOutputContains(output, "ECHO:MCSM_DOCKER_STDIO");
+    await waitFor(() => packetsFor(echoSocket, "instance/command").length > 0, 10000, "echo ack");
+    expect(packetsFor(echoSocket, "instance/command")[0].status).toBe(200);
+
+    // A computed answer proves the stream keeps working across commands.
+    sendCommand(uuid, "sum 19 23");
+    await waitOutputContains(output, "SUM:42");
+
+    // Unknown input gets a structured error and does not hurt the container.
+    sendCommand(uuid, "bogus arg");
+    await waitOutputContains(output, "ERR:unknown command:bogus arg");
+    expect(inst.status()).toBe(Instance.STATUS_RUNNING);
 
     // detail reports the RUNNING status through the router.
     const detailSocket = invoke("instance/detail", { instanceUuid: uuid }).socket;
@@ -280,14 +359,16 @@ describe("Docker instance lifecycle (real)", () => {
     await killInstance(inst);
   }, 120000);
 
-  it("kill terminates the Docker instance and removes its container", async () => {
+  it("kill terminates the Docker instance, freezes the fixture and removes its container", async () => {
     if (!dockerOk) return;
 
-    const { inst, uuid } = createInstance(
-      dockerConfig("docker-kill", 'sh -c "echo MCSM_DOCKER_KILL; sleep 300"')
-    );
+    const cfg = dockerConfig("docker-kill");
+    const { inst, uuid } = createInstance(cfg);
     invoke("instance/open", { instanceUuids: [uuid] });
     await waitFor(() => inst.status() === Instance.STATUS_RUNNING, 45000, "docker RUNNING");
+
+    const beatFile = heartbeatFileOf(cfg);
+    await expectHeartbeatGrows(beatFile);
 
     const { socket } = invoke("instance/kill", { instanceUuids: [uuid] });
     await waitFor(() => inst.status() === Instance.STATUS_STOP, 30000, "docker STOP after kill");
@@ -295,35 +376,46 @@ describe("Docker instance lifecycle (real)", () => {
     const pkt = packetsFor(socket, "instance/kill")[0];
     expect(pkt.status).toBe(200);
 
-    // The container must be gone (AutoRemove + adapter destroy).
-    await waitFor(async () => (await listLabeledContainers(uuid)).length === 0, 20000, "container removed");
+    // The container must be gone (AutoRemove + adapter destroy) and the fixture
+    // can no longer append heartbeats once the process is killed.
+    await waitFor(
+      async () => (await listLabeledContainers(uuid)).length === 0,
+      20000,
+      "container removed"
+    );
+    await expectHeartbeatFrozen(beatFile);
   }, 120000);
 
-  it("stop gracefully terminates the Docker instance (SIGINT via ^C)", async () => {
+  it("stop gracefully terminates the Docker instance (stopCommand `exit` → BYE)", async () => {
     if (!dockerOk) return;
 
-    // A continuous loop keeps the container alive and lets us confirm it was
-    // RUNNING; ^C (SIGINT) is delivered to the container's PID 1 (sh), whose
-    // default disposition terminates the container cleanly.
-    const { inst, uuid } = createInstance(
-      dockerConfig("docker-stop", 'sh -c "while true; do echo MCSM_DOCKER_STOP; sleep 1; done"')
-    );
+    const cfg = dockerConfig("docker-stop");
+    const { inst, output, uuid } = createInstance(cfg);
     invoke("instance/open", { instanceUuids: [uuid] });
     await waitFor(() => inst.status() === Instance.STATUS_RUNNING, 45000, "docker RUNNING");
 
+    const beatFile = heartbeatFileOf(cfg);
+    await expectHeartbeatGrows(beatFile);
+
     invoke("instance/stop", { instanceUuids: [uuid] });
-    await waitFor(() => inst.status() === Instance.STATUS_STOP, 30000, "docker STOP after ^C");
+    await waitFor(() => inst.status() === Instance.STATUS_STOP, 30000, "docker STOP after stop");
 
     expect(inst.status()).toBe(Instance.STATUS_STOP);
-    await waitFor(async () => (await listLabeledContainers(uuid)).length === 0, 20000, "container removed after stop");
+    // The fixture acknowledged the graceful stop command before exiting.
+    await waitOutputContains(output, "BYE");
+    await waitFor(
+      async () => (await listLabeledContainers(uuid)).length === 0,
+      20000,
+      "container removed after stop"
+    );
+    await expectHeartbeatFrozen(beatFile);
   }, 120000);
 
   it("delete destroys a stopped Docker instance (config + subsystem entry removed)", async () => {
     if (!dockerOk) return;
 
-    const { inst, uuid } = createInstance(
-      dockerConfig("docker-delete", 'sh -c "echo MCSM_DOCKER_DELETE; sleep 300"')
-    );
+    const cfg = dockerConfig("docker-delete");
+    const { inst, uuid } = createInstance(cfg);
     invoke("instance/open", { instanceUuids: [uuid] });
     await waitFor(() => inst.status() === Instance.STATUS_RUNNING, 45000, "docker RUNNING");
     await killInstance(inst);
@@ -412,10 +504,6 @@ describe("General process instance interactive lifecycle (real)", () => {
     };
   }
 
-  function heartbeatFileOf(cfg: any) {
-    return path.join(cfg.cwd, "heartbeat.txt");
-  }
-
   async function startInstance(inst: any, output: string[]) {
     await waitFor(() => inst.status() === Instance.STATUS_RUNNING, 30000, "process RUNNING");
     await waitOutputContains(output, "READY:");
@@ -427,34 +515,6 @@ describe("General process instance interactive lifecycle (real)", () => {
       await inst.execPreset("stop");
     } catch (err) {}
     await waitFor(() => inst.status() === Instance.STATUS_STOP, 30000, "instance stopped");
-  }
-
-  // The fixture appends a heartbeat every 200ms while it is alive.
-  async function expectHeartbeatGrows(file: string) {
-    const before = fs.existsSync(file) ? fs.statSync(file).size : 0;
-    await waitFor(
-      () => fs.existsSync(file) && fs.statSync(file).size > before,
-      10000,
-      "heartbeat file grows"
-    );
-  }
-
-  async function expectHeartbeatFrozen(file: string) {
-    const before = fs.statSync(file).size;
-    await new Promise((r) => setTimeout(r, 700));
-    expect(fs.statSync(file).size).toBe(before);
-  }
-
-  // Cross-platform liveness probe: signal 0 only checks for existence
-  // (ESRCH when the pid is gone, on POSIX and Windows alike).
-  function isPidAlive(pid?: number | string | null): boolean {
-    if (pid == null) return false;
-    try {
-      process.kill(Number(pid), 0);
-      return true;
-    } catch (err) {
-      return false;
-    }
   }
 
   it("creates an instance via instance/new, persists config and emits real startup output", async () => {
