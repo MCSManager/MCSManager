@@ -3,12 +3,13 @@
  *
  * This router is exercised by the real instance/Docker integration suite in
  * `src/routers/Instance_router.integration.test.ts` (real containers, real child
- * processes). Any change here can break container/process startup, output
- * capture, termination or destruction.
+ * processes, and the interactive `test/fixtures/test.mjs` app). Any change here
+ * can break container/process startup, output capture, termination or
+ * destruction.
  *
  * After editing this file, AI assistants and developers MUST run the
- * `mcsmanager-docker-instance-test` skill and confirm the Docker + instance
- * cases pass before finishing.
+ * `mcsmanager-docker-instance-test` skill and confirm the Docker + general
+ * process instance cases pass before finishing.
  *   Skill: `.agents/skills/mcsmanager-docker-instance-test/SKILL.md`
  */
 import fs from "fs-extra";

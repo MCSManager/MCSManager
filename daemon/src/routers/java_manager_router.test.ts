@@ -94,8 +94,7 @@ import FileManager from "../service/system_file";
 import InstanceSubsystem from "../service/system_instance";
 import { extract as tarExtract } from "tar";
 
-const getInstance = (uuid: string): any =>
-  (InstanceSubsystem as any).getInstance(uuid);
+const getInstance = (uuid: string): any => (InstanceSubsystem as any).getInstance(uuid);
 
 beforeEach(() => {
   globalConfiguration.config.key = "test-key";
@@ -135,9 +134,7 @@ describe("java_manager_router", () => {
     expect(javaManager.list).toHaveBeenCalledTimes(1);
     const pkt = packetsFor(socket, "java_manager/list")[0];
     expect(pkt.status).toBe(200);
-    expect(pkt.data).toEqual([
-      { info: { name: "zulu_21" }, path: "/JavaData/zulu_21" }
-    ]);
+    expect(pkt.data).toEqual([{ info: { name: "zulu_21" }, path: "/JavaData/zulu_21" }]);
   });
 
   // ---- java_manager/add ----
@@ -198,13 +195,13 @@ describe("java_manager_router", () => {
     expect(javaManager.getJavaDownloadUrl).toHaveBeenCalledWith(info);
     expect(downloadManager.downloadFromUrl).toHaveBeenCalledWith(
       "https://example.com/jdk.tar.gz",
-      "/tmp/JavaData/zulu_21/jdk.tar.gz"
+      path.normalize("/tmp/JavaData/zulu_21/jdk.tar.gz")
     );
     expect(javaManager.getJava).toHaveBeenCalledWith("zulu_21");
     expect(tarExtract).toHaveBeenCalledTimes(1);
     expect(tarExtract).toHaveBeenCalledWith({
-      file: "/tmp/JavaData/zulu_21/jdk.tar.gz",
-      cwd: "/tmp/JavaData/zulu_21",
+      file: path.normalize("/tmp/JavaData/zulu_21/jdk.tar.gz"),
+      cwd: path.normalize("/tmp/JavaData/zulu_21"),
       strip: 1
     });
     expect(javaManager.updateJavaInfo).toHaveBeenCalledWith(info);
@@ -264,11 +261,7 @@ describe("java_manager_router", () => {
 
   // ---- java_manager/delete ----
   it("java_manager/delete: removeJava(id) -> {200, true}", async () => {
-    const { socket } = invoke(
-      "java_manager/delete",
-      { id: "jdk8" },
-      { session: AUTHED() }
-    );
+    const { socket } = invoke("java_manager/delete", { id: "jdk8" }, { session: AUTHED() });
     await flush();
     expect(javaManager.removeJava).toHaveBeenCalledWith("jdk8");
     const pkt = packetsFor(socket, "java_manager/delete")[0];
@@ -278,11 +271,7 @@ describe("java_manager_router", () => {
 
   it("java_manager/delete: removeJava rejects -> {500}", async () => {
     (javaManager as any).removeJava.mockRejectedValue(new Error("not found"));
-    const { socket } = invoke(
-      "java_manager/delete",
-      { id: "jdk8" },
-      { session: AUTHED() }
-    );
+    const { socket } = invoke("java_manager/delete", { id: "jdk8" }, { session: AUTHED() });
     await flush();
     const pkt = packetsFor(socket, "java_manager/delete")[0];
     expect(pkt.status).toBe(500);

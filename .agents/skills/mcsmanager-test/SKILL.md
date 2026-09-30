@@ -20,14 +20,14 @@ for d in common daemon panel frontend; do
 done
 ```
 
-Expected current totals: common 9, daemon 113, panel 193 (+1 skipped), frontend 41.
+Expected current totals: common 9, daemon 176, panel 193 (+1 skipped), frontend 41.
 
 ## 2. Per-module commands
 
 | Module     | Command (run inside the module dir) | Notes                                                            |
 | ---------- | ----------------------------------- | ---------------------------------------------------------------- |
 | `common`   | `npm test`                          | vitest, ~9 tests; see §4 cwd quirk                                |
-| `daemon`   | `npm test`                          | vitest, router + smoke tests                                     |
+| `daemon`   | `npm test`                          | vitest, router + smoke + real instance lifecycle integration tests (`Instance_router.integration.test.ts` spawns real child processes / Docker containers — see §4) |
 | `panel`    | `npm test`                          | vitest, router/service tests                                     |
 | `frontend` | `npm test`                          | vitest; run `npm run type-check` first when TS types changed (§5) |
 
@@ -45,6 +45,7 @@ Expected current totals: common 9, daemon 113, panel 193 (+1 skipped), frontend 
 - **`common/src/system_storage.test.ts`** must `process.chdir(tmpDir)` **before** importing the module — `DATA_PATH` is derived from `process.cwd()` at import time. Follow the same pattern in new tests touching `StorageSubsystem`.
 - Tests use node env by default; add `// @vitest-environment jsdom` for DOM tests (frontend).
 - Windows: `fs.chmod` only toggles the read-only bit — gate POSIX-mode assertions with `process.platform === "win32"` skips and assert mocked `fs.chmodSync` arguments instead.
+- `daemon/src/routers/Instance_router.integration.test.ts` is a **real** integration suite (spawns `alpine` containers and a real interactive `node test.mjs` child process). It needs `node` on `PATH`, adds ~30–60s to the daemon run, and its Docker cases silently return early without root/Docker access — details and run modes in the `mcsmanager-docker-instance-test` skill.
 
 ## 5. Related checks (not tests, but required before finishing)
 
