@@ -10,7 +10,7 @@ panel/public/
 data/
 dist/
 out/
-lib/
+daemon/lib/
 production/
 .DS_Store
 production-code/
