@@ -38,7 +38,7 @@ vi.mock("../service/sso_service", () => ({ verifyIssuer: vi.fn(async () => undef
 - 仅 `PUT /overview/setting` 的 SSO OIDC **启用 + 凭据变更**分支(需校验 Issuer 的那条路径)无法走整到断言。
 - 同一 handler 内在 `require` **之前** 的校验分支(`ssoIssuer` 必须为 `https://`、必填字段缺失等)
   仍可正常断言,并已在
-  `panel/src/app/routers/settings_router.test.ts` 中收录为通过用例
+  `panel/src/app/routers/__test__/settings_router.test.ts` 中收录为通过用例
   (SSO OIDC branch: rejects a non-https issuer URL before reaching verifyIssuer)。
 - `upgrade_router` 等其他通过 `import` 引用 `upgrade_service` 的路由不受此限制。
 

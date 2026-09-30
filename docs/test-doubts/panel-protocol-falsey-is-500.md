@@ -24,7 +24,7 @@ if (ctx.body === null || ctx.body === false || ctx.body === undefined) {
 因此,handler 里像 `confirm2fa` 这样**业务上想用 `false` 表达"未通过/未启用"** 的分支,
 最终信封变成 `{status:500, data:null}`——即"处理失败",而非"成功且 data=false"。
 
-## 实测表现(见 `panel/src/app/routers/general_user_router.test.ts`)
+## 实测表现(见 `panel/src/app/routers/__test__/general_user_router.test.ts`)
 
 | 场景 | handler 设置 | 最终信封 |
 | --- | --- | --- |

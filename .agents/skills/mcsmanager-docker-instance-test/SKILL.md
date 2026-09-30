@@ -6,7 +6,7 @@ description: Run the MCSManager Docker + instance lifecycle integration tests (d
 # MCSManager — Docker + Instance Integration Test Runner
 
 Real (non-mocked) lifecycle tests live in
-`daemon/src/routers/Instance_router.integration.test.ts`:
+`daemon/src/routers/__test__/Instance_router.integration.test.ts`:
 
 | Suite | Tests | What it does for real |
 | --- | --- | --- |
@@ -37,16 +37,16 @@ cd daemon
 # a) Docker suite ONLY, as root, verbose (the common case)
 sudo env "PATH=$(dirname "$(command -v node)"):$PATH" \
   node node_modules/vitest/vitest.mjs run \
-  src/routers/Instance_router.integration.test.ts \
+  src/routers/__test__/Instance_router.integration.test.ts \
   -t "Docker instance lifecycle" \
   --reporter=verbose
 
 # b) Full integration file (Docker + general + process), as root
 sudo env "PATH=$(dirname "$(command -v node)"):$PATH" \
-  node node_modules/vitest/vitest.mjs run src/routers/Instance_router.integration.test.ts
+  node node_modules/vitest/vitest.mjs run src/routers/__test__/Instance_router.integration.test.ts
 
 # c) Interactive process suite only — any OS (Windows PowerShell included)
-npx vitest run src/routers/Instance_router.integration.test.ts \
+npx vitest run src/routers/__test__/Instance_router.integration.test.ts \
   -t "General process instance interactive" --reporter=verbose
 
 # d) Whole daemon suite (no root): Docker tests return early, the rest run
@@ -128,7 +128,7 @@ Docker**. Always confirm:
 
 ## 7. Reference
 
-- Test file: `daemon/src/routers/Instance_router.integration.test.ts`
+- Test file: `daemon/src/routers/__test__/Instance_router.integration.test.ts`
 - Interactive process fixture: `daemon/test/fixtures/test.mjs`
-- Unit (fully mocked) counterpart: `daemon/src/routers/Instance_router.test.ts`
+- Unit (fully mocked) counterpart: `daemon/src/routers/__test__/Instance_router.test.ts`
 - Example run report: `docker-test-report.md` (repo root)

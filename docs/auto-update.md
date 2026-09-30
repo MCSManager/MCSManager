@@ -164,18 +164,18 @@ untouched (`string | Record<string, string>`).
 
 ### Frontend unit tests (vitest)
 
-- `frontend/src/tools/localizedNotes.test.ts` — locale matching / English
+- `frontend/src/tools/__test__/localizedNotes.test.ts` — locale matching / English
   fallback rules for release notes.
-- `frontend/src/widgets/Settings.test.ts` — auto-update tab rendering, localized
+- `frontend/src/widgets/__test__/Settings.test.ts` — auto-update tab rendering, localized
   notes box, save/refresh/update flow.
-- `frontend/src/widgets/node/NodeItem.test.ts` — update icon + tooltip on the
+- `frontend/src/widgets/node/__test__/NodeItem.test.ts` — update icon + tooltip on the
   node card, offline behavior, update via the operator button group.
 
 Run: `cd frontend && npm run type-check && npm run lint && npm test`.
 
 ### Shared unit tests (vitest)
 
-- `common/src/upgrade.test.ts` — `compareVersions` semantics.
+- `common/src/__test__/upgrade.test.ts` — `compareVersions` semantics.
 
 Run: `cd common && npm test`.
 

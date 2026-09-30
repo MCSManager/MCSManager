@@ -2,7 +2,7 @@
  * MANDATORY TEST GATE — DO NOT MODIFY WITHOUT RE-RUNNING THE INTEGRATION TESTS.
  *
  * This service is exercised by the real instance/Docker integration suite in
- * `src/routers/Instance_router.integration.test.ts` (real Docker containers).
+ * `src/routers/__test__/Instance_router.integration.test.ts` (real Docker containers).
  * Any change here can break container startup, image handling or removal.
  *
  * After editing this file, AI assistants and developers MUST run the

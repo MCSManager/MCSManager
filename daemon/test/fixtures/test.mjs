@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Interactive stdio fixture application for the MCSManager daemon integration
- * suite (`src/routers/Instance_router.integration.test.ts`, describe
+ * suite (`src/routers/__test__/Instance_router.integration.test.ts`, describe
  * "General process instance interactive lifecycle (real)").
  *
  * Every instance of that suite is created with the start command `node test.mjs`

@@ -23,7 +23,7 @@ router.get("/", permission({level: ROLE.USER}), validator({query:{daemonId,uuid}
 
 非所有者时该 throw 会向外冒泡:经 `validator()` 的 `try{ return await next(); }catch{}`
 或最终 `protocol.middleware` 的 catch,最终信封为**错误状态(500 错误信封)**,
-而非 403。实测(`panel/src/app/routers/instance_admin_router.test.ts` 第 2 个用例)
+而非 403。实测(`panel/src/app/routers/__test__/instance_admin_router.test.ts` 第 2 个用例)
 非所有者返回 **500**(`protocol` 的 Error 分支),与兄弟路由的 403 不一致。
 
 ## 实测对照

@@ -2,7 +2,7 @@
  * MANDATORY TEST GATE — DO NOT MODIFY WITHOUT RE-RUNNING THE INTEGRATION TESTS.
  *
  * This router is exercised by the real instance/Docker integration suite in
- * `src/routers/Instance_router.integration.test.ts` (real containers, real child
+ * `src/routers/__test__/Instance_router.integration.test.ts` (real containers, real child
  * processes, and the interactive `test/fixtures/test.mjs` app). Any change here
  * can break container/process startup, output capture, termination or
  * destruction.

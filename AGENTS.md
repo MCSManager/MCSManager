@@ -81,8 +81,8 @@ const errorMsgWithParams = $t("TXT_CODE_INSTANCE_ERROR", {
 
 ## 8. Testing Quirks
 
-- **Every module has a vitest suite: `cd common|daemon|panel|frontend && npm test`. Running the relevant suite after any code change is mandatory (see §2).** `common/` is compiled directly into panel/daemon, so a `common/` change must be verified with common + daemon + panel. Files are `src/**/*.test.ts`; node env by default, add `// @vitest-environment jsdom` for DOM tests. The all-in-one command lives in the [`mcsmanager-test`](.agents/skills/mcsmanager-test/SKILL.md) skill.
-- `common/src/system_storage.test.ts` must `process.chdir(tmpDir)` **before** importing the module — `DATA_PATH` is derived from `process.cwd()` at import time (module-level constant). Follow the same pattern in new tests touching `StorageSubsystem`.
+- **Every module has a vitest suite: `cd common|daemon|panel|frontend && npm test`. Running the relevant suite after any code change is mandatory (see §2).** `common/` is compiled directly into panel/daemon, so a `common/` change must be verified with common + daemon + panel. Test files are **not** co-located with source: put them under a `__test__` subfolder of the directory they cover (`src/<dir>/__test__/*.test.ts`, e.g. `src/routers/__test__/environment_router.test.ts`); shared harnesses live in the module-level `test/` dir (`test/harness/`). node env by default, add `// @vitest-environment jsdom` for DOM tests. The all-in-one command lives in the [`mcsmanager-test`](.agents/skills/mcsmanager-test/SKILL.md) skill.
+- `common/src/__test__/system_storage.test.ts` must `process.chdir(tmpDir)` **before** importing the module — `DATA_PATH` is derived from `process.cwd()` at import time (module-level constant). Follow the same pattern in new tests touching `StorageSubsystem`.
 - Windows: `fs.chmod` only toggles the read-only bit — POSIX mode assertions are meaningless there; gate such tests with `process.platform === "win32"` skips and assert mocked `fs.chmodSync` call arguments instead.
 
 ## 9. Feature Deep-Dives

@@ -31,7 +31,7 @@ return async (ctx, next) => {
 - `ctx.body` 被设为 `err.message`(字符串)
 - 经 `protocol.middleware` 字符串分支包装成信封 `{status:400, data: <错误消息>, time}`
 
-## 实测表现(见 `panel/src/app/routers/login_router.test.ts`)
+## 实测表现(见 `panel/src/app/routers/__test__/login_router.test.ts`)
 
 | 场景 | 抛出位置 | 最终信封 status |
 | --- | --- | --- |
