@@ -73,6 +73,23 @@ npm run dev
 
 <br />
 
+### Unsafe Integration-Test Mode (automated tests only)
+
+The panel accepts an **insecure** startup flag that disables authentication so automated integration tests can call privileged APIs without a real login:
+
+```bash
+node production/app.js --Unsafe-Integration-Test-Mode=<key>
+```
+
+- The parameter **name** is matched case-insensitively (`--unsafe-integration-test-mode=<key>` works too); the `<key>` value is case-sensitive.
+- While enabled, any request carrying an `x-request-api-key` header equal to `<key>` skips **all** permission checks in `panel/src/app/middleware/permission.ts` (API-key validation, token and session checks) and is forwarded straight to the route handler.
+- Only the header is recognized; the `?apikey=` query parameter does not trigger the bypass.
+- The mode is disabled unless the flag is explicitly passed; it is not stored in any configuration file.
+
+> **Security warning:** anyone who knows the key gets full admin access. Use a long random key and never enable this on a production instance.
+
+<br />
+
 ### Internationalizing Your Code
 
 Since the project supports multiple languages, all `strings` and `comments` in the code must be in English only. Do not hardcode non-English text directly in the code.
