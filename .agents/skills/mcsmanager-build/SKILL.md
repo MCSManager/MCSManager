@@ -86,6 +86,7 @@ cd <deploy-dir>\web;    node --enable-source-maps --max-old-space-size=8192 app.
 ```
 
 - `node_app.exe` in `prod-scripts/windows/start.bat` is the **node binary bundled with the official release package**; source-built artifacts use the system `node` directly (16+, CI runs 16.x/20.x; the verified environment in 2026-09 was node 22).
+- **Panel only** — `--Unsafe-Integration-Test-Mode=<key>` (name case-insensitive) disables panel auth: any request with an `x-request-api-key` header equal to `<key>` bypasses all permission checks. For automated integration tests only; never enable on production. See `DEVELOPMENT.md` §"Unsafe Integration-Test Mode".
 - Default ports: web panel **23333**, daemon **24444** (`ws://localhost:24444`).
 - **First startup**: when the user count is 0, the frontend enters the installation wizard (backend `/install` in `login_router.ts`), where you create the first admin account (permission 10). There is no default root password.
 - **Migrating existing data**: copy `web/data/` + `daemon/data/` as a pair to preserve accounts, nodes, and instances. The two must be migrated **as a pair**: the access key in daemon `data/Config/global.json` and the apiKey in panel `data/RemoteServiceConfig/*.json` are paired credentials.

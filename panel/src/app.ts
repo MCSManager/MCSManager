@@ -22,6 +22,10 @@ import SystemRemoteService from "./app/service/remote_service";
 import SystemUser from "./app/service/user_service";
 import versionAdapter from "./app/service/version_adapter";
 import { initSystemConfig, systemConfig } from "./app/setting";
+import {
+  getUnsafeIntegrationTestModeKey,
+  parseUnsafeIntegrationTestModeArg
+} from "./app/utils/integration_test_mode";
 import { checkBusinessMode, getVersion, initVersionManager } from "./app/version";
 
 function hasParams(name: string) {
@@ -94,6 +98,17 @@ process.stdin.on("data", (v) => {
 });
 
 async function main() {
+  // Detect the unsafe integration-test mode flag before anything else, so the
+  // permission middleware can bypass checks for requests carrying the key.
+  parseUnsafeIntegrationTestModeArg(process.argv);
+  if (getUnsafeIntegrationTestModeKey()) {
+    logger.warn(
+      "SECURITY WARNING: Unsafe integration-test mode is ENABLED. " +
+        "Requests with the matching x-request-api-key header bypass ALL permission checks. " +
+        "Never use this on a production instance."
+    );
+  }
+
   // load global configuration file
   initSystemConfig();
 
