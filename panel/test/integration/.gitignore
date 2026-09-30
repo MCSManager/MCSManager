@@ -1,0 +1,3 @@
+# Integration-test runtime artifacts (written by globalSetup / lib/world.ts)
+.runtime.json
+.last-run/
