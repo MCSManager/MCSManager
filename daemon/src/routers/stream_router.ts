@@ -7,7 +7,7 @@ import {
   streamLoginSuccessful
 } from "../service/mission_passport";
 import * as protocol from "../service/protocol";
-import { routerApp } from "../service/router";
+import { routerApp } from "../service/router_app";
 import InstanceSubsystem from "../service/system_instance";
 
 function checkStreamLogin(ctx: RouterContext) {

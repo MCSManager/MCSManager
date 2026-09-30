@@ -3158,15 +3158,14 @@
   "TXT_CODE_2b2ff3ff": "コンテナの特定ブロックデバイスの書き込みレートを制限します。形式: /dev/sda:5MB。複数デバイスはカンマで区切ります。",
   "TXT_CODE_f0dc9eca": "例: /dev/sda:5MB",
   "TXT_CODE_AUTOUPDATE_DAEMON_BTN": "デーモンを更新",
-  "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "このリモートデーモンを今すぐ更新しますか?最新パッケージをダウンロードして上書きし、再起動します。ノードは自動的に再接続します。",
-  "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "更新を開始しました。デーモンはダウンロードと再起動を行っています。まもなく再接続します。",
+  "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "このリモートデーモンを今すぐ更新しますか?最新パッケージをダウンロードして上書きします。変更を適用するには、その後デーモンを手動で再起動してください。",
+  "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "デーモンを v{v} に更新しました。変更を適用するにはデーモンを手動で再起動してください。",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "デーモンの更新を開始できませんでした。",
   "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "新しいバージョン v{v} があります。右上の「デーモンを更新」ボタンから更新できます。",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "パネルを更新",
-  "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "管理パネルを今すぐ更新しますか?最新パッケージをダウンロードしてファイル(app.js とフロントエンド)を上書きし、再起動します。接続は一時的に切断されます。",
-  "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "パネルを更新しました。再接続中...",
+  "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "今すぐコントロールパネルを更新しますか?最新パッケージをダウンロードしてパネルのファイル (app.js とフロントエンド) を上書きします。変更を適用するには、その後パネルを手動で再起動してください。",
+  "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "パネルを v{v} に更新しました。変更を適用するにはパネルを手動で再起動してください。",
   "TXT_CODE_AUTOUPDATE_WEB_FAILED": "パネルの更新を開始できませんでした。",
-  "TXT_CODE_AUTOUPDATE_WEB_RESTARTING": "パネルを再起動しています。しばらくお待ちください...",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE": "パネル更新",
   "TXT_CODE_AUTOUPDATE_WEB_NOT_CONFIGURED": "自動更新が設定されていません(updateSourceUrl を設定してください)",
   "TXT_CODE_AUTOUPDATE_WEB_LATEST": "新しいバージョンがあります: {v}",
@@ -3189,5 +3188,5 @@
   "TXT_CODE_AUTOUPDATE_TAB_TITLE": "自動更新",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC": "パネルの現在のバージョンと、オンラインで新しいバージョンが利用可能かを確認します。",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC": "パネルはこの URL からバージョンマニフェストと更新パッケージを取得します。",
-  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "最新パッケージをダウンロードしてパネル(app.js とフロントエンド)を上書きし、再起動します。接続は一時的に切断されます。"
+  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "最新パッケージをダウンロードしてパネルのファイル (app.js とフロントエンド) を上書きします。変更を適用するには、その後パネルを手動で再起動してください。"
 }

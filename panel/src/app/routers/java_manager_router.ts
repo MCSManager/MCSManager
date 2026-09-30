@@ -19,7 +19,8 @@ router.use(async (ctx, next) => {
   if (isHaveInstanceByUuid(userUuid, daemonId, instanceId)) {
     await next();
   } else {
-    throw new Error($t("TXT_CODE_eb401a37"));
+    ctx.status = 403;
+    ctx.body = $t("TXT_CODE_eb401a37");
   }
 });
 

@@ -9,7 +9,7 @@ import downloadManager from "../service/download_manager";
 import javaManager from "../service/java_manager";
 import logger from "../service/log";
 import * as protocol from "../service/protocol";
-import { routerApp } from "../service/router";
+import { routerApp } from "../service/router_app";
 import FileManager from "../service/system_file";
 import instanceManager from "../service/system_instance";
 

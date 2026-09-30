@@ -32,7 +32,7 @@ router.use(async (ctx, next) => {
   // Check global file manager setting
   if (systemConfig?.canFileManager === false && getUserPermission(ctx) < 10) {
     ctx.status = 403;
-    ctx.body = new Error($t("TXT_CODE_router.file.off"));
+    ctx.body = $t("TXT_CODE_router.file.off");
     return;
   }
 

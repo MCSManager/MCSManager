@@ -23,7 +23,9 @@ explicit**; nothing is downloaded or applied in the background.
 
 Both flows download a zip from an operator-configured **update source**
 (`updateSourceUrl`, a manifest URL) and overlay the whole package onto the
-install directory, then restart the process.
+install directory. The new build takes effect only after a **manual restart**:
+the UI shows a "restart to apply" modal and the process log records a
+reminder — nothing restarts by itself.
 
 ## 2. Architecture / data flow
 
@@ -37,7 +39,7 @@ panel/src/app/routers/upgrade_router.ts --(socket.io "upgrade/*", forwards updat
 panel/src/app/service/upgrade_service.ts   daemon/src/service/upgrade_service.ts
       \_______________ both build on ______________/
                        common/src/upgrade.ts
-        fetchJson -> downloadToFile -> extractZip -> applyUpgradePackage -> selfRestartProcess
+        fetchJson -> downloadToFile -> extractZip -> applyUpgradePackage  (then: manual restart)
                                 |
                                 v
      updateSourceUrl -> manifest.json -> { web | daemon: { version, url, notes } } -> *.zip
@@ -98,8 +100,8 @@ untouched (`string | Record<string, string>`).
 
 | Layer | File | Role |
 | --- | --- | --- |
-| shared | `common/src/upgrade.ts` | `compareVersions`, `fetchJson`, `downloadToFile`, `extractZip` (Zip-Slip guard), `applyUpgradePackage` (transactional overlay), `isSupervisedProcess`, `selfRestartProcess` |
-| panel | `panel/src/app/service/upgrade_service.ts` | manifest fetch (uses `web` entry), version compare, download/overlay/restart |
+| shared | `common/src/upgrade.ts` | `compareVersions`, `fetchJson`, `downloadToFile`, `extractZip` (Zip-Slip guard), `applyUpgradePackage` (transactional overlay) |
+| panel | `panel/src/app/service/upgrade_service.ts` | manifest fetch (uses `web` entry), version compare, download/overlay (no auto-restart) |
 | panel | `panel/src/app/routers/upgrade_router.ts` | `/api/upgrade/panel_info`, `/api/upgrade/panel`, `/api/upgrade/daemon_info`, `/api/upgrade/daemon` (ADMIN only); forwards panel `updateSourceUrl` to daemons |
 | daemon | `daemon/src/service/upgrade_service.ts` | same as panel side, for the `daemon` entry; `updateSourceUrl` override (forwarded) wins over local config |
 | daemon | `daemon/src/routers/upgrade_router.ts` | socket.io `upgrade/info`, `upgrade/daemon` |
@@ -135,12 +137,13 @@ untouched (`string | Record<string, string>`).
   source cannot hold the upgrade lock forever.
 - **Upgrade lock.** A single `upgradeInProgress` flag per process prevents
   concurrent upgrades.
-- **Restart strategies.** Under systemd (`INVOCATION_ID`) or pm2 (`pm_id`) the
-  process exits and the supervisor relaunches it. Otherwise a temporary
-  detached restarter script spawns, waits for the **port** to be released (not
-  PID exit — covers the detached relaunch case), then runs `node app.js` again.
-  If the helper cannot be spawned, the old process stays up (update lands on
-  disk, restart is deferred).
+- **No automatic restart.** An update only overlays files on disk; the running
+  process keeps the old build in memory. The UI shows a `Modal.success` popup
+  and the process log records a reminder, both telling the operator to restart
+  the panel/daemon manually (systemd/pm2 restart, Ctrl+C + start, ...) for the
+  new version to take effect. `getVersion()` is read at startup, so the API
+  keeps reporting the old version — and keeps offering the update — until that
+  restart happens.
 - **Panel forwards `updateSourceUrl` to daemons.** Configure the source once in
   the panel; every node is updated from that source even if its own config is
   empty. Daemon-local `updateSourceUrl` is the fallback
@@ -161,14 +164,20 @@ untouched (`string | Record<string, string>`).
 
 ### Frontend unit tests (vitest)
 
-- `frontend/src/tools/localizedNotes.test.ts` — locale matching / English
+- `frontend/src/tools/__test__/localizedNotes.test.ts` — locale matching / English
   fallback rules for release notes.
-- `frontend/src/widgets/Settings.test.ts` — auto-update tab rendering, localized
+- `frontend/src/widgets/__test__/Settings.test.ts` — auto-update tab rendering, localized
   notes box, save/refresh/update flow.
-- `frontend/src/widgets/node/NodeItem.test.ts` — update icon + tooltip on the
+- `frontend/src/widgets/node/__test__/NodeItem.test.ts` — update icon + tooltip on the
   node card, offline behavior, update via the operator button group.
 
 Run: `cd frontend && npm run type-check && npm run lint && npm test`.
+
+### Shared unit tests (vitest)
+
+- `common/src/__test__/upgrade.test.ts` — `compareVersions` semantics.
+
+Run: `cd common && npm test`.
 
 ### E2E harnesses (the "backend tests")
 
@@ -193,7 +202,10 @@ node scripts/verify-auto-update-strict.mjs
   manifest + zips.
 - `scripts/verify-auto-update.mjs` — install/login, configure source, assert
   `panel_info`/`daemon_info` (incl. `onlineNotes` passthrough), run panel +
-  forwarded daemon updates, verify on-disk versions and overlay markers.
+  forwarded daemon updates, verify on-disk versions and overlay markers, then
+  simulate the operator's **manual restart** (kill + respawn) and verify the
+  new build reports the new version. The process is expected to stay up
+  during the update itself — there is no auto-restart.
 - `scripts/verify-auto-update-strict.mjs` — scenarios:
   `0` unconfigured (no source anywhere), `A` already-latest rejection,
   `B` Zip-Slip rejection, `B2` missing-`app.js` validity gate,
@@ -215,7 +227,7 @@ brace `{{v}}`. Notable keys:
 | Key | Where | Meaning |
 | --- | --- | --- |
 | `TXT_CODE_AUTOUPDATE_TAB_TITLE` | Settings tab | "Auto Update" |
-| `TXT_CODE_AUTOUPDATE_WEB_*` | Settings tab | panel update section (title, source, save, confirm, restarting, ...) |
+| `TXT_CODE_AUTOUPDATE_WEB_*` | Settings tab | panel update section (title, source, save, confirm, restart-required modal, ...) |
 | `TXT_CODE_AUTOUPDATE_WEB_NOTES` | Settings tab | heading of the release-notes box |
 | `TXT_CODE_AUTOUPDATE_WEB_LATEST` | Settings tab | "New version available: {v}" tag |
 | `TXT_CODE_AUTOUPDATE_DAEMON_BTN` | Node card button group | "Update Daemon" |

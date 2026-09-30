@@ -4,7 +4,7 @@ import path from "path";
 import { afterEach, beforeAll, describe, expect, it } from "vitest";
 
 let tmpDir: string;
-let StorageSubsystem: InstanceType<typeof import("./system_storage").default>;
+let StorageSubsystem: InstanceType<typeof import("../system_storage").default>;
 
 beforeAll(async () => {
   tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "mcsm-storage-test-"));
@@ -17,7 +17,7 @@ beforeAll(async () => {
   // load()/store() are instance methods (every real consumer instantiates
   // via `new StorageSubsystem()` - see daemon/src/common/system_storage.ts
   // and panel/src/app/common/system_storage.ts), so we do the same here.
-  const StorageSubsystemClass = (await import("./system_storage")).default;
+  const StorageSubsystemClass = (await import("../system_storage")).default;
   StorageSubsystem = new StorageSubsystemClass();
 });
 

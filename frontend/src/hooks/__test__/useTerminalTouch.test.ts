@@ -1,6 +1,6 @@
 import type { IBuffer } from "@xterm/xterm";
 import { describe, expect, it } from "vitest";
-import { snapSelectionEnd, snapSelectionStart } from "./terminalTouchSelection";
+import { snapSelectionEnd, snapSelectionStart } from "../terminalTouchSelection";
 
 function createBuffer(widths: number[]): IBuffer {
   return {

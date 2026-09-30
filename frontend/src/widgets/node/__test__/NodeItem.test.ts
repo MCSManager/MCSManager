@@ -6,7 +6,7 @@
 //   (panel language match, English fallback)
 // - the update runs through the top-right "Update Daemon" button group
 import { flushPromises, mount, type VueWrapper } from "@vue/test-utils";
-import { Modal, message } from "ant-design-vue";
+import { Modal } from "ant-design-vue";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import IconBtn from "@/components/IconBtn.vue";
 import NodeItem from "@/widgets/node/NodeItem.vue";
@@ -140,7 +140,7 @@ const mountNodeItem = async (item = nodeItem()) => {
 beforeEach(() => {
   vi.clearAllMocks();
   mocks.daemonUpgradeInfoExecute.mockResolvedValue({ value: daemonUpgradeInfo() });
-  mocks.upgradeDaemonExecute.mockResolvedValue({ value: { started: true } });
+  mocks.upgradeDaemonExecute.mockResolvedValue({ value: { started: true, onlineVersion: "4.18.4" } });
 });
 
 afterEach(() => {
@@ -216,7 +216,7 @@ describe("NodeItem.vue daemon update affordances", () => {
     await updateBtn!.find("span.btn").trigger("click");
     expect(confirmOptions.title).toBe("TXT_CODE_AUTOUPDATE_DAEMON_BTN");
 
-    const messageSpy = vi.spyOn(message, "success").mockImplementation((() => ({})) as any);
+    const successSpy = vi.spyOn(Modal, "success").mockImplementation((() => ({})) as any);
     await confirmOptions.onOk();
     await flushPromises();
 
@@ -224,6 +224,11 @@ describe("NodeItem.vue daemon update affordances", () => {
     expect(mocks.upgradeDaemonExecute.mock.calls[0][0]).toEqual({
       params: { uuid: "node-1" }
     });
-    expect(messageSpy).toHaveBeenCalledWith("TXT_CODE_AUTOUPDATE_DAEMON_STARTED");
+    // Update applied on disk -> modal asks the operator to restart manually
+    expect(successSpy).toHaveBeenCalledTimes(1);
+    expect(String(successSpy.mock.calls[0][0]?.content)).toContain(
+      "TXT_CODE_AUTOUPDATE_DAEMON_STARTED"
+    );
+    expect(String(successSpy.mock.calls[0][0]?.content)).toContain("{v}=4.18.4");
   });
 });

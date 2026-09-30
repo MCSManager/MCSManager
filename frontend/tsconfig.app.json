@@ -10,7 +10,7 @@
     "components.d.ts",
     "../common/global.d.ts"
   ],
-  "exclude": ["src/**/__tests__/*"],
+  "exclude": ["src/**/__test__/*"],
   "compilerOptions": {
     "composite": true,
     "baseUrl": ".",

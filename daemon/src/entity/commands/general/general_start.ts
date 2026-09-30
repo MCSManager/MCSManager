@@ -17,7 +17,7 @@ class StartupError extends Error {
   }
 }
 
-// Docker process adapter
+// General (non-Docker) child process adapter
 class ProcessAdapter extends EventEmitter implements IInstanceProcess {
   pid?: number | string;
 

@@ -4,8 +4,9 @@
 // daemon fetches a manifest describing the latest available build, compares
 // the online version against its own package.json version, downloads the
 // daemon zip, extracts it, then OVERLAYS the entire package onto the install
-// directory (every file the package ships is copied over), and finally
-// restarts itself so the new build loads.
+// directory (every file the package ships is copied over). The new build only
+// takes effect after a manual restart — the UI and the log tell the operator
+// to restart the daemon.
 //
 // Replacement is NOT a fixed whitelist: whatever the package contains
 // (app.js, package.json, lib/, language packs, ...) is overlaid; runtime-state
@@ -18,8 +19,7 @@ import {
   compareVersions,
   downloadToFile,
   extractZip,
-  fetchJson,
-  selfRestartProcess
+  fetchJson
 } from "mcsmanager-common";
 import path from "path";
 import { globalConfiguration } from "../entity/config";
@@ -32,7 +32,6 @@ const ZIP_NAME = "daemon.zip";
 const EXTRACT_DIR_NAME = "extracted";
 const BACKUP_DIR_NAME = "backup";
 const DOWNLOAD_TIMEOUT_MS = 5 * 60 * 1000; // total download deadline (anti-TARPIT)
-const RESTART_DELAY_MS = 1000; // let the socket reply flush before exit
 
 const log = (m: string) => logger.info(`[AutoUpdate Daemon] ${m}`);
 const errLog = (m: string) => logger.error(`[AutoUpdate Daemon] ${m}`);
@@ -128,10 +127,10 @@ export async function getUpgradeInfo(data?: IUpgradeRequestData): Promise<IUpgra
 
 /**
  * Perform the full daemon self-update. Resolves with a result the caller can
- * emit back over the socket BEFORE the process actually restarts. On success a
- * delayed selfRestartProcess() (detached restarter or supervisor-handled) is
- * scheduled, then this process exits. applyUpgradePackage is transactional: on
- * any failure it restores the install dir, so this catch only cleans staging.
+ * emit back over the socket. On success the new files are on disk and the
+ * operator is told (UI + log) to restart the daemon manually — no automatic
+ * restart. applyUpgradePackage is transactional: on any failure it restores
+ * the install dir, so this catch only cleans staging.
  */
 export async function performUpgrade(data?: IUpgradeRequestData): Promise<IUpgradeResult> {
   if (upgradeInProgress) {
@@ -197,16 +196,16 @@ export async function performUpgrade(data?: IUpgradeRequestData): Promise<IUpgra
       throw new Error(`${$t("TXT_CODE_AUTOUPDATE_B_APPLY_FAILED")}: ${(e as Error).message}`);
     }
     log(
-      `Overlay complete: ${overlays.length} file(s) replaced (${overlays.slice(0, 12).join(", ")}${overlays.length > 12 ? ", ..." : ""}). Scheduling restart...`
+      `Overlay complete: ${overlays.length} file(s) replaced (${overlays.slice(0, 12).join(", ")}${overlays.length > 12 ? ", ..." : ""}).`
     );
 
     // Success: drop the staging area (backup no longer needed).
     await fs.remove(STAGING_DIR);
 
-    setTimeout(() => {
-      selfRestartProcess({ logger: log, port: globalConfiguration.config.port });
-    }, RESTART_DELAY_MS);
-
+    log(
+      "Update applied on disk. The daemon is still running the old build — restart it manually to load the new version."
+    );
+    upgradeInProgress = false;
     return { started: true, onlineVersion: entry.version };
   } catch (e: any) {
     errLog(`Upgrade failed: ${e?.message || e}`);

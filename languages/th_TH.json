@@ -3159,15 +3159,14 @@
   "TXT_CODE_f0dc9eca": "ตัวอย่าง: /dev/sda:5MB",
   "TXT_CODE_upload_folder_too_large": "โฟลเดอร์มีขนาดใหญ่เกินไป (เกิน {size}) โปรดบีบอัดด้วยตนเองแล้วอัปโหลด",
   "TXT_CODE_AUTOUPDATE_DAEMON_BTN": "อัปเดต Daemon",
-  "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "อัปเดต daemon ระยะไกลนี้ทันทีหรือไม่? จะดาวน์โหลดแพ็กเกจล่าสุด ทับไฟล์เดิม และเริ่มใหม่ โหนดจะเชื่อมต่อใหม่โดยอัตโนมัติ",
-  "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "เริ่มการอัปเดตแล้ว daemon กำลังดาวน์โหลดและเริ่มใหม่ จะเชื่อมต่อใหม่ในเร็ว ๆ นี้",
+  "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "อัปเดตเดมอนระยะไกลนี้ตอนนี้หรือไม่? จะดาวน์โหลดแพ็กเกจล่าสุดและเขียนทับ จากนั้นรีสตาร์ทเดมอนด้วยตนเองเพื่อให้มีผล",
+  "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "อัปเดตเดมอนเป็น v{v} แล้ว รีสตาร์ทเดมอนด้วยตนเองเพื่อให้มีผล",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "ไม่สามารถเริ่มการอัปเดต daemon ได้",
   "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "มีเวอร์ชันใหม่: v{v} คลิกปุ่ม \"อัปเดต Daemon\" ที่มุมขวาบนเพื่ออัปเดต",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "อัปเดตแผงควบคุม",
-  "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "อัปเดตแผงควบคุมทันทีหรือไม่? จะดาวน์โหลดแพ็กเกจล่าสุด ทับไฟล์ (app.js และส่วนหน้า) แล้วเริ่มใหม่ การเชื่อมต่อจะขาดชั่วคราว",
-  "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "อัปเดตแผงควบคุมแล้ว กำลังเชื่อมต่อใหม่...",
+  "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "อัปเดตแผงควบคุมตอนนี้หรือไม่? จะดาวน์โหลดแพ็กเกจล่าสุดและเขียนทับไฟล์แผง (app.js + front-end) จากนั้นรีสตาร์ทแผงด้วยตนเองเพื่อให้มีผล",
+  "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "อัปเดตแผงเป็น v{v} แล้ว รีสตาร์ทแผงด้วยตนเองเพื่อให้มีผล",
   "TXT_CODE_AUTOUPDATE_WEB_FAILED": "ไม่สามารถเริ่มการอัปเดตแผงควบคุมได้",
-  "TXT_CODE_AUTOUPDATE_WEB_RESTARTING": "แผงควบคุมกำลังเริ่มใหม่ กรุณารอสักครู่...",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE": "อัปเดตแผงควบคุม",
   "TXT_CODE_AUTOUPDATE_WEB_NOT_CONFIGURED": "ยังไม่ได้ตั้งค่าการอัปเดตอัตโนมัติ (กำหนด updateSourceUrl)",
   "TXT_CODE_AUTOUPDATE_WEB_LATEST": "มีเวอร์ชันใหม่: {v}",
@@ -3190,5 +3189,5 @@
   "TXT_CODE_AUTOUPDATE_TAB_TITLE": "อัปเดตอัตโนมัติ",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC": "ตรวจสอบเวอร์ชันปัจจุบันของแผงควบคุมและว่ามีเวอร์ชันใหม่ทางออนไลน์หรือไม่",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC": "แผงควบคุมจะดึงรายการเวอร์ชัน (manifest) และแพ็กเกจอัปเดตจาก URL นี้",
-  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "ดาวน์โหลดแพ็กเกจล่าสุด ทับไฟล์แผงควบคุม (app.js และส่วนหน้า) แล้วเริ่มใหม่ การเชื่อมต่อจะขาดชั่วคราว"
+  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "ดาวน์โหลดแพ็กเกจล่าสุดและเขียนทับไฟล์แผง (app.js + front-end) จากนั้นรีสตาร์ทแผงด้วยตนเองเพื่อให้มีผล"
 }

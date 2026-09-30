@@ -431,7 +431,6 @@ const toTemplate = {
 // ---- Panel self-update (web) ----
 const panelUpgradeInfo = ref<IUpgradeInfo>();
 const panelUpgradeLoading = ref(false);
-const panelRestarting = ref(false);
 
 // Release notes of the online version, matched against the current panel
 // language (falls back to English when that locale is missing).
@@ -452,32 +451,6 @@ const refreshPanelUpgradeInfo = async () => {
   }
 };
 
-// After POST /upgrade/panel the panel restarts ~1s later, dropping this
-// HTTP/socket connection. Poll the panel's own /api/auth/status endpoint
-// (a JSON 200 is only served by the panel process — a reverse-proxy root would
-// not falsely satisfy this) until it responds again, then reload to pick up
-// the new frontend bundle. Rejects on timeout so the caller does NOT report a
-// false "updated successfully" when the panel actually failed to come back.
-const waitForPanelRestart = (timeoutMs = 90000) =>
-  new Promise<void>((resolve, reject) => {
-    const deadline = Date.now() + timeoutMs;
-    const poll = () => {
-      fetch(window.location.origin + "/api/auth/status", { cache: "no-store" })
-        .then(async (r) => {
-          if (r.ok && String(r.headers.get("content-type") || "").includes("application/json")) {
-            resolve();
-            return;
-          }
-          if (Date.now() > deadline) reject(new Error("Panel did not come back online"));
-          else setTimeout(poll, 1500);
-        })
-        .catch(() => {
-          if (Date.now() > deadline) reject(new Error("Panel did not come back online"));
-          else setTimeout(poll, 1500);
-        });
-    };
-    setTimeout(poll, 3000);
-  });
 
 const onUpdateWeb = () => {
   Modal.confirm({
@@ -493,12 +466,12 @@ const onUpdateWeb = () => {
           message.info(res.value?.message || t("TXT_CODE_AUTOUPDATE_ALREADY_LATEST"));
           return;
         }
-        panelRestarting.value = true;
-        await waitForPanelRestart();
-        message.success(t("TXT_CODE_AUTOUPDATE_WEB_SUCCESS"));
-        setTimeout(() => window.location.reload(), 800);
+        // Update files are applied on disk; the panel is NOT restarted
+        // automatically. Ask the operator to restart it manually.
+        Modal.success({
+          content: t("TXT_CODE_AUTOUPDATE_WEB_SUCCESS", { v: res.value.onlineVersion })
+        });
       } catch (error: any) {
-        panelRestarting.value = false;
         reportErrorMsg(error?.message ? error.message : t("TXT_CODE_AUTOUPDATE_WEB_FAILED"));
       }
     }
@@ -552,24 +525,6 @@ onUnmounted(() => {
 
 <template>
   <div>
-    <div
-      v-if="panelRestarting"
-      style="
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.55);
-        z-index: 9999;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      "
-    >
-      <a-spin size="large" />
-      <div style="margin-top: 16px; color: #fff; font-size: 16px">
-        {{ t("TXT_CODE_AUTOUPDATE_WEB_RESTARTING") }}
-      </div>
-    </div>
     <CardPanel v-if="isReady && formData" class="CardWrapper" style="height: 100%" :padding="false">
       <template #body>
         <LeftMenusPanel ref="leftMenusPanelRef" :menus="menus">
