@@ -45,7 +45,7 @@ Expected current totals: common 9, daemon 176, panel 193 (+1 skipped), frontend 
 - **`common/src/__test__/system_storage.test.ts`** must `process.chdir(tmpDir)` **before** importing the module — `DATA_PATH` is derived from `process.cwd()` at import time. Follow the same pattern in new tests touching `StorageSubsystem`.
 - Tests use node env by default; add `// @vitest-environment jsdom` for DOM tests (frontend).
 - Windows: `fs.chmod` only toggles the read-only bit — gate POSIX-mode assertions with `process.platform === "win32"` skips and assert mocked `fs.chmodSync` arguments instead.
-- `daemon/src/routers/__test__/Instance_router.integration.test.ts` is a **real** integration suite (spawns `alpine` containers and a real interactive `node test.mjs` child process). It needs `node` on `PATH`, adds ~30–60s to the daemon run, and its Docker cases silently return early without root/Docker access — details and run modes in the `mcsmanager-docker-instance-test` skill.
+- `daemon/src/routers/__test__/Instance_router.integration.test.ts` is a **real** integration suite (spawns `node:20-alpine` containers and a real interactive `node test.mjs` child process — the same fixture inside and outside Docker). It needs `node` on `PATH`, adds ~30–60s to the daemon run, and its Docker cases silently return early without root/Docker access — details and run modes in the `mcsmanager-docker-instance-test` skill.
 
 ## 5. Related checks (not tests, but required before finishing)
 
