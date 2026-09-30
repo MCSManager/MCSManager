@@ -12,7 +12,8 @@
     "i18n": "i18next-scanner --config i18-scanner.config.js",
     "sort-lang-keys": "node scripts/sort-lang-key.mjs",
     "preview-build": "cd common && npm install && npm run build",
-    "scan-useless-key": "node scripts/useless-key-scanner.mjs ./languages en_US.json . \".js,.ts,.vue,.tsx,.jsx\" \"node_modules/\""
+    "scan-useless-key": "node scripts/useless-key-scanner.mjs ./languages en_US.json . \".js,.ts,.vue,.tsx,.jsx\" \"node_modules/\"",
+    "test": "cd panel && npm run test && cd ../daemon && npm run test"
   },
   "dependencies": {
     "async-mutex": "^0.5.0",
