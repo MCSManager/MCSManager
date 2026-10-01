@@ -764,6 +764,7 @@ export class DockerProcessAdapter extends EventEmitter implements IInstanceProce
     )
       return;
     this.stream = undefined;
+    this.waitActive = false;
     this.scheduleReconnect();
   }
 
