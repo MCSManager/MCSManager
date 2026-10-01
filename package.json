@@ -13,7 +13,8 @@
     "sort-lang-keys": "node scripts/sort-lang-key.mjs",
     "preview-build": "cd common && npm install && npm run build",
     "scan-useless-key": "node scripts/useless-key-scanner.mjs ./languages en_US.json . \".js,.ts,.vue,.tsx,.jsx\" \"node_modules/\"",
-    "test": "cd panel && npm run test && cd ../daemon && npm run test"
+    "test": "cd panel && npm run test && cd ../daemon && npm run test",
+    "test:integration": "cd common && npm run test:integration"
   },
   "dependencies": {
     "async-mutex": "^0.5.0",

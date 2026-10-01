@@ -1,3 +1,5 @@
+> **Superseded (2026-09-30) by [`docs/integration-test-coverage-2026-09-30.md`](integration-test-coverage-2026-09-30.md).** The mock route suites + `panel/test/integration/` referenced below are DELETED; the canonical backend integration layer now lives in `common/test/integration/`. This file is kept for historical reference only.
+
 # MCSManager 后端路由测试 — 覆盖与回溯总结 (2026-09-29)
 
 > 分支：`feat/backend-route-tests`。本文件是 `docs/superpowers/specs/2026-09-29-backend-route-tests-design.md` 的设计与 `docs/superpowers/plans/2026-09-29-backend-route-tests.md` 的实现计划的执行结项报告。
