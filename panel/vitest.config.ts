@@ -11,11 +11,7 @@ export default defineConfig({
   },
   test: {
     include: ["src/**/*.test.ts", "test/**/*.test.ts"],
-    // The black-box integration suite (test/integration/) needs its OWN
-    // config + globalSetup to boot a real daemon+panel. Collecting it here
-    // would run it without that setup and fail. Run it via
-    // `npm run test:integration` instead.
-    exclude: ["**/node_modules/**", "**/dist/**", "test/integration/**"],
+    exclude: ["**/node_modules/**", "**/dist/**"],
     environment: "node",
     passWithNoTests: true
   }
