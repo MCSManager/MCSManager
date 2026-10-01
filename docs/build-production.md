@@ -6,4 +6,4 @@ This document has been consolidated into an **in-repo Agent Skill** (it travels 
 
 It covers: a walkthrough of the `build.bat` / `build.sh` pipeline (`BUNDLE=1`), artifact layout, `daemon/lib` external binaries, build/deploy/run commands, paired data migration, the sensitive-file list, the post-deploy verification checklist, and the FAQ.
 
-When you say keywords such as "构建 / 编译 / 打包 / 部署生产环境 / build", AI tools that support Agent Skills (including opencode, Claude Code, etc.) will automatically invoke the `mcsmanager-build` skill; you can also read the file above directly. opencode auto-discovers `.agents/skills/` along the project (no extra configuration needed).
+When you say keywords such as "Build / Compile / Package / Deploy to Production / Build", AI tools that support Agent Skills (including opencode, Claude Code, etc.) will automatically invoke the `mcsmanager-build` skill; you can also read the file above directly. opencode auto-discovers `.agents/skills/` along the project (no extra configuration needed).

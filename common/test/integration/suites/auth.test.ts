@@ -271,7 +271,7 @@ describe("auth: key bypasses panel permission ONLY (per-instance gate still appl
         id: "F-instance-admin-throw-500",
         step: "key-boundary",
         severity: "info",
-        title: "instance_admin GET / 越权 returns 500 (handler throw) not 403",
+        title: "instance_admin GET / unauthorized access returns 500 (handler throw) not 403",
         detail:
           "GET /api/instance by a non-owner (or the integration key) returns httpStatus 500" +
           " because instance_admin_router checks ownership inside the handler with `throw`," +

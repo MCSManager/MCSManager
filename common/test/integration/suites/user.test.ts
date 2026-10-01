@@ -10,20 +10,20 @@ import {
   saveState
 } from "../lib";
 
-// User-module + 越权 integration suite.
+// User-module + unauthorized-access integration suite.
 //
 // Boots a FRESH REAL daemon + panel per invocation (via globalSetup's
 // bootRuntime — no mocks). Self-contained: the early `it`s create admin + u1
 // + u2 via the integration-test key, then create a minimal instance (NOT
-// quick_install — no jar) and assign it to u1, so the 越权 `it`s can pin the
+// quick_install — no jar) and assign it to u1, so the unauthorized-access `it`s can pin the
 // 403/500 split against real u1/u2 sessions.
 //
 // Coverage matrix (see task-6-brief):
 //   create/duplicate/weak-password · normal-user 403 paths · /auth/search
-//   paginated + scrubbed · 越权 403/500 split (Review Focus #2) · normal-user
+//   paginated + scrubbed · unauthorized-access 403/500 split (Review Focus #2) · normal-user
 //   quick_install 403.
 //
-// Review Focus #2 — the 403/500 split pinned here (越权 u2 vs u1's instance):
+// Review Focus #2 — the 403/500 split pinned here (unauthorized access: u2 vs u1's instance):
 //   GET /api/instance                  -> 500 (handler-throws, finding)
 //   GET /protected_instance/open       -> 403 (per-instance router.use gate)
 //   GET /files/list                    -> 403 (per-instance router.use gate)
@@ -230,7 +230,7 @@ describe("user: GET /auth/search paginated + scrubbed (no password/salt/apiKey i
   });
 });
 
-describe("user: 越权 u2 cannot read/operate u1's instance (403 / 500 split)", () => {
+describe("user: unauthorized access — u2 cannot read/operate u1's instance (403 / 500 split)", () => {
   it("refresh real u1 + u2 sessions for the cross-user assertions", async () => {
     // ensureUser already logged u1/u2 in. The brief asks for explicit real
     // logins here so the cross-user cookies/tokens are unambiguously fresh.
@@ -275,9 +275,9 @@ describe("user: 越权 u2 cannot read/operate u1's instance (403 / 500 split)", 
     expect(r.httpStatus, "u2 must NOT read u1's instance; expect 500 (handler throw)").toBe(500);
     addFinding({
       id: "F-instance-admin-throw-500",
-      step: "越权",
+      step: "unauthorized-access",
       severity: "info",
-      title: "instance_admin GET / 越权 returns 500 (handler throw) not 403",
+      title: "instance_admin GET / unauthorized access returns 500 (handler throw) not 403",
       detail:
         "GET /api/instance by a non-owner returns httpStatus 500 because instance_admin_router" +
         " checks ownership inside the handler with `throw`, which the protocol middleware" +
