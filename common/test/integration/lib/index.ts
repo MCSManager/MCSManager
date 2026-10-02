@@ -4,3 +4,4 @@ export { requestPanel, unwrap, login, loginSessionRetry, ensureUser, ensureOwner
 export { createStream, waitForOutput, collectText, type Stream } from "./socket";
 export { listFiles, mkdirP, moveFile, copyFile, editFile, readFileText, deleteFiles, decompress, getUploadPassport, uploadToDaemon, uploadFileChunked, getDownloadPassport, downloadFromDaemon } from "./files";
 export { waitFor, sleep, buildZip, buildZipSystem } from "./util";
+export * from "./security";

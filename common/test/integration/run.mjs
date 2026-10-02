@@ -7,7 +7,22 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO = path.resolve(__dirname, "../../..");
 
-const SUITES = ["auth", "user", "instance", "files", "streams", "security", "docker"];
+// security.* order matters within the group: security_auth runs LAST because it
+// ends with the destructive login-failure ban (bans 127.0.0.1 for 10 min in that
+// panel process). Each suite boots its own panel, so cross-suite impact is none,
+// but keeping the destructive block at the end preserves the original semantics.
+const SUITES = [
+  "auth",
+  "user",
+  "instance",
+  "files",
+  "streams",
+  "security_user",
+  "security_instance",
+  "security_files",
+  "security_auth",
+  "docker"
+];
 
 // docker.test.ts executes only on Linux + a reachable dockerd. The suite's own
 // `dockerIt = dockerOk ? it : it.skip` already visibly skips `it`s off-Linux, but
