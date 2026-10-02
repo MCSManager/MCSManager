@@ -137,6 +137,9 @@ router.post(
     const TOTPCode = ctx.request.body.TOTPCode;
     const MFAResult = userSystem.check2FA(TOTPCode, getUserFromCtx(ctx) ?? {}, 0);
     const enable = Boolean(ctx.request.body.enable);
+    // NOTE (documented behavior): only ENABLING requires a valid code; the
+    // frontend disable flow sends a placeholder "000000". A session holder can
+    // therefore strip 2FA - recorded as a finding in the integration suite.
     if (enable && !MFAResult) {
       ctx.body = false;
       return;

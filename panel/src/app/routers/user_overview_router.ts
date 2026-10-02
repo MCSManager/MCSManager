@@ -72,7 +72,7 @@ router.get(
         permission: user.permission,
         instances: user.instances,
         loginTime: user.loginTime,
-        registerTime: user.loginTime
+        registerTime: user.registerTime
       });
     });
     ctx.body = users;

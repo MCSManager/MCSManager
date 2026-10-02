@@ -27,7 +27,10 @@ router.post(
     }
     const userName = String(ctx.request.body.username);
     const passWord = String(ctx.request.body.password);
-    const code = String(ctx.request.body.code);
+    // `String(undefined)` would be the literal "undefined" (truthy) and defeat
+    // the NEED_2FA branch below for clients that omit the field (e.g.
+    // SsoBindLogin sends `code: undefined`). Normalize absent/empty to "".
+    const code = ctx.request.body.code ? String(ctx.request.body.code) : "";
     if (!checkBanIp(ctx)) throw new Error($t("TXT_CODE_router.login.ban"));
     if (check(ctx)) return (ctx.body = "Logined");
     try {

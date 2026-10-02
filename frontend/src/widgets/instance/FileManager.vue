@@ -97,7 +97,7 @@ const { openRightClickMenu } = useRightClickMenu();
 
 const isShowDiskList = computed(
   () =>
-    fileStatus.value?.disks.length &&
+    fileStatus.value?.disks?.length &&
     fileStatus.value?.platform === "win32" &&
     fileStatus.value?.isGlobalInstance
 );

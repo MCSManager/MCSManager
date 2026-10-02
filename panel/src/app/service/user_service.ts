@@ -24,6 +24,11 @@ class UserSubsystem {
   }
 
   async create(config: IUser): Promise<User> {
+    // Central username format guard for every creation path (panel install,
+    // admin create, exchange/SSO). Rejects control characters (log/audit
+    // injection), blank names and absurd lengths; unicode stays allowed.
+    if (!this.validateUserName(config.userName))
+      throw new Error($t("TXT_CODE_router.user.invalidUserName"));
     const newUuid = v4().replace(/-/gim, "");
     // Initialize necessary user data
     const instance = new User();
@@ -41,15 +46,37 @@ class UserSubsystem {
   async edit(uuid: string, config: any) {
     const instance = this.getInstance(uuid);
     if (!instance) return;
-    if (config.userName) instance.userName = config.userName;
+    // Renaming goes through the same format guard as create() - an admin edit
+    // must not be a bypass for control characters / blank / overlong names.
+    // Unchanged names are NOT re-validated so legacy rows (created before the
+    // guard existed) stay editable - the admin edit form round-trips whole rows.
+    if (config.userName) {
+      if (config.userName !== instance.userName && !this.validateUserName(config.userName))
+        throw new Error($t("TXT_CODE_router.user.invalidUserName"));
+      instance.userName = config.userName;
+    }
     if (config.isInit != null) instance.isInit = Boolean(config.isInit);
-    if (config.permission) instance.permission = config.permission;
+    // `!= null` (not truthy): permission=0 (GUEST) must be assignable. Only
+    // real numbers / numeric strings are accepted - booleans and empty strings
+    // keep their old "ignore" semantics.
+    if (
+      config.permission != null &&
+      typeof config.permission !== "boolean" &&
+      config.permission !== "" &&
+      Number.isFinite(Number(config.permission))
+    )
+      instance.permission = Number(config.permission);
     if (config.registerTime) instance.registerTime = config.registerTime;
     if (config.loginTime) instance.loginTime = config.loginTime;
-    if (config.apiKey != null) instance.apiKey = config.apiKey;
-    if (config.secret != null) instance.secret = String(config.secret);
+    // The admin edit form round-trips whole user rows: masked view values must
+    // never be written back over the real server-side secrets (the mask would
+    // become a valid api key; an empty scrubbed secret would silently kill 2FA;
+    // an empty scrubbed ssoSub would unbind SSO).
+    const isMasked = (v: any) => v === "__MCSM_SECRET_DATA__";
+    if (config.apiKey != null && !isMasked(config.apiKey)) instance.apiKey = config.apiKey;
+    if (config.secret != null && !isMasked(config.secret)) instance.secret = String(config.secret);
     if (config.open2FA != null) instance.open2FA = Boolean(config.open2FA);
-    if (config.ssoSub != null) instance.ssoSub = String(config.ssoSub);
+    if (config.ssoSub != null && !isMasked(config.ssoSub)) instance.ssoSub = String(config.ssoSub);
     if (config.ssoBound != null) instance.ssoBound = Boolean(config.ssoBound);
     if (config.instances) this.setUserInstances(uuid, config.instances);
     if (config.passWord) {
@@ -63,6 +90,17 @@ class UserSubsystem {
     if (password.length < 9 || password.length > 36) return false;
     const reg = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/;
     return reg.test(password);
+  }
+
+  // Username format guard: 1-64 chars, no ASCII control characters
+  // (incl. \n/\r/\t - prevents log & audit-log line injection), not blank.
+  // Unicode letters (e.g. Chinese) are explicitly allowed.
+  validateUserName(userName?: string) {
+    if (typeof userName !== "string") return false;
+    if (userName.length < 1 || userName.length > 64) return false;
+    if (/[\u0000-\u001f\u007f]/.test(userName)) return false;
+    if (userName.trim().length === 0) return false;
+    return true;
   }
 
   check2FA(code: string, user: IUser, totpDriftToleranceSteps: number = 0) {

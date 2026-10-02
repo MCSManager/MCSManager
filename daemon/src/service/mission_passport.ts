@@ -35,13 +35,23 @@ class MissionPassport {
   public getMission(password: string, missionName: string) {
     if (!this.missions.has(password)) return null;
     const m = this.missions.get(password);
+    // A consumed passport (deleteMission) must be single-use: honor the
+    // isDeleted flag immediately instead of waiting for the 60s sweeper,
+    // otherwise a used download/upload/stream passport can be replayed.
+    if (m?.isDeleted) return null;
     if (m?.name === missionName) return m;
     return null;
   }
 
-  public deleteMission(password: string) {
+  public deleteMission(password: string, missionName?: string) {
     const m = this.missions.get(password);
-    if (m) m.isDeleted = true;
+    if (!m) return;
+    // Only the mission TYPE that actually consumed the passport may retire it.
+    // Without this, a probe request against /download/<stream-passport>/... in
+    // the download route's cleanup would poison a stream_channel passport and
+    // cut terminal reconnects until the TTL sweeper.
+    if (missionName && m.name !== missionName) return;
+    m.isDeleted = true;
   }
 }
 

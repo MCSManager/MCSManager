@@ -180,6 +180,12 @@ export async function buyOrRenewInstance(
     if (username.length < 4) {
       throw new Error($t("TXT_CODE_router.user.invalidUserName"));
     }
+    // Full format validation MUST run before instance/new - create() also
+    // validates, but a rejection after the instance exists would leak an
+    // orphan instance on the node (order matters).
+    if (!user_service.validateUserName(username)) {
+      throw new Error($t("TXT_CODE_router.user.invalidUserName"));
+    }
 
     payload.nickname = "App-" + username + "-" + getNanoId(6);
     const { instanceUuid: newInstanceId, config: newInstanceConfig } = await remoteRequest.request(

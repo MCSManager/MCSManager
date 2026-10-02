@@ -74,6 +74,13 @@ router.get(
     resultPage.data.forEach((v) => {
       v.passWord = "";
       v.salt = "";
+      // TOTP seed & SSO subject are server-side secrets: never expose them to
+      // the admin browser (the UserList edit form round-trips whole rows).
+      // Set fields are MASKED (not cleared) so the round-trip can never write
+      // an empty scrubbed value back over the real secret - edit() ignores the
+      // mask literal.
+      v.secret = v.secret ? "__MCSM_SECRET_DATA__" : "";
+      v.ssoSub = v.ssoSub ? "__MCSM_SECRET_DATA__" : "";
       v.apiKey = v.apiKey ? "__MCSM_SECRET_DATA__" : "";
     });
     ctx.body = resultPage;
