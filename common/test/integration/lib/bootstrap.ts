@@ -3,7 +3,7 @@ import path from "node:path";
 import os from "node:os";
 import { type ChildProcess } from "node:child_process";
 import { copySync } from "fs-extra";
-import { world, saveState, REPO, RUNTIME_FILE } from "./world";
+import { world, saveState, writeFindings, REPO, RUNTIME_FILE } from "./world";
 import { requestPanel } from "./http";
 import { sleep, waitFor } from "./util";
 import { spawnApp, groupKill } from "./process";
@@ -123,6 +123,8 @@ export async function bootRuntime(): Promise<Runtime> {
 // processes (group-kill: SIGTERM the PGID, 1.5s grace, SIGKILL survivors),
 // copy logs to .last-run/, then remove the tmp workDir + runtime file.
 export async function stopRuntime(rt: Runtime) {
+  // Persist this suite's findings (in-process only otherwise) before teardown.
+  writeFindings();
   // Best-effort: delete test instance(s) + test users using the key.
   try {
     if (rt.daemonId && world.instance.uuid) {

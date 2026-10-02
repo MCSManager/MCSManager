@@ -80,7 +80,75 @@ export const world: World = {
 };
 
 export function addFinding(f: Finding) {
-  if (!world.findings.some((x) => x.id === f.id)) world.findings.push(f);
+  if (world.findings.some((x) => x.id === f.id)) return;
+  world.findings.push(f);
+  // Persist IMMEDIATELY: test files run in a forked worker with their own
+  // `world` singleton, while stopRuntime()/writeFindings() runs in the MAIN
+  // process - in-memory findings would otherwise vanish with the worker and
+  // the main process would merge an empty list.
+  try {
+    let all: Finding[] = [];
+    try {
+      all = JSON.parse(fs.readFileSync(FINDINGS_JSON, "utf-8"));
+    } catch {
+      all = [];
+    }
+    if (!all.some((x) => x.id === f.id)) {
+      all.push(f);
+      fs.writeFileSync(FINDINGS_JSON, JSON.stringify(all, null, 2));
+    }
+  } catch {
+    /* best effort */
+  }
+}
+
+const FINDINGS_JSON = path.join(HERE, "..", "FINDINGS.json");
+const FINDINGS_HTML = path.join(HERE, "..", "FINDINGS.html");
+
+// Regenerate FINDINGS.html from the persisted FINDINGS.json (plus anything the
+// current process holds). Called from stopRuntime() on every suite teardown;
+// safe to call from a test file's afterAll as well.
+export function writeFindings() {
+  let all: Finding[] = [];
+  try {
+    all = JSON.parse(fs.readFileSync(FINDINGS_JSON, "utf-8"));
+  } catch {
+    all = [];
+  }
+  for (const f of world.findings) {
+    if (!all.some((x) => x.id === f.id)) all.push(f);
+  }
+  if (!all.length) return;
+  try {
+    fs.writeFileSync(FINDINGS_JSON, JSON.stringify(all, null, 2));
+    const esc = (s: string) =>
+      String(s ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    const rows = all
+      .map(
+        (f) =>
+          `<tr><td>${esc(f.id)}</td><td>${esc(f.step)}</td><td>${esc(f.severity)}</td><td>${esc(
+            f.title
+          )}</td><td><pre>${esc(f.detail)}</pre></td><td><pre>${esc(f.evidence ?? "")}</pre></td></tr>`
+      )
+      .join("\n");
+    fs.writeFileSync(
+      FINDINGS_HTML,
+      `<!doctype html><meta charset="utf-8"><title>Integration findings</title>
+<style>body{font:14px/1.5 sans-serif;margin:24px}td,th{border:1px solid #ccc;padding:6px;vertical-align:top}pre{white-space:pre-wrap;margin:0}</style>
+<h1>Integration findings (${all.length})</h1>
+<table><thead><tr><th>id</th><th>step</th><th>severity</th><th>title</th><th>detail</th><th>evidence</th></tr></thead>
+<tbody>
+${rows}
+</tbody></table>`
+    );
+    // Visibility: the summary must never be silent about what was recorded.
+    console.log(`[findings] ${all.length} total -> ${FINDINGS_HTML}`);
+  } catch (e) {
+    console.warn(`[findings] write failed: ${e}`);
+  }
 }
 
 // Persist accumulated state so subsequent test files (fresh module loads) see it.

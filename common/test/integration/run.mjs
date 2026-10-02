@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, readdirSync } from "node:fs";
+import { existsSync, readdirSync, rmSync } from "node:fs";
 import { execSync, spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO = path.resolve(__dirname, "../../..");
 
-const SUITES = ["auth", "user", "instance", "files", "streams", "docker"];
+const SUITES = ["auth", "user", "instance", "files", "streams", "security", "docker"];
 
 // docker.test.ts executes only on Linux + a reachable dockerd. The suite's own
 // `dockerIt = dockerOk ? it : it.skip` already visibly skips `it`s off-Linux, but
@@ -67,6 +67,15 @@ function runSuite(name) {
 }
 
 prereq();
+// Fresh findings artifact for a full run (suites merge into it via addFinding).
+try {
+  const fi = path.join(__dirname, "FINDINGS.json");
+  const fh = path.join(__dirname, "FINDINGS.html");
+  if (existsSync(fi)) rmSync(fi);
+  if (existsSync(fh)) rmSync(fh);
+} catch {
+  /* best effort */
+}
 let failed = false;
 const summary = [];
 for (const name of SUITES) {
