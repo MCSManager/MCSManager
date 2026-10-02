@@ -2,6 +2,13 @@
 description: Core project rules for all AI assistants (Claude, Cursor, etc.)
 ---
 
+This project, "MCSManager", is a web management panel for Minecraft and Steam game server programs, released on GitHub. It is made up of three subprojects: a web frontend, a web backend, and a Daemon. It supports a distributed deployment architecture and offers features such as multi-user support, file management, environment management, and Docker management.
+
+**Core features:**
+
+Administrators can create Minecraft, Steam, and other game servers (or any other program) based on various templates (or Docker images). Servers can run inside Docker containers or directly as processes, and their terminals can be accessed through the web page.
+Administrators can create regular users and assign instances to them. Through various means such as Docker containers and file permission checks, the control panel ensures that regular users can only access the instances assigned to them, keeping the host machine as secure as possible.
+
 ## 1. Project Layout
 
 - **`panel/`** — Web backend (Koa): users, nodes, auth, API. Entry `panel/src/app.ts`, webpack → `production/app.js`.

@@ -32,7 +32,13 @@
 
 MCSManager has gained popularity within the **`Minecraft`** and **`Steam`** gaming communities. It enables you to manage multiple physical or virtual servers from a single platform, and offers a **secure**, **reliable**, and **granular multi-user permission system**. The MCSM Panel continues to support server administrators, operators, and independent developers, managing servers like **`Minecraft`**, **`Terraria`**, and other **`Steam`**-based games for them.
 
-MCSM also has **commercial applications** in mind, such as private server hosting and sales by **IDC service providers**. Several small and medium-sized enterprises already use the panel as a combined **server management** and **sales platform**. In addition, it supports **multi-language environments**, making it accessible to users across different countries and regions.
+**Core features:**
+
+1. Administrators can create Minecraft, Steam, and other game servers (or any other program) based on various templates (or Docker images). Servers can run inside Docker containers or directly as processes, and their terminals can be accessed through the web page.
+
+2. Administrators can create regular users and assign instances to them. Through various means such as Docker containers and file permission checks, the control panel ensures that regular users can only access the instances assigned to them, keeping the host machine as secure as possible.
+
+MCSManager takes the needs of **commercial applications** into account., such as private server hosting and sales by **IDC service providers**. Several small and medium-sized enterprises already use the panel as a combined **server management** and **sales platform**. In addition, it supports **multi-language environments**, making it accessible to users across different countries and regions.
 
 <img width="1871" height="1342" alt="terminal" src="https://github.com/user-attachments/assets/7f6ed988-e402-4347-94ee-a0469f6658da" />
 
