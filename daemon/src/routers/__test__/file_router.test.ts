@@ -516,7 +516,7 @@ describe("file_router", () => {
       { session: AUTHED() }
     );
     await flush();
-    expect(fm.unzip).toHaveBeenCalledWith("in.zip", ["out/"], "gbk", undefined);
+    expect(fm.unzip).toHaveBeenCalledWith("in.zip", ["out/"], "gbk");
     expect(fm.zip).not.toHaveBeenCalled();
     const pkt = packetsFor(socket, "file/compress")[0];
     expect(pkt.status).toBe(200);
