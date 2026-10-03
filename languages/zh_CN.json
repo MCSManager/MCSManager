@@ -3260,5 +3260,9 @@
   "TXT_CODE_AUTOUPDATE_TAB_TITLE": "自动更新",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC": "查看面板当前版本,并在线检测是否有新版本可用。",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC": "面板将从此地址获取版本清单(manifest)与更新包。",
-  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "下载最新安装包并整包覆盖面板文件(app.js 与前端),更新后需手动重启面板方可生效。"
+  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "下载最新安装包并整包覆盖面板文件(app.js 与前端),更新后需手动重启面板方可生效。",
+  "TXT_CODE_file_ownership.invalidId": "实例 runAs 设置中的 {{label}} 无效",
+  "TXT_CODE_file_ownership.invalidTarget": "访问被拒绝：无效的所有权目标",
+  "TXT_CODE_file_ownership.outsideWorkspace": "访问被拒绝：所有权目标超出实例工作目录",
+  "TXT_CODE_file_ownership.targetChanged": "访问被拒绝：所有权目标在验证过程中发生变化"
 }

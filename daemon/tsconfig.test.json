@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@languages/*": ["../languages/*"],
+      "mcsmanager-common": ["../common/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*", "test/**/*", "../common/global.d.ts"]
+}

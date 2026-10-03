@@ -5,6 +5,11 @@ import logger from "../service/log";
 import { $t } from "../i18n";
 import FileManager from "../service/system_file";
 import uploadManager from "../service/upload_manager";
+import {
+  resolveInstanceFileOwnership,
+  syncInstancePathOwnership
+} from "../tools/file_ownership";
+import type { FileOwnership } from "../tools/file_ownership";
 import { globalEnv } from "./config";
 import Instance from "./instance/instance";
 
@@ -176,21 +181,24 @@ export default class FileWriter {
       uploadManager.delete(this.id);
     }
 
+    const ownership = await resolveInstanceFileOwnership(this.instance);
+    if (ownership) await syncInstancePathOwnership(this.instance, this.path, ownership);
+
     logger.info("Browser Uploaded File:", this.path);
 
     if (this.unzip) {
-      this.startExtraction();
+      this.startExtraction(ownership);
     }
   }
 
-  private startExtraction(): void {
+  private startExtraction(ownership?: FileOwnership): void {
     globalEnv.fileTaskCount++;
     if (this.instance) this.instance.info.fileLock++;
 
     void (async () => {
       try {
         const instanceFiles = new FileManager(this.cwd);
-        await instanceFiles.unzip(this.path, path.dirname(this.path), this.zipCode);
+        await instanceFiles.unzip(this.path, path.dirname(this.path), this.zipCode, ownership);
         logger.info("File unzipped:", this.path);
 
         if (this.deleteAfterUnzip) {

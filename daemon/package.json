@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "nodemon --watch src --ext ts,js --exec \"npm run build && node --enable-source-maps production/app.js\"",
     "build": "webpack --config webpack.config.js",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:ownership": "node --test test/file_ownership.test.cjs"
   },
   "homepage": "https://mcsmanager.com/",
   "author": "https://github.com/yumao233",
@@ -72,6 +73,7 @@
     "supertest": "^7.0.0",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.3",
     "vitest": "^0.33.0",
     "webpack": "^5.94.0",
