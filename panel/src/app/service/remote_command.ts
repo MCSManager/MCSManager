@@ -3,6 +3,13 @@ import { IPacket, IRequestPacket } from "../entity/entity_interface";
 import RemoteService from "../entity/remote_service";
 import { $t } from "../i18n";
 
+// The daemon force-kill command shields instances younger than 6s (startup
+// guard) before signalling, and the process-tree kill itself can take a few
+// more seconds on Windows. Requests that may block on it must not use the
+// default 6s timeout, otherwise a successful kill is reported to the user as
+// a node network timeout.
+export const INSTANCE_KILL_TIMEOUT = 30000;
+
 class RemoteError extends Error {
   constructor(msg: string) {
     super(msg);

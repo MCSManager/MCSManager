@@ -13,7 +13,10 @@ import { getOperationLoggerOperator, operationLogger } from "../service/operatio
 import { getUserPermission, getUserUuid } from "../service/passport_service";
 import { timeUuid } from "../service/password";
 import { isHaveInstanceByUuid, isTopPermissionByUuid } from "../service/permission_service";
-import RemoteRequest, { RemoteRequestTimeoutError } from "../service/remote_command";
+import RemoteRequest, {
+  INSTANCE_KILL_TIMEOUT,
+  RemoteRequestTimeoutError
+} from "../service/remote_command";
 import RemoteServiceSubsystem from "../service/remote_service";
 import { systemConfig } from "../setting";
 
@@ -152,9 +155,13 @@ router.all(
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
-      const result = await new RemoteRequest(remoteService).request("instance/kill", {
-        instanceUuids: [instanceUuid]
-      });
+      const result = await new RemoteRequest(remoteService).request(
+        "instance/kill",
+        {
+          instanceUuids: [instanceUuid]
+        },
+        INSTANCE_KILL_TIMEOUT
+      );
       operationLogger.warning("instance_kill", {
         daemon_id: daemonId,
         instance_id: instanceUuid,

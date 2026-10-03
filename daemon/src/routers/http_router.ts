@@ -18,6 +18,13 @@ import { sendFile } from "../utils/speed_limit";
 
 const router = new Router();
 
+// Query params arrive as strings. Only an explicit "true"/"1" (or real boolean
+// true) means enabled; "0"/"false"/missing stay disabled. Using Boolean() here
+// would wrongly treat the string "0"/"false" as enabled.
+function queryBoolean(value: unknown): boolean {
+  return value === true || value === "true" || value === "1";
+}
+
 // Define the HTTP home page display route
 router.all("/", async (ctx) => {
   ctx.body = DAEMON_INDEX_HTML;
@@ -62,7 +69,7 @@ router.get("/download/:key/:fileName", async (ctx) => {
 // Old version upload route
 router.post("/upload/:key", async (ctx) => {
   const key = String(ctx.params.key);
-  const unzip = Boolean(ctx.query.unzip);
+  const unzip = queryBoolean(ctx.query.unzip);
   const zipCode = String(ctx.query.code);
   let tmpFiles: formidable.File | formidable.File[] | undefined;
   try {
@@ -145,11 +152,11 @@ router.post("/upload/:key", async (ctx) => {
 
 router.post("/upload-new/:key", async (ctx) => {
   const key = String(ctx.params.key);
-  const unzip = Boolean(ctx.query.unzip);
+  const unzip = queryBoolean(ctx.query.unzip);
   const zipCode = String(ctx.query.code);
   const filename = String(ctx.query.filename);
   const size = Number(ctx.query.size);
-  const deleteAfterUnzip = Boolean(ctx.query.deleteAfterUnzip);
+  const deleteAfterUnzip = queryBoolean(ctx.query.deleteAfterUnzip);
   if (ctx.query.stop) {
     const writer = uploadManager.get(key);
     if (writer) {
