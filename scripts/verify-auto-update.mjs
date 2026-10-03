@@ -6,8 +6,8 @@
 //   3. A fresh panel  (product-code/web)
 //   4. Real HTTP calls against the panel API (install -> login -> upgrade endpoints)
 //      EXACTLY the endpoints the new web UI buttons hit, then asserts:
-//        - panel self-update: package overlaid (incl. an OVERLAY_MARKER), process stays up,\n//          a simulated manual restart makes the new version take effect (-> 10.18.4)
-//        - daemon self-update (forwarded panel->daemon): package overlaid, process stays up,\n//          a simulated manual restart makes the new version take effect (-> 4.18.4)
+//        - panel self-update: package overlaid (incl. an OVERLAY_MARKER), process stays up,\n//          a simulated manual restart makes the new version take effect (-> 10.19.1)
+//        - daemon self-update (forwarded panel->daemon): package overlaid, process stays up,\n//          a simulated manual restart makes the new version take effect (-> 4.19.1)
 //
 // Usage:  node scripts/verify-auto-update.mjs
 //
@@ -30,10 +30,10 @@ const PANEL = "http://localhost:23333";
 
 const ADMIN_USER = "admin";
 const ADMIN_PASS = "Admin#12345"; // satisfies validatePassword
-const BASE_DAEMON = "4.18.3";
-const BASE_WEB = "10.18.3";
-const NEW_DAEMON = "4.18.4";
-const NEW_WEB = "10.18.4";
+const BASE_DAEMON = "4.19.0";
+const BASE_WEB = "10.19.0";
+const NEW_DAEMON = "4.19.1";
+const NEW_WEB = "10.19.1";
 
 const cookies = {};
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -195,7 +195,7 @@ async function main() {
   // to re-run from the baseline version.
   fs.copyFileSync(path.join(repo, "daemon", "package.json"), path.join(daemonDir, "package.json"));
   fs.copyFileSync(path.join(repo, "panel", "package.json"), path.join(webDir, "package.json"));
-  log("  baseline restored: daemon 4.18.3 / panel 10.18.3");
+  log("  baseline restored: daemon 4.19.0 / panel 10.19.0");
 
   log("step 1: build update packages + manifest");
   execSync("node scripts/build-update-packages.mjs", { stdio: "inherit", cwd: repo });

@@ -32,12 +32,12 @@ const PANEL = "http://localhost:23333";
 
 const ADMIN_USER = "admin";
 const ADMIN_PASS = "Admin#12345";
-const BASE_DAEMON = "4.18.3";
-const BASE_WEB = "10.18.3";
-const NEW_DAEMON = "4.18.4";
-const NEW_WEB = "10.18.4";
-const SLIP_WEB = "10.18.5"; // > current so performUpgrade proceeds to extractZip
-const NOAPP_WEB = "10.18.5"; // > current so performUpgrade proceeds to applyUpgradePackage
+const BASE_DAEMON = "4.19.0";
+const BASE_WEB = "10.19.0";
+const NEW_DAEMON = "4.19.1";
+const NEW_WEB = "10.19.1";
+const SLIP_WEB = "10.19.2"; // > current so performUpgrade proceeds to extractZip
+const NOAPP_WEB = "10.19.2"; // > current so performUpgrade proceeds to applyUpgradePackage
 
 const APP_MARKER = (name) => `MCSM_STRICT_APP_MARKER_${name}`;
 const ROBOTS_MARKER = "MCSM_STRICT_ROBOTS_MARKER_panel";

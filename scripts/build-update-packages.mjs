@@ -6,8 +6,8 @@
 // process restarts, reads the bumped package.json, and reports the new version.
 //
 //   scripts/update-packages/manifest.json
-//   scripts/update-packages/daemon.zip  (app.js + app.js.map + package.json @ 4.18.4 + OVERLAY_MARKER.txt)
-//   scripts/update-packages/web.zip     (app.js + app.js.map + package.json @ 10.18.4 + public/ + OVERLAY_MARKER.txt)
+//   scripts/update-packages/daemon.zip  (app.js + app.js.map + package.json @ 4.19.1 + OVERLAY_MARKER.txt)
+//   scripts/update-packages/web.zip     (app.js + app.js.map + package.json @ 10.19.1 + public/ + OVERLAY_MARKER.txt)
 
 import fs from "fs";
 import path from "path";
@@ -17,8 +17,8 @@ const repo = path.resolve(import.meta.dirname, "..");
 const prod = path.join(repo, "production-code");
 const outDir = path.join(import.meta.dirname, "update-packages");
 
-const DAEMON_NEW_VERSION = "4.18.4";
-const WEB_NEW_VERSION = "10.18.4";
+const DAEMON_NEW_VERSION = "4.19.1";
+const WEB_NEW_VERSION = "10.19.1";
 const PORT = 9999;
 
 // Per-entry release notes ("notes") shown by the web UI after a version scan.
