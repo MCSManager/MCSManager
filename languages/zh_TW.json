@@ -3203,5 +3203,9 @@
   "TXT_CODE_dda5f944": "日誌保留天數",
   "TXT_CODE_8d88f625": "超過該天數的日誌檔案將自動刪除，0 表示永久保留。",
   "TXT_CODE_706b201e": "最大記錄總數",
-  "TXT_CODE_7ef4ecf4": "當記錄總數超過該值時，自動刪除最舊的日誌檔案，0 表示不限制。"
+  "TXT_CODE_7ef4ecf4": "當記錄總數超過該值時，自動刪除最舊的日誌檔案，0 表示不限制。",
+  "TXT_CODE_file_ownership.invalidId": "實例 runAs 設定中的 {{label}} 無效",
+  "TXT_CODE_file_ownership.invalidTarget": "存取遭拒：擁有權目標無效",
+  "TXT_CODE_file_ownership.outsideWorkspace": "存取遭拒：擁有權目標超出實例工作目錄",
+  "TXT_CODE_file_ownership.targetChanged": "存取遭拒：擁有權目標在驗證期間發生變更"
 }

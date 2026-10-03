@@ -3260,5 +3260,9 @@
   "TXT_CODE_AUTOUPDATE_TAB_TITLE": "Auto Update",
   "TXT_CODE_AUTOUPDATE_WEB_TITLE_DESC": "Check the current panel version and whether a newer version is available online.",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE_DESC": "The panel fetches the version manifest and update packages from this URL.",
-  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "Download the latest package and overlay the panel files (app.js + the front-end). Restart the panel manually afterwards to apply the changes."
+  "TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC": "Download the latest package and overlay the panel files (app.js + the front-end). Restart the panel manually afterwards to apply the changes.",
+  "TXT_CODE_file_ownership.invalidId": "Invalid {{label}} in instance runAs setting",
+  "TXT_CODE_file_ownership.invalidTarget": "Access denied: Invalid ownership target",
+  "TXT_CODE_file_ownership.outsideWorkspace": "Access denied: Ownership target escapes instance workspace",
+  "TXT_CODE_file_ownership.targetChanged": "Access denied: Ownership target changed during validation"
 }
