@@ -3161,7 +3161,7 @@
   "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "Atualizar este daemon remoto agora? O pacote mais recente será baixado e sobrescrito. Reinicie o daemon manualmente depois para aplicar as alterações.",
   "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "Daemon atualizado para v{v}. Reinicie o daemon manualmente para aplicar as alterações.",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "Falha ao iniciar a atualização do daemon.",
-  "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "Nova versão disponível: v{v}. Clique no botão \"Atualizar daemon\" no canto superior direito para atualizar.",
+  "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "Nova versão disponível: v{v}!",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "Atualizar painel",
   "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "Atualizar o painel de controle agora? O pacote mais recente será baixado e os arquivos do painel (app.js + front-end) sobrescritos. Reinicie o painel manualmente depois para aplicar as alterações.",
   "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "Painel atualizado para v{v}. Reinicie o painel manualmente para aplicar as alterações.",

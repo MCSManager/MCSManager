@@ -3233,7 +3233,7 @@
   "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "Update this remote daemon now? The latest package will be downloaded and overlaid. Restart the daemon manually afterwards to apply the changes.",
   "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "Daemon updated to v{v}. Restart the daemon manually to apply the changes.",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "Failed to start the daemon update.",
-  "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "New version available: v{v}. Click the \"Update Daemon\" button at the top right to update.",
+  "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "New version available: v{v}!",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "Update Panel",
   "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "Update the control panel now? The latest package will be downloaded and the panel files (app.js + the front-end) overlaid. Restart the panel manually afterwards to apply the changes.",
   "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "Panel updated to v{v}. Restart the panel manually to apply the changes.",

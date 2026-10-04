@@ -5,6 +5,8 @@ defineProps<{
   icon: FunctionalComponent;
   title: string;
   placement?: string;
+  warning?: boolean;
+  tooltip?: string;
 }>();
 
 defineEmits(["click"]);
@@ -13,9 +15,10 @@ defineEmits(["click"]);
 <template>
   <a-tooltip :placement="<any>(placement ? placement : 'top')">
     <template #title>
-      <span>{{ title }}</span>
+      <span v-if="tooltip" style="white-space: pre-wrap">{{ tooltip }}</span>
+      <span v-else>{{ title }}</span>
     </template>
-    <span class="btn" @click="$emit('click')">
+    <span class="btn" :class="{ 'color-warning': warning }" @click="$emit('click')">
       <component :is="icon"></component>
     </span>
   </a-tooltip>

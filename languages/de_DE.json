@@ -3161,7 +3161,7 @@
   "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "Diesen Remote-Daemon jetzt aktualisieren? Das neueste Paket wird heruntergeladen und überschrieben. Starten Sie den Daemon anschließend manuell neu, um die Änderungen zu übernehmen.",
   "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "Daemon auf v{v} aktualisiert. Starten Sie den Daemon manuell neu, um die Änderungen zu übernehmen.",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "Daemon-Aktualisierung konnte nicht gestartet werden.",
-  "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "Neue Version verfügbar: v{v}. Klicken Sie oben rechts auf \"Daemon aktualisieren\", um zu aktualisieren.",
+  "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "Neue Version verfügbar: v{v}!",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "Panel aktualisieren",
   "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "Das Kontrollpanel jetzt aktualisieren? Das neueste Paket wird heruntergeladen und die Paneldateien (app.js + Front-end) überschrieben. Starten Sie das Panel anschließend manuell neu, um die Änderungen zu übernehmen.",
   "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "Panel auf v{v} aktualisiert. Starten Sie das Panel manuell neu, um die Änderungen zu übernehmen.",

@@ -32,7 +32,7 @@ import {
   SettingOutlined
 } from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
-import { computed, defineProps, onMounted, ref, watch } from "vue";
+import { computed, defineProps, onMounted, ref, watch, type FunctionalComponent } from "vue";
 import NodeDetailDialog from "./NodeDetailDialog.vue";
 
 const { testFrontendSocket, socketStatus } = useSocketIoClient();
@@ -109,8 +109,7 @@ const triggerDaemonUpdate = (uuid: string) => {
 const { toPage } = useAppRouters();
 
 // Upgrade availability of this daemon according to the update manifest
-// (updateSourceUrl). Drives the update icon next to the version number and the
-// "Update Daemon" button group entry.
+// (updateSourceUrl). Drives the yellow "Update Daemon" button + its tooltip.
 const daemonUpgradeInfo = ref<IUpgradeInfo>();
 
 const daemonUpdateAvailable = computed(() =>
@@ -122,6 +121,16 @@ const daemonUpdateAvailable = computed(() =>
 const daemonUpdateNotes = computed(() =>
   pickLocalizedNotes(daemonUpgradeInfo.value?.onlineNotes, getCurrentLang())
 );
+
+// Tooltip shown on the top-right "Update Daemon" button when a newer version is
+// available: the online version number followed by its release notes.
+const daemonUpdateTip = computed(() => {
+  if (!daemonUpdateAvailable.value) return undefined;
+  const tip = t("TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP", {
+    v: daemonUpgradeInfo.value?.onlineVersion ?? ""
+  });
+  return daemonUpdateNotes.value ? `${tip}\n${daemonUpdateNotes.value}` : tip;
+});
 
 const refreshDaemonUpgradeInfo = async () => {
   const uuid = remoteNode.value?.uuid;
@@ -169,16 +178,9 @@ const detailList = (node: ComputedNodeInfo) => [
   {
     title: t("TXT_CODE_81634069"),
     value: node.version,
-    success:
-      !daemonUpdateAvailable.value && !hasVersionUpdate(specifiedDaemonVersion.value, node.version),
-    warn:
-      !daemonUpdateAvailable.value &&
-      hasVersionUpdate(specifiedDaemonVersion.value, node.version) &&
-      node.available,
-    warnText: t("TXT_CODE_e520908a"),
-    update: daemonUpdateAvailable.value,
-    updateVersion: daemonUpgradeInfo.value?.onlineVersion ?? "",
-    updateNotes: daemonUpdateNotes.value
+    success: !hasVersionUpdate(specifiedDaemonVersion.value, node.version),
+    warn: hasVersionUpdate(specifiedDaemonVersion.value, node.version) && node.available,
+    warnText: t("TXT_CODE_e520908a")
   },
   {
     title: "Daemon ID",
@@ -187,8 +189,18 @@ const detailList = (node: ComputedNodeInfo) => [
   }
 ];
 
+interface NodeOperation {
+  title: string;
+  icon: FunctionalComponent;
+  // eslint-disable-next-line no-unused-vars -- type param name
+  click: (node: ComputedNodeInfo) => void;
+  condition?: () => boolean;
+  warning?: boolean;
+  tooltip?: string;
+}
+
 const nodeOperations = computed(() =>
-  arrayFilter([
+  arrayFilter<NodeOperation>([
     {
       title: t("TXT_CODE_ae533703"),
       icon: FolderOpenOutlined,
@@ -241,7 +253,11 @@ const nodeOperations = computed(() =>
       click: (item: ComputedNodeInfo) => {
         triggerDaemonUpdate(item.uuid);
       },
-      condition: () => remoteNode.value!.available
+      condition: () => remoteNode.value!.available,
+      // Yellow icon + version/notes tooltip when the manifest advertises a
+      // newer daemon version.
+      warning: daemonUpdateAvailable.value,
+      tooltip: daemonUpdateTip.value
     },
     {
       title: t("TXT_CODE_f8b28901"),
@@ -296,6 +312,8 @@ watch(
           <IconBtn
             :icon="operation.icon"
             :title="operation.title"
+            :warning="operation.warning"
+            :tooltip="operation.tooltip"
             @click="remoteNode && operation.click(remoteNode)"
           ></IconBtn>
         </span>
@@ -316,27 +334,7 @@ watch(
                 <a-typography-text :copyable="{ text: detail.value ?? '' }"></a-typography-text>
               </div>
               <div v-else style="font-size: 13px">
-                <a-tooltip v-if="detail.update && detail.value">
-                  <template #title>
-                    <div style="max-width: 320px">
-                      <div>
-                        {{
-                          t("TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP", {
-                            v: detail.updateVersion
-                          })
-                        }}
-                      </div>
-                      <div v-if="detail.updateNotes" class="daemon-update-notes">
-                        {{ detail.updateNotes }}
-                      </div>
-                    </div>
-                  </template>
-                  <span class="color-warning">
-                    {{ detail.value }}
-                    <CloudUploadOutlined class="daemon-update-icon" />
-                  </span>
-                </a-tooltip>
-                <a-tooltip v-else-if="detail.warn && detail.value">
+                <a-tooltip v-if="detail.warn && detail.value">
                   <template #title>
                     {{ detail.warnText }}
                   </template>
@@ -387,15 +385,5 @@ watch(
 
 .search-input:hover {
   width: 100%;
-}
-
-.daemon-update-icon {
-  margin-left: 4px;
-  cursor: help;
-}
-
-.daemon-update-notes {
-  margin-top: 8px;
-  white-space: pre-wrap;
 }
 </style>

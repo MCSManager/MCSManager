@@ -1,9 +1,11 @@
 // @vitest-environment jsdom
 // Node card tests for the remote daemon self-update affordances:
-// - an update icon next to the version number when the update manifest
+// - the top-right "Update Daemon" button turns yellow when the update manifest
 //   advertises a newer version
-// - its tooltip shows "update needed" + the localized release notes
-//   (panel language match, English fallback)
+// - hovering it shows a tooltip with the online version + the localized
+//   release notes (panel language match, English fallback)
+// - the version field keeps the original panel/daemon diff warning, decoupled
+//   from the upgrade manifest
 // - the update runs through the top-right "Update Daemon" button group
 import { flushPromises, mount, type VueWrapper } from "@vue/test-utils";
 import { Modal } from "ant-design-vue";
@@ -90,8 +92,14 @@ const nodeItem = (overrides = {}) => ({
 // so the popup (rendered into document.body) needs real time to appear.
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const findUpdateBtn = () =>
+  wrapper
+    .findAllComponents(IconBtn)
+    .find((btn) => btn.props("title") === "TXT_CODE_AUTOUPDATE_DAEMON_BTN");
+
 const openUpdateTooltip = async () => {
-  await wrapper.find("span.color-warning").trigger("mouseenter");
+  const updateBtn = findUpdateBtn();
+  await updateBtn!.find("span.btn").trigger("mouseenter");
   await sleep(300);
   await flushPromises();
 };
@@ -149,7 +157,7 @@ afterEach(() => {
 });
 
 describe("NodeItem.vue daemon update affordances", () => {
-  it("shows the update icon and localized notes when a new version is available", async () => {
+  it("turns the update button yellow and shows the localized notes on hover", async () => {
     mocks.daemonUpgradeInfoExecute.mockResolvedValue({
       value: daemonUpgradeInfo({
         onlineNotes: { zh_cn: "zh note line", en_us: "en note line" }
@@ -158,8 +166,9 @@ describe("NodeItem.vue daemon update affordances", () => {
     await mountNodeItem();
 
     expect(mocks.daemonUpgradeInfoExecute).toHaveBeenCalled();
-    expect(wrapper.find(".daemon-update-icon").exists()).toBe(true);
-    expect(wrapper.text()).toContain("4.18.3");
+    const updateBtn = findUpdateBtn();
+    expect(updateBtn).toBeTruthy();
+    expect(updateBtn!.find("span.btn").classes()).toContain("color-warning");
 
     await openUpdateTooltip();
 
@@ -183,20 +192,38 @@ describe("NodeItem.vue daemon update affordances", () => {
     expect(bodyText).not.toContain("ja line");
   });
 
-  it("hides the update icon when no update is available", async () => {
+  it("leaves the update button uncolored when no update is available", async () => {
     mocks.daemonUpgradeInfoExecute.mockResolvedValue({
       value: daemonUpgradeInfo({ updateAvailable: false, onlineVersion: "4.18.3" })
     });
     await mountNodeItem();
 
-    expect(wrapper.find(".daemon-update-icon").exists()).toBe(false);
+    const updateBtn = findUpdateBtn();
+    expect(updateBtn).toBeTruthy();
+    expect(updateBtn!.find("span.btn").classes()).not.toContain("color-warning");
+    expect(updateBtn!.props("tooltip")).toBeUndefined();
   });
 
   it("does not query the daemon while the node is offline", async () => {
     await mountNodeItem(nodeItem({ available: false }));
 
     expect(mocks.daemonUpgradeInfoExecute).not.toHaveBeenCalled();
-    expect(wrapper.find(".daemon-update-icon").exists()).toBe(false);
+    // The update entry is hidden entirely for an offline node.
+    expect(findUpdateBtn()).toBeUndefined();
+  });
+
+  it("keeps the original version diff warning, decoupled from the update manifest", async () => {
+    await mountNodeItem(nodeItem({ version: "4.17.0", available: true }));
+
+    const dangerTexts = wrapper.findAll(".color-danger").map((node) => node.text());
+    expect(dangerTexts.some((text) => text.includes("4.17.0"))).toBe(true);
+  });
+
+  it("shows the version as success when it matches the panel requirement", async () => {
+    await mountNodeItem(nodeItem({ version: "4.18.9", available: true }));
+
+    const dangerTexts = wrapper.findAll(".color-danger").map((node) => node.text());
+    expect(dangerTexts.some((text) => text.includes("4.18.9"))).toBe(false);
   });
 
   it("runs the daemon update from the top-right button group", async () => {

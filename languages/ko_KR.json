@@ -3161,7 +3161,7 @@
   "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "이 원격 데몬을 지금 업데이트하시겠습니까? 최신 패키지를 다운로드하여 덮어씁니다. 변경 사항을 적용하려면 이후 데몬을 수동으로 다시 시작하세요.",
   "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "데몬이 v{v}(으)로 업데이트되었습니다. 변경 사항을 적용하려면 데몬을 수동으로 다시 시작하세요.",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "데몬 업데이트를 시작하지 못했습니다.",
-  "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "새 버전이 있습니다: v{v}. 오른쪽 상단의 \"데몬 업데이트\" 버튼을 눌러 업데이트하세요.",
+  "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "새 버전이 있습니다: v{v}!",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "패널 업데이트",
   "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "지금 제어 패널을 업데이트하시겠습니까? 최신 패키지를 다운로드하여 패널 파일(app.js + 프런트엔드)을 덮어씁니다. 변경 사항을 적용하려면 이후 패널을 수동으로 다시 시작하세요.",
   "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "패널이 v{v}(으)로 업데이트되었습니다. 변경 사항을 적용하려면 패널을 수동으로 다시 시작하세요.",

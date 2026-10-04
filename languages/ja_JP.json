@@ -3161,7 +3161,7 @@
   "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "このリモートデーモンを今すぐ更新しますか?最新パッケージをダウンロードして上書きします。変更を適用するには、その後デーモンを手動で再起動してください。",
   "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "デーモンを v{v} に更新しました。変更を適用するにはデーモンを手動で再起動してください。",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "デーモンの更新を開始できませんでした。",
-  "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "新しいバージョン v{v} があります。右上の「デーモンを更新」ボタンから更新できます。",
+  "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "新しいバージョン v{v} が利用可能です！",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "パネルを更新",
   "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "今すぐコントロールパネルを更新しますか?最新パッケージをダウンロードしてパネルのファイル (app.js とフロントエンド) を上書きします。変更を適用するには、その後パネルを手動で再起動してください。",
   "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "パネルを v{v} に更新しました。変更を適用するにはパネルを手動で再起動してください。",

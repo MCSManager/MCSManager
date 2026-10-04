@@ -3161,7 +3161,7 @@
   "TXT_CODE_AUTOUPDATE_DAEMON_CONFIRM": "อัปเดตเดมอนระยะไกลนี้ตอนนี้หรือไม่? จะดาวน์โหลดแพ็กเกจล่าสุดและเขียนทับ จากนั้นรีสตาร์ทเดมอนด้วยตนเองเพื่อให้มีผล",
   "TXT_CODE_AUTOUPDATE_DAEMON_STARTED": "อัปเดตเดมอนเป็น v{v} แล้ว รีสตาร์ทเดมอนด้วยตนเองเพื่อให้มีผล",
   "TXT_CODE_AUTOUPDATE_DAEMON_FAILED": "ไม่สามารถเริ่มการอัปเดต daemon ได้",
-  "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "มีเวอร์ชันใหม่: v{v} คลิกปุ่ม \"อัปเดต Daemon\" ที่มุมขวาบนเพื่ออัปเดต",
+  "TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP": "มีเวอร์ชันใหม่: v{v}!",
   "TXT_CODE_AUTOUPDATE_WEB_BTN": "อัปเดตแผงควบคุม",
   "TXT_CODE_AUTOUPDATE_WEB_CONFIRM": "อัปเดตแผงควบคุมตอนนี้หรือไม่? จะดาวน์โหลดแพ็กเกจล่าสุดและเขียนทับไฟล์แผง (app.js + front-end) จากนั้นรีสตาร์ทแผงด้วยตนเองเพื่อให้มีผล",
   "TXT_CODE_AUTOUPDATE_WEB_SUCCESS": "อัปเดตแผงเป็น v{v} แล้ว รีสตาร์ทแผงด้วยตนเองเพื่อให้มีผล",
