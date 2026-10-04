@@ -8,7 +8,12 @@ import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import { SocketStatus, useSocketIoClient } from "@/hooks/useSocketIo";
 import { getCurrentLang, t } from "@/lang/i18n";
-import { connectNode, getDaemonUpgradeInfo, upgradeDaemon, type IUpgradeInfo } from "@/services/apis";
+import {
+  connectNode,
+  getDaemonUpgradeInfo,
+  upgradeDaemon,
+  type IUpgradeInfo
+} from "@/services/apis";
 import { arrayFilter } from "@/tools/array";
 import { pickLocalizedNotes } from "@/tools/localizedNotes";
 import { reportErrorMsg } from "@/tools/validator";
@@ -27,7 +32,7 @@ import {
   SettingOutlined
 } from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, defineProps, onMounted, ref, watch } from "vue";
 import NodeDetailDialog from "./NodeDetailDialog.vue";
 
 const { testFrontendSocket, socketStatus } = useSocketIoClient();

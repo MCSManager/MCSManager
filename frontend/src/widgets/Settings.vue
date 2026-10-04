@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { getProPanelUrl } from "@/components/IframeBox/config";
-import IframeBox from "@/components/IframeBox/index.vue";
 import LeftMenusPanel from "@/components/LeftMenusPanel.vue";
 import Loading from "@/components/Loading.vue";
 import { useUploadFileDialog } from "@/components/fc";
@@ -112,18 +110,11 @@ const menus = arrayFilter([
     key: "baseInfo",
     icon: ProjectOutlined
   },
-  // {
-  //   title: t("TXT_CODE_574ed474"),
-  //   key: "pro",
-  //   icon: SketchOutlined,
-  //   condition: () => isCN()
-  // },
-  // {
-  //   title: t("TXT_CODE_caf8ebb7"),
-  //   key: "redeem",
-  //   icon: KeyOutlined,
-  //   condition: () => isCN()
-  // },
+  {
+    title: t("TXT_CODE_AUTOUPDATE_TAB_TITLE"),
+    key: "autoUpdate",
+    icon: CloudUploadOutlined
+  },
   {
     title: t("TXT_CODE_1c18acc0"),
     key: "ui",
@@ -144,11 +135,7 @@ const menus = arrayFilter([
     key: "sso",
     icon: ApiOutlined
   },
-  {
-    title: t("TXT_CODE_AUTOUPDATE_TAB_TITLE"),
-    key: "autoUpdate",
-    icon: CloudUploadOutlined
-  },
+
   {
     title: t("TXT_CODE_46cb40d5"),
     key: "sponsor",
@@ -450,7 +437,6 @@ const refreshPanelUpgradeInfo = async () => {
     panelUpgradeLoading.value = false;
   }
 };
-
 
 const onUpdateWeb = () => {
   Modal.confirm({
@@ -1479,8 +1465,25 @@ onUnmounted(() => {
                       <div class="update-notes-body">{{ panelUpgradeNotes }}</div>
                     </div>
                   </a-form-item>
-
                   <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_BTN") }}
+                    </a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC") }}
+                    </a-typography-paragraph>
+                    <a-button
+                      type="primary"
+                      danger
+                      :disabled="
+                        !panelUpgradeInfo?.configured || !panelUpgradeInfo?.updateAvailable
+                      "
+                      @click="onUpdateWeb"
+                    >
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_BTN") }}
+                    </a-button>
+                  </a-form-item>
+                  <a-form-item v-if="formData">
                     <a-typography-title :level="5">
                       {{ t("TXT_CODE_AUTOUPDATE_WEB_SOURCE") }}
                     </a-typography-title>
@@ -1499,37 +1502,10 @@ onUnmounted(() => {
                       {{ t("TXT_CODE_AUTOUPDATE_WEB_SAVE") }}
                     </a-button>
                   </div>
-
-                  <a-form-item>
-                    <a-typography-title :level="5">
-                      {{ t("TXT_CODE_AUTOUPDATE_WEB_BTN") }}
-                    </a-typography-title>
-                    <a-typography-paragraph type="secondary">
-                      {{ t("TXT_CODE_AUTOUPDATE_WEB_ACTION_DESC") }}
-                    </a-typography-paragraph>
-                    <a-button
-                      type="primary"
-                      :disabled="
-                        !panelUpgradeInfo?.configured || !panelUpgradeInfo?.updateAvailable
-                      "
-                      @click="onUpdateWeb"
-                    >
-                      {{ t("TXT_CODE_AUTOUPDATE_WEB_BTN") }}
-                    </a-button>
-                  </a-form-item>
                 </a-form>
               </div>
             </div>
           </template>
-
-          <template #pro>
-            <IframeBox :src="getProPanelUrl('/status')" :height="card.height" />
-          </template>
-
-          <template #redeem>
-            <IframeBox :src="getProPanelUrl('/')" :height="card.height" />
-          </template>
-
           <template #about>
             <div class="content-box" :style="{ maxHeight: card.height }">
               <a-typography-title :level="4" class="mb-24">
