@@ -622,6 +622,50 @@ describe("file_router security: per-instance workspace isolation (real FileManag
     resetNonZipEntries();
   });
 
+  // ---- Zip Slip via ARCHIVE symlink chain: s1 -> ., s2 -> s1/.., s2/Config/global.json ----
+  // At check time s1/s2 do not exist on disk yet, so resolvePhysicalPath does
+  // lexical folding (s1/.. collapses to .) and every entry looks safe.  During
+  // extraction the kernel creates s1 and s2 first, then follows s2's chain when
+  // writing s2/Config/global.json — escaping the workspace.  hasZipSlip must
+  // simulate the ordered extraction and resolve through pending archive links.
+  it("file/compress type=0: archive symlink chain s1->. / s2->s1/.. / s2/Config/global.json -> {500}", async () => {
+    if (!linkOk) return;
+    await nonZipEntries([
+      { name: "s1", isDirectory: false, linkTarget: "." },
+      { name: "s2", isDirectory: false, linkTarget: "s1/.." },
+      { name: "s2/Config/global.json", isDirectory: false }
+    ]);
+    const pkt = await call("file/compress", {
+      instanceUuid: "a",
+      source: "evil.7z",
+      targets: ".",
+      type: 0,
+      code: "utf-8"
+    });
+    expect(pkt.status).toBe(500);
+    expect(decompress).not.toHaveBeenCalled();
+    resetNonZipEntries();
+  });
+
+  it("file/compress type=0: archive symlink chain s1->.. / s2->s1/../.. -> {500}", async () => {
+    if (!linkOk) return;
+    await nonZipEntries([
+      { name: "s1", isDirectory: false, linkTarget: ".." },
+      { name: "s2", isDirectory: false, linkTarget: "s1/../.." },
+      { name: "s2/Config/global.json", isDirectory: false }
+    ]);
+    const pkt = await call("file/compress", {
+      instanceUuid: "a",
+      source: "evil.7z",
+      targets: ".",
+      type: 0,
+      code: "utf-8"
+    });
+    expect(pkt.status).toBe(500);
+    expect(decompress).not.toHaveBeenCalled();
+    resetNonZipEntries();
+  });
+
   // ---- file/status task scoping with the real sandbox ----
   it("file/status: own download task is listed with a workspace-relative path", async () => {
     (downloadManager as any).tasks = [

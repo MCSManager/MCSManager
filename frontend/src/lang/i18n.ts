@@ -162,6 +162,7 @@ const isEN = () => {
 };
 
 const $t = (...args: any[]): string => {
+  if(!i18n?.global?.t) return "";
   return (i18n.global.t as Function)(...args);
 };
 const t = $t;
@@ -180,3 +181,4 @@ export {
   setLanguage,
   t
 };
+
