@@ -3264,5 +3264,13 @@
   "TXT_CODE_file_ownership.invalidId": "Invalid {{label}} in instance runAs setting",
   "TXT_CODE_file_ownership.invalidTarget": "Access denied: Invalid ownership target",
   "TXT_CODE_file_ownership.outsideWorkspace": "Access denied: Ownership target escapes instance workspace",
-  "TXT_CODE_file_ownership.targetChanged": "Access denied: Ownership target changed during validation"
+  "TXT_CODE_file_ownership.targetChanged": "Access denied: Ownership target changed during validation",
+  "TXT_CODE_file_ownership.permissionDenied": "The Daemon cannot set the requested file owner. Check its runtime identity and Docker UID/GID mapping.",
+  "TXT_CODE_rootless.unsupportedIdentity": "Unsupported Rootless Docker identity or mapping. Use a local engine with a verified Daemon namespace; a host Daemon supports only container UID:GID 0:0.",
+  "TXT_CODE_rootless.numericUserRequired": "Rootless Docker requires an explicit numeric UID:GID in runAs or the image USER setting.",
+  "TXT_CODE_rootless.engineUnavailable": "Cannot verify Docker engine identity. Check the Daemon's Docker connection before modifying instance files.",
+  "TXT_CODE_rootless.imageUnavailable": "Cannot determine the image USER. Install the image or set an explicit numeric UID:GID in runAs.",
+  "TXT_CODE_rootless.namespaceUnavailable": "Cannot verify the Rootless Docker namespace. Set MCSM_ROOTLESS_DOCKER_CONTAINER to a trusted running container in the same local engine.",
+  "TXT_CODE_rootless.networkLimitUnsupported": "Host network rate limiting is not supported with Rootless Docker. Remove the instance upload/download rate limits.",
+  "TXT_CODE_rootless.resourceLimitUnsupported": "The Rootless engine cannot enforce the requested CPU/memory limit. Configure cgroup v2 and systemd delegation first."
 }

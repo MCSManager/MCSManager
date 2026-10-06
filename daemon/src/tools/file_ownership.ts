@@ -4,6 +4,7 @@ import path from "path";
 import type Instance from "../entity/instance/instance";
 import { $t } from "../i18n";
 import { getLinuxSystemId } from "./system_user";
+import { dockerFileOwnership } from "../service/docker_file_ownership";
 
 export interface FileOwnership {
   uid: number;
@@ -27,11 +28,17 @@ function parseId(value: string, label: string): number {
 }
 
 export async function resolveInstanceFileOwnership(
-  instance: Instance
+  instance: Instance,
+  options: { rootlessOnly?: boolean } = {}
 ): Promise<FileOwnership | undefined> {
   if (process.platform === "win32") return undefined;
 
   const runAs = String(instance.config.runAs || "").trim();
+  if (instance.config.processType === "docker") {
+    const identity = await dockerFileOwnership.resolve(runAs, instance.config.docker.image || "");
+    if (identity.rootless) return identity.ownership;
+  }
+  if (options.rootlessOnly) return undefined;
   if (!runAs) return undefined;
 
   const numericIds = runAs.match(/^(\d+):(\d+)$/);
@@ -88,7 +95,17 @@ export async function syncPathOwnershipWithinRoot(
     if (openedInfo.dev !== targetInfo.dev || openedInfo.ino !== targetInfo.ino) {
       throw new Error($t("TXT_CODE_file_ownership.targetChanged"));
     }
-    await fs.fchown(fd, ownership.uid, ownership.gid);
+    if (openedInfo.uid !== ownership.uid || openedInfo.gid !== ownership.gid) {
+      try {
+        await fs.fchown(fd, ownership.uid, ownership.gid);
+      } catch (error) {
+        const code = (error as NodeJS.ErrnoException).code;
+        if (code === "EPERM" || code === "EACCES") {
+          throw new Error($t("TXT_CODE_file_ownership.permissionDenied"));
+        }
+        throw error;
+      }
+    }
   } finally {
     await fs.close(fd);
   }

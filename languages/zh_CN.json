@@ -3264,5 +3264,13 @@
   "TXT_CODE_file_ownership.invalidId": "实例 runAs 设置中的 {{label}} 无效",
   "TXT_CODE_file_ownership.invalidTarget": "访问被拒绝：无效的所有权目标",
   "TXT_CODE_file_ownership.outsideWorkspace": "访问被拒绝：所有权目标超出实例工作目录",
-  "TXT_CODE_file_ownership.targetChanged": "访问被拒绝：所有权目标在验证过程中发生变化"
+  "TXT_CODE_file_ownership.targetChanged": "访问被拒绝：所有权目标在验证过程中发生变化",
+  "TXT_CODE_file_ownership.permissionDenied": "Daemon 无法设置指定的文件所有者。请检查运行身份及 Docker UID/GID 映射。",
+  "TXT_CODE_rootless.unsupportedIdentity": "不支持此 Rootless Docker 身份或映射。请使用本地引擎并验证 Daemon 命名空间；直接在主机运行的 Daemon 仅支持容器 UID:GID 0:0。",
+  "TXT_CODE_rootless.numericUserRequired": "Rootless Docker 要求在 runAs 或镜像 USER 设置中明确指定数字 UID:GID。",
+  "TXT_CODE_rootless.engineUnavailable": "无法验证 Docker 引擎身份。修改实例文件前，请检查 Daemon 的 Docker 连接。",
+  "TXT_CODE_rootless.imageUnavailable": "无法确定镜像 USER。请先安装镜像或在 runAs 中明确指定数字 UID:GID。",
+  "TXT_CODE_rootless.namespaceUnavailable": "无法验证 Rootless Docker 命名空间。请将 MCSM_ROOTLESS_DOCKER_CONTAINER 设置为同一本地引擎中可信的运行中容器名称。",
+  "TXT_CODE_rootless.networkLimitUnsupported": "Rootless Docker 不支持主机网络限速。请移除实例的上传／下载限速。",
+  "TXT_CODE_rootless.resourceLimitUnsupported": "Rootless 引擎无法执行指定的 CPU／内存限制。请先配置 cgroup v2 与 systemd 委派。"
 }
