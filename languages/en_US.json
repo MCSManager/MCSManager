@@ -3264,5 +3264,22 @@
   "TXT_CODE_file_ownership.invalidId": "Invalid {{label}} in instance runAs setting",
   "TXT_CODE_file_ownership.invalidTarget": "Access denied: Invalid ownership target",
   "TXT_CODE_file_ownership.outsideWorkspace": "Access denied: Ownership target escapes instance workspace",
-  "TXT_CODE_file_ownership.targetChanged": "Access denied: Ownership target changed during validation"
+  "TXT_CODE_file_ownership.targetChanged": "Access denied: Ownership target changed during validation",
+  "TXT_CODE_RCON_PROTOCOL": "RCON protocol",
+  "TXT_CODE_RCON_SOURCE": "Source RCON",
+  "TXT_CODE_RCON_RUST_WEB": "WebRCON (Rust)",
+  "TXT_CODE_RCON_INVALID_PROTOCOL": "Invalid RCON protocol",
+  "TXT_CODE_RCON_WEB_invalidTarget": "Invalid WebRCON host or port",
+  "TXT_CODE_RCON_WEB_missingPassword": "WebRCON password is required",
+  "TXT_CODE_RCON_WEB_connect": "Could not connect to WebRCON",
+  "TXT_CODE_RCON_WEB_handshake": "WebRCON connection rejected; check the password and protocol",
+  "TXT_CODE_RCON_WEB_invalidResponse": "Invalid WebRCON response",
+  "TXT_CODE_RCON_WEB_timeout": "No WebRCON reply before timeout; the command may have run",
+  "TXT_CODE_RCON_WEB_sendFailed": "WebRCON could not send the command; delivery is unconfirmed",
+  "TXT_CODE_RCON_WEB_connectionError": "WebRCON connection failed; the command may have run",
+  "TXT_CODE_RCON_WEB_adminOnly": "Only administrators can configure Rust WebRCON",
+  "TXT_CODE_RCON_WEB_completeTarget": "Switching to Rust WebRCON requires an explicit host, port and password",
+  "TXT_CODE_RCON_WEB_reenterTarget": "Source RCON connection details were cleared. Re-enter the trusted WebRCON host, port and password.",
+  "TXT_CODE_RCON_WEB_directAccessWarning": "External RCON clients bypass MCSManager command controls. Rotate the Rust RCON password to revoke direct access; removing a panel assignment alone is not enough.",
+  "TXT_CODE_RCON_WEB_closed": "WebRCON disconnected before replying; the command may have run"
 }

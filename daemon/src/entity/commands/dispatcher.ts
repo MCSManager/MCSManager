@@ -15,6 +15,7 @@ import NullCommand from "./nullfunc";
 import PtyResizeCommand from "./pty/pty_resize";
 import PtyStartCommand from "./pty/pty_start";
 import RconCommand from "./steam/rcon_command";
+import WebRconCommand from "./steam/web_rcon_command";
 import InstanceDiskCheckTask from "./task/any_stats";
 import DockerStatsTask from "./task/docker_stats";
 import PingMinecraftServerTask from "./task/mc_players";
@@ -74,7 +75,10 @@ export default class FunctionDispatcher extends InstanceCommand {
       instance.lifeCycleTaskManager.registerLifeCycleTask(new DockerStatsTask());
     }
     if (instance.config.enableRcon) {
-      instance.setPreset("command", new RconCommand());
+      instance.setPreset(
+        "command",
+        instance.config.rconProtocol === "rust-web" ? new WebRconCommand() : new RconCommand()
+      );
     }
 
     // Minecraft Ping

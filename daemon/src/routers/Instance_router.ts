@@ -15,13 +15,14 @@
 import fs from "fs-extra";
 import path from "path";
 import Instance from "../entity/instance/instance";
+import type RouterContext from "../entity/ctx";
 import { $t } from "../i18n";
 import logger from "../service/log";
 import * as protocol from "../service/protocol";
 import { routerApp } from "../service/router_app";
 import InstanceSubsystem from "../service/system_instance";
 
-import { arrayUnique, toNumber } from "mcsmanager-common";
+import { arrayUnique, isWebRconConfigUpdate, toNumber } from "mcsmanager-common";
 import ProcessInfoCommand from "../entity/commands/process_info";
 import { ProcessConfig } from "../entity/instance/process_config";
 import { TaskCenter } from "../service/async_task_service";
@@ -200,17 +201,29 @@ routerApp.on("instance/new", (ctx, data) => {
   }
 });
 
-// update instance data
-routerApp.on("instance/update", (ctx, data) => {
+function updateInstance(ctx: RouterContext, data: any, rconOperation: boolean) {
+  const event = rconOperation ? "instance/update_rcon" : "instance/update";
   const instanceUuid = data.instanceUuid;
   const config = data.config;
   try {
-    InstanceSubsystem.getInstance(instanceUuid)?.parameters(config);
-    protocol.msg(ctx, "instance/update", { instanceUuid });
+    const instance = InstanceSubsystem.getInstance(instanceUuid);
+    if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
+    // Legacy/generic updates never authorize WebRCON configuration. The new RPC
+    // requires a positive capability derived from the user's role by the panel.
+    if (
+      isWebRconConfigUpdate(instance.config.rconProtocol, config) &&
+      (!rconOperation || data.allowWebRconConfiguration !== true)
+    )
+      throw new Error($t("TXT_CODE_RCON_WEB_adminOnly"));
+    instance.parameters(config);
+    protocol.msg(ctx, event, { instanceUuid });
   } catch (err: any) {
-    protocol.error(ctx, "instance/update", { instanceUuid: instanceUuid, err: err.message });
+    protocol.error(ctx, event, { instanceUuid, err: err.message });
   }
-});
+}
+
+routerApp.on("instance/update", (ctx, data) => updateInstance(ctx, data, false));
+routerApp.on("instance/update_rcon", (ctx, data) => updateInstance(ctx, data, true));
 
 // Request to forward all IO data of an instance
 routerApp.on("instance/forward", (ctx, data) => {
