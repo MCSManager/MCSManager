@@ -6,7 +6,7 @@ import Instance, { GLOBAL_INSTANCE_UUID_KEY } from "../entity/instance/instance"
 import { $t } from "../i18n";
 import downloadManager from "../service/download_manager";
 import { getFileManager, getWindowsDisks } from "../service/file_router_service";
-import { acquireFileTask } from "../service/file_task";
+import { acquireFileTask, validateFileTransferTargets } from "../service/file_task";
 import logger from "../service/log";
 import * as protocol from "../service/protocol";
 import { routerApp } from "../service/router_app";
@@ -210,12 +210,14 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
       return;
     }
 
+    let ownershipSynchronized = false;
     downloadManager
-      .downloadFromUrl(url, targetPath, fallbackUrl, () =>
-        fileManager.syncOwnership(targetPath, ownership)
-      )
+      .downloadFromUrl(url, targetPath, fallbackUrl, async () => {
+        await fileManager.syncOwnership(targetPath, ownership);
+        ownershipSynchronized = true;
+      })
       .finally(async () => {
-        if (!ownership) return;
+        if (!ownership || ownershipSynchronized) return;
         try {
           await fileManager.syncOwnership(targetPath, ownership);
         } catch (error) {
@@ -261,18 +263,7 @@ routerApp.on("file/copy", async (ctx, data) => {
     const targets = data.targets;
     const fileManager = getFileManager(data.instanceUuid);
     const instance = InstanceSubsystem.getInstance(data.instanceUuid)!;
-    if (
-      !Array.isArray(targets) ||
-      targets.length === 0 ||
-      targets.length > 100 ||
-      targets.some(
-        (target) =>
-          !Array.isArray(target) ||
-          target.length !== 2 ||
-          target.some((value) => typeof value !== "string")
-      )
-    )
-      throw new Error($t("TXT_CODE_file_task.invalidCopyTargets"));
+    validateFileTransferTargets(targets);
     const release = acquireFileTask(instance.info);
     try {
       await resolveInstanceFileOwnership(instance, { rootlessOnly: true });
@@ -305,8 +296,13 @@ routerApp.on("file/move", async (ctx, data) => {
     // [["a.txt","b.txt"],["cxz","zzz"]]
     const targets = data.targets;
     const fileManager = getFileManager(data.instanceUuid);
-    for (const target of targets) {
-      await fileManager.move(target[0], target[1]);
+    const instance = InstanceSubsystem.getInstance(data.instanceUuid)!;
+    validateFileTransferTargets(targets);
+    const release = acquireFileTask(instance.info);
+    try {
+      for (const target of targets) await fileManager.move(target[0], target[1]);
+    } finally {
+      release();
     }
     protocol.response(ctx, true);
   } catch (error: any) {

@@ -86,12 +86,25 @@ limits via actual cgroup files, not only Docker's requested configuration.
   BPS, swap and swappiness settings are rejected: their enforcement has not been
   verified by this layer. Undefined settings retain Engine defaults; this is not
   a claim that defaults provide a swap policy. Rootful limits are unchanged.
-- File copies run one bounded batch at a time per reservation (up to 100 pairs).
-  Copy and extraction share `maxFileTask` per instance and `maxGlobalFileTask`
+- File copies and moves run one bounded batch at a time per reservation (up to 100 pairs).
+  Copy, move and extraction share `maxFileTask` per instance and `maxGlobalFileTask`
   per Daemon (default 8, configure in `data/Config/global.json`). Busy requests
   fail rather than building an unbounded queue. Rootless recursive copying uses
   directory iterators, synchronizes each copied entry immediately and leaves
   destination-only entries alone. Directory depth is limited to 128.
+- Rootless moves prepare owned destination parents and reject existing destinations.
+  Cross-filesystem moves use the bounded ownership-aware copy before removing the
+  source; failed copies leave the source intact and may leave partial destination files.
+  Same-filesystem moves validate the tree before rename and reconcile ownership after
+  rename. If that reconciliation fails, the moved tree remains at the destination and
+  the operation reports an error; no automatic rollback is attempted.
+  Relative symlinks must remain inside the workspace at their new location, including
+  directory renames. Traversal and ownership passes retain bounded iterators and
+  descriptors, not all entry paths. These pathname-based operations are not atomic against a tenant
+  process concurrently replacing parent directories or destination entries.
+  New copy directories use private writable permissions during creation and restore
+  the source mode through an inode-verified descriptor, including read-only modes.
+  Source removal failures are reported; source permissions are not automatically relaxed.
 - Archives with backslash entry names are rejected when synchronizing Rootless ownership;
   the Go and 7-Zip extractors can interpret them differently. Repack with `/`
   separators. Failed extraction reconciles only known entry paths and parents,
@@ -146,7 +159,8 @@ workspaces, random instance/container names, random localhost ports and an
 ephemeral test key, then removes its own resources. It tests namespace users
 `0:0`, `1000:1000`, image `USER` inheritance with a different update image, and a
 native non-root Daemon limited to `0:0`. Both upload APIs, manual/automatic
-extraction, private-file access, updates, console I/O, restart, local UDP and
+extraction, copy/move ownership, game writes in moved directories, private-file access,
+updates, console I/O, restart, local UDP and
 actual cgroup limits are checked. Unsupported native-host UID 1000 uploads must
 fail before overwriting existing files, and `HOST` updates must not run.
 

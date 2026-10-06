@@ -191,6 +191,8 @@ async function testUser(runAs, gameImage = image) {
     'for (const file of ["legacy.txt", "chunk.txt", "archive/item.txt", "legacy-extract/item.txt", "chunk-extract/item.txt"]) fs.appendFileSync(file, "game-write\\n");',
     'fs.writeFileSync("private", "private", {mode: 0o600});',
     'fs.writeFileSync("removed-by-game", "remove me"); fs.unlinkSync("removed-by-game");',
+    'fs.appendFileSync("moved/nested/file", "game-write\\n");',
+    'fs.writeFileSync("moved/nested/sibling", "writable"); fs.renameSync("moved/nested/sibling", "moved/nested/renamed"); fs.unlinkSync("moved/nested/renamed");',
     'if (fs.existsSync("/var/run/docker.sock")) throw new Error("Socket leaked to game");',
     'const udp = dgram.createSocket("udp4"); udp.on("message", (data, peer) => udp.send("pong:" + data, peer.port, peer.address)); udp.bind(8211);',
     'process.stdin.on("data", data => console.log("ECHO:" + data.toString().trim()));',
@@ -240,6 +242,35 @@ async function testUser(runAs, gameImage = image) {
   await execNode(
     container,
     `const fs = require("fs"); const st = fs.statSync(${JSON.stringify(path.join(workspace, "copied/directory/new"))}); if (st.uid !== ${runAs ? Number(runAs.split(":")[0]) : 1000} || st.gid !== ${runAs ? Number(runAs.split(":")[1]) : 1000}) throw new Error("Copied ownership mismatch");`
+  );
+  await file("file/move", { targets: [["copied/directory/new", "moved/nested/file"]] });
+  await execNode(
+    container,
+    `const fs = require("fs"), path = require("path");
+    const root = ${JSON.stringify(path.join(workspace, "moved"))};
+    for (const entry of [root, path.join(root, "nested"), path.join(root, "nested/file")]) {
+      const st = fs.statSync(entry);
+      if (st.uid !== ${runAs ? Number(runAs.split(":")[0]) : 1000} || st.gid !== ${runAs ? Number(runAs.split(":")[1]) : 1000}) throw new Error("Moved ownership mismatch");
+    }`
+  );
+  await file("file/mkdir", { target: "readonly" });
+  await file("file/touch", { target: "readonly/file" });
+  await execNode(
+    container,
+    `require("fs").chmodSync(${JSON.stringify(path.join(workspace, "readonly"))}, 0o500);`
+  );
+  await file("file/copy", { targets: [["readonly", "readonly-copy"]] });
+  await waitFor(
+    async () => (await file("file/status", {})).instanceFileTask === 0,
+    "read-only directory copy"
+  );
+  await execNode(
+    container,
+    `const fs = require("fs");
+    const root = ${JSON.stringify(workspace)};
+    const info = fs.statSync(root + "/readonly-copy");
+    if ((info.mode & 0o777) !== 0o500 || !fs.existsSync(root + "/readonly-copy/file")) throw new Error("Read-only copy mismatch");
+    fs.chmodSync(root + "/readonly", 0o700); fs.chmodSync(root + "/readonly-copy", 0o700);`
   );
   await request("instance/update", {
     instanceUuid,
@@ -310,7 +341,7 @@ async function testUser(runAs, gameImage = image) {
       game,
       [
         'const fs = require("fs");',
-        'const files = ["legacy.txt", "chunk.txt", "archive/item.txt", "legacy-extract/item.txt", "chunk-extract/item.txt", "nested/directory/new", "copied/directory/new", "update-marker"];',
+        'const files = ["legacy.txt", "chunk.txt", "archive/item.txt", "legacy-extract/item.txt", "chunk-extract/item.txt", "nested/directory/new", "moved/nested/file", "update-marker"];',
         'console.log(JSON.stringify({uid: process.getuid(), owners: files.map(p => fs.statSync("/data/" + p).uid), memory: fs.readFileSync("/sys/fs/cgroup/memory.max", "utf8").trim(), cpu: fs.readFileSync("/sys/fs/cgroup/cpu.max", "utf8").trim()}));'
       ].join("\n")
     )
@@ -408,7 +439,9 @@ async function testUser(runAs, gameImage = image) {
       hostUpdateRejected: true,
       restart: true,
       localUdp: true,
-      isolation: true
+      isolation: true,
+      move: "nested ownership + game write/rename/delete",
+      readOnlyDirectoryCopy: true
     })
   );
   await request("instance/kill", { instanceUuids: [instanceUuid] });

@@ -3219,7 +3219,7 @@
   "TXT_CODE_rootless.hostUpdateUnsupported": "Rootless Docker 實例必須透過容器更新，不能使用 HOST。請選擇主實例映像檔或獨立的更新映像檔。",
   "TXT_CODE_rootless.unverifiedResourceLimit": "Rootless Docker 支援無法驗證 CPU 綁定、裝置 I/O、swap 或 swappiness 限制。請移除這些設定後啟動實例。",
   "TXT_CODE_file_task.limitExceeded": "實例或 Daemon 檔案工作已達上限，請等待現有工作完成。",
-  "TXT_CODE_file_task.invalidCopyTargets": "複製請求必須包含 1 至 100 組來源／目標路徑。",
+  "TXT_CODE_file_task.invalidTransferTargets": "檔案傳輸請求必須包含 1 至 100 組來源／目標路徑。",
   "TXT_CODE_file_task.copyDepthExceeded": "複製目錄深度超過支援的 128 層上限。",
   "TXT_CODE_file_task.ambiguousArchivePath": "無法安全同步含反斜線壓縮條目的擁有權，請使用正斜線路徑重新打包。",
   "TXT_CODE_1389014c": "使用者 <<operator_name>> 解壓縮了實例 <<instance_name>> 的檔案 <<file>>",

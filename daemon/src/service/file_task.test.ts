@@ -1,11 +1,32 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { globalConfiguration, globalEnv } from "../entity/config";
-import { acquireFileTask } from "./file_task";
+import { acquireFileTask, validateFileTransferTargets } from "./file_task";
 
 beforeEach(() => {
   globalConfiguration.config.maxFileTask = 2;
   globalConfiguration.config.maxGlobalFileTask = 3;
   globalEnv.fileTaskCount = 0;
+});
+
+describe("file transfer batches", () => {
+  it("accepts bounded path pairs", () => {
+    expect(() => validateFileTransferTargets([["source", "destination"]])).not.toThrow();
+    expect(() =>
+      validateFileTransferTargets(Array(100).fill(["source", "destination"]))
+    ).not.toThrow();
+  });
+
+  it.each([
+    undefined,
+    [],
+    new Array(1),
+    [new Array(2)],
+    [["source", ""]],
+    [[1, "target"]],
+    Array(101).fill(["source", "target"])
+  ])("rejects malformed and oversized batches (%#)", (targets) =>
+    expect(() => validateFileTransferTargets(targets)).toThrow()
+  );
 });
 
 describe("file task reservations", () => {

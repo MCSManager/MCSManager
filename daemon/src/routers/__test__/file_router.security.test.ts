@@ -106,6 +106,7 @@ import { checkSafeUrl } from "../../utils/url";
 import { compress, decompress, listArchiveEntries } from "../../common/compress";
 import FileManager from "../../service/system_file";
 import InstanceSubsystem from "../../service/system_instance";
+import * as fileOwnership from "../../tools/file_ownership";
 
 // symlinks/junctions need privileges on some systems (Windows without
 // developer mode); fall back to skipping the link-escape tests.
@@ -215,6 +216,125 @@ describe("background file copy quotas", () => {
       copy.mockRestore();
     }
   });
+});
+
+describe("file move quotas", () => {
+  it("holds one reservation for the entire sequential move batch", async () => {
+    let finish!: () => void;
+    const pending = new Promise<void>((resolve) => {
+      finish = resolve;
+    });
+    const move = vi
+      .spyOn(FileManager.prototype, "move")
+      .mockImplementationOnce(() => pending)
+      .mockResolvedValue(undefined);
+    const operation = call("file/move", {
+      instanceUuid: "a",
+      targets: [
+        ["ok.txt", "move1"],
+        ["ok.txt", "move2"]
+      ]
+    });
+    try {
+      await new Promise<void>((resolve) => setImmediate(resolve));
+      expect(move).toHaveBeenCalledTimes(1);
+      expect(InstanceSubsystem.getInstance("a")!.info.fileLock).toBe(1);
+      expect(globalEnv.fileTaskCount).toBe(1);
+      finish();
+      expect((await operation).status).toBe(200);
+      expect(move).toHaveBeenCalledTimes(2);
+      expect(globalEnv.fileTaskCount).toBe(0);
+      expect(InstanceSubsystem.getInstance("a")!.info.fileLock).toBe(0);
+    } finally {
+      finish();
+      await operation;
+      move.mockRestore();
+    }
+  });
+
+  it.each(["instance", "global"])(
+    "rejects moves at the %s quota before mutation",
+    async (quota) => {
+      if (quota === "instance") InstanceSubsystem.getInstance("a")!.info.fileLock = 4;
+      else globalEnv.fileTaskCount = 8;
+      const move = vi.spyOn(FileManager.prototype, "move");
+      try {
+        expect(
+          (await call("file/move", { instanceUuid: "a", targets: [["ok.txt", "moved"]] })).status
+        ).toBe(500);
+        expect(move).not.toHaveBeenCalled();
+      } finally {
+        move.mockRestore();
+      }
+    }
+  );
+
+  it("releases failed moves and rejects malformed batches", async () => {
+    const move = vi
+      .spyOn(FileManager.prototype, "move")
+      .mockRejectedValue(new Error("move failed"));
+    try {
+      expect(
+        (await call("file/move", { instanceUuid: "a", targets: [["ok.txt", "moved"]] })).status
+      ).toBe(500);
+      expect(globalEnv.fileTaskCount).toBe(0);
+      expect(InstanceSubsystem.getInstance("a")!.info.fileLock).toBe(0);
+      move.mockClear();
+      for (const targets of [
+        undefined,
+        [],
+        [["ok.txt"]],
+        [["ok.txt", ""]],
+        Array(101).fill(["ok.txt", "moved"])
+      ])
+        expect((await call("file/move", { instanceUuid: "a", targets })).status).toBe(500);
+      expect(move).not.toHaveBeenCalled();
+    } finally {
+      move.mockRestore();
+    }
+  });
+});
+
+describe("download ownership completion", () => {
+  it.each(["success", "failure", "cancellation"])(
+    "synchronizes %s downloads once",
+    async (outcome) => {
+      const ownership = {
+        uid: process.getuid?.() ?? 0,
+        gid: process.getgid?.() ?? 0,
+        rootless: true
+      };
+      const resolver = vi
+        .spyOn(fileOwnership, "resolveInstanceFileOwnership")
+        .mockResolvedValue(ownership);
+      const sync = vi.spyOn(FileManager.prototype, "syncOwnership").mockResolvedValue(undefined);
+      vi.mocked(downloadManager.downloadFromUrl).mockImplementationOnce(
+        async (_url, _target, _fallback, onDownloaded) => {
+          if (outcome === "success") await onDownloaded?.();
+          else if (outcome === "failure") throw new Error("download failed");
+          // Cancellation can resolve without running onDownloaded.
+        }
+      );
+      try {
+        expect(
+          (
+            await call("file/download_from_url", {
+              instanceUuid: "a",
+              url: "https://example.com/file",
+              fileName: "download.bin"
+            })
+          ).status
+        ).toBe(200);
+        await new Promise<void>((resolve) => setImmediate(resolve));
+        expect(
+          sync.mock.calls.filter(([target]) => target === path.join(sandbox.dirA, "download.bin"))
+        ).toHaveLength(1);
+      } finally {
+        resolver.mockRestore();
+        sync.mockRestore();
+      }
+    }
+  );
 });
 
 const AUTHED = (id = "sx") => ({

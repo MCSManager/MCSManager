@@ -1,4 +1,6 @@
 import fs from "fs-extra";
+import { constants as fsConstants } from "fs";
+import type { Stats } from "fs";
 import { opendir } from "fs/promises";
 import iconv from "iconv-lite";
 import { ProcessWrapper } from "mcsmanager-common";
@@ -306,48 +308,97 @@ export default class FileManager {
     destination: string,
     realRoot: string,
     ownership: FileOwnership,
-    depth: number
+    depth: number,
+    overwrite = true
   ): Promise<void> {
     if (depth > MAX_COPY_DEPTH) throw new Error($t("TXT_CODE_file_task.copyDepthExceeded"));
     await this.resolveCopyPath(source, realRoot);
     await this.resolveCopyPath(destination, realRoot);
     const sourceInfo = await fs.lstat(source);
     if (sourceInfo.isDirectory()) {
+      let created = false;
       try {
-        await fs.mkdir(destination, { mode: sourceInfo.mode & 0o777 });
+        // Keep a new directory private and writable until its children are copied.
+        await fs.mkdir(destination, { mode: 0o700 });
+        created = true;
       } catch (error) {
         if (
+          !overwrite ||
           (error as NodeJS.ErrnoException).code !== "EEXIST" ||
           !(await fs.lstat(destination)).isDirectory()
         )
           throw error;
       }
-      await syncPathOwnershipWithinRoot(this.topPath, destination, ownership);
-      // Keep only the current directory iterator at each depth, not the entire tree.
-      const directory = await opendir(source);
+      let destinationFd: number | undefined;
+      let destinationIdentityVerified = false;
       try {
-        const openedInfo = await fs.lstat(source);
-        if (openedInfo.dev !== sourceInfo.dev || openedInfo.ino !== sourceInfo.ino) {
-          throw new Error(ERROR_MSG_01);
-        }
-        for await (const entry of directory) {
-          await this.copyOwnedEntry(
-            path.join(source, entry.name),
-            path.join(destination, entry.name),
-            realRoot,
-            ownership,
-            depth + 1
+        if (created) {
+          await this.resolveCopyPath(destination, realRoot);
+          const destinationInfo = await fs.lstat(destination);
+          destinationFd = await fs.open(
+            destination,
+            fsConstants.O_RDONLY | fsConstants.O_NOFOLLOW | fsConstants.O_DIRECTORY
           );
+          const openedInfo = await fs.fstat(destinationFd);
+          if (openedInfo.dev !== destinationInfo.dev || openedInfo.ino !== destinationInfo.ino)
+            throw new Error(ERROR_MSG_01);
+          destinationIdentityVerified = true;
+        }
+        await syncPathOwnershipWithinRoot(this.topPath, destination, ownership);
+        // Keep only the current directory iterator at each depth, not the entire tree.
+        const directory = await opendir(source);
+        try {
+          const openedInfo = await fs.lstat(source);
+          if (openedInfo.dev !== sourceInfo.dev || openedInfo.ino !== sourceInfo.ino)
+            throw new Error(ERROR_MSG_01);
+          for await (const entry of directory) {
+            await this.copyOwnedEntry(
+              path.join(source, entry.name),
+              path.join(destination, entry.name),
+              realRoot,
+              ownership,
+              depth + 1,
+              overwrite
+            );
+          }
+        } finally {
+          await directory.close().catch((error: NodeJS.ErrnoException) => {
+            if (error.code !== "ERR_DIR_CLOSED") throw error;
+          });
         }
       } finally {
-        // for-await closes on completion and failure; also cover errors before iteration.
-        await directory.close().catch((error: NodeJS.ErrnoException) => {
-          if (error.code !== "ERR_DIR_CLOSED") throw error;
-        });
+        if (destinationFd !== undefined) {
+          try {
+            // The descriptor cannot be redirected by replacing the destination pathname.
+            if (destinationIdentityVerified)
+              await fs.fchmod(destinationFd, sourceInfo.mode & 0o777);
+          } finally {
+            await fs.close(destinationFd);
+          }
+        }
       }
-    } else if (sourceInfo.isFile() || sourceInfo.isSymbolicLink()) {
+    } else if (sourceInfo.isSymbolicLink()) {
+      const link = await fs.readlink(source);
+      await this.validateRelocatedLink(link, destination, realRoot);
+      let destinationInfo: Stats | undefined;
       try {
-        await fs.copy(source, destination);
+        destinationInfo = await fs.lstat(destination);
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+      }
+      if (destinationInfo) {
+        if (!overwrite || !destinationInfo.isSymbolicLink()) throw new Error(ERROR_MSG_01);
+        await fs.unlink(destination);
+      }
+      // Use the validated link text rather than rereading a mutable source in fs.copy().
+      await fs.symlink(link, destination);
+    } else if (sourceInfo.isFile()) {
+      try {
+        await fs.copy(
+          source,
+          destination,
+          overwrite ? undefined : { overwrite: false, errorOnExist: true }
+        );
       } finally {
         try {
           await syncPathOwnershipWithinRoot(this.topPath, destination, ownership);
@@ -398,7 +449,96 @@ export default class FileManager {
     if (!this.checkPath(destPath)) throw new Error(ERROR_MSG_01);
     const targetPath = this.toAbsolutePath(target);
     destPath = this.toAbsolutePath(destPath);
-    await fs.move(targetPath, destPath);
+    const ownership = await this.ownershipResolver?.();
+    if (!ownership) return await fs.move(targetPath, destPath);
+
+    const realRoot = await fs.realpath(this.topPath);
+    const source = await this.resolveCopyPath(targetPath, realRoot);
+    const destination = await this.resolveCopyPath(destPath, realRoot);
+    const relative = path.relative(source, destination);
+    if (
+      source === realRoot ||
+      relative === "" ||
+      (!relative.startsWith(".." + path.sep) && relative !== ".." && !path.isAbsolute(relative))
+    )
+      throw new Error(ERROR_MSG_01);
+    await this.assertMoveDestinationAbsent(destPath);
+    const sourceInfo = await fs.lstat(targetPath);
+    // Renaming a directory also relocates its relative symlinks. Validate before mutation.
+    await this.visitTree(targetPath, realRoot, async (entry, info) => {
+      if (info.isSymbolicLink()) {
+        const relocated = path.join(destPath, path.relative(targetPath, entry));
+        await this.validateRelocatedLink(await fs.readlink(entry), relocated, realRoot);
+      }
+    });
+    await this.prepareOwnedDirectory(path.dirname(destPath), ownership);
+    await this.resolveCopyPath(targetPath, realRoot);
+    await this.resolveCopyPath(destPath, realRoot);
+    await this.assertMoveDestinationAbsent(destPath);
+    const verifiedInfo = await fs.lstat(targetPath);
+    if (verifiedInfo.dev !== sourceInfo.dev || verifiedInfo.ino !== sourceInfo.ino)
+      throw new Error(ERROR_MSG_01);
+    try {
+      await fs.rename(targetPath, destPath);
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "EXDEV") throw error;
+      await this.copyOwnedEntry(targetPath, destPath, realRoot, ownership, 0, false);
+      await this.resolveCopyPath(targetPath, realRoot);
+      const currentInfo = await fs.lstat(targetPath);
+      if (currentInfo.dev !== sourceInfo.dev || currentInfo.ino !== sourceInfo.ino)
+        throw new Error(ERROR_MSG_01);
+      // Do not delete the source until the entire copy and ownership pass succeed.
+      await fs.remove(targetPath);
+      return;
+    }
+    await this.visitTree(destPath, realRoot, (entry) =>
+      syncPathOwnershipWithinRoot(this.topPath, entry, ownership)
+    );
+  }
+
+  private async assertMoveDestinationAbsent(destination: string): Promise<void> {
+    try {
+      await fs.lstat(destination);
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") return;
+      throw error;
+    }
+    throw new Error(ERROR_MSG_01);
+  }
+
+  private async validateRelocatedLink(
+    link: string,
+    destination: string,
+    realRoot: string
+  ): Promise<void> {
+    const target = path.isAbsolute(link) ? link : path.dirname(destination) + path.sep + link;
+    await this.resolveCopyPath(target, realRoot);
+  }
+
+  private async visitTree(
+    target: string,
+    realRoot: string,
+    visit: (entry: string, info: Stats) => Promise<void>,
+    depth = 0
+  ): Promise<void> {
+    if (depth > MAX_COPY_DEPTH) throw new Error($t("TXT_CODE_file_task.copyDepthExceeded"));
+    await this.resolveCopyPath(target, realRoot);
+    const info = await fs.lstat(target);
+    if (!info.isFile() && !info.isDirectory() && !info.isSymbolicLink())
+      throw new Error(ERROR_MSG_01);
+    await visit(target, info);
+    if (!info.isDirectory()) return;
+    const directory = await opendir(target);
+    try {
+      const openedInfo = await fs.lstat(target);
+      if (openedInfo.dev !== info.dev || openedInfo.ino !== info.ino) throw new Error(ERROR_MSG_01);
+      for await (const entry of directory)
+        await this.visitTree(path.join(target, entry.name), realRoot, visit, depth + 1);
+    } finally {
+      await directory.close().catch((error: NodeJS.ErrnoException) => {
+        if (error.code !== "ERR_DIR_CLOSED") throw error;
+      });
+    }
   }
 
   async unzip(sourceZip: string, destDir: string, code?: string, ownership?: FileOwnership) {
