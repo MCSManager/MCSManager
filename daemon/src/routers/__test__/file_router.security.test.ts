@@ -101,7 +101,7 @@ import "../file_router";
 import downloadManager from "../../service/download_manager";
 import uploadManager from "../../service/upload_manager";
 import { checkSafeUrl } from "../../utils/url";
-import { compress, decompress } from "../../common/compress";
+import { compress, decompress, listArchiveEntries } from "../../common/compress";
 import FileManager from "../../service/system_file";
 
 // symlinks/junctions need privileges on some systems (Windows without
@@ -507,6 +507,119 @@ describe("file_router security: per-instance workspace isolation (real FileManag
     expect(decompress).not.toHaveBeenCalled();
     expect(fs.existsSync(path.join(sandbox.dirA, "evil.txt"))).toBe(false);
     expect(fs.existsSync(path.join(sandbox.root, "evil2.txt"))).toBe(false);
+  });
+
+  // ---- Zip Slip via symlink + '..': kernel-physical meaning vs lexical check ----
+  // Non-zip archives are listed through listArchiveEntries (raw names, no
+  // node-stream-zip name validation), so this is the path that must enforce
+  // containment itself. '<dest>/link/../x' collapses to '<dest>/x' under
+  // path.resolve() but means '<outside-parent>/x' to the extractor whenever a
+  // pre-existing 'link' points outside the workspace.
+  const nonZipEntries = async (entries: Array<{ name: string; isDirectory: boolean; linkTarget?: string }>) => {
+    fs.writeFileSync(path.join(sandbox.dirA, "evil.7z"), "not-a-real-archive");
+    (listArchiveEntries as any).mockImplementation(async () => entries);
+  };
+  const resetNonZipEntries = () => {
+    fs.removeSync(path.join(sandbox.dirA, "evil.7z"));
+    (listArchiveEntries as any).mockImplementation(async () => []);
+  };
+
+  it("file/compress type=0: entry 'link/../x' + pre-existing outward link -> {500} and decompress NOT called", async () => {
+    if (!linkOk) return;
+    await nonZipEntries([{ name: "link/../escape.txt", isDirectory: false }]);
+    const pkt = await call("file/compress", {
+      instanceUuid: "a",
+      source: "evil.7z",
+      targets: ".",
+      type: 0,
+      code: "utf-8"
+    });
+    expect(pkt.status).toBe(500);
+    expect(decompress).not.toHaveBeenCalled();
+    expect(fs.existsSync(path.join(sandbox.root, "escape.txt"))).toBe(false);
+    expect(fs.existsSync(path.join(sandbox.dirB, "escape.txt"))).toBe(false);
+    resetNonZipEntries();
+  });
+
+  it("file/compress type=0: entry 'sub/link/../x' (outward link inside a real dir) -> {500} and decompress NOT called", async () => {
+    if (!linkOk) return;
+    fs.mkdirSync(path.join(sandbox.dirA, "sub"), { recursive: true });
+    fs.symlinkSync(sandbox.dirB, path.join(sandbox.dirA, "sub", "link"), process.platform === "win32" ? "junction" : "dir");
+    await nonZipEntries([{ name: "sub/link/../escape2.txt", isDirectory: false }]);
+    const pkt = await call("file/compress", {
+      instanceUuid: "a",
+      source: "evil.7z",
+      targets: ".",
+      type: 0,
+      code: "utf-8"
+    });
+    expect(pkt.status).toBe(500);
+    expect(decompress).not.toHaveBeenCalled();
+    expect(fs.existsSync(path.join(sandbox.root, "escape2.txt"))).toBe(false);
+    expect(fs.existsSync(path.join(sandbox.dirB, "escape2.txt"))).toBe(false);
+    fs.removeSync(path.join(sandbox.dirA, "sub"));
+    resetNonZipEntries();
+  });
+
+  it("file/compress type=0: entry '..\\..\\evil.txt' (extractors treat '\\' as separator) -> {500}", async () => {
+    await nonZipEntries([{ name: "..\\..\\evil-back.txt", isDirectory: false }]);
+    const pkt = await call("file/compress", {
+      instanceUuid: "a",
+      source: "evil.7z",
+      targets: ".",
+      type: 0,
+      code: "utf-8"
+    });
+    expect(pkt.status).toBe(500);
+    expect(decompress).not.toHaveBeenCalled();
+    expect(fs.existsSync(path.join(sandbox.root, "evil-back.txt"))).toBe(false);
+    resetNonZipEntries();
+  });
+
+  it("file/compress type=0: symlink entry with an escaping target -> {500} and decompress NOT called", async () => {
+    if (!linkOk) return;
+    // 1) relative target that resolves outside the workspace
+    await nonZipEntries([{ name: "evil-link", isDirectory: false, linkTarget: ".." }]);
+    let pkt = await call("file/compress", {
+      instanceUuid: "a",
+      source: "evil.7z",
+      targets: ".",
+      type: 0,
+      code: "utf-8"
+    });
+    expect(pkt.status).toBe(500);
+    expect(decompress).not.toHaveBeenCalled();
+    // 2) target that chains through the pre-existing outward link
+    await nonZipEntries([{ name: "chain-link", isDirectory: false, linkTarget: "link" }]);
+    pkt = await call("file/compress", {
+      instanceUuid: "a",
+      source: "evil.7z",
+      targets: ".",
+      type: 0,
+      code: "utf-8"
+    });
+    expect(pkt.status).toBe(500);
+    expect(decompress).not.toHaveBeenCalled();
+    resetNonZipEntries();
+  });
+
+  it("file/compress type=0: benign entries and an INTERNAL symlink target still extract", async () => {
+    fs.writeFileSync(path.join(sandbox.dirA, "ok-target.txt"), "OK");
+    await nonZipEntries([
+      { name: "plain.txt", isDirectory: false },
+      { name: "ln", isDirectory: false, linkTarget: "ok-target.txt" }
+    ]);
+    const pkt = await call("file/compress", {
+      instanceUuid: "a",
+      source: "evil.7z",
+      targets: ".",
+      type: 0,
+      code: "utf-8"
+    });
+    expect(pkt.status).toBe(200);
+    expect(decompress).toHaveBeenCalled();
+    fs.removeSync(path.join(sandbox.dirA, "ok-target.txt"));
+    resetNonZipEntries();
   });
 
   // ---- file/status task scoping with the real sandbox ----

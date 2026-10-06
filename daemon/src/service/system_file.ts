@@ -286,12 +286,33 @@ export default class FileManager {
 
   private async getArchiveEntries(
     absSource: string
-  ): Promise<Array<{ name: string; isDirectory: boolean }>> {
+  ): Promise<Array<{ name: string; isDirectory: boolean; linkTarget?: string }>> {
     const zip = new StreamZip.async({ file: absSource });
-    let archiveEntries: Array<{ name: string; isDirectory: boolean }>;
+    let archiveEntries: Array<{ name: string; isDirectory: boolean; linkTarget?: string }>;
     try {
       // zip archive
-      archiveEntries = Object.values(await zip.entries());
+      const zipEntries = Object.values(await zip.entries());
+      archiveEntries = [];
+      for (const zipEntry of zipEntries) {
+        const entry: { name: string; isDirectory: boolean; linkTarget?: string } = {
+          name: zipEntry.name,
+          isDirectory: zipEntry.isDirectory
+        };
+        // Unix-created zips store symlinks with the link target as entry data
+        // and the S_IFLNK mode in the high attribute bits. The target must be
+        // part of the containment check below, so read it here and fail closed
+        // when it cannot be read.
+        if (!zipEntry.isDirectory && ((zipEntry.attr >>> 16) & 0xf000) === 0xa000) {
+          let target: Buffer;
+          try {
+            target = await zip.entryData(zipEntry.name);
+          } catch {
+            throw new Error(ERROR_MSG_01);
+          }
+          entry.linkTarget = target.toString("utf8");
+        }
+        archiveEntries.push(entry);
+      }
     } catch (err: any) {
       const reason = String(err?.message);
       if (reason.includes("Malicious entry")) throw new Error(ERROR_MSG_01);
@@ -307,11 +328,20 @@ export default class FileManager {
 
   private hasZipSlip(
     absDest: string,
-    archiveEntries: Array<{ name: string; isDirectory: boolean }>
+    archiveEntries: Array<{ name: string; isDirectory: boolean; linkTarget?: string }>
   ): boolean {
-    const entryDirs = new Set<string>();
+    // Extractors interpret BOTH '\' and '/' as separators (7-Zip normalizes
+    // '\'), so reason about entry names exactly as they will be written.
+    const destRoot = resolvePhysicalPath(absDest) ?? absDest;
+    const escapesDest = (physicalPath: string | null) => {
+      if (!physicalPath) return true;
+      const relative = path.relative(destRoot, physicalPath);
+      return relative === ".." || relative.startsWith(".." + path.sep) || path.isAbsolute(relative);
+    };
+
     for (const entry of archiveEntries) {
-      const entryPath = path.resolve(absDest, entry.name);
+      const name = entry.name.split(/[\\/]/).join(path.sep);
+      const entryPath = path.resolve(absDest, name);
       const relativeEntryPath = path.relative(absDest, entryPath);
       if (
         relativeEntryPath === ".." ||
@@ -320,11 +350,24 @@ export default class FileManager {
       ) {
         return true;
       }
-      entryDirs.add(entry.isDirectory ? entryPath : path.dirname(entryPath));
-    }
 
-    for (const entryDir of entryDirs) {
-      if (this.isOutsideWorkspace(entryDir)) return true;
+      // path.resolve() above collapses '..' textually: '<dest>/link/../x'
+      // becomes '<dest>/x', while the extractor resolves 'link' first and then
+      // applies '..' to its target's parent — escaping whenever 'link' points
+      // outside. Re-check the UNCOLLAPSED shape with kernel semantics.
+      const physicalEntry = resolvePhysicalPath(absDest + path.sep + name);
+      if (!physicalEntry || escapesDest(physicalEntry)) return true;
+
+      // A symlink entry is created before later entries are extracted through
+      // it, so a target that leaves the workspace is an escape hatch even when
+      // every entry name looks innocent (e.g. target 'link' chained through a
+      // pre-existing outward link).
+      if (entry.linkTarget) {
+        const target = entry.linkTarget.split(/[\\/]/).join(path.sep);
+        const linkDir = path.dirname(physicalEntry);
+        const rawTarget = path.isAbsolute(target) ? target : linkDir + path.sep + target;
+        if (this.isOutsideWorkspace(rawTarget)) return true;
+      }
     }
     return false;
   }

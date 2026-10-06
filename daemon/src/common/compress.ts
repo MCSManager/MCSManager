@@ -106,6 +106,8 @@ export async function decompress(
 export interface ArchiveEntryInfo {
   name: string;
   isDirectory: boolean;
+  // Symbolic-link target as stored in the archive (present only for links).
+  linkTarget?: string;
 }
 
 export async function listArchiveEntries(sourceArchive: string): Promise<ArchiveEntryInfo[]> {
@@ -132,6 +134,11 @@ export async function listArchiveEntries(sourceArchive: string): Promise<Archive
       (line === "Folder = +" || line === "Attributes = D" || line.startsWith("Attributes = D "))
     ) {
       currentEntry.isDirectory = true;
+    } else if (currentEntry && line.startsWith("Symbolic Link = ")) {
+      // 7-Zip reports the link target for symlink entries; empty for regular
+      // files. The caller needs it to contain-check links before extraction.
+      const target = line.slice("Symbolic Link = ".length);
+      if (target) currentEntry.linkTarget = target;
     }
   }
   if (currentEntry) entries.push(currentEntry);
