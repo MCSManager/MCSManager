@@ -81,6 +81,22 @@ limits via actual cgroup files, not only Docker's requested configuration.
 
 - CPU/memory limits require Rootless Docker's cgroup v2/systemd delegation.
   Follow [Docker's resource-limit guidance](https://docs.docker.com/engine/security/rootless/tips/).
+- The compatibility preflight requires cgroup v2, the systemd driver and the
+  corresponding Engine memory/CPU capability. Explicit cpuset, device read/write
+  BPS, swap and swappiness settings are rejected: their enforcement has not been
+  verified by this layer. Undefined settings retain Engine defaults; this is not
+  a claim that defaults provide a swap policy. Rootful limits are unchanged.
+- File copies run one bounded batch at a time per reservation (up to 100 pairs).
+  Copy and extraction share `maxFileTask` per instance and `maxGlobalFileTask`
+  per Daemon (default 8, configure in `data/Config/global.json`). Busy requests
+  fail rather than building an unbounded queue. Rootless recursive copying uses
+  directory iterators, synchronizes each copied entry immediately and leaves
+  destination-only entries alone. Directory depth is limited to 128.
+- Archives with backslash entry names are rejected when synchronizing Rootless ownership;
+  the Go and 7-Zip extractors can interpret them differently. Repack with `/`
+  separators. Failed extraction reconciles only known entry paths and parents,
+  not the entire destination tree. Partial files may remain, but permission
+  reconciliation failures are reported, not treated as successful extraction.
 - Host `tc` upload/download limits are rejected for Rootless instances. No sudo
   fallback or extra host capability is added.
 - Rootless Docker instances reject `HOST` as the update environment. Set
@@ -90,6 +106,10 @@ limits via actual cgroup files, not only Docker's requested configuration.
 - Host networking, port source-IP propagation and low-numbered ports depend on
   Docker/RootlessKit versions. Use bridge networking and explicitly published
   high ports first; public game-client behavior still needs separate testing.
+- This compatibility layer targets Docker Engine. Rootless Podman has not been
+  validated. Local UDP echo checks prove connectivity, not game-network
+  performance; throughput, packet loss, latency percentiles and CPU under packet
+  load require separate benchmarks before production migration.
 - Only the trusted Daemon receives the Rootless socket. Never mount it, the
   Daemon data, or another tenant's workspace in game containers. Restrict Docker
   mount/privilege configuration and node configuration to administrators.

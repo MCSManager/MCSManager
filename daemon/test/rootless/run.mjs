@@ -233,6 +233,14 @@ async function testUser(runAs, gameImage = image) {
       ),
     "background copy"
   );
+  await waitFor(
+    async () => (await file("file/status", {})).instanceFileTask === 0,
+    "copy ownership completion"
+  );
+  await execNode(
+    container,
+    `const fs = require("fs"); const st = fs.statSync(${JSON.stringify(path.join(workspace, "copied/directory/new"))}); if (st.uid !== ${runAs ? Number(runAs.split(":")[0]) : 1000} || st.gid !== ${runAs ? Number(runAs.split(":")[1]) : 1000}) throw new Error("Copied ownership mismatch");`
+  );
   await request("instance/update", {
     instanceUuid,
     config: {
