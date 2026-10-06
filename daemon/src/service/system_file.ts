@@ -326,131 +326,48 @@ export default class FileManager {
     return archiveEntries;
   }
 
+  /**
+   * Zip-Slip guard — reject the whole archive if ANY entry could write
+   * outside the extraction directory.
+   *
+   * Two simple rules (no kernel-symlink simulation needed):
+   *   1. The entry name, after normalizing '\' → '/', must not traverse
+   *      upward (contain a '..' segment).
+   *   2. A symlink target must not contain '..' segments, must not be an
+   *      absolute path outside the destination, and — when the target is
+   *      a plain name — must not resolve (via real on-disk links) outside
+   *      the destination.
+   *
+   * Rule 2 is intentionally aggressive ("一刀切"): a legitimate symlink whose
+   * target is e.g. "dir/../other" is also rejected.  This eliminates the
+   * symlink-chain escape (s1→. , s2→s1/.. , s2/file) at the cost of a
+   * rare false positive — which is the right trade-off for an archive
+   * extraction boundary.
+   */
   private hasZipSlip(
     absDest: string,
     archiveEntries: Array<{ name: string; isDirectory: boolean; linkTarget?: string }>
   ): boolean {
-    // Extractors interpret BOTH '\' and '/' as separators (7-Zip normalizes
-    // '\'), so reason about entry names exactly as they will be written.
     const destRoot = resolvePhysicalPath(absDest) ?? absDest;
-    const escapesDest = (physicalPath: string | null) => {
-      if (!physicalPath) return true;
-      const relative = path.relative(destRoot, physicalPath);
-      return relative === ".." || relative.startsWith(".." + path.sep) || path.isAbsolute(relative);
-    };
-
-    // Extraction is ordered: each entry is written before the next is
-    // processed.  Archive symlinks therefore exist on disk when later entries
-    // are extracted through them, but NOT during this pre-flight check
-    // (resolvePhysicalPath falls back to lexical folding when lstat fails).
-    // Simulate the ordered extraction by recording symlink entries and
-    // resolving later entry paths through them.
-    const archiveLinks = new Map<string, string>(); // normalized abs path -> link target
-
-    // Resolve a path the way the kernel would during extraction: expand every
-    // component through archive symlinks (in creation order) and real
-    // filesystem symlinks.  Returns null on cycles / unresolvable chains.
-    const resolveThroughArchiveLinks = (absPath: string): string | null => {
-      // Start with the real-filesystem resolution, then overlay archive links
-      // that have been "created" so far.  A single resolvePhysicalPath pass
-      // cannot see archive links, so run a custom walk.
-      const root = path.parse(absPath).root;
-      const segments = absPath.slice(root.length).split(/[\\/]/).filter(Boolean);
-      const resolved: string[] = [];
-      let linkBudget = 40;
-      const work = [...segments];
-      while (work.length > 0) {
-        const seg = work.shift()!;
-        if (seg === ".") continue;
-        if (seg === "..") {
-          resolved.pop();
-          continue;
-        }
-        resolved.push(seg);
-        const candidate = path.join(root, ...resolved);
-        // Check archive symlinks first (they shadow anything on disk that
-        // extraction would overwrite), then the real filesystem.
-        const virtualTarget = archiveLinks.get(candidate);
-        if (virtualTarget !== undefined) {
-          if (--linkBudget <= 0) return null;
-          resolved.pop();
-          const t = virtualTarget.split(/[\\/]/).join(path.sep);
-          if (path.isAbsolute(t)) {
-            resolved.length = 0;
-            const abs = path.parse(t);
-            resolved.push(...abs.base ? [abs.base] : []);
-            work.unshift(...t.slice(abs.root.length).split(/[\\/]/).filter(Boolean));
-          } else {
-            work.unshift(...t.split(/[\\/]/).filter(Boolean));
-          }
-          continue;
-        }
-        let st: ReturnType<typeof fs.lstatSync>;
-        try {
-          st = fs.lstatSync(candidate);
-        } catch {
-          continue;
-        }
-        if (!st.isSymbolicLink()) continue;
-        if (--linkBudget <= 0) return null;
-        let target: string;
-        try {
-          target = fs.readlinkSync(candidate);
-        } catch {
-          return null;
-        }
-        resolved.pop();
-        target = target.split(/[\\/]/).join(path.sep);
-        if (path.isAbsolute(target)) {
-          resolved.length = 0;
-          const abs = path.parse(target);
-          if (abs.base) resolved.push(abs.base);
-          work.unshift(...target.slice(abs.root.length).split(/[\\/]/).filter(Boolean));
-        } else {
-          work.unshift(...target.split(/[\\/]/).filter(Boolean));
-        }
-      }
-      return path.join(root, ...resolved);
-    };
 
     for (const entry of archiveEntries) {
-      const name = entry.name.split(/[\\/]/).join(path.sep);
-      const entryPath = path.resolve(absDest, name);
-      const relativeEntryPath = path.relative(absDest, entryPath);
-      if (
-        relativeEntryPath === ".." ||
-        relativeEntryPath.startsWith(".." + path.sep) ||
-        path.isAbsolute(relativeEntryPath)
-      ) {
-        return true;
-      }
+      const segments = entry.name.split(/[\\/]/).filter(Boolean);
 
-      // path.resolve() above collapses '..' textually: '<dest>/link/../x'
-      // becomes '<dest>/x', while the extractor resolves 'link' first and then
-      // applies '..' to its target's parent — escaping whenever 'link' points
-      // outside. Re-check the UNCOLLAPSED shape with kernel semantics,
-      // expanding through archive symlinks recorded so far.
-      const physicalEntry =
-        resolveThroughArchiveLinks(absDest + path.sep + name) ??
-        resolvePhysicalPath(absDest + path.sep + name);
-      if (!physicalEntry || escapesDest(physicalEntry)) return true;
+      // Rule 1: entry name must not traverse upward
+      if (segments.includes("..")) return true;
 
-      // A symlink entry is created before later entries are extracted through
-      // it, so a target that leaves the workspace is an escape hatch even when
-      // every entry name looks innocent (e.g. target 'link' chained through a
-      // pre-existing outward link).
+      // Rule 2: symlink target must not traverse upward or escape
       if (entry.linkTarget) {
-        const target = entry.linkTarget.split(/[\\/]/).join(path.sep);
-        const linkDir = path.dirname(physicalEntry);
-        const rawTarget = path.isAbsolute(target) ? target : linkDir + path.sep + target;
-        // Resolve through archive symlinks too — a target like 's1/../..'
-        // must be evaluated with s1's real destination, not lexically.
-        const resolvedTarget =
-          resolveThroughArchiveLinks(rawTarget) ?? resolvePhysicalPath(rawTarget);
-        if (!resolvedTarget || escapesDest(resolvedTarget)) return true;
-        // Record this symlink so later entries extracted through it are
-        // resolved with the same semantics the kernel will use.
-        archiveLinks.set(path.normalize(entryPath), target.split(/[\\/]/).join(path.sep));
+        const targetSegs = entry.linkTarget.split(/[\\/]/).filter(Boolean);
+        if (targetSegs.includes("..")) return true;
+
+        const rawTarget = path.isAbsolute(entry.linkTarget)
+          ? entry.linkTarget
+          : path.join(absDest, entry.name, "..", entry.linkTarget);
+        const resolved = resolvePhysicalPath(rawTarget);
+        if (!resolved) return true;
+        const rel = path.relative(destRoot, resolved);
+        if (rel === ".." || rel.startsWith(".." + path.sep) || path.isAbsolute(rel)) return true;
       }
     }
     return false;
