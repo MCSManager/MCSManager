@@ -157,7 +157,13 @@ export class DockerFileOwnershipService {
     if (this.engine && this.engine.expires > Date.now()) return this.engine;
     if (this.engineRequest) return this.engineRequest;
     this.engineRequest = (async () => {
-      let info: { SecurityOptions?: string[]; MemoryLimit?: boolean; CpuCfsQuota?: boolean };
+      let info: {
+        SecurityOptions?: string[];
+        MemoryLimit?: boolean;
+        CpuCfsQuota?: boolean;
+        CgroupVersion?: string;
+        CgroupDriver?: string;
+      };
       try {
         info = await this.docker.info();
       } catch {
@@ -192,7 +198,16 @@ export class DockerFileOwnershipService {
         runtime,
         namespace,
         expires: Date.now() + CACHE_TTL_MS,
-        resourceLimits: { memory: info.MemoryLimit === true, cpu: info.CpuCfsQuota === true }
+        resourceLimits: {
+          memory:
+            info.CgroupVersion === "2" &&
+            info.CgroupDriver === "systemd" &&
+            info.MemoryLimit === true,
+          cpu:
+            info.CgroupVersion === "2" &&
+            info.CgroupDriver === "systemd" &&
+            info.CpuCfsQuota === true
+        }
       };
       return this.engine;
     })();

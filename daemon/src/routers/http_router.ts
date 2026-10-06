@@ -6,6 +6,7 @@ import { DAEMON_INDEX_HTML } from "../const/index_html";
 import FileWriter from "../entity/file_writer";
 import { $t } from "../i18n";
 import { missionPassport } from "../service/mission_passport";
+import { acquireFileTask } from "../service/file_task";
 import FileManager from "../service/system_file";
 import InstanceSubsystem from "../service/system_instance";
 import uploadManager from "../service/upload_manager";
@@ -129,8 +130,13 @@ router.post("/upload/:key", async (ctx) => {
       if (ownership) await syncInstancePathOwnership(instance, fileSaveAbsolutePath, ownership);
 
       if (unzip) {
-        const instanceFiles = new FileManager(instance.absoluteCwdPath());
-        await instanceFiles.unzip(fileSaveAbsolutePath, ".", zipCode, ownership);
+        const release = acquireFileTask(instance.info);
+        try {
+          const instanceFiles = new FileManager(instance.absoluteCwdPath());
+          await instanceFiles.unzip(fileSaveAbsolutePath, ".", zipCode, ownership);
+        } finally {
+          release();
+        }
       }
       // Success: retire the passport (its mission type only). Failed attempts
       // keep it so the same link can be retried.

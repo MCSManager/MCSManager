@@ -83,11 +83,13 @@ vi.mock("../../common/compress", () => ({
 vi.mock("../../service/system_instance", () => {
   const instA = fakeInstance("a", {
     info: { fileLock: 0 },
+    println: vi.fn(),
     status: vi.fn(() => 0),
     absoluteCwdPath: vi.fn(() => sandbox.dirA)
   });
   const instB = fakeInstance("b", {
     info: { fileLock: 0 },
+    println: vi.fn(),
     status: vi.fn(() => 0),
     absoluteCwdPath: vi.fn(() => sandbox.dirB)
   });
@@ -103,6 +105,7 @@ import uploadManager from "../../service/upload_manager";
 import { checkSafeUrl } from "../../utils/url";
 import { compress, decompress, listArchiveEntries } from "../../common/compress";
 import FileManager from "../../service/system_file";
+import InstanceSubsystem from "../../service/system_instance";
 
 // symlinks/junctions need privileges on some systems (Windows without
 // developer mode); fall back to skipping the link-escape tests.
@@ -136,10 +139,12 @@ afterAll(() => {
 beforeEach(() => {
   globalConfiguration.config.key = "test-key";
   globalConfiguration.config.maxFileTask = 4;
+  globalConfiguration.config.maxGlobalFileTask = 8;
   globalConfiguration.config.maxDownloadFromUrlFileCount = 0;
   globalConfiguration.config.maxZipFileSize = 1;
   globalEnv.fileTaskCount = 0;
   vi.clearAllMocks();
+  for (const id of ["a", "b"]) InstanceSubsystem.getInstance(id)!.info.fileLock = 0;
   (downloadManager as any).tasks = [];
   (downloadManager as any).downloadingCount = 0;
   (downloadManager as any).downloadFromUrl.mockImplementation(async () => undefined);
@@ -147,6 +152,69 @@ beforeEach(() => {
   (checkSafeUrl as any).mockImplementation(async () => true);
   (compress as any).mockImplementation(async () => undefined);
   (decompress as any).mockImplementation(async () => undefined);
+});
+
+describe("background file copy quotas", () => {
+  it("runs one batch sequentially and holds a reservation until completion", async () => {
+    let finish!: () => void;
+    const pending = new Promise<void>((resolve) => {
+      finish = resolve;
+    });
+    const copy = vi
+      .spyOn(FileManager.prototype, "copy")
+      .mockImplementationOnce(() => pending)
+      .mockResolvedValue(undefined);
+    try {
+      const packet = await call("file/copy", {
+        instanceUuid: "a",
+        targets: [
+          ["ok.txt", "copy1"],
+          ["ok.txt", "copy2"]
+        ]
+      });
+      expect(packet.status).toBe(200);
+      expect(copy).toHaveBeenCalledTimes(1);
+      expect(InstanceSubsystem.getInstance("a")!.info.fileLock).toBe(1);
+      expect(globalEnv.fileTaskCount).toBe(1);
+      finish();
+      await new Promise<void>((resolve) => setImmediate(resolve));
+      expect(globalEnv.fileTaskCount).toBe(0);
+      expect(copy).toHaveBeenCalledTimes(2);
+    } finally {
+      finish();
+      copy.mockRestore();
+    }
+  });
+
+  it("rejects new copies at the global quota before starting work", async () => {
+    globalEnv.fileTaskCount = globalConfiguration.config.maxGlobalFileTask;
+    const copy = vi.spyOn(FileManager.prototype, "copy");
+    try {
+      const packet = await call("file/copy", { instanceUuid: "a", targets: [["ok.txt", "copy"]] });
+      expect(packet.status).toBe(500);
+      expect(copy).not.toHaveBeenCalled();
+      expect(InstanceSubsystem.getInstance("a")!.info.fileLock).toBe(0);
+    } finally {
+      copy.mockRestore();
+    }
+  });
+
+  it("releases a failed copy and rejects malformed or oversized batches", async () => {
+    const copy = vi
+      .spyOn(FileManager.prototype, "copy")
+      .mockRejectedValue(new Error("copy failed"));
+    try {
+      const packet = await call("file/copy", { instanceUuid: "a", targets: [["ok.txt", "copy"]] });
+      expect(packet.status).toBe(200);
+      await new Promise<void>((resolve) => setImmediate(resolve));
+      expect(globalEnv.fileTaskCount).toBe(0);
+      for (const targets of [[], [["ok.txt"]], Array(101).fill(["ok.txt", "copy"])]) {
+        expect((await call("file/copy", { instanceUuid: "a", targets })).status).toBe(500);
+      }
+    } finally {
+      copy.mockRestore();
+    }
+  });
 });
 
 const AUTHED = (id = "sx") => ({
@@ -227,6 +295,38 @@ describe("file_router security: per-instance workspace isolation (real FileManag
       "",
       expect.any(Function)
     );
+  });
+
+  it("checks the download quota after asynchronous directory preparation", async () => {
+    globalConfiguration.config.maxDownloadFromUrlFileCount = 1;
+    let release!: () => void;
+    const ready = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    let prepared = 0;
+    const mkdir = vi.spyOn(FileManager.prototype, "mkdir").mockImplementation(async () => {
+      if (++prepared === 2) release();
+      await ready;
+    });
+    vi.mocked(downloadManager.downloadFromUrl).mockImplementation(async () => {
+      (downloadManager as any).downloadingCount++;
+    });
+    try {
+      const packets = await Promise.all(
+        ["a", "b"].map((instanceUuid) =>
+          call("file/download_from_url", {
+            instanceUuid,
+            url: "https://example.com/file.zip",
+            fileName: "quota.bin"
+          })
+        )
+      );
+      expect(packets.map((packet) => packet.status).sort()).toEqual([200, 500]);
+      expect(downloadManager.downloadFromUrl).toHaveBeenCalledTimes(1);
+    } finally {
+      release();
+      mkdir.mockRestore();
+    }
   });
 
   // ---- relative traversal: '../inst-b/...' must never reach inst-b ----
@@ -516,7 +616,9 @@ describe("file_router security: per-instance workspace isolation (real FileManag
   // containment itself. '<dest>/link/../x' collapses to '<dest>/x' under
   // path.resolve() but means '<outside-parent>/x' to the extractor whenever a
   // pre-existing 'link' points outside the workspace.
-  const nonZipEntries = async (entries: Array<{ name: string; isDirectory: boolean; linkTarget?: string }>) => {
+  const nonZipEntries = async (
+    entries: Array<{ name: string; isDirectory: boolean; linkTarget?: string }>
+  ) => {
     fs.writeFileSync(path.join(sandbox.dirA, "evil.7z"), "not-a-real-archive");
     (listArchiveEntries as any).mockImplementation(async () => entries);
   };
@@ -524,6 +626,23 @@ describe("file_router security: per-instance workspace isolation (real FileManag
     fs.removeSync(path.join(sandbox.dirA, "evil.7z"));
     (listArchiveEntries as any).mockImplementation(async () => []);
   };
+
+  it("rejects ordinary entries through existing outward symlinks and absolute archive paths", async () => {
+    if (!linkOk) return;
+    for (const name of ["link/secret.txt", path.join(sandbox.dirB, "secret.txt")]) {
+      await nonZipEntries([{ name, isDirectory: false }]);
+      const packet = await call("file/compress", {
+        instanceUuid: "a",
+        source: "evil.7z",
+        targets: ".",
+        type: 0,
+        code: "utf-8"
+      });
+      expect(packet.status).toBe(500);
+      expect(decompress).not.toHaveBeenCalled();
+    }
+    resetNonZipEntries();
+  });
 
   it("file/compress type=0: entry 'link/../x' + pre-existing outward link -> {500} and decompress NOT called", async () => {
     if (!linkOk) return;
@@ -545,7 +664,11 @@ describe("file_router security: per-instance workspace isolation (real FileManag
   it("file/compress type=0: entry 'sub/link/../x' (outward link inside a real dir) -> {500} and decompress NOT called", async () => {
     if (!linkOk) return;
     fs.mkdirSync(path.join(sandbox.dirA, "sub"), { recursive: true });
-    fs.symlinkSync(sandbox.dirB, path.join(sandbox.dirA, "sub", "link"), process.platform === "win32" ? "junction" : "dir");
+    fs.symlinkSync(
+      sandbox.dirB,
+      path.join(sandbox.dirA, "sub", "link"),
+      process.platform === "win32" ? "junction" : "dir"
+    );
     await nonZipEntries([{ name: "sub/link/../escape2.txt", isDirectory: false }]);
     const pkt = await call("file/compress", {
       instanceUuid: "a",

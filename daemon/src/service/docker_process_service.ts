@@ -17,6 +17,7 @@ import DockerPullCommand from "../entity/commands/docker/docker_pull";
 import Instance from "../entity/instance/instance";
 import { DefaultDocker } from "./docker_service";
 import { dockerFileOwnership } from "./docker_file_ownership";
+import { validateRootlessResourceLimits } from "./rootless_resource_limits";
 import { syncPathOwnershipWithinRoot } from "../tools/file_ownership";
 
 import Docker from "dockerode";
@@ -205,16 +206,7 @@ export class SetupDockerContainer extends AsyncTask {
       instance.config.runAs || "",
       dockerConfig.image || ""
     );
-    if (identity.rootless && (dockerConfig.uploadSpeedLimit || dockerConfig.downloadSpeedLimit)) {
-      throw new Error($t("TXT_CODE_rootless.networkLimitUnsupported"));
-    }
-    if (
-      identity.rootless &&
-      ((dockerConfig.memory && !identity.resourceLimits?.memory) ||
-        (dockerConfig.cpuUsage && !identity.resourceLimits?.cpu))
-    ) {
-      throw new Error($t("TXT_CODE_rootless.resourceLimitUnsupported"));
-    }
+    validateRootlessResourceLimits(identity, dockerConfig);
     const workspace = instance.absoluteCwdPath();
     await fs.mkdirs(workspace);
     if (identity.rootless) {
@@ -775,12 +767,7 @@ export class DockerProcessAdapter extends EventEmitter implements IInstanceProce
   }
 
   private handleStreamLost(generation: number) {
-    if (
-      generation !== this.streamGeneration ||
-      this.stopping ||
-      this.exitEmitted
-    )
-      return;
+    if (generation !== this.streamGeneration || this.stopping || this.exitEmitted) return;
     this.stream = undefined;
     this.waitActive = false;
     this.scheduleReconnect();

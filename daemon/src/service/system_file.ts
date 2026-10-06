@@ -1,4 +1,5 @@
 import fs from "fs-extra";
+import { opendir } from "fs/promises";
 import iconv from "iconv-lite";
 import { ProcessWrapper } from "mcsmanager-common";
 import StreamZip from "node-stream-zip";
@@ -15,6 +16,7 @@ import { resolvePhysicalPath } from "../tools/path_link_check";
 const ERROR_MSG_01 = $t("TXT_CODE_system_file.illegalAccess");
 const ERROR_PATH_NOT_FOUND = $t("TXT_CODE_96281410");
 const MAX_EDIT_SIZE = 1024 * 1024 * 5;
+const MAX_COPY_DEPTH = 128;
 
 interface IFile {
   name: string;
@@ -247,19 +249,115 @@ export default class FileManager {
     target2 = this.toAbsolutePath(target2);
     const ownership = await this.ownershipResolver?.();
     if (!ownership) return await fs.copy(targetPath, target2);
-    const copiedPaths = new Set<string>();
-    await fs.copy(targetPath, target2, {
-      filter: (source, destination) => {
-        this.assertInsideWorkspace(source);
-        this.assertInsideWorkspace(destination);
-        copiedPaths.add(destination);
-        return true;
-      }
-    });
-    for (const copiedPath of copiedPaths) {
-      await syncPathOwnershipWithinRoot(this.topPath, copiedPath, ownership);
+    const realRoot = await fs.realpath(this.topPath);
+    const source = await this.resolveCopyPath(targetPath, realRoot);
+    const destination = await this.resolveCopyPath(target2, realRoot);
+    const relative = path.relative(source, destination);
+    if (
+      relative === "" ||
+      (!relative.startsWith(".." + path.sep) && relative !== ".." && !path.isAbsolute(relative))
+    ) {
+      throw new Error(ERROR_MSG_01);
     }
-    await this.syncOwnership(target2, ownership);
+    await this.prepareOwnedDirectory(path.dirname(target2), ownership);
+    await this.copyOwnedEntry(targetPath, target2, realRoot, ownership, 0);
+  }
+
+  private async resolveCopyPath(target: string, realRoot: string): Promise<string> {
+    const relative = path.relative(this.topPath, target);
+    if (relative === ".." || relative.startsWith(".." + path.sep) || path.isAbsolute(relative)) {
+      throw new Error(ERROR_MSG_01);
+    }
+    let current = target;
+    const missing: string[] = [];
+    for (;;) {
+      try {
+        await fs.lstat(current);
+        break;
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+        const parent = path.dirname(current);
+        if (parent === current) throw new Error(ERROR_MSG_01);
+        missing.push(path.basename(current));
+        current = parent;
+      }
+    }
+    const resolved = path.join(await fs.realpath(current), ...missing.reverse());
+    const physicalRelative = path.relative(realRoot, resolved);
+    if (
+      physicalRelative === ".." ||
+      physicalRelative.startsWith(".." + path.sep) ||
+      path.isAbsolute(physicalRelative)
+    ) {
+      throw new Error(ERROR_MSG_01);
+    }
+    return resolved;
+  }
+
+  private async prepareOwnedDirectory(target: string, ownership: FileOwnership): Promise<void> {
+    const realRoot = await fs.realpath(this.topPath);
+    await this.resolveCopyPath(target, realRoot);
+    await fs.mkdir(target, { recursive: true });
+    await this.syncOwnership(target, ownership);
+  }
+
+  private async copyOwnedEntry(
+    source: string,
+    destination: string,
+    realRoot: string,
+    ownership: FileOwnership,
+    depth: number
+  ): Promise<void> {
+    if (depth > MAX_COPY_DEPTH) throw new Error($t("TXT_CODE_file_task.copyDepthExceeded"));
+    await this.resolveCopyPath(source, realRoot);
+    await this.resolveCopyPath(destination, realRoot);
+    const sourceInfo = await fs.lstat(source);
+    if (sourceInfo.isDirectory()) {
+      try {
+        await fs.mkdir(destination, { mode: sourceInfo.mode & 0o777 });
+      } catch (error) {
+        if (
+          (error as NodeJS.ErrnoException).code !== "EEXIST" ||
+          !(await fs.lstat(destination)).isDirectory()
+        )
+          throw error;
+      }
+      await syncPathOwnershipWithinRoot(this.topPath, destination, ownership);
+      // Keep only the current directory iterator at each depth, not the entire tree.
+      const directory = await opendir(source);
+      try {
+        const openedInfo = await fs.lstat(source);
+        if (openedInfo.dev !== sourceInfo.dev || openedInfo.ino !== sourceInfo.ino) {
+          throw new Error(ERROR_MSG_01);
+        }
+        for await (const entry of directory) {
+          await this.copyOwnedEntry(
+            path.join(source, entry.name),
+            path.join(destination, entry.name),
+            realRoot,
+            ownership,
+            depth + 1
+          );
+        }
+      } finally {
+        // for-await closes on completion and failure; also cover errors before iteration.
+        await directory.close().catch((error: NodeJS.ErrnoException) => {
+          if (error.code !== "ERR_DIR_CLOSED") throw error;
+        });
+      }
+    } else if (sourceInfo.isFile() || sourceInfo.isSymbolicLink()) {
+      try {
+        await fs.copy(source, destination);
+      } finally {
+        try {
+          await syncPathOwnershipWithinRoot(this.topPath, destination, ownership);
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+        }
+      }
+    } else {
+      throw new Error(ERROR_MSG_01);
+    }
   }
 
   async mkdir(target: string) {
@@ -314,9 +412,17 @@ export default class FileManager {
     const hasZipSlip = this.hasZipSlip(absDest, archiveEntries);
     if (hasZipSlip) throw new Error(ERROR_MSG_01);
 
-    const result = await decompress(absSource, absDest, code);
-    if (ownership) await this.syncArchiveOwnership(absDest, archiveEntries, ownership);
-    return result;
+    // Different extractors disagree on literal backslashes. Rootless ownership
+    // must never guess which pathname was created or silently skip it.
+    if (ownership?.rootless && archiveEntries.some((entry) => entry.name.includes("\\"))) {
+      throw new Error($t("TXT_CODE_file_task.ambiguousArchivePath"));
+    }
+    if (ownership) await this.prepareOwnedDirectory(absDest, ownership);
+    try {
+      return await decompress(absSource, absDest, code);
+    } finally {
+      if (ownership) await this.syncArchiveOwnership(absDest, archiveEntries, ownership);
+    }
   }
 
   private async getArchiveEntries(
@@ -373,7 +479,7 @@ export default class FileManager {
    *      a plain name — must not resolve (via real on-disk links) outside
    *      the destination.
    *
-   * Rule 2 is intentionally aggressive ("一刀切"): a legitimate symlink whose
+   * Rule 2 is intentionally aggressive: a legitimate symlink whose
    * target is e.g. "dir/../other" is also rejected.  This eliminates the
    * symlink-chain escape (s1→. , s2→s1/.. , s2/file) at the cost of a
    * rare false positive — which is the right trade-off for an archive
@@ -390,15 +496,30 @@ export default class FileManager {
 
       // Rule 1: entry name must not traverse upward
       if (segments.includes("..")) return true;
+      const name = segments.join(path.sep);
+      const entryPath = path.resolve(absDest, entry.name.split(/[\\/]/).join(path.sep));
+      const relativeEntry = path.relative(absDest, entryPath);
+      if (
+        relativeEntry === ".." ||
+        relativeEntry.startsWith(".." + path.sep) ||
+        path.isAbsolute(relativeEntry)
+      )
+        return true;
+      for (const candidate of [entryPath, path.resolve(absDest, entry.name)]) {
+        const physical = resolvePhysicalPath(candidate);
+        if (!physical) return true;
+        const relative = path.relative(destRoot, physical);
+        if (relative === ".." || relative.startsWith(".." + path.sep) || path.isAbsolute(relative))
+          return true;
+      }
 
       // Rule 2: symlink target must not traverse upward or escape
       if (entry.linkTarget) {
         const targetSegs = entry.linkTarget.split(/[\\/]/).filter(Boolean);
         if (targetSegs.includes("..")) return true;
 
-        const rawTarget = path.isAbsolute(entry.linkTarget)
-          ? entry.linkTarget
-          : path.join(absDest, entry.name, "..", entry.linkTarget);
+        const target = entry.linkTarget.split(/[\\/]/).join(path.sep);
+        const rawTarget = path.isAbsolute(target) ? target : path.join(absDest, name, "..", target);
         const resolved = resolvePhysicalPath(rawTarget);
         if (!resolved) return true;
         const rel = path.relative(destRoot, resolved);
@@ -413,28 +534,27 @@ export default class FileManager {
     archiveEntries: Array<{ name: string; isDirectory: boolean }>,
     ownership: FileOwnership
   ): Promise<void> {
-    const paths = new Set<string>();
+    const syncedParents = new Set<string>();
+    const syncExisting = async (target: string) => {
+      try {
+        await syncPathOwnershipWithinRoot(this.topPath, target, ownership);
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+      }
+    };
     for (const entry of archiveEntries) {
       const entryPath = path.resolve(absDest, entry.name);
       if (entryPath === absDest) continue;
-      paths.add(entryPath);
-
+      await syncExisting(entryPath);
       let parentPath = path.dirname(entryPath);
       while (parentPath !== absDest) {
-        paths.add(parentPath);
+        if (syncedParents.has(parentPath)) break;
+        await syncExisting(parentPath);
+        if (syncedParents.size >= 256) syncedParents.clear();
+        syncedParents.add(parentPath);
         const nextParent = path.dirname(parentPath);
         if (nextParent === parentPath) break;
         parentPath = nextParent;
-      }
-    }
-
-    const orderedPaths = [...paths].sort((a, b) => b.length - a.length);
-    for (const targetPath of orderedPaths) {
-      try {
-        await syncPathOwnershipWithinRoot(this.topPath, targetPath, ownership);
-      } catch (error: any) {
-        if (error?.code === "ENOENT") continue;
-        throw error;
       }
     }
   }

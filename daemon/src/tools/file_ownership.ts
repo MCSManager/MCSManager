@@ -9,6 +9,7 @@ import { dockerFileOwnership } from "../service/docker_file_ownership";
 export interface FileOwnership {
   uid: number;
   gid: number;
+  rootless?: boolean;
 }
 
 function isInside(root: string, target: string): boolean {
@@ -36,7 +37,7 @@ export async function resolveInstanceFileOwnership(
   const runAs = String(instance.config.runAs || "").trim();
   if (instance.config.processType === "docker") {
     const identity = await dockerFileOwnership.resolve(runAs, instance.config.docker.image || "");
-    if (identity.rootless) return identity.ownership;
+    if (identity.rootless && identity.ownership) return { ...identity.ownership, rootless: true };
   }
   if (options.rootlessOnly) return undefined;
   if (!runAs) return undefined;

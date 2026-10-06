@@ -3273,5 +3273,10 @@
   "TXT_CODE_rootless.namespaceUnavailable": "无法验证 Rootless Docker 命名空间。请将 MCSM_ROOTLESS_DOCKER_CONTAINER 设置为同一本地引擎中可信的运行中容器名称。",
   "TXT_CODE_rootless.networkLimitUnsupported": "Rootless Docker 不支持主机网络限速。请移除实例的上传／下载限速。",
   "TXT_CODE_rootless.resourceLimitUnsupported": "Rootless 引擎无法执行指定的 CPU／内存限制。请先配置 cgroup v2 与 systemd 委派。",
-  "TXT_CODE_rootless.hostUpdateUnsupported": "Rootless Docker 实例必须通过容器更新，不能使用 HOST。请选择主实例镜像或独立的更新镜像。"
+  "TXT_CODE_rootless.hostUpdateUnsupported": "Rootless Docker 实例必须通过容器更新，不能使用 HOST。请选择主实例镜像或独立的更新镜像。",
+  "TXT_CODE_rootless.unverifiedResourceLimit": "Rootless Docker 支持无法验证 CPU 绑定、设备 I/O、swap 或 swappiness 限制。请移除这些设置后启动实例。",
+  "TXT_CODE_file_task.limitExceeded": "实例或 Daemon 文件任务已达上限，请等待现有任务完成。",
+  "TXT_CODE_file_task.invalidCopyTargets": "复制请求必须包含 1 至 100 组来源／目标路径。",
+  "TXT_CODE_file_task.copyDepthExceeded": "复制目录深度超过支持的 128 层上限。",
+  "TXT_CODE_file_task.ambiguousArchivePath": "无法安全同步含反斜线压缩条目的所有权，请使用正斜线路径重新打包。"
 }

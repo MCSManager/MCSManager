@@ -117,6 +117,38 @@ function service(rootless = true, user = "1000:1000", socketPath = "/run/docker.
 }
 
 describe.skipIf(process.platform !== "linux")("Docker ownership metadata", () => {
+  it.each([
+    { CgroupVersion: "1", CgroupDriver: "systemd" },
+    { CgroupVersion: "2", CgroupDriver: "none" },
+    { CgroupVersion: "2", CgroupDriver: "cgroupfs" }
+  ])("does not trust resource flags without v2/systemd: %j", async (cgroup) => {
+    const test = service();
+    test.info.mockResolvedValue({
+      SecurityOptions: ["name=rootless"],
+      MemoryLimit: true,
+      CpuCfsQuota: true,
+      ...cgroup
+    } as any);
+    expect((await test.resolver.resolve("0:0", "test-image")).resourceLimits).toEqual({
+      memory: false,
+      cpu: false
+    });
+  });
+
+  it("accepts reported memory/CPU capability only with v2/systemd", async () => {
+    const test = service();
+    test.info.mockResolvedValue({
+      SecurityOptions: ["name=rootless"],
+      CgroupVersion: "2",
+      CgroupDriver: "systemd",
+      MemoryLimit: true,
+      CpuCfsQuota: true
+    } as any);
+    expect((await test.resolver.resolve("0:0", "test-image")).resourceLimits).toEqual({
+      memory: true,
+      cpu: true
+    });
+  });
   it("preserves Rootful behavior without inspecting image USER or namespace maps", async () => {
     const test = service(false);
     expect(await test.resolver.resolve("1000:1000", "test-image")).toEqual({ rootless: false });
