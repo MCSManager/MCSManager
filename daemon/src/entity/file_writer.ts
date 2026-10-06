@@ -5,10 +5,7 @@ import logger from "../service/log";
 import { $t } from "../i18n";
 import FileManager from "../service/system_file";
 import uploadManager from "../service/upload_manager";
-import {
-  resolveInstanceFileOwnership,
-  syncInstancePathOwnership
-} from "../tools/file_ownership";
+import { resolveInstanceFileOwnership, syncInstancePathOwnership } from "../tools/file_ownership";
 import type { FileOwnership } from "../tools/file_ownership";
 import { globalEnv } from "./config";
 import Instance from "./instance/instance";
@@ -26,6 +23,7 @@ export default class FileWriter {
   private stopPromise?: Promise<void>;
   private stopping = false;
   private ownsFile = false;
+  private ownership?: FileOwnership;
   readonly received: ChunkRange[] = [];
   lastUpdate: number = Date.now();
 
@@ -89,6 +87,8 @@ export default class FileWriter {
 
   async init() {
     if (this.fd != null) return;
+    this.ownership = await resolveInstanceFileOwnership(this.instance);
+    new FileManager(this.cwd).assertInsideWorkspace(this.path);
     let locked = false;
     try {
       if (lockfile.checkSync(this.path)) locked = true;
@@ -181,7 +181,7 @@ export default class FileWriter {
       uploadManager.delete(this.id);
     }
 
-    const ownership = await resolveInstanceFileOwnership(this.instance);
+    const ownership = this.ownership;
     if (ownership) await syncInstancePathOwnership(this.instance, this.path, ownership);
 
     logger.info("Browser Uploaded File:", this.path);
@@ -207,6 +207,7 @@ export default class FileWriter {
         }
       } catch (error) {
         logger.error("Error extracting uploaded archive:", this.path, error);
+        this.instance.println("ERROR", String(error));
       } finally {
         globalEnv.fileTaskCount--;
         if (this.instance) this.instance.info.fileLock--;

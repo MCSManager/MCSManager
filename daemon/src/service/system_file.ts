@@ -29,7 +29,8 @@ export default class FileManager {
 
   constructor(
     public topPath: string = "",
-    public fileCode?: string
+    public fileCode?: string,
+    private readonly ownershipResolver?: () => Promise<FileOwnership | undefined>
   ) {
     if (!path.isAbsolute(topPath)) {
       this.topPath = path.normalize(path.join(process.cwd(), topPath));
@@ -222,29 +223,63 @@ export default class FileManager {
     if (!this.check(fileName)) throw new Error(ERROR_MSG_01);
     const absPath = this.toAbsolutePath(fileName);
     const buf = iconv.encode(data, this.fileCode || "utf-8");
-    return await fs.writeFile(absPath, buf);
+    const ownership = await this.ownershipResolver?.();
+    this.assertInsideWorkspace(absPath);
+    await fs.writeFile(absPath, buf);
+    await this.syncOwnership(absPath, ownership);
   }
 
   async newFile(fileName: string) {
     // if (!FileManager.checkFileName(fileName)) throw new Error(ERROR_MSG_01);
     if (!this.checkPath(fileName)) throw new Error(ERROR_MSG_01);
     const target = this.toAbsolutePath(fileName);
+    const ownership = await this.ownershipResolver?.();
+    this.assertInsideWorkspace(target);
     const parentDir = path.resolve(path.dirname(target));
     if (parentDir !== path.parse(parentDir).root) await fs.mkdir(parentDir, { recursive: true });
-    return await fs.createFile(target);
+    await fs.createFile(target);
+    await this.syncOwnership(target, ownership);
   }
 
   async copy(target1: string, target2: string) {
     if (!this.checkPath(target2) || !this.check(target1)) throw new Error(ERROR_MSG_01);
     const targetPath = this.toAbsolutePath(target1);
     target2 = this.toAbsolutePath(target2);
-    return await fs.copy(targetPath, target2);
+    const ownership = await this.ownershipResolver?.();
+    if (!ownership) return await fs.copy(targetPath, target2);
+    const copiedPaths = new Set<string>();
+    await fs.copy(targetPath, target2, {
+      filter: (source, destination) => {
+        this.assertInsideWorkspace(source);
+        this.assertInsideWorkspace(destination);
+        copiedPaths.add(destination);
+        return true;
+      }
+    });
+    for (const copiedPath of copiedPaths) {
+      await syncPathOwnershipWithinRoot(this.topPath, copiedPath, ownership);
+    }
+    await this.syncOwnership(target2, ownership);
   }
 
-  mkdir(target: string) {
+  async mkdir(target: string) {
     if (!this.checkPath(target)) throw new Error(ERROR_MSG_01);
     const targetPath = this.toAbsolutePath(target);
-    return fs.mkdirSync(targetPath, { recursive: true });
+    const ownership = await this.ownershipResolver?.();
+    this.assertInsideWorkspace(targetPath);
+    await fs.mkdir(targetPath, { recursive: true });
+    await this.syncOwnership(targetPath, ownership);
+  }
+
+  async syncOwnership(target: string, ownership?: FileOwnership): Promise<void> {
+    if (!ownership) return;
+    let current = this.toAbsolutePath(target);
+    while (current !== this.topPath) {
+      await syncPathOwnershipWithinRoot(this.topPath, current, ownership);
+      const parent = path.dirname(current);
+      if (parent === current) break;
+      current = parent;
+    }
   }
 
   async delete(target: string, options: { ignoreMissing?: boolean } = {}): Promise<boolean> {
@@ -422,7 +457,11 @@ export default class FileManager {
     }
     if (totalSize > MAX_TOTAL_FIELS_SIZE)
       throw new Error($t("TXT_CODE_system_file.unzipLimit", { max: MAX_ZIP_GB }));
-    return await compress(sourceZipPath, filesPath, code);
+    const ownership = await this.ownershipResolver?.();
+    this.assertInsideWorkspace(sourceZipPath);
+    const result = await compress(sourceZipPath, filesPath, code);
+    await this.syncOwnership(sourceZipPath, ownership);
+    return result;
   }
 
   async edit(target: string, data?: string) {

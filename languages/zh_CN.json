@@ -3272,5 +3272,6 @@
   "TXT_CODE_rootless.imageUnavailable": "无法确定镜像 USER。请先安装镜像或在 runAs 中明确指定数字 UID:GID。",
   "TXT_CODE_rootless.namespaceUnavailable": "无法验证 Rootless Docker 命名空间。请将 MCSM_ROOTLESS_DOCKER_CONTAINER 设置为同一本地引擎中可信的运行中容器名称。",
   "TXT_CODE_rootless.networkLimitUnsupported": "Rootless Docker 不支持主机网络限速。请移除实例的上传／下载限速。",
-  "TXT_CODE_rootless.resourceLimitUnsupported": "Rootless 引擎无法执行指定的 CPU／内存限制。请先配置 cgroup v2 与 systemd 委派。"
+  "TXT_CODE_rootless.resourceLimitUnsupported": "Rootless 引擎无法执行指定的 CPU／内存限制。请先配置 cgroup v2 与 systemd 委派。",
+  "TXT_CODE_rootless.hostUpdateUnsupported": "Rootless Docker 实例必须通过容器更新，不能使用 HOST。请选择主实例镜像或独立的更新镜像。"
 }

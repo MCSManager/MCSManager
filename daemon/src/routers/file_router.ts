@@ -190,6 +190,9 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
     const fileManager = getFileManager(data.instanceUuid);
     fileManager.checkPath(fileName);
     const targetPath = fileManager.toAbsolutePath(fileName);
+    const instance = InstanceSubsystem.getInstance(data.instanceUuid)!;
+    const ownership = await resolveInstanceFileOwnership(instance, { rootlessOnly: true });
+    fileManager.assertInsideWorkspace(targetPath);
 
     // Start download in background
     const fallbackUrl = data.fallbackUrl;
@@ -205,10 +208,14 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
       return;
     }
 
-    downloadManager.downloadFromUrl(url, targetPath, fallbackUrl).catch((err) => {
-      if (err.name === "CanceledError") return;
-      logger.error(`Download failed: ${url} -> ${targetPath}`, err);
-    });
+    downloadManager
+      .downloadFromUrl(url, targetPath, fallbackUrl, () =>
+        fileManager.syncOwnership(targetPath, ownership)
+      )
+      .catch((err) => {
+        if (err.name === "CanceledError") return;
+        logger.error(`Download failed: ${url} -> ${targetPath}`, err);
+      });
 
     protocol.response(ctx, {});
   } catch (error: any) {
@@ -243,11 +250,16 @@ routerApp.on("file/copy", async (ctx, data) => {
     // [["a.txt","b.txt"],["cxz","zzz"]]
     const targets = data.targets;
     const fileManager = getFileManager(data.instanceUuid);
+    const instance = InstanceSubsystem.getInstance(data.instanceUuid)!;
+    await resolveInstanceFileOwnership(instance, { rootlessOnly: true });
     for (const target of targets) {
       // Intentionally NOT awaited: copying very large files can take far longer
       // than the client request timeout, so the copy runs detached in the
       // background and the response returns immediately.
-      fileManager.copy(target[0], target[1]);
+      void fileManager.copy(target[0], target[1]).catch((error) => {
+        logger.error("Instance file copy failed:", error);
+        instance.println("ERROR", String(error));
+      });
     }
     protocol.response(ctx, true);
   } catch (error: any) {

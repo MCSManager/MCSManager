@@ -10,10 +10,7 @@ import FileManager from "../service/system_file";
 import InstanceSubsystem from "../service/system_instance";
 import uploadManager from "../service/upload_manager";
 import { clearUploadFiles } from "../tools/filepath";
-import {
-  resolveInstanceFileOwnership,
-  syncInstancePathOwnership
-} from "../tools/file_ownership";
+import { resolveInstanceFileOwnership, syncInstancePathOwnership } from "../tools/file_ownership";
 import { sendFile } from "../utils/speed_limit";
 
 const router = new Router();
@@ -123,11 +120,12 @@ router.post("/upload/:key", async (ctx) => {
         throw new Error("Access denied: Invalid destination");
 
       const fileSaveAbsolutePath = fileManager.toAbsolutePath(fileSaveRelativePath);
+      const ownership = await resolveInstanceFileOwnership(instance);
+      fileManager.assertInsideWorkspace(fileSaveAbsolutePath);
 
       await fs.move(uploadedFile.filepath, fileSaveAbsolutePath, {
         overwrite: true
       });
-      const ownership = await resolveInstanceFileOwnership(instance);
       if (ownership) await syncInstancePathOwnership(instance, fileSaveAbsolutePath, ownership);
 
       if (unzip) {

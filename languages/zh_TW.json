@@ -3216,6 +3216,7 @@
   "TXT_CODE_rootless.namespaceUnavailable": "無法驗證 Rootless Docker 命名空間。請將 MCSM_ROOTLESS_DOCKER_CONTAINER 設定為同一本機引擎中可信的執行中容器名稱。",
   "TXT_CODE_rootless.networkLimitUnsupported": "Rootless Docker 不支援主機網路限速。請移除實例的上傳／下載限速。",
   "TXT_CODE_rootless.resourceLimitUnsupported": "Rootless 引擎無法執行指定的 CPU／記憶體限制。請先設定 cgroup v2 與 systemd 委派。",
+  "TXT_CODE_rootless.hostUpdateUnsupported": "Rootless Docker 實例必須透過容器更新，不能使用 HOST。請選擇主實例映像檔或獨立的更新映像檔。",
   "TXT_CODE_1389014c": "使用者 <<operator_name>> 解壓縮了實例 <<instance_name>> 的檔案 <<file>>",
   "TXT_CODE_162672b7": "使用者 <<operator_name>> 解除了使用者 <<target_user_name>> 的 SSO 帳號綁定",
   "TXT_CODE_1e7b57ae": "啟用中",

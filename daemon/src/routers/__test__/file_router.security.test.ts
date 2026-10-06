@@ -224,7 +224,8 @@ describe("file_router security: per-instance workspace isolation (real FileManag
     expect(downloadManager.downloadFromUrl).toHaveBeenCalledWith(
       "https://example.com/file.zip",
       path.join(sandbox.dirA, "dl.bin"),
-      ""
+      "",
+      expect.any(Function)
     );
   });
 
