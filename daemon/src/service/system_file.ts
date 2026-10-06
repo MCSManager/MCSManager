@@ -10,7 +10,7 @@ import { $t, i18next } from "../i18n";
 import { syncPathOwnershipWithinRoot } from "../tools/file_ownership";
 import type { FileOwnership } from "../tools/file_ownership";
 import { normalizedJoin } from "../tools/filepath";
-import { resolveRealPath } from "../tools/path_link_check";
+import { resolvePhysicalPath } from "../tools/path_link_check";
 
 const ERROR_MSG_01 = $t("TXT_CODE_system_file.illegalAccess");
 const ERROR_PATH_NOT_FOUND = $t("TXT_CODE_96281410");
@@ -49,8 +49,8 @@ export default class FileManager {
   private isOutsideWorkspace(absPath: string): boolean {
     // fix the /app/ vs /app mismatch bug and keep it secure
     if (this.isRootTopRath()) return false;
-    const realTop = resolveRealPath(this.topPath);
-    const realPath = resolveRealPath(absPath);
+    const realTop = resolvePhysicalPath(this.topPath);
+    const realPath = resolvePhysicalPath(absPath);
     if (!realTop || !realPath) return true; // If the path cannot be resolved, treat it as outside for safety
     const relative = path.relative(realTop, realPath);
     return relative === ".." || relative.startsWith(".." + path.sep) || path.isAbsolute(relative);
@@ -61,7 +61,11 @@ export default class FileManager {
 
     let finalPath = "";
     if (path.normalize(fileName).indexOf(topAbsolutePath) === 0) {
-      finalPath = fileName;
+      // This value is what every caller passes to fs, so it must be the value the
+      // containment check below validates. Keeping the raw caller string let a
+      // symlink followed by '..' pass the lexical check and then be resolved
+      // physically by the kernel, escaping the instance workspace.
+      finalPath = path.normalize(fileName);
     } else if (os.platform() === "win32") {
       const reg = new RegExp("^[A-Za-z]{1}:[\\\\/]{1}");
       if (reg.test(this.cwd)) {

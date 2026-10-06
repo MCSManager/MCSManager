@@ -434,6 +434,62 @@ describe("file_router security: per-instance workspace isolation (real FileManag
     expect(String(pkt.data)).not.toContain("SECRET-B");
   });
 
+  // ---- symlink + '..': the value checked must be the value handed to fs ----
+  // path.join() would collapse 'link/..' lexically and hide the bug; only raw
+  // concatenation preserves the shape a client can send and the kernel
+  // resolves physically (link first, then '..' against the link's target).
+  it("does not let a symlink followed by '..' escape the workspace", async () => {
+    if (!linkOk) return;
+    const raw = (...segs: string[]) => [sandbox.dirA, ...segs].join(path.sep);
+    // inst-a/link resolves to inst-b, so the PHYSICAL meaning of
+    // '<dirA>/link/../escape-marker.txt' is '<root>/escape-marker.txt' (inst-b's parent).
+    const outsideMarker = path.join(sandbox.root, "escape-marker.txt");
+    const outsideCreated = path.join(sandbox.root, "created-by-test.txt");
+    fs.writeFileSync(outsideMarker, "OUTSIDE-MARKER");
+    const fm = new FileManager(sandbox.dirA);
+    const escapeTarget = raw("link", "..", "escape-marker.txt");
+
+    // 1) the value handed to fs must never be the un-normalized 'link/..' shape
+    let returned: string | null = null;
+    try {
+      returned = fm.toAbsolutePath(escapeTarget);
+    } catch {
+      returned = null;
+    }
+    if (returned) {
+      expect(returned).toBe(path.normalize(returned));
+      expect(fs.existsSync(returned)).toBe(false);
+    }
+
+    // 2) read/write through the escape shape must fail
+    await expect(fm.readFile(escapeTarget)).rejects.toThrow();
+    await expect(fm.edit(escapeTarget, "pwned")).rejects.toThrow();
+    expect(fs.readFileSync(outsideMarker, "utf8")).toBe("OUTSIDE-MARKER");
+
+    // 3) the same shape must not read a sibling instance's files either
+    await expect(fm.readFile(raw("link", "..", "inst-b", "secret.txt"))).rejects.toThrow();
+    expect(secretB()).toBe("SECRET-B");
+
+    // 4) create through the escape shape must stay inside the workspace
+    await fm.newFile(raw("link", "..", "created-by-test.txt")).catch(() => undefined);
+    expect(fs.existsSync(outsideCreated)).toBe(false);
+
+    fs.removeSync(outsideMarker);
+    fs.removeSync(path.join(sandbox.dirA, "created-by-test.txt"));
+    fs.removeSync(outsideCreated);
+  });
+
+  it("file/edit: symlink followed by '..' in an absolute target -> {500} and outside file unchanged", async () => {
+    if (!linkOk) return;
+    const outsideMarker = path.join(sandbox.root, "escape-marker-e2e.txt");
+    fs.writeFileSync(outsideMarker, "OUTSIDE-MARKER");
+    const target = [sandbox.dirA, "link", "..", "escape-marker-e2e.txt"].join(path.sep);
+    const pkt = await call("file/edit", { instanceUuid: "a", target, text: "PWNED" });
+    expect(pkt.status).toBe(500);
+    expect(fs.readFileSync(outsideMarker, "utf8")).toBe("OUTSIDE-MARKER");
+    fs.removeSync(outsideMarker);
+  });
+
   // ---- Zip Slip: archive entries must not escape the destination directory ----
   it("file/compress type=0: zip with '../' entries -> {500} and decompress NOT called", async () => {
     fs.writeFileSync(
