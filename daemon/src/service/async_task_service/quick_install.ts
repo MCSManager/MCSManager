@@ -1,8 +1,9 @@
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import fs from "fs-extra";
 import { t } from "i18next";
 import path from "path";
-import { pipeline, Readable } from "stream";
+import { Readable } from "stream";
+import { pipeline } from "stream/promises";
 import { v4 } from "uuid";
 import { getCommonHeaders } from "../../common/network";
 import Instance from "../../entity/instance/instance";
@@ -13,6 +14,41 @@ import { InstanceUpdateAction } from "../instance_update_action";
 import logger from "../log";
 import InstanceSubsystem from "../system_instance";
 import { AsyncTask, IAsyncTaskJSON, TaskCenter } from "./index";
+
+const SAFE_DOWNLOAD_ERROR_CODES: ReadonlySet<string> = new Set([
+  "ECONNABORTED",
+  "ECONNREFUSED",
+  "ECONNRESET",
+  "EAI_AGAIN",
+  "ENOTFOUND",
+  "ETIMEDOUT",
+  "EPROTO",
+  "ERR_BAD_REQUEST",
+  "ERR_BAD_RESPONSE",
+  "ERR_CANCELED",
+  "ERR_FR_TOO_MANY_REDIRECTS",
+  "ERR_INVALID_URL",
+  "ERR_NETWORK",
+  "CERT_HAS_EXPIRED",
+  "DEPTH_ZERO_SELF_SIGNED_CERT",
+  "ERR_TLS_CERT_ALTNAME_INVALID",
+  "SELF_SIGNED_CERT_IN_CHAIN",
+  "UNABLE_TO_VERIFY_LEAF_SIGNATURE"
+]);
+
+function createSafeDownloadError(error: unknown): Error {
+  const diagnostics: string[] = [];
+  if (isAxiosError(error)) {
+    const status = error.response?.status;
+    if (typeof status === "number" && Number.isInteger(status) && status >= 100 && status <= 599)
+      diagnostics.push(`HTTP ${status}`);
+    if (typeof error.code === "string" && SAFE_DOWNLOAD_ERROR_CODES.has(error.code))
+      diagnostics.push(error.code);
+  }
+  // Messages, stacks, causes and request/response objects may contain credentials.
+  const details = diagnostics.length ? ` (${diagnostics.join(", ")})` : "";
+  return new Error(`${$t("TXT_CODE_9ea5696b")}${details}`);
+}
 
 export class QuickInstallTask extends AsyncTask {
   public static TYPE = "QuickInstallTask";
@@ -35,7 +71,7 @@ export class QuickInstallTask extends AsyncTask {
   private isInitInstance = false;
 
   private abortController?: AbortController;
-  private downloadStream?: fs.WriteStream;
+  private downloadStream?: Readable;
   private writeStream?: fs.WriteStream;
   private updateTask?: InstanceUpdateAction;
 
@@ -64,6 +100,17 @@ export class QuickInstallTask extends AsyncTask {
   }
 
   private async download() {
+    try {
+      await this.downloadToFile();
+    } catch (error) {
+      const responseBody = isAxiosError(error) ? error.response?.data : undefined;
+      // Rejected HTTP responses never reach downloadStream; abort alone cannot release them.
+      if (responseBody instanceof Readable) responseBody.destroy();
+      throw createSafeDownloadError(error);
+    }
+  }
+
+  private async downloadToFile() {
     this.abortController = new AbortController();
     if (!this.targetLink) throw new Error("No targetLink!");
     let downloadFileName = this.TMP_ZIP_NAME;
@@ -72,8 +119,6 @@ export class QuickInstallTask extends AsyncTask {
       downloadFileName = url.pathname.split("/").pop() || `application${this.extName}`;
     }
     this.filePath = path.normalize(path.join(this.instance.absoluteCwdPath(), downloadFileName));
-    this.writeStream = fs.createWriteStream(this.filePath);
-    if (!this.writeStream) throw new Error("Not writeStream!");
 
     // Initialize download progress
     this.downloadProgress = {
@@ -91,6 +136,9 @@ export class QuickInstallTask extends AsyncTask {
       headers: getCommonHeaders(this.targetLink),
       maxRedirects: 10
     });
+    this.downloadStream = response.data;
+    // Open only after HTTP succeeds and attach pipeline handlers before yielding.
+    this.writeStream = fs.createWriteStream(this.filePath);
 
     // Get total file size
     const contentLength = response.headers["content-length"];
@@ -144,20 +192,11 @@ export class QuickInstallTask extends AsyncTask {
       }
     });
 
-    // await download
-    await new Promise<boolean>(async (resolve, reject) => {
-      this.downloadStream = pipeline(response.data, this.writeStream!, (err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(true);
-        }
-      });
-    });
+    await pipeline(this.downloadStream, this.writeStream);
 
     this.downloadProgress.percentage = 100;
     this.downloadProgress.downloadedBytes = this.downloadProgress.totalBytes;
-    this.instance.println("INFO", `Download "${this.targetLink}" success!!!`);
+    this.instance.println("INFO", `${t("TXT_CODE_b135e9bd")} 100%`);
   }
 
   async onStart() {
@@ -206,13 +245,11 @@ export class QuickInstallTask extends AsyncTask {
       logger.info(
         t("TXT_CODE_e5ba712d"),
         this.instance.config.nickname,
-        this.instance.instanceUuid,
-        "URL:",
-        this.targetLink
+        this.instance.instanceUuid
       );
-      logger.info(t("TXT_CODE_ac225d07") + JSON.stringify(config));
 
       this.instance.resetConfigWithoutDocker();
+      // Preset metadata and archive configs are administrator-trusted inputs, not tenant patches.
       this.instance.parameters(config, true);
 
       this.instance.println("INFO", $t("TXT_CODE_4eccdde8"));
