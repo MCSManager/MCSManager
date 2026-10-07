@@ -13,6 +13,7 @@ interface WebRconOptions {
 }
 
 const IDENTIFIER = 1001;
+const CLOSE_TIMEOUT_MS = 1000;
 
 export async function executeWebRcon({
   host,
@@ -27,6 +28,7 @@ export async function executeWebRcon({
   return new Promise((resolve, reject) => {
     let socket: WebSocket;
     let timer: NodeJS.Timeout;
+    let closeTimer: NodeJS.Timeout | undefined;
     let settled = false;
     let writeConfirmed = false;
     let opened = false;
@@ -35,7 +37,14 @@ export async function executeWebRcon({
       if (settled) return;
       settled = true;
       clearTimeout(timer);
-      socket.terminate();
+      if (socket.readyState === WebSocket.OPEN) {
+        // Give Rust a normal close frame, but never retain an unresponsive peer indefinitely.
+        closeTimer = setTimeout(() => socket.terminate(), CLOSE_TIMEOUT_MS);
+        closeTimer.unref();
+        socket.close(1000);
+      } else if (socket.readyState !== WebSocket.CLOSED) {
+        socket.terminate();
+      }
       if (error) reject(error);
       else resolve(response ?? "");
     };
@@ -75,6 +84,7 @@ export async function executeWebRcon({
       }
     });
     socket.on("message", (raw) => {
+      if (settled) return;
       let packet: any;
       try {
         packet = JSON.parse(raw.toString());
@@ -96,6 +106,9 @@ export async function executeWebRcon({
     socket.on("error", () =>
       finish(new WebRconError(opened ? "connectionError" : "connect", writeConfirmed))
     );
-    socket.on("close", () => finish(new WebRconError("closed", writeConfirmed)));
+    socket.on("close", () => {
+      clearTimeout(closeTimer);
+      finish(new WebRconError("closed", writeConfirmed));
+    });
   });
 }

@@ -65,6 +65,22 @@ describe("Rust WebRCON client", () => {
     expect(path).toBe("/p%2Fa%23b");
   });
 
+  it("completes a normal close handshake after returning a command response", async () => {
+    const port = await listen();
+    const closed = new Promise<number>((resolve) => {
+      server!.on("connection", (socket) => {
+        socket.once("close", resolve);
+        socket.on("message", () =>
+          socket.send(JSON.stringify({ Identifier: 1001, Message: "ok" }))
+        );
+      });
+    });
+    expect(
+      await executeWebRcon({ host: "127.0.0.1", port, password: "secret", command: "status" })
+    ).toBe("ok");
+    expect(await closed).toBe(1000);
+  });
+
   it("releases the connection when a server does not acknowledge WebSocket close", async () => {
     let client: Duplex | undefined;
     const rawServer = createServer();
@@ -101,7 +117,9 @@ describe("Rust WebRCON client", () => {
       expect(
         await executeWebRcon({ host: "127.0.0.1", port, password: "secret", command: "status" })
       ).toBe("ok");
-      for (let i = 0; i < 20 && !client?.destroyed; i++)
+      // The command result must not wait for a peer that ignores the close handshake.
+      expect(client?.destroyed).toBe(false);
+      for (let i = 0; i < 80 && !client?.destroyed; i++)
         await new Promise((resolve) => setTimeout(resolve, 25));
       expect(client?.destroyed).toBe(true);
     } finally {
@@ -121,7 +139,12 @@ describe("Rust WebRCON client", () => {
   it("times out without retrying a command that may already have run", async () => {
     const port = await listen();
     let requests = 0;
-    server!.on("connection", (socket) => socket.on("message", () => requests++));
+    const closed = new Promise<number>((resolve) => {
+      server!.on("connection", (socket) => {
+        socket.on("message", () => requests++);
+        socket.once("close", resolve);
+      });
+    });
     await expect(
       executeWebRcon({
         host: "127.0.0.1",
@@ -132,6 +155,7 @@ describe("Rust WebRCON client", () => {
       })
     ).rejects.toMatchObject({ code: "timeout", writeConfirmed: true });
     expect(requests).toBe(1);
+    expect(await closed).toBe(1000);
   });
 
   it("reports a close after sending without leaking the password", async () => {
