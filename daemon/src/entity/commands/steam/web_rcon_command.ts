@@ -49,7 +49,13 @@ export default class WebRconCommand extends InstanceCommand {
         password: instance.config.rconPassword || "",
         command
       });
-      if (response) instance.print(`[RCON] ${response}\n`);
+      if (response) {
+        const normalizedResponse = response.replace(/\r\n?/g, "\n");
+        const prefixedResponse = normalizedResponse.replace(/\n(?!$)/g, "\n[RCON] ");
+        instance.print(
+          `[RCON] ${prefixedResponse}${normalizedResponse.endsWith("\n") ? "" : "\n"}`
+        );
+      }
     } catch (error: any) {
       if (
         error instanceof WebRconError &&

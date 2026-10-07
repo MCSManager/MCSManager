@@ -276,26 +276,52 @@ describe("Rust WebRCON client", () => {
     expect(connection).not.toHaveBeenCalled();
   });
 
-  it("prints the command result through the instance console", async () => {
-    const port = await listen();
-    server!.on("connection", (socket) =>
-      socket.on("message", () =>
-        socket.send(JSON.stringify({ Identifier: 1001, Message: "2 players" }))
-      )
-    );
-    const print = vi.fn();
-    const instance = {
-      config: { rconIp: "127.0.0.1", rconPort: port, rconPassword: "secret" },
-      process: {},
-      print,
-      println: vi.fn(),
-      status: () => 3
-    } as unknown as Instance;
+  it.each([
+    ["single line", "2 players", "[RCON] 2 players\n"],
+    ["multiple lines", "hostname: Rust\nplayers: 2", "[RCON] hostname: Rust\n[RCON] players: 2\n"],
+    [
+      "CRLF line endings",
+      "hostname: Rust\r\nplayers: 2\r\n",
+      "[RCON] hostname: Rust\n[RCON] players: 2\n"
+    ],
+    [
+      "CR line endings",
+      "hostname: Rust\rplayers: 2\r",
+      "[RCON] hostname: Rust\n[RCON] players: 2\n"
+    ],
+    [
+      "indentation and blank lines",
+      "players:\n\n  Alice  25",
+      "[RCON] players:\n[RCON] \n[RCON]   Alice  25\n"
+    ],
+    ["trailing newline", "2 players\n", "[RCON] 2 players\n"],
+    ["trailing blank line", "2 players\n\n", "[RCON] 2 players\n[RCON] \n"],
+    ["empty response", "", ""]
+  ])(
+    "prefixes each response line in the instance console: %s",
+    async (_name, response, expected) => {
+      const port = await listen();
+      server!.on("connection", (socket) =>
+        socket.on("message", () =>
+          socket.send(JSON.stringify({ Identifier: 1001, Message: response }))
+        )
+      );
+      const print = vi.fn();
+      const instance = {
+        config: { rconIp: "127.0.0.1", rconPort: port, rconPassword: "secret" },
+        process: {},
+        print,
+        println: vi.fn(),
+        status: () => 3
+      } as unknown as Instance;
 
-    await new WebRconCommand().exec(instance, "status");
-    expect(print).toHaveBeenCalledWith("[RCON] <<< status\n");
-    expect(print).toHaveBeenCalledWith("[RCON] 2 players\n");
-  });
+      await new WebRconCommand().exec(instance, "status");
+      expect(print.mock.calls).toEqual([
+        ["[RCON] <<< status\n"],
+        ...(expected ? [[expected]] : [])
+      ]);
+    }
+  );
 
   it("does not report an expected close as an error during shutdown", async () => {
     const port = await listen();
