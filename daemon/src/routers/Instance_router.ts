@@ -405,7 +405,7 @@ routerApp.on("instance/asynchronous", (ctx, data) => {
   if (taskName === "quick_install" && role === ROLE.ADMIN) {
     const newInstanceName = String(parameter.newInstanceName);
     const targetLink = String(parameter.targetLink);
-    logger.info(`Quick install: Name: ${newInstanceName} | Download: ${targetLink}`);
+    logger.info(`Quick install: Name: ${newInstanceName}`);
     const task = createQuickInstallTask(targetLink, newInstanceName, parameter.setupInfo);
     return protocol.response(ctx, task.toObject());
   }
