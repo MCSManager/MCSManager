@@ -131,7 +131,10 @@ describe.skipIf(process.platform !== "linux")("file manager ownership boundaries
   });
 
   it.each(["copy", "ownership"])("keeps the EXDEV source when %s fails", async (failure) => {
-    const files = new FileManager(workspace, "utf-8", currentOwnership);
+    const files = new FileManager(workspace, "utf-8", async () => ({
+      ...(await currentOwnership()),
+      uid: process.getuid!() + (failure === "ownership" ? 1 : 0)
+    }));
     vi.spyOn(fs, "rename").mockRejectedValue(
       Object.assign(new Error("cross-device"), { code: "EXDEV" })
     );

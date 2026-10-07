@@ -47,7 +47,9 @@ so its `USER` can be resolved. Prefer explicit `runAs` for separate update image
 Engine checks are deduplicated and cached for 30 seconds; image metadata uses a
 30-second, 32-entry cache. Archive ownership is resolved once per operation, not
 once per entry. Restart the Daemon after changing its engine or namespace setup.
-Already-correct ownership is checked with `fstat` and does not call `fchown`.
+After containment validation, already-correct ownership is checked with `lstat`
+without opening the file, including mode `000` or write-only files. Ownership
+changes still require an inode-verified descriptor and `fstat` before `fchown`.
 Permission errors are reported; modes are not widened to work around them.
 Docker-backed file writes require a reachable engine for initial verification;
 ordinary processes and Windows do not query Docker for file ownership.
@@ -86,6 +88,17 @@ limits via actual cgroup files, not only Docker's requested configuration.
   BPS, swap and swappiness settings are rejected: their enforcement has not been
   verified by this layer. Undefined settings retain Engine defaults; this is not
   a claim that defaults provide a swap policy. Rootful limits are unchanged.
+- Extra bind sources inside the instance workspace are physically validated before
+  creating directories and synchronizing the source and its parents to the instance
+  owner. Existing file binds are supported; their contents and modes are unchanged.
+  This does not recursively change the contents of existing mounted directories.
+  Symlinks escaping the workspace and ambiguous `..` source syntax are rejected.
+  Outside-workspace sources are administrator-managed: they must already exist,
+  be visible to the Daemon, and have suitable ownership and permissions. They are
+  never created or chowned, even if an external alias points back into the workspace.
+  Rootful Docker's existing bind-directory behavior is unchanged. As with other
+  pathname-based operations, validation cannot atomically prevent concurrent parent
+  replacement by an instance process.
 - File copies and moves run one bounded batch at a time per reservation (up to 100 pairs).
   Copy, move and extraction share `maxFileTask` per instance and `maxGlobalFileTask`
   per Daemon (default 8, configure in `data/Config/global.json`). Busy requests
@@ -160,8 +173,9 @@ ephemeral test key, then removes its own resources. It tests namespace users
 `0:0`, `1000:1000`, image `USER` inheritance with a different update image, and a
 native non-root Daemon limited to `0:0`. Both upload APIs, manual/automatic
 extraction, copy/move ownership, game writes in moved directories, private-file access,
-updates, console I/O, restart, local UDP and
-actual cgroup limits are checked. Unsupported native-host UID 1000 uploads must
+mode `000`/write-only file moves, nested extra-bind write/rename/delete and unchanged
+external bind ownership/modes are checked, along with updates, console I/O, restart,
+local UDP and actual cgroup limits. Unsupported native-host UID 1000 uploads must
 fail before overwriting existing files, and `HOST` updates must not run.
 
 This is not a public game-client or production migration test. The harness does

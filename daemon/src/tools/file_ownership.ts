@@ -85,6 +85,9 @@ export async function syncPathOwnershipWithinRoot(
   // does not control access to the target, so leave symlinks and special files alone.
   if (!targetInfo.isFile() && !targetInfo.isDirectory()) return;
 
+  // No mutation is needed, so do not require read access to an already-owned inode.
+  if (targetInfo.uid === ownership.uid && targetInfo.gid === ownership.gid) return;
+
   const flags =
     fsConstants.O_RDONLY |
     fsConstants.O_NOFOLLOW |

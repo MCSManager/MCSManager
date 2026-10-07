@@ -18,6 +18,7 @@ import Instance from "../entity/instance/instance";
 import { DefaultDocker } from "./docker_service";
 import { dockerFileOwnership } from "./docker_file_ownership";
 import { validateRootlessResourceLimits } from "./rootless_resource_limits";
+import { prepareRootlessBindSource } from "./docker_bind_mount";
 import { syncPathOwnershipWithinRoot } from "../tools/file_ownership";
 
 import Docker from "dockerode";
@@ -273,7 +274,7 @@ export class SetupDockerContainer extends AsyncTask {
       if (!item) throw new Error($t("TXT_CODE_ae441ea3"));
       const paths = item.split("|");
       if (paths.length < 2) throw new Error($t("TXT_CODE_dca030b8"));
-      const hostPath = path.normalize(paths[0]);
+      const hostPath = identity.rootless ? paths[0] : path.normalize(paths[0]);
       const containerPath = path.normalize(paths[1]);
       extraBinds.push({ hostPath, containerPath });
     }
@@ -439,7 +440,11 @@ export class SetupDockerContainer extends AsyncTask {
     const mounts: Docker.MountConfig = [];
     for (const v of extraBinds) {
       const hostPath = await instance.parseTextParams(v.hostPath);
-      if (!fs.existsSync(hostPath)) fs.mkdirsSync(hostPath);
+      if (identity.rootless) {
+        await prepareRootlessBindSource(workspace, hostPath, identity.ownership!);
+      } else if (!fs.existsSync(hostPath)) {
+        fs.mkdirsSync(hostPath);
+      }
       mounts.push({
         Type: "bind",
         Source: hostPath,

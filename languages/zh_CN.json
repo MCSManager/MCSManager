@@ -3274,6 +3274,7 @@
   "TXT_CODE_rootless.networkLimitUnsupported": "Rootless Docker 不支持主机网络限速。请移除实例的上传／下载限速。",
   "TXT_CODE_rootless.resourceLimitUnsupported": "Rootless 引擎无法执行指定的 CPU／内存限制。请先配置 cgroup v2 与 systemd 委派。",
   "TXT_CODE_rootless.hostUpdateUnsupported": "Rootless Docker 实例必须通过容器更新，不能使用 HOST。请选择主实例镜像或独立的更新镜像。",
+  "TXT_CODE_rootless.externalBindMissing": "Rootless 工作目录外的挂载源必须已存在。请管理员预先设置所有权和权限；MCSManager 不会创建或修改它们。",
   "TXT_CODE_rootless.unverifiedResourceLimit": "Rootless Docker 支持无法验证 CPU 绑定、设备 I/O、swap 或 swappiness 限制。请移除这些设置后启动实例。",
   "TXT_CODE_file_task.limitExceeded": "实例或 Daemon 文件任务已达上限，请等待现有任务完成。",
   "TXT_CODE_file_task.invalidTransferTargets": "文件传输请求必须包含 1 至 100 组来源／目标路径。",

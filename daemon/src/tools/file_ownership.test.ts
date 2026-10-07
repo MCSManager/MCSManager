@@ -19,10 +19,21 @@ describe.skipIf(process.platform !== "linux")("descriptor-based file ownership",
 
   it("does not chown an already-correct 0600 file or directory", async () => {
     const chown = vi.spyOn(fs, "fchown");
+    const open = vi.spyOn(fs, "open");
     await syncPathOwnershipWithinRoot(workspace, path.join(workspace, "file"), ownership);
     await syncPathOwnershipWithinRoot(workspace, workspace, ownership);
     expect(chown).not.toHaveBeenCalled();
+    expect(open).not.toHaveBeenCalled();
     expect((await fs.stat(path.join(workspace, "file"))).mode & 0o777).toBe(0o600);
+  });
+
+  it.each([0o000, 0o200])("does not open an already-owned mode %s file", async (mode) => {
+    const target = path.join(workspace, "file");
+    await fs.chmod(target, mode);
+    const open = vi.spyOn(fs, "open").mockRejectedValue(new Error("No read permission"));
+    await syncPathOwnershipWithinRoot(workspace, target, ownership);
+    expect(open).not.toHaveBeenCalled();
+    expect((await fs.lstat(target)).mode & 0o777).toBe(mode);
   });
 
   it.each(["EPERM", "EACCES"])("reports %s and closes the descriptor", async (code) => {
@@ -72,7 +83,10 @@ describe.skipIf(process.platform !== "linux")("descriptor-based file ownership",
     });
     const chown = vi.spyOn(fs, "fchown");
     await expect(
-      syncPathOwnershipWithinRoot(workspace, path.join(workspace, "file"), ownership)
+      syncPathOwnershipWithinRoot(workspace, path.join(workspace, "file"), {
+        uid: ownership.uid + 1,
+        gid: ownership.gid
+      })
     ).rejects.toThrow();
     expect(chown).not.toHaveBeenCalled();
   });

@@ -3274,6 +3274,7 @@
   "TXT_CODE_rootless.networkLimitUnsupported": "Host network rate limiting is not supported with Rootless Docker. Remove the instance upload/download rate limits.",
   "TXT_CODE_rootless.resourceLimitUnsupported": "The Rootless engine cannot enforce the requested CPU/memory limit. Configure cgroup v2 and systemd delegation first.",
   "TXT_CODE_rootless.hostUpdateUnsupported": "Rootless Docker instances must use a container for updates, not HOST. Select the main instance image or a separate update image.",
+  "TXT_CODE_rootless.externalBindMissing": "External Rootless bind sources must already exist. Ask the administrator to prepare their ownership and permissions; MCSManager will not create or change them.",
   "TXT_CODE_rootless.unverifiedResourceLimit": "Rootless Docker support cannot verify cpuset, device I/O, swap or swappiness limits. Remove these settings before starting the instance.",
   "TXT_CODE_file_task.limitExceeded": "The instance or Daemon file task limit has been reached. Wait for an existing task to finish.",
   "TXT_CODE_file_task.invalidTransferTargets": "A file transfer request must contain between 1 and 100 source/destination pairs.",

@@ -165,6 +165,10 @@ async function udpEcho(port) {
 
 async function testUser(runAs, gameImage = image) {
   const workspace = path.join(root, "instances", runAs ? runAs.replace(":", "-") : "image-user");
+  const extraData = path.join(workspace, "extra/nested/data");
+  const externalData = path.join(root, "admin-extra");
+  await fs.mkdir(externalData, { recursive: true, mode: 0o700 });
+  const externalBefore = await fs.stat(externalData);
   const created = await request("instance/new", {
     nickname: `Rootless test ${runAs}`,
     cwd: workspace,
@@ -178,6 +182,7 @@ async function testUser(runAs, gameImage = image) {
       updateCommandImage: image,
       ports: ["127.0.0.1:0:8211/udp"],
       workingDir: "/data",
+      extraVolumes: [`${extraData}|/extra`, `${externalData}|/admin-extra`],
       memory: 256,
       cpuUsage: 50
     }
@@ -188,6 +193,7 @@ async function testUser(runAs, gameImage = image) {
   const server = [
     'const fs = require("fs"), dgram = require("dgram");',
     'fs.appendFileSync("boots", "boot\\n");',
+    'fs.writeFileSync("/extra/test.txt", "extra-write"); fs.renameSync("/extra/test.txt", "/extra/renamed.txt"); fs.unlinkSync("/extra/renamed.txt"); fs.writeFileSync("/extra/marker", "writable");',
     'for (const file of ["legacy.txt", "chunk.txt", "archive/item.txt", "legacy-extract/item.txt", "chunk-extract/item.txt"]) fs.appendFileSync(file, "game-write\\n");',
     'fs.writeFileSync("private", "private", {mode: 0o600});',
     'fs.writeFileSync("removed-by-game", "remove me"); fs.unlinkSync("removed-by-game");',
@@ -272,6 +278,22 @@ async function testUser(runAs, gameImage = image) {
     if ((info.mode & 0o777) !== 0o500 || !fs.existsSync(root + "/readonly-copy/file")) throw new Error("Read-only copy mismatch");
     fs.chmodSync(root + "/readonly", 0o700); fs.chmodSync(root + "/readonly-copy", 0o700);`
   );
+  for (const mode of [0o000, 0o200]) {
+    const source = `private-mode-${mode}`;
+    await file("file/touch", { target: source });
+    await execNode(
+      container,
+      `require("fs").chmodSync(${JSON.stringify(path.join(workspace, source))}, ${mode});`
+    );
+    await file("file/move", { targets: [[source, source + "-moved"]] });
+    await execNode(
+      container,
+      `const fs = require("fs");
+      const target = ${JSON.stringify(path.join(workspace, source + "-moved"))};
+      if ((fs.statSync(target).mode & 0o777) !== ${mode}) throw new Error("Move changed private mode");
+      fs.chmodSync(target, 0o600);`
+    );
+  }
   await request("instance/update", {
     instanceUuid,
     config: {
@@ -336,6 +358,21 @@ async function testUser(runAs, gameImage = image) {
     "private file"
   );
   const expectedUid = runAs ? Number(runAs.split(":")[0]) : 1000;
+  await execNode(
+    container,
+    `const fs = require("fs");
+    for (const entry of ${JSON.stringify([path.join(workspace, "extra"), path.join(workspace, "extra/nested"), extraData])}) {
+      const info = fs.statSync(entry);
+      if (info.uid !== ${expectedUid} || info.gid !== ${expectedUid}) throw new Error("Extra bind ownership mismatch");
+    }
+    if (fs.readFileSync(${JSON.stringify(path.join(extraData, "marker"))}, "utf8") !== "writable") throw new Error("Extra bind not writable");`
+  );
+  const externalAfter = await fs.stat(externalData);
+  assert.deepEqual(
+    [externalAfter.uid, externalAfter.gid, externalAfter.mode],
+    [externalBefore.uid, externalBefore.gid, externalBefore.mode],
+    "External admin bind must remain unchanged"
+  );
   const report = JSON.parse(
     await execNode(
       game,
@@ -441,7 +478,10 @@ async function testUser(runAs, gameImage = image) {
       localUdp: true,
       isolation: true,
       move: "nested ownership + game write/rename/delete",
-      readOnlyDirectoryCopy: true
+      readOnlyDirectoryCopy: true,
+      extraBind: "nested ownership + game write/rename/delete",
+      externalBindUnchanged: true,
+      privateModeMove: true
     })
   );
   await request("instance/kill", { instanceUuids: [instanceUuid] });
