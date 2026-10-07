@@ -1,0 +1,32 @@
+{
+  "languages": [
+    { "label": "English", "value": "en_us" },
+    { "label": "中文", "value": "zh_cn" }
+  ],
+  "packages": [
+    {
+      "title": "CI Fixture Server",
+      "language": "en_us",
+      "platform": "ALL",
+      "description": "Offline fixture package for MCSManager integration tests",
+      "image": "",
+      "gameType": "CI",
+      "category": "ci-fixture",
+      "runtime": "Node.js",
+      "hardware": "",
+      "size": "",
+      "remark": "MCSManager integration test fixture",
+      "targetLink": "",
+      "author": "MCSManager CI",
+      "tags": ["ci"],
+      "setupInfo": {
+        "type": "ci/fixture",
+        "startCommand": "node test.mjs",
+        "stopCommand": "exit",
+        "updateCommand": "",
+        "ie": "utf-8",
+        "oe": "utf-8"
+      }
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+name: Test MCSManager
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            common/package-lock.json
+            daemon/package-lock.json
+            panel/package-lock.json
+            frontend/package-lock.json
+
+      - name: Install dependencies and build common
+        run: |
+          chmod a+x ./install-dependents.sh
+          ./install-dependents.sh
+
+      - name: Download daemon platform binaries
+        run: wget --input-file=lib-urls.txt --directory-prefix=daemon/lib/
+
+      - name: Provide market cache fixture
+        run: |
+          mkdir -p panel/data
+          cp common/test/integration/fixtures/market_cache.json panel/data/market_cache.json
+
+      - name: Unit tests - common
+        run: npm test
+        working-directory: common
+
+      - name: Unit tests - daemon
+        run: npm test
+        working-directory: daemon
+
+      - name: Unit tests - panel
+        run: npm test
+        working-directory: panel
+
+      - name: Unit tests - frontend
+        run: npm test
+        working-directory: frontend
+
+      - name: Build panel and daemon (integration prerequisite)
+        run: |
+          npm --prefix common run build
+          npm --prefix panel run build
+          npm --prefix daemon run build
+
+      - name: Integration tests - common
+        run: npm run test:integration
+        working-directory: common
