@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import { describe, it, expect } from "vitest";
 import { world, requestPanel, loginSessionRetry, ensureUser } from "../lib";
 
@@ -25,5 +27,22 @@ describe("framework smoke", () => {
     const ov = await requestPanel({ method: "GET", path: "/auth/overview", key: world.key });
     expect(ov.httpStatus).toBe(200);
     expect((ov.data || []).some((u: any) => u.userName === world.admin.name)).toBe(true);
+  });
+
+  // The access key is a secret: it may be printed to the operator's console
+  // (stdout), but it must never be persisted into the daemon's own log files
+  // (logs/current.log and its rotations), which are world-readable by default.
+  it("daemon startup: access key reaches the console but never the log file", () => {
+    const daemonDir = path.join(world.workDir, "daemon");
+    const cfg = JSON.parse(
+      fs.readFileSync(path.join(daemonDir, "data", "Config", "global.json"), "utf-8")
+    );
+    expect(cfg.key).toBeTruthy();
+
+    const appLog = fs.readFileSync(path.join(daemonDir, "logs", "current.log"), "utf-8");
+    expect(appLog).not.toContain(cfg.key);
+
+    const stdoutTee = fs.readFileSync(path.join(world.workDir, "daemon.log"), "utf-8");
+    expect(stdoutTee).toContain(cfg.key);
   });
 });
