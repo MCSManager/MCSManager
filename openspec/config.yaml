@@ -1,0 +1,31 @@
+schema: spec-driven
+
+context: |
+  Language: en
+  All artifacts must be written in en.
+  Keep OpenSpec structural headings and SHALL/MUST keywords in English.
+
+  AGENTS.md at the repo root is the authoritative project convention; read it and
+  follow it. MCSManager has three subprojects: panel (Koa web backend), daemon
+  (instance/container worker), frontend (Vue 3 UI), plus common (shared library
+  source-aliased into panel and daemon) and root-level languages/ i18n JSON.
+
+  Security first: never pass unvalidated user input into shell args or path
+  operations; never log secrets (panel/data/User/*.json, daemon/data/Config/
+  global.json, node apiKey files); validate external resources (files, network,
+  containers, shell) before use. Prefer small, focused edits and reuse existing
+  hooks/services/stores/utils over new machinery.
+
+rules:
+  tasks:
+    - End every task with the relevant module test command (cd <module> && npm test); a task is not complete until its suite passes
+    - Keep each task small and verifiable (aim under 2 hours of work)
+
+operations:
+  apply:
+    guidance:
+      - Run the touched module's test suite before marking a task complete; for frontend TS type changes run type-check before lint/test (see AGENTS.md section 2 and 8)
+      - Never commit or push unless the user explicitly asks
+  archive:
+    guidance:
+      - Confirm the relevant test suites pass, then summarize what shipped before archiving

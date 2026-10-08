@@ -97,3 +97,29 @@ const errorMsgWithParams = $t("TXT_CODE_INSTANCE_ERROR", {
 - **Testing gate**: after completing any new requirement or feature change, you **MUST use** the [`mcsmanager-test`](.agents/skills/mcsmanager-test/SKILL.md) skill, or manually run `npm run test` and `npm run test:integration`, to perform a full test check. This testing convention is mandatory.
 - **Production build & deploy**: before touching `build.bat` / `build.sh`, `prod-scripts/`, or deploying `production-code/`, first read the project Agent Skill [`.agents/skills/mcsmanager-build/SKILL.md`](.agents/skills/mcsmanager-build/SKILL.md). It documents the `BUNDLE=1` bundling model, `daemon/lib` external binaries, the runtime `data/` layout (incl. sensitive files & paired key migration), run/stop commands, and the post-deploy verification checklist. It lives in the in-repo, tool-neutral `.agents/skills/` directory (auto-discovered by opencode and other agent-compatible tools), so keywords such as build/compile trigger it automatically in supporting tools; a short summary lives in [`docs/build-production.md`](docs/build-production.md).
 - **Backend integration tests (real daemon + panel, `common/test/integration/`)** — the canonical backend integration layer; **see [`docs/integration-test-framework.md`](docs/integration-test-framework.md) for the API + usage reference** — read it before touching this suite. It boots a REAL daemon + panel (panel started with `--unsafe-integration-test-mode=<key>`), then drives the full backend over REAL HTTP + socket.io in an isolated `mkdtemp` workspace — no mocks.
+
+## 9. OpenSpec Development Workflow (MANDATORY)
+
+All non-trivial development in this repo goes through **OpenSpec** (spec-driven development). Workflow skills live in `.agents/skills/openspec-*` (tool-neutral, shared by all AI tools); artifacts live in `openspec/` (`config.yaml`, `specs/`, `changes/`). **If any generic process skill (brainstorming, planning, TDD kickoff, etc.) conflicts with this section, this section wins.**
+
+**Must follow OpenSpec** (propose → implement → archive):
+
+- New features or behavior changes (any module)
+- Cross-module or external interface changes (APIs, instance configs, data formats, node/panel protocols)
+- Changes that restructure how components fit together
+
+**Exempt** (plain implementation is fine):
+
+- Bug fixes that do not change behavior contracts
+- Pure refactors with no behavior change
+- Test-only or doc-only edits, dependency bumps, small single-file patches
+
+**Flow:**
+
+1. Not sure what to build yet? Start with the [`openspec-explore`](.agents/skills/openspec-explore/SKILL.md) skill to weigh options before committing.
+2. [`openspec-propose`](.agents/skills/openspec-propose/SKILL.md) `<change-id>` — creates `openspec/changes/<change-id>/` (proposal.md, specs/, design.md, tasks.md).
+3. Human reviews the artifacts **before any code is written**; revise via [`openspec-update-change`](.agents/skills/openspec-update-change/SKILL.md) if needed.
+4. [`openspec-apply-change`](.agents/skills/openspec-apply-change/SKILL.md) — implement the tasks. Every task ends with its relevant test suite (§2, §8); the §8 testing gate still applies and must pass before a task is marked complete.
+5. [`openspec-archive-change`](.agents/skills/openspec-archive-change/SKILL.md) — move the change to `openspec/changes/archive/` and sync spec deltas into `openspec/specs/` ([`openspec-sync-specs`](.agents/skills/openspec-sync-specs/SKILL.md)).
+
+Durable project knowledge stays in this file and `docs/`; `openspec/config.yaml` carries only concise constraints for artifact generation. After a CLI upgrade run `openspec update` in the repo root to refresh the generated skills.

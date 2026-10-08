@@ -4,11 +4,12 @@ This document is the reference for the MCSManager auto-update feature. Read it
 before touching anything under `**/upgrade_*`, `common/src/upgrade.ts`,
 `scripts/*update*`, or the update UI in `Settings.vue` / `NodeItem.vue`.
 
-> Historical context: `docs/superpowers/specs/2026-09-06-auto-update-design.md`
-> and `2026-09-07-auto-update-testing.md` are the original design/test specs.
-> They are partially outdated (e.g. the `allowAutoUpdate` switch and the
+> Historical note: this feature was originally designed and tested in a past
+> AI-workflow era whose design docs were never migrated into this repo. Those
+> notes are partially outdated anyway (e.g. the `allowAutoUpdate` switch and the
 > Settings top banner were removed; the UI now lives in the left tab bar).
-> This file reflects the current implementation.
+> This file reflects the current implementation and is the authoritative
+> reference.
 
 ## 1. Overview
 
