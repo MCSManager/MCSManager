@@ -6,9 +6,9 @@
  * Any change here can break container startup, image handling or removal.
  *
  * After editing this file, AI assistants and developers MUST run the
- * `mcsmanager-docker-instance-test` skill and confirm the Docker + instance
+ * `mcsmanager-test` skill and confirm the Docker + instance
  * cases pass before finishing.
- *   Skill: `.agents/skills/mcsmanager-docker-instance-test/SKILL.md`
+ *   Skill: `.agents/skills/mcsmanager-test/SKILL.md`
  */
 import Docker from "dockerode";
 import http from "http";
