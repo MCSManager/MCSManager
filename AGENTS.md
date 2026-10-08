@@ -10,21 +10,21 @@ This project, "MCSManager", is a web management panel for Minecraft and Steam ga
 
 All features of the project revolve around **instances** (`daemon\src\entity\instance\instance.ts`) and **users**. The project has exactly two roles, each with a different set of permissions (`panel\src\app\entity\user.ts`):
 
-| Role          | Permission summary                                                                                                                              |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Administrator | Full control: create instances, configure instances, create users, assign instances, highest authority over the entire panel                    |
-| Regular user  | Limited permissions: can only operate the instances assigned to them by an administrator, without exceeding the scope the administrator permits |
+### Role Summary
 
-Core features mapped to permissions:
+- **Administrator**: Full control: create instances, configure instances, create users, assign instances, highest authority over the entire panel.
+- **Regular user**: Limited permissions: **can only operate the instances assigned to them by an administrator**, without exceeding the scope the administrator permits, and Regular users must be prohibited from executing arbitrary commands on the host machine by any means, and the file management module must also be prohibited from accessing files outside the instance working directory without authorization.
 
-| Capability                                                                                  | Administrator | Regular user |
-| ------------------------------------------------------------------------------------------- | ------------- | ------------ |
-| Full management, deletion, and creation of instances (based on templates / Docker images)   | Yes           | No           |
-| Configure instances (startup command, update command, advanced containerization parameters) | Yes           | No           |
-| Regular user management, assigning instances to users                                       | Yes           | No           |
-| Instance operations: start, stop, restart, update, view logs, send commands                 | Yes           | Yes          |
-| File management: upload, download, delete, decompress, move, edit                           | Yes           | Yes          |
-| Config file updates: Minecraft, Steam and other game server configs                         | Yes           | Yes          |
+### Core features mapped to permissions
+
+| ADMINISTRATOR | REGULAR USER | CAPABILITY                                                                                  |
+| ------------- | ------------ | ------------------------------------------------------------------------------------------- |
+| Yes           | No           | Full management, deletion, and creation of instances (based on templates / Docker images)   |
+| Yes           | No           | Configure instances (startup command, update command, advanced containerization parameters) |
+| Yes           | No           | Regular user management, assigning instances to users                                       |
+| Yes           | Yes          | Instance operations: start, stop, restart, update, instance terminal, send commands         |
+| Yes           | Yes          | File management: upload, download, delete, decompress, move, edit                           |
+| Yes           | Yes          | Config file updates: Minecraft, Steam and other game server configs, install Mods/Plugins   |
 
 > Note: A server can run either inside a Docker container or directly as a process, and its terminal can be accessed through the web page; a regular user's instance operations above are limited to the instances assigned to them, and must not exceed the scope the administrator permits (ensured through means such as Docker containers and file permission checks).
 
