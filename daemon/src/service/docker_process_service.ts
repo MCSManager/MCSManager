@@ -7,9 +7,9 @@
  * capture, PTY attach, termination or destruction.
  *
  * After editing this file, AI assistants and developers MUST run the
- * `mcsmanager-docker-instance-test` skill and confirm the Docker + instance
+ * `mcsmanager-test` skill and confirm the Docker + instance
  * cases pass before finishing.
- *   Skill: `.agents/skills/mcsmanager-docker-instance-test/SKILL.md`
+ *   Skill: `.agents/skills/mcsmanager-test/SKILL.md`
  */
 import { t } from "i18next";
 import { commandStringToArray } from "../entity/commands/base/command_parser";

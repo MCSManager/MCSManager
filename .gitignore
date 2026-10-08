@@ -17,6 +17,8 @@ production/
 production-code/
 panel\test\integration\.last-run
 test.js
+# Local Chinese translation of AGENTS.md
+agent_zh.md
 # Auto-update verification artifacts (regenerable zips + logs)
 scripts/update-packages/
 # Auto-update staging dir created during an in-place update

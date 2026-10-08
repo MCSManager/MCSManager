@@ -8,9 +8,9 @@
  * destruction.
  *
  * After editing this file, AI assistants and developers MUST run the
- * `mcsmanager-docker-instance-test` skill and confirm the Docker + general
+ * `mcsmanager-test` skill and confirm the Docker + general
  * process instance cases pass before finishing.
- *   Skill: `.agents/skills/mcsmanager-docker-instance-test/SKILL.md`
+ *   Skill: `.agents/skills/mcsmanager-test/SKILL.md`
  */
 import fs from "fs-extra";
 import path from "path";

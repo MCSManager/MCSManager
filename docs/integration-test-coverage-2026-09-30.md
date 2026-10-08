@@ -149,14 +149,13 @@ If any are missing, `run.mjs` errors with the build commands. After editing pane
 | **Real-process integration (panel-driven, end-to-end)** | The whole backend as a user would see it: real spawned daemon + panel, real HTTP + socket.io, real disk + child processes + Docker. The **canonical** backend integration layer. | `common/test/integration/` |
 | **Real-disk/process (daemon-side, in-process low-level)** | The daemon router in isolation from the panel: real child/container lifecycle, real disk, but the daemon is imported in the test process (no panel socket). The daemon-side **complement** to the common suite. | `daemon/src/routers/__test__/Instance_router.integration.test.ts` + `file_router.security.test.ts` |
 
-A change to `daemon/src/routers/Instance_router.ts` / `instance.ts` / the `general/*` commands / the docker services is covered by BOTH real-process integration suites — the common one (panel-driven) and the kept in-process one (daemon-side low-level). Run both (see the `mcsmanager-docker-instance-test` skill).
+A change to `daemon/src/routers/Instance_router.ts` / `instance.ts` / the `general/*` commands / the docker services is covered by BOTH real-process integration suites — the common one (panel-driven) and the kept in-process one (daemon-side low-level). Run both (see the `mcsmanager-test` skill, §5).
 
 ## 8. Cross-references
 
 - AGENTS.md §8 "Testing Quirks" — the post-migration test surface, all-in-one loop.
 - AGENTS.md §9 "Backend integration tests" + "Docker + instance integration tests" — the canonical deep-dive entries.
-- `.agents/skills/mcsmanager-test/SKILL.md` — per-module commands + the loop.
-- `.agents/skills/mcsmanager-docker-instance-test/SKILL.md` — docker + instance lifecycle (both suites).
+- `.agents/skills/mcsmanager-test/SKILL.md` — per-module commands + the loop, plus the docker + instance lifecycle suites (both suites).
 - `common/test/integration/FINDINGS.html` — the static findings doc + the runtime accumulation pointer.
 - `docs/test-doubts/panel-instance_admin-perm-throw-vs-gate-403.md` — the test-doubts cross-reference for `F-instance-admin-throw-500`.
 - `docs/backend-test-coverage-2026-09-29.md` — the prior (mock-based) coverage note this file supersedes.
@@ -175,7 +174,7 @@ Branch: `yumao/full-test-v2`. The migration is functionally complete (framework 
 | common integration (canonical) | `cd common && npm run test:integration` | 6 suites green: `_smoke` 2 / `auth` 16 / `user` 17 / `instance` 9 / `files` 11 (+1 skipped) / `streams` 9 / `docker` 1 (+5 skipped) ≈ **65 passed, 6 skipped** | T11 full-run verify pass; `_smoke` re-run this closing pass (2 passed, 12.81s, real daemon+panel boot confirmed post-T12) |
 | webpack type-check builds | `npm run build` in `common`/`panel`/`daemon` | all compile green | T12 verify pass |
 
-**docker auto-skip (macOS dev box):** Docker is not installed locally, so `dockerOk=false`; `common/test/integration/suites/docker.test.ts` uses `dockerIt = dockerOk ? it : it.skip` → 1 always-runs probe `it` passes + 5 `dockerIt` visibly SKIP; the kept `daemon/.../Instance_router.integration.test.ts` early-returns its Docker cases (`if (!dockerOk) return;`). **On a Linux + Docker CI runner the docker suite exercises the real container lifecycle** (root/sudo for the socket; see the `mcsmanager-docker-instance-test` skill).
+**docker auto-skip (macOS dev box):** Docker is not installed locally, so `dockerOk=false`; `common/test/integration/suites/docker.test.ts` uses `dockerIt = dockerOk ? it : it.skip` → 1 always-runs probe `it` passes + 5 `dockerIt` visibly SKIP; the kept `daemon/.../Instance_router.integration.test.ts` early-returns its Docker cases (`if (!dockerOk) return;`). **On a Linux + Docker CI runner the docker suite exercises the real container lifecycle** (root/sudo for the socket; see the `mcsmanager-test` skill).
 
 **Skipped/deferred cases (documented, not blocking):**
 - `instance` market `quick_install` + reinstall — network-bound (~52MB jar from `fill-data.papermc.io`); `F-quick-install-deferred` finding; bare lifecycle covered via `instance/new` + `node test.mjs`.
