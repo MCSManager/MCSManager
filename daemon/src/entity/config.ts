@@ -19,6 +19,7 @@ class Config {
   public prefix = "";
   public key = builderPassword();
   public maxFileTask = 2;
+  public maxGlobalFileTask = 8;
   public maxZipFileSize = 200;
   public language = "en_us";
   public defaultInstancePath = "";

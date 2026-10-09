@@ -33,7 +33,8 @@ class DownloadManager {
   public async downloadFromUrl(
     url: string,
     targetPath: string,
-    fallbackUrl?: string
+    fallbackUrl?: string,
+    onDownloaded?: () => Promise<void>
   ): Promise<void> {
     const taskId = Math.random().toString(36).substring(2, 15);
     const controller = new AbortController();
@@ -61,7 +62,10 @@ class DownloadManager {
       task.total = total;
 
       return new Promise((resolve, reject) => {
+        let settled = false;
         const onError = (err: Error) => {
+          if (settled) return;
+          settled = true;
           stream.destroy();
           writeStream.destroy();
           const activeTask = this.tasks.find((t) => t.id === taskId);
@@ -80,7 +84,16 @@ class DownloadManager {
           reject(err);
         };
 
-        const onFinish = () => {
+        const onFinish = async () => {
+          if (settled) return;
+          try {
+            if (onDownloaded && !controller.signal.aborted) await onDownloaded();
+          } catch (error) {
+            onError(error as Error);
+            return;
+          }
+          if (settled) return;
+          settled = true;
           const activeTask = this.tasks.find((t) => t.id === taskId);
           if (activeTask) {
             activeTask.status = DOWNLOAD_STATUS.COMPLETED;
@@ -115,7 +128,7 @@ class DownloadManager {
     } catch (err: any) {
       if (fallbackUrl && !controller.signal.aborted) {
         this.tasks = this.tasks.filter((t) => t.id !== taskId);
-        return await this.downloadFromUrl(fallbackUrl, targetPath);
+        return await this.downloadFromUrl(fallbackUrl, targetPath, undefined, onDownloaded);
       }
 
       if (err.name === "CanceledError") {

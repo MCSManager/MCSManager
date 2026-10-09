@@ -7,6 +7,7 @@ import { $t } from "../i18n";
 import { AsyncTask, IAsyncTaskJSON } from "../service/async_task_service";
 import logger from "../service/log";
 import { SetupDockerContainer } from "./docker_process_service";
+import { dockerFileOwnership } from "./docker_file_ownership";
 
 export class InstanceUpdateAction extends AsyncTask {
   public pid?: number;
@@ -51,6 +52,16 @@ export class InstanceUpdateAction extends AsyncTask {
       await this.containerWrapper.wait();
       this.stop();
       return;
+    }
+
+    if (this.instance.config.processType === "docker") {
+      const identity = await dockerFileOwnership.resolve(
+        this.instance.config.runAs || "",
+        this.instance.config.docker.image || ""
+      );
+      if (identity.rootless) {
+        throw new Error($t("TXT_CODE_rootless.hostUpdateUnsupported"));
+      }
     }
 
     const commandList = commandStringToArray(updateCommand);

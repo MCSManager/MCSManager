@@ -16,6 +16,10 @@ import { commandStringToArray } from "../entity/commands/base/command_parser";
 import DockerPullCommand from "../entity/commands/docker/docker_pull";
 import Instance from "../entity/instance/instance";
 import { DefaultDocker } from "./docker_service";
+import { dockerFileOwnership } from "./docker_file_ownership";
+import { validateRootlessResourceLimits } from "./rootless_resource_limits";
+import { prepareRootlessBindSource } from "./docker_bind_mount";
+import { syncPathOwnershipWithinRoot } from "../tools/file_ownership";
 
 import Docker from "dockerode";
 import fs from "fs-extra";
@@ -180,17 +184,6 @@ export class SetupDockerContainer extends AsyncTask {
     const customCommand = this.startCommand;
     const useImageOverride = Boolean(this.imageOverride?.trim());
 
-    if (!fs.existsSync(this.instance.absoluteCwdPath())) {
-      await fs.mkdirs(instance.absoluteCwdPath());
-    }
-    // Because some accounts inside the container may be different from the account running MCSManager,
-    // not setting permissions to 777 may cause failure to install any files properly.
-    fs.chmod(this.instance.absoluteCwdPath(), 0o777).catch(() => {
-      logger.error(
-        `Failed to chmod the instance directory to 777: ${this.instance.absoluteCwdPath()}`
-      );
-    });
-
     try {
       await instance.forceExec(new DockerPullCommand(this.imageOverride?.trim()));
     } catch (error: any) {
@@ -208,6 +201,22 @@ export class SetupDockerContainer extends AsyncTask {
     const dockerConfig = instance.config.docker;
     if (!dockerConfig) {
       throw new Error("Instance's Docker configuration is not found! ");
+    }
+    const effectiveImage = useImageOverride ? this.imageOverride! : dockerConfig.image;
+    const identity = await dockerFileOwnership.resolve(
+      instance.config.runAs || "",
+      dockerConfig.image || ""
+    );
+    validateRootlessResourceLimits(identity, dockerConfig);
+    const workspace = instance.absoluteCwdPath();
+    await fs.mkdirs(workspace);
+    if (identity.rootless) {
+      await syncPathOwnershipWithinRoot(workspace, workspace, identity.ownership!);
+    } else {
+      // Preserve the existing Rootful Docker directory policy.
+      fs.chmod(workspace, 0o777).catch(() => {
+        logger.error(`Failed to chmod the instance directory to 777: ${workspace}`);
+      });
     }
 
     // Parsing port open
@@ -265,7 +274,7 @@ export class SetupDockerContainer extends AsyncTask {
       if (!item) throw new Error($t("TXT_CODE_ae441ea3"));
       const paths = item.split("|");
       if (paths.length < 2) throw new Error($t("TXT_CODE_dca030b8"));
-      const hostPath = path.normalize(paths[0]);
+      const hostPath = identity.rootless ? paths[0] : path.normalize(paths[0]);
       const containerPath = path.normalize(paths[1]);
       extraBinds.push({ hostPath, containerPath });
     }
@@ -431,7 +440,11 @@ export class SetupDockerContainer extends AsyncTask {
     const mounts: Docker.MountConfig = [];
     for (const v of extraBinds) {
       const hostPath = await instance.parseTextParams(v.hostPath);
-      if (!fs.existsSync(hostPath)) fs.mkdirsSync(hostPath);
+      if (identity.rootless) {
+        await prepareRootlessBindSource(workspace, hostPath, identity.ownership!);
+      } else if (!fs.existsSync(hostPath)) {
+        fs.mkdirsSync(hostPath);
+      }
       mounts.push({
         Type: "bind",
         Source: hostPath,
@@ -499,8 +512,6 @@ export class SetupDockerContainer extends AsyncTask {
       entrypoint = [entrypoint];
     }
 
-    const effectiveImage = useImageOverride ? this.imageOverride! : dockerConfig.image;
-
     logger.info(`Container Entrypoint: ${entrypoint}`);
     logger.info(`Container Start Command: ${startCmd}`);
     logger.info(`Docker Version: ${dockerVersion}`);
@@ -519,9 +530,13 @@ export class SetupDockerContainer extends AsyncTask {
 
     // Convert Linux host username to UID:GID format for Docker.
     const runAs = instance.config.runAs?.trim();
-    let dockerUser: string | undefined = runAs || undefined;
+    let dockerUser: string | undefined = identity.rootless ? identity.user : runAs || undefined;
     const shouldResolveHostUser =
-      runAs && process.platform === "linux" && !runAs.includes(":") && !/^\d+$/.test(runAs);
+      !identity.rootless &&
+      runAs &&
+      process.platform === "linux" &&
+      !runAs.includes(":") &&
+      !/^\d+$/.test(runAs);
     if (shouldResolveHostUser) {
       try {
         const { uid, gid } = await getLinuxSystemId(runAs);
@@ -757,12 +772,7 @@ export class DockerProcessAdapter extends EventEmitter implements IInstanceProce
   }
 
   private handleStreamLost(generation: number) {
-    if (
-      generation !== this.streamGeneration ||
-      this.stopping ||
-      this.exitEmitted
-    )
-      return;
+    if (generation !== this.streamGeneration || this.stopping || this.exitEmitted) return;
     this.stream = undefined;
     this.waitActive = false;
     this.scheduleReconnect();
