@@ -4,7 +4,12 @@ import fs from "node:fs";
 // Spawn a child as its own process-group leader (detached) so the whole group
 // can be killed later via process.kill(-pid). stdout/stderr are tee'd to
 // logFile; an "[exit <code>]" line is appended on process exit for post-mortem.
-export function spawnApp(opts: { app: string; args?: string[]; cwd: string; logFile: string }): ChildProcess {
+export function spawnApp(opts: {
+  app: string;
+  args?: string[];
+  cwd: string;
+  logFile: string;
+}): ChildProcess {
   const proc = spawn(process.execPath, [opts.app, ...(opts.args || [])], {
     cwd: opts.cwd,
     env: { ...process.env },
@@ -14,7 +19,7 @@ export function spawnApp(opts: { app: string; args?: string[]; cwd: string; logF
   const stream = fs.createWriteStream(opts.logFile);
   proc.stdout?.on("data", (d) => stream.write(d));
   proc.stderr?.on("data", (d) => stream.write(d));
-  proc.on("exit", (code) => fs.appendFileSync(opts.logFile, `\n[exit ${code}]\n`));
+  proc.on("close", (code) => stream.end(`\n[exit ${code}]\n`));
   return proc;
 }
 

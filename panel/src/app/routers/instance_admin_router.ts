@@ -8,6 +8,7 @@ import { $t } from "../i18n";
 import permission from "../middleware/permission";
 import validator from "../middleware/validator";
 import { updateInstanceWithAudit } from "../service/instance_config_audit";
+import { updateInstanceWithRconAuthorization } from "../service/instance_rcon";
 import { multiOperationForwarding } from "../service/instance_service";
 import { logger } from "../service/log";
 import { getOperationLoggerOperator, operationLogger } from "../service/operation_logger";
@@ -129,10 +130,7 @@ router.put(
       const config = ctx.request.body;
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       const result = await updateInstanceWithAudit(ctx, daemonId, instanceUuid, () =>
-        new RemoteRequest(remoteService).request("instance/update", {
-          instanceUuid,
-          config
-        })
+        updateInstanceWithRconAuthorization(remoteService, instanceUuid, config, true)
       );
       ctx.body = result;
     } catch (err) {

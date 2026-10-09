@@ -31,8 +31,9 @@ export default class InstanceConfig implements IGlobalInstanceConfig {
   public category = 0;
   public basePort = 0;
 
-  // Steam RCON protocol
+  // RCON
   public enableRcon = false;
+  public rconProtocol: "source" | "rust-web" = "source";
   public rconPassword = "";
   public rconPort = 0;
   public rconIp = "";

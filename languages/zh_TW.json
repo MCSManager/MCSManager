@@ -3264,5 +3264,22 @@
   "TXT_CODE_fafe0a1": "修改",
   "TXT_CODE_fe7c7d2d": "關鍵字",
   "TXT_CODE_fe933494": "檢視並篩選所有使用者操作嘅稽核記錄",
-  "TXT_CODE_fef2078b": "使用者 <<operator_name>> 透過連結 <<file_name>> 下載了實例 <<instance_name>> 的檔案"
+  "TXT_CODE_fef2078b": "使用者 <<operator_name>> 透過連結 <<file_name>> 下載了實例 <<instance_name>> 的檔案",
+  "TXT_CODE_RCON_PROTOCOL": "RCON 協定",
+  "TXT_CODE_RCON_SOURCE": "Source RCON",
+  "TXT_CODE_RCON_RUST_WEB": "WebRCON（Rust）",
+  "TXT_CODE_RCON_INVALID_PROTOCOL": "無效的 RCON 協定",
+  "TXT_CODE_RCON_WEB_invalidTarget": "無效的 WebRCON 主機或連接埠",
+  "TXT_CODE_RCON_WEB_missingPassword": "必須設定 WebRCON 密碼",
+  "TXT_CODE_RCON_WEB_connect": "無法連線到 WebRCON",
+  "TXT_CODE_RCON_WEB_handshake": "WebRCON 連線遭拒；請檢查密碼與協定",
+  "TXT_CODE_RCON_WEB_invalidResponse": "無效的 WebRCON 回覆",
+  "TXT_CODE_RCON_WEB_timeout": "WebRCON 回覆逾時；指令可能已執行",
+  "TXT_CODE_RCON_WEB_sendFailed": "WebRCON 無法送出指令；無法確認是否送達",
+  "TXT_CODE_RCON_WEB_connectionError": "WebRCON 連線發生錯誤；指令可能已執行",
+  "TXT_CODE_RCON_WEB_adminOnly": "只有管理員可以設定 Rust WebRCON",
+  "TXT_CODE_RCON_WEB_completeTarget": "切換至 Rust WebRCON 時必須明確提供主機、連接埠與密碼",
+  "TXT_CODE_RCON_WEB_reenterTarget": "已清空 Source RCON 連線資料。請重新輸入可信的 WebRCON 主機、連接埠與密碼。",
+  "TXT_CODE_RCON_WEB_directAccessWarning": "外部 RCON 用戶端不受 MCSManager 指令控制。要撤銷直接存取，請更換 Rust RCON 密碼；僅取消面板實例指派並不足夠。",
+  "TXT_CODE_RCON_WEB_closed": "WebRCON 在回覆前斷線；指令可能已執行"
 }

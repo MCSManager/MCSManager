@@ -317,6 +317,41 @@ describe("streams: instance I/O multi-socket (broadcast/injection/auth/stop)", (
     s.disconnect();
   });
 
+  it("a stream credential cannot invoke the privileged RCON configuration RPC", async () => {
+    const s = await openStream();
+    try {
+      expect(await s.ready).toBe(true);
+      const errors: any[] = [];
+      const replies: any[] = [];
+      s.socket.on("error", (packet: any) => errors.push(packet));
+      s.socket.on("instance/update_rcon", (packet: any) => replies.push(packet));
+      s.socket.emit("instance/update_rcon", {
+        data: {
+          instanceUuid: iu(),
+          config: { rconPort: 28123 },
+          allowWebRconConfiguration: true
+        }
+      });
+      await waitFor(() => errors.length > 0 || replies.length > 0, {
+        timeout: 5000,
+        msg: "daemon rejects a privileged RPC from a stream socket"
+      });
+      expect(errors[0]?.status).toBe(500);
+      expect(replies).toEqual([]);
+      const detail = await requestPanel({
+        method: "GET",
+        path: "/instance",
+        cookie: u1().cookie,
+        token: u1().token,
+        query: { daemonId: di(), uuid: iu() }
+      });
+      expect(detail.httpStatus).toBe(200);
+      expect(detail.data.config.rconPort).not.toBe(28123);
+    } finally {
+      s.disconnect();
+    }
+  });
+
   it("non-owner u2 POST /protected_instance/stream_channel → 403", async () => {
     // u2 exists but does NOT own the instance. The per-instance gate on
     // stream_channel rejects u2 — the integration-test key bypasses panel
