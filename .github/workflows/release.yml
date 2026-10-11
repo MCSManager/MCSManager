@@ -46,6 +46,9 @@ jobs:
           wget https://nodejs.org/download/release/latest-v20.x/win-x64/node.exe -O dist_windows/daemon/node_app.exe
           cp dist_windows/daemon/node_app.exe dist_windows/web/node_app.exe
 
+      - name: Download MCSManager Desktop to windows build
+        run: wget https://github.com/MCSManager/MCSManager-Desktop/releases/latest/download/mcsmanager-desktop.exe -O dist_windows/mcsmanager-desktop.exe
+
       - name: Create archive
         run: |
           mv dist_linux/ mcsmanager/
@@ -55,6 +58,8 @@ jobs:
           rm -rf mcsmanager/
           mv dist_windows/ mcsmanager/
           zip -r mcsmanager_windows_release.zip mcsmanager/
+          # desktop launcher ships in the full windows package only
+          rm mcsmanager/mcsmanager-desktop.exe
           zip -r mcsmanager_windows_web_only_release.zip mcsmanager/ -x "mcsmanager/daemon/*"
           zip -r mcsmanager_windows_daemon_only_release.zip mcsmanager/ -x "mcsmanager/web/*"
 
