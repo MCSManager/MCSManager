@@ -80,6 +80,12 @@ export default class PingMinecraftServer {
         this.destroy();
       });
 
+      this?.client?.on("timeout", () => {
+        reject(new Error("Minecraft server ping timed out"));
+        this?.client?.destroy();
+        this.destroy();
+      });
+
       this?.client?.on("error", (err: any) => {
         reject(err);
         this.destroy();
