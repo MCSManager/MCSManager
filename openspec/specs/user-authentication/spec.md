@@ -55,6 +55,10 @@ The system SHALL authenticate protected requests by session cookie plus a reques
 - **WHEN** an authenticated user below the endpoint's required permission level requests it
 - **THEN** the request is rejected as a verification failure
 
+#### Scenario: Session token retrieval is Ajax-only
+- **WHEN** an authenticated client requests the session token endpoint
+- **THEN** the token is returned only for Ajax requests and non-Ajax requests are rejected
+
 ### Requirement: Session Lifetime and Invalidation
 The panel SHALL issue sessions as signed, HTTP-only cookies with a 24-hour lifetime whose cookie name and signing key are generated per process boot, so that a panel restart invalidates all outstanding sessions. Logout SHALL clear the session, a forced logout for banned accounts SHALL clear the session, and a successful self password change SHALL clear the caller's session.
 
@@ -115,6 +119,10 @@ The system SHALL support TOTP-based two-factor authentication (6 digits, 30-seco
 - **WHEN** a logged-in user confirms 2FA disablement
 - **THEN** the enforcement flag is cleared without any TOTP verification (a held session can downgrade the account to password-only — current behavior)
 
+#### Scenario: Enable confirmation ignores the drift tolerance
+- **WHEN** a user confirms 2FA enablement
+- **THEN** the code is validated with a zero-step window regardless of the configured drift tolerance (current behavior)
+
 ### Requirement: Two-Factor Login Integration
 When an account has 2FA enforcement enabled and a stored secret, login and SSO password-binding flows SHALL require a valid TOTP code and SHALL answer with the need-2FA challenge when the code is absent.
 
@@ -168,8 +176,12 @@ The system SHALL track login failures per remote address in a sliding window and
 - **THEN** the failure record for that address is cleared
 
 #### Scenario: Counting covers every login request
-- **WHEN** login requests arrive that do not reach credential verification (challenges, already-logged-in hits)
+- **WHEN** login attempts arrive that do not reach credential verification (2FA challenges, SSO authorize/bind, already-logged-in hits)
 - **THEN** they still increment the failure counter (current behavior)
+
+#### Scenario: Install and exchange token flows are not counted
+- **WHEN** requests hit the first-run install endpoint or the exchange token login endpoint
+- **THEN** they do not touch the IP failure record (current behavior)
 
 ### Requirement: Request Rate Limiting
 The system SHALL limit each session to 8 requests per second on routes gated below the administrator level and SHALL reject over-limit requests with a rate error; routes gated at administrator level and routes that opt out SHALL be exempt (the exemption is decided by the route's required level, not the caller's). A separate per-user, per-path cooldown limiter SHALL additionally apply to non-administrators on selected routes.
@@ -182,6 +194,14 @@ The system SHALL limit each session to 8 requests per second on routes gated bel
 - **WHEN** any session requests a route gated at administrator level
 - **THEN** the per-session rate check is not applied
 
+#### Scenario: Per-path cooldown exempts only exact administrators
+- **WHEN** a user with permission above 10 (for example 11) repeats a cooldown-limited request inside the window
+- **THEN** the cooldown rejects them (the exemption is an exact administrator-level comparison)
+
+#### Scenario: Concurrent identical requests are serialized
+- **WHEN** a user issues concurrent requests to a mutex-limited route
+- **THEN** they execute one at a time and the rest wait
+
 ### Requirement: Integration Test Mode Bypass
 The panel MAY be started with an explicit unsafe integration test flag that bypasses the permission middleware for requests carrying the matching key. This bypass MUST only be enabled for automated testing, MUST be off by default, and MUST NOT be reachable through any configuration file or API. Per-instance ownership gates inside route handlers SHALL still apply (the test key resolves to no user and therefore passes no ownership check).
 
@@ -192,3 +212,74 @@ The panel MAY be started with an explicit unsafe integration test flag that bypa
 #### Scenario: Ownership gates survive the bypass
 - **WHEN** a request carrying the test key reaches an instance-scoped route
 - **THEN** the per-instance ownership check still rejects it
+
+### Requirement: Exchange One-Time SSO Token Login
+The system SHALL let an administrator-gated exchange action issue a one-time login token bound to a user name, and SHALL let a public exchange endpoint redeem it into a full session for that account and redirect into the instance terminal. The token SHALL be consumed only on a successful match, SHALL live in memory only (a panel restart invalidates it), and the token store SHALL be capped with oldest-first eviction.
+
+#### Scenario: Token grants a session without password or second factor
+- **WHEN** a client presents a valid token and its bound user name to the exchange login endpoint
+- **THEN** the account is logged in without password verification, TOTP verification, or IP-ban checks (current behavior)
+
+#### Scenario: A token is consumed by its first successful use
+- **WHEN** a token is redeemed successfully and then presented again
+- **THEN** the second redemption is rejected
+
+#### Scenario: A mismatched name keeps the token
+- **WHEN** a token is presented with a user name that is not its bound name
+- **THEN** the request fails and the token remains redeemable
+
+#### Scenario: Token store is bounded
+- **WHEN** more than 1000 tokens are outstanding
+- **THEN** the oldest token is evicted (current behavior)
+
+### Requirement: SSO Discovery and Bind-Session Visibility
+The system SHALL expose public SSO discovery settings (enabled, only-mode, auto-redirect, provider name, icon) without secrets, and SHALL report pending bind status: a pending bind exists when the session carries a bind subject younger than 10 minutes whose subject is not yet bound to any account. The pending bind state SHALL expire after 10 minutes for both bind endpoints.
+
+#### Scenario: Public config never includes secrets
+- **WHEN** an unauthenticated client requests the public SSO config
+- **THEN** the response carries discovery fields only and no client secret
+
+#### Scenario: Bind status expires with the pending session
+- **WHEN** the bind subject is older than 10 minutes
+- **THEN** the bind status reports nothing pending and bind attempts are refused
+
+#### Scenario: Occupied subject clears pending status
+- **WHEN** the pending subject has already been bound to an account
+- **THEN** bind status reports nothing pending (current behavior)
+
+### Requirement: SSO Configuration Update Rules
+The system SHALL validate SSO configuration updates (OIDC issuer must use https; OAuth2 and callback URLs must use http(s); icon may use http(s) or a relative path) and SHALL verify the OIDC issuer live when SSO is enabled or OIDC credentials change. Identity-critical changes SHALL unbind all SSO users: type changes always; the issuer only in OIDC mode; the user-info URL and user-id field only in OAuth2 mode. An empty client-secret value SHALL preserve the stored secret.
+
+#### Scenario: Identity-critical triggers are scoped by SSO type
+- **WHEN** an administrator changes the issuer while in OAuth2 mode (or the user-info URL while in OIDC mode)
+- **THEN** no accounts are unbound (those triggers only apply in their own mode — current behavior)
+
+#### Scenario: Empty secret round-trip keeps the stored secret
+- **WHEN** a settings update carries an empty client-secret value
+- **THEN** the previously stored secret remains in effect
+
+#### Scenario: Enabling OIDC verifies the issuer live
+- **WHEN** an administrator enables SSO or changes OIDC credentials
+- **THEN** the issuer is contacted to verify reachability and the update fails if verification fails
+
+### Requirement: Request Parameter Validation Errors
+Routes wrapped by the parameter validator SHALL coerce declared types and reject missing or wrong-typed fields with HTTP 400 and an error message naming the field. Any error thrown inside the wrapped handler SHALL also surface as HTTP 400 (current behavior).
+
+#### Scenario: Missing required field is rejected
+- **WHEN** a validated request omits a required field
+- **THEN** the response is HTTP 400 naming the missing field
+
+#### Scenario: Handler errors surface as 400
+- **WHEN** a route handler throws inside a validator-wrapped route
+- **THEN** the response is HTTP 400 with the error message (not the 500 envelope — current behavior)
+
+### Requirement: Response Envelope Error Mapping
+Panel JSON responses SHALL carry a status/data/time envelope. An error body SHALL map to HTTP 500 with the message; an unset body SHALL map to HTTP 404 with a not-found message; a falsy body (null, false, or undefined) SHALL map to HTTP 500 with null data. These mappings are load-bearing client contracts.
+
+#### Scenario: Rejected TOTP confirmation surfaces as 500 with null data
+- **WHEN** a 2FA confirmation fails its code check
+- **THEN** the response is HTTP 500 with null data (the frontend distinguishes wrong codes by status — current behavior)
+
+#### Scenario: Banned session cut surfaces as 404
+- **WHEN** a banned account's session is terminated mid-request
+- **THEN** the response is the HTTP 404 not-found envelope (current behavior)

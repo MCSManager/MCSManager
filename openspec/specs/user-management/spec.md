@@ -32,6 +32,10 @@ The system SHALL accept user names of 1 to 64 characters that are non-blank and 
 - **WHEN** a user name consists of non-ASCII characters and satisfies the length and non-blank rules
 - **THEN** the system accepts the name and completes account creation or rename
 
+#### Scenario: Duplicate names make every matching account subject to verification
+- **WHEN** two accounts share a name and a login attempt matches that name
+- **THEN** credential checks iterate every matching account (a rename does not enforce uniqueness — current behavior)
+
 ### Requirement: Password Policy and Hashing
 The system SHALL accept passwords of 9 to 36 characters containing at least one lowercase letter, one uppercase letter, and one digit, and SHALL reject any password that violates this policy at every interactive password-setting path (create, self change, administrative reset). New and updated passwords SHALL be stored as bcrypt hashes with cost factor 10; legacy accounts whose credential is an unsalted MD5 digest SHALL remain able to log in.
 
@@ -65,6 +69,10 @@ The panel SHALL authorize users by a single numeric permission level compared wi
 #### Scenario: Some gates compare for the exact administrator level
 - **WHEN** a user with permission above 10 (for example 11) requests a surface gated by an exact administrator comparison (such as multipart uploads)
 - **THEN** the request is treated as non-administrator and denied
+
+#### Scenario: Unresolvable callers are treated as level 0
+- **WHEN** a request cannot be resolved to a user account (unowned API key, missing session)
+- **THEN** it is evaluated as permission level 0 and fails every level gate (default-deny — current behavior)
 
 ### Requirement: Instance Ownership Assignment
 The panel SHALL grant a non-administrator access only to the instances explicitly assigned to that user, where an assignment is a (daemonId, instanceUuid) pair; administrators SHALL be treated as owners of all instances. Assigning instances to a user SHALL replace the user's entire assignment list, and every entry MUST carry both a daemonId and an instanceUuid.
@@ -175,6 +183,10 @@ The system SHALL let an authenticated user change only their own password and pr
 - **WHEN** a user successfully changes their own password
 - **THEN** the current session is invalidated and the user must log in again
 
+#### Scenario: Self-update always requires a password
+- **WHEN** a self-update request supplies only the profile-initialized flag without a password
+- **THEN** the request fails (the endpoint cannot change the flag alone — current behavior)
+
 ### Requirement: Banned Account Handling
 The system SHALL treat any account with a negative permission level as banned: on any level-checked request the session SHALL be terminated and no protected data SHALL be returned.
 
@@ -207,3 +219,66 @@ The panel SHALL record user lifecycle events (login, create, delete, config chan
 #### Scenario: Config change is logged without credentials
 - **WHEN** an administrator changes a user's configuration
 - **THEN** an audit entry is written whose before and after snapshots exclude password, hash type, salt, TOTP secret, and API key values
+
+### Requirement: Operation Log Query and Category Switches
+The panel SHALL let administrators read recent operation log entries (with a bounded limit) and search them with pagination and filters on type, level, operator name, time range, and keyword. Which events are recorded SHALL be governed by category switches: login events by the login switch, file events by the file switch, instance events by the instance switch, user and SSO events by the user switch, and everything else by the system switch.
+
+#### Scenario: Category switches gate which events are recorded
+- **WHEN** a category switch is disabled and an event of that category occurs
+- **THEN** no log entry is written for it (current behavior)
+
+#### Scenario: Out-of-range limits are rejected
+- **WHEN** a log read requests a limit outside 1–200 or a search requests a page size above 100
+- **THEN** the limit is rejected or the page size is clamped (reads reject; search clamps — current behavior)
+
+### Requirement: Public Panel Status and Login Surface
+The panel SHALL expose public status (install state, language, business mode) and the login banner without authentication. Install state SHALL be true exactly when at least one account exists. Restricted settings (file-manager switch, preset switch, command-change switch, panel id, SSO enabled) SHALL be visible only to authenticated users at level 1 or above.
+
+#### Scenario: Install state reflects the user registry
+- **WHEN** the public status endpoint is called before any account exists
+- **THEN** the response reports the panel as not installed
+
+#### Scenario: Restricted settings need an authenticated caller
+- **WHEN** an anonymous client requests public status
+- **THEN** the settings object carries only the public fields (current behavior)
+
+### Requirement: Administrative Outbound Request Proxy
+The panel SHALL let administrators issue an outbound HTTP request to an arbitrary target through a proxy endpoint and return the response body. The endpoint MUST remain administrator-gated: it performs no target validation and would otherwise be a server-side request forgery primitive.
+
+#### Scenario: Only administrators may proxy outbound requests
+- **WHEN** a non-administrator calls the proxy endpoint
+- **THEN** the request is rejected as unauthorized
+
+#### Scenario: The target is fetched without validation
+- **WHEN** an administrator proxies a request to any URL
+- **THEN** the panel fetches it and returns the response body unchanged (current behavior)
+
+#### Scenario: A second administrator proxy exists on the instance surface
+- **WHEN** an administrator uses the instance-scoped request forwarding endpoint
+- **THEN** it behaves the same way (arbitrary target, no validation — current behavior)
+
+### Requirement: Exchange Instance Purchase and Renewal
+The panel SHALL let the exchange platform dispatch commercial actions (ping, buy, renew, query, SSO token) through an administrator-gated endpoint, and SHALL let an unauthenticated redeem-code endpoint purchase an instance under a per-code mutex. Purchases SHALL attach the instance to an existing same-name account or create one with a generated password, and SHALL delete the redeem code only after the instance is confirmed created.
+
+#### Scenario: A redeem code creates an instance and account
+- **WHEN** a valid redeem code is redeemed for a new user name
+- **THEN** an instance is created on the target node and an account is created with a generated password and the instance assigned
+
+#### Scenario: Username validation precedes instance creation
+- **WHEN** a redeem code carries an invalid or too-short user name
+- **THEN** the purchase fails before any instance is created, never leaving an orphan instance (current behavior)
+
+#### Scenario: Redeem code is deleted only after confirmation
+- **WHEN** instance creation fails after the redeem code was validated
+- **THEN** the redeem code is not deleted (current behavior)
+
+### Requirement: User Search Filters
+The panel SHALL let administrators search users with a substring name filter and an exact permission filter, paginated with page size clamped to 50.
+
+#### Scenario: Name filter is a substring match
+- **WHEN** a search supplies a user-name filter
+- **THEN** accounts whose names contain that substring are returned (matching is case-sensitive — current behavior)
+
+#### Scenario: Page size is clamped
+- **WHEN** a search requests a page size above 50
+- **THEN** the page size is clamped to 50 (current behavior)

@@ -47,6 +47,10 @@ When a schedule fires, the daemon SHALL execute its actions sequentially with no
 - **WHEN** an action throws during a firing
 - **THEN** the remaining actions of that firing are skipped and the task stays registered
 
+#### Scenario: Delay payload is milliseconds
+- **WHEN** a delay action fires with a numeric payload
+- **THEN** the action chain pauses for that many milliseconds (non-numeric payloads pause zero — current behavior)
+
 ### Requirement: Recurrence Count Semantics
 A recurrence count of -1 (or an empty count on cron triggers) SHALL run the task indefinitely; a count of 1 SHALL delete the task after its execution; any other positive count SHALL decrement by one after each execution and delete the task when the next firing sees the budget exhausted. The decrement SHALL be held in memory only and MUST NOT be written back to the stored record (current behavior: a daemon restart restores the original budget).
 

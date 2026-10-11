@@ -21,6 +21,10 @@ The daemon SHALL persist each instance as a configuration record identified by a
 - **WHEN** a Docker-backed instance is configured
 - **THEN** its Docker settings can express image, container name, port mappings, extra volumes, working directory, environment, labels, network mode and aliases, capabilities, devices, privileged mode, memory / CPU / disk-quota limits, I/O and bandwidth limits, GPU request parameters, and an update-command image selector
 
+#### Scenario: OpenFRP extra service is dormant
+- **WHEN** extra service settings carry an OpenFRP tunnel id and token
+- **THEN** the values are accepted and persisted but no tunnel task is ever registered or started (current behavior)
+
 ### Requirement: Configuration Mutation Rules
 The daemon SHALL accept configuration updates through a parameterized merge that type-checks every field and persists the result atomically. Changes to the game type, process backend type, PTY toggle, or RCON enablement SHALL be accepted only while the instance is stopped or busy, and after such a change the instance's preset command bindings SHALL be rebuilt. The stop timeout SHALL be clamped to integer values between 0 and 86400 seconds.
 
@@ -35,6 +39,10 @@ The daemon SHALL accept configuration updates through a parameterized merge that
 #### Scenario: Invalid types are rejected
 - **WHEN** a configuration update supplies a non-numeric value for a numeric field
 - **THEN** the update is rejected and nothing is persisted
+
+#### Scenario: Changing the start command clears the Java selection
+- **WHEN** a start-command update no longer begins with the Java placeholder
+- **THEN** the configured Java runtime id is cleared (current behavior)
 
 ### Requirement: Lifecycle State Machine
 The daemon SHALL track every instance in exactly one of the states BUSY (-1), STOP (0), STOPPING (1), STARTING (2), or RUNNING (3). Start SHALL be possible only from STOP; stop SHALL move RUNNING to STOPPING and then to STOP; kill SHALL force the process to exit and settle at STOP; restart SHALL sequence stop then start; install and update SHALL occupy BUSY and settle at STOP. Runtime state SHALL NOT be persisted, so every instance SHALL boot in STOP.
@@ -125,6 +133,18 @@ The command preset SHALL write the supplied text to the instance's standard inpu
 - **WHEN** the caret-C token is sent as a command
 - **THEN** an interrupt signal is delivered and no caret-C text is written
 
+#### Scenario: Line-ending setting selects LF or CRLF
+- **WHEN** the line-ending setting is 1 or 2
+- **THEN** commands are terminated with LF or CRLF respectively (current default is platform-dependent)
+
+#### Scenario: Non-UTF-8 encodings round-trip
+- **WHEN** stdin or stdout encoding is set to a legacy encoding such as gbk
+- **THEN** command input is encoded and output is decoded with that encoding
+
+#### Scenario: RCON traffic is echoed into the terminal
+- **WHEN** a command is delivered through an enabled RCON endpoint
+- **THEN** the command and its response are echoed into the terminal stream, with a bounded response timeout yielding an empty result (current behavior)
+
 ### Requirement: PTY Terminal Backend
 When PTY mode is enabled for a general instance, the daemon SHALL spawn the process through the bundled PTY helper with a named-pipe control channel for window resizing, decode output as UTF-8, and apply the effective terminal size as the minimum of the configured size and all attached watchers. When the PTY helper binary is missing, the daemon SHALL transparently fall back to non-PTY execution.
 
@@ -142,6 +162,14 @@ When the process backend is Docker, starting SHALL validate all container parame
 #### Scenario: Container parameters are validated
 - **WHEN** a Docker start request supplies an invalid container name, port mapping, volume, device, CPU set, or GPU request
 - **THEN** the start is rejected with a validation error and no container is created (capability lists are passed through unchecked, and out-of-range resource numbers are silently ignored — current behavior)
+
+#### Scenario: Attach stream survives transient disconnects
+- **WHEN** the container attach stream drops
+- **THEN** the daemon reconnects automatically and keeps streaming; writes during the gap are queued (current behavior)
+
+#### Scenario: Port and volume mappings use string tuple formats
+- **WHEN** ports, extra volumes, or devices are configured
+- **THEN** they follow the documented string tuple formats (host:container/proto, host|container, host|in|mode)
 
 #### Scenario: Container is labeled and bound
 - **WHEN** a Docker instance starts successfully
@@ -201,7 +229,7 @@ An instance whose expiry timestamp is in the past SHALL refuse to start, and any
 
 #### Scenario: Running expired instance is killed
 - **WHEN** the periodic expiry check finds a running instance past its expiry timestamp
-- **THEN** that instance is stopped and killed
+- **THEN** that instance is stopped and killed (the check runs hourly, so a running instance may survive up to an hour past expiry — current behavior)
 
 ### Requirement: Disk Quota Enforcement
 When a Docker-style disk quota greater than zero is configured, the daemon SHALL periodically measure the workspace and, on overflow, stop the instance and force-kill it if it does not exit within a grace period. Start SHALL refuse to launch an instance whose workspace already exceeds the quota. The check is a no-op on Windows and for the global node instance (current behavior).
@@ -212,10 +240,6 @@ When a Docker-style disk quota greater than zero is configured, the daemon SHALL
 
 ### Requirement: Asynchronous Install and Update Tasks
 The daemon SHALL run per-instance asynchronous tasks (quick install, preset reinstall, update) that occupy the BUSY state, report progress, and settle at STOP. Quick install and preset reinstall SHALL require an administrator role at the daemon, and preset reinstall SHALL wipe the workspace before unpacking. Update SHALL be available to any role allowed to reach the instance. Task errors SHALL be reported without leaking credentials.
-
-#### Scenario: Panel preset reinstall forwards a trusted role
-- **WHEN** a regular user requests preset reinstall while the preset switch is enabled
-- **THEN** the panel forwards it with an administrator role and the daemon executes it (current behavior)
 
 #### Scenario: Preset reinstall wipes the workspace first
 - **WHEN** a preset reinstall task starts for an instance
@@ -233,12 +257,69 @@ The daemon SHALL run per-instance asynchronous tasks (quick install, preset rein
 - **WHEN** a quick install targets a Docker-backed instance with a non-Docker package
 - **THEN** the install is refused
 
+#### Scenario: Update runs on the host unless an update image is selected
+- **WHEN** an update task runs with no update-command image configured
+- **THEN** the update command executes as a host process; with an image configured it runs inside a container (current behavior)
+
+#### Scenario: Quick install can create the instance itself
+- **WHEN** quick install is requested without an existing instance
+- **THEN** a new instance is created first, the package is downloaded into its workspace, and the package config (or setup info) is applied to the instance configuration
+
+### Requirement: Asynchronous Task Identification and Stop Semantics
+Asynchronous tasks SHALL be addressable by an opaque task id or by the instance's own singleton task. Stopping by task id SHALL stop that task wherever it runs without verifying that the task belongs to the requesting instance (the id's unguessability is the only guard — current behavior); stopping without a task id SHALL stop the instance's own asynchronous task. Task detail queries by id SHALL likewise not check ownership.
+
+#### Scenario: Stopping by task id does not verify task-instance binding
+- **WHEN** a stop request carries a task id belonging to another instance
+- **THEN** that task is stopped anyway (current behavior)
+
+#### Scenario: Singleton stop targets the instance's own task
+- **WHEN** a stop request carries no task id
+- **THEN** only the instance's own asynchronous task is stopped
+
+#### Scenario: Task detail is readable by id without an ownership check
+- **WHEN** a query request presents a valid task id
+- **THEN** the task detail (including its instance configuration) is returned (current behavior)
+
+### Requirement: Asynchronous Task Role Delegation
+Asynchronous task dispatch SHALL carry the caller's role in the request, and the daemon SHALL trust that claim to gate administrator-only tasks (quick install, preset reinstall) without independent caller verification (current behavior). The panel SHALL forward the real user role except for preset reinstalls, which it forwards as administrator.
+
+#### Scenario: Daemon gates task names from the in-band role claim
+- **WHEN** an asynchronous request claims a non-administrator role for an administrator-only task
+- **THEN** the daemon rejects it
+
+#### Scenario: Panel elevates preset reinstall to an administrator role
+- **WHEN** a regular user requests preset reinstall while the preset switch is enabled
+- **THEN** the panel forwards it with an administrator role and the daemon executes it (current behavior)
+
+### Requirement: Run-As User Enforcement
+The daemon SHALL run instance processes under the configured run-as user where supported: on Unix-like hosts the process spawns with that user's uid and gid, and Docker containers run with the mapped uid:gid; environment variables SHALL reflect the run-as identity. Run-as user names SHALL be restricted to safe characters and rejected otherwise. The setting SHALL be ignored on Windows (current behavior).
+
+#### Scenario: Process spawns under the resolved uid and gid
+- **WHEN** a run-as user is configured on a Unix-like host
+- **THEN** the child process runs with that user's uid and gid
+
+#### Scenario: Unsafe user names are rejected
+- **WHEN** a run-as user name contains characters outside letters, digits, underscore, and hyphen
+- **THEN** the start is rejected
+
+#### Scenario: Docker containers run as the mapped user
+- **WHEN** a Docker-backed instance has a run-as user
+- **THEN** the container is created with that user's uid:gid (current behavior)
+
 ### Requirement: Privilege Separation for Instance Configuration
 The panel SHALL restrict non-administrators to a whitelist of instance configuration fields (encodings, line endings, stop command, terminal options, event-task options, RCON settings, ping settings, extra service settings, and tags for administrators). Start command, update command, and Docker environment changes SHALL be accepted only for administrators, or when the allow-command-change switch is enabled and the request claims a Docker process backend.
 
 #### Scenario: Backend claim is taken from the request body
 - **WHEN** the allow-command-change switch is enabled and a non-administrator claims `processType: "docker"` for a host-process instance
 - **THEN** the command change is accepted because the claim is not verified against the stored instance (current behavior)
+
+#### Scenario: Administrator-only fields are stripped for non-administrators
+- **WHEN** a non-administrator submits changes to the nickname, expiry, workspace, run-as user, or Java runtime
+- **THEN** those fields are ignored and the stored configuration is unchanged
+
+#### Scenario: Tag count and length are bounded
+- **WHEN** an administrative tag update carries more than 6 tags or a tag longer than 20 characters
+- **THEN** the update is rejected (current behavior)
 
 #### Scenario: Regular user cannot change start command
 - **WHEN** a non-administrator submits a start-command change for a general-process instance
@@ -290,3 +371,85 @@ The panel SHALL mint a single-purpose, time-limited stream credential for an aut
 #### Scenario: Forged stream password is refused
 - **WHEN** a connection presents an invalid or expired stream credential
 - **THEN** the daemon refuses the stream session
+
+#### Scenario: Stream credential is reusable within its one-hour validity
+- **WHEN** a stream credential is used and the browser reconnects with the same credential inside its TTL
+- **THEN** the reconnect succeeds (unlike file transfer credentials, stream credentials are not consumed — current behavior; see also Mission Passport Credentials in file-management)
+
+#### Scenario: Stream channels distinguish line input, raw write, and resize
+- **WHEN** a stream session sends a line command, raw bytes, or a terminal size
+- **THEN** the line command goes through the command preset, raw bytes go to standard input directly, and a size update resizes the PTY within bounds (current behavior)
+
+### Requirement: Daemon Socket Authentication
+Daemon socket connections SHALL authenticate with the shared panel-daemon key compared in constant time; authentication MAY additionally be gated by a panel IP whitelist. Sockets that have not authenticated within six seconds SHALL be disconnected, and every non-stream event SHALL require an authenticated session first. Stream routes SHALL bypass this gate and rely on their own stream session check.
+
+#### Scenario: Unauthenticated sockets are disconnected after six seconds
+- **WHEN** a socket connects and sends no valid auth event within six seconds
+- **THEN** the daemon disconnects it
+
+#### Scenario: Key comparison is timing-safe
+- **WHEN** an auth event carries a key
+- **THEN** it is compared against the configured key with a constant-time comparison
+
+#### Scenario: Panel IP whitelist optionally gates authentication
+- **WHEN** a panel IP whitelist is configured and an auth event arrives from another address
+- **THEN** authentication fails even with the correct key (current behavior)
+
+### Requirement: Instance Search and Pagination
+The daemon SHALL return paginated instance listings excluding the global node instance, filtered by a case-insensitive name substring, exact status, and tag set where an instance must carry every requested tag. Results SHALL sort by status descending then name, and the response SHALL include the distinct tag cloud capped at sixty entries.
+
+#### Scenario: Tag filter requires all requested tags
+- **WHEN** a listing requests instances carrying tags A and B
+- **THEN** only instances carrying both tags are returned (current behavior)
+
+#### Scenario: Tag cloud is capped at sixty entries
+- **WHEN** instances carry more than sixty distinct tags
+- **THEN** the returned tag cloud is truncated to sixty (current behavior)
+
+### Requirement: Instance Overview and Detail Reporting
+Instance listing and detail responses SHALL report the instance identifier, start count, auto-restart count, status, full configuration, and runtime info. Detail responses SHALL additionally include per-process statistics (cpu, memory, pid, parent pid, cpu time, elapsed, timestamp) when a process exists and zeros otherwise (current behavior).
+
+#### Scenario: Detail carries process statistics when running
+- **WHEN** detail is requested for a running instance
+- **THEN** the response includes live process statistics alongside config and runtime info
+
+#### Scenario: Detail without a process reports zeroed statistics
+- **WHEN** detail is requested for a stopped instance
+- **THEN** the process statistics are all zeros (current behavior)
+
+### Requirement: Cross-Node Batch Instance Operations
+The panel SHALL let administrators open, stop, kill, or restart many instances at once, grouping targets per node and forwarding one batched request per node. Batch operations SHALL return immediately while node responses are consumed asynchronously for audit purposes (current behavior).
+
+#### Scenario: Batch operations are grouped per node
+- **WHEN** an administrator batch-starts instances spanning two nodes
+- **THEN** one forwarded request per node carries that node's instance ids
+
+#### Scenario: Batch responses are not awaited
+- **WHEN** a batch operation returns
+- **THEN** the response is immediate and per-node outcomes are recorded asynchronously (current behavior)
+
+### Requirement: Instance Operation Audit Logging
+The panel SHALL record instance lifecycle and configuration events (start, stop, restart, kill, create, delete, config change, file update, task create/delete) to the operation log with the operator's address, name, and source. Config changes SHALL record a before/after diff, and file edits SHALL be recorded only when content actually changed.
+
+#### Scenario: Config changes are logged with a diff
+- **WHEN** an instance configuration update succeeds
+- **THEN** an audit entry records the differing fields before and after
+
+#### Scenario: Unchanged file edits are not logged
+- **WHEN** a file save writes identical content
+- **THEN** no file-update audit entry is written (current behavior)
+
+### Requirement: Runtime Statistics and Start Counter
+While an instance runs, the daemon SHALL refresh game-server status (online flag, player counts, version, latency) for supported game types on a timer, and container resource usage for Docker-backed instances. The start counter SHALL increment on every start attempt and serve as the race sentinel for restart, stop escalation, and quota enforcement. Game-server and container statistics SHALL reset when the instance stops.
+
+#### Scenario: Game-server status is polled while running
+- **WHEN** a supported game-type instance is running
+- **THEN** its status fields refresh periodically and reset on stop
+
+#### Scenario: Start counter advances on every attempt
+- **WHEN** a start is attempted, even one that fails
+- **THEN** the start counter increments (current behavior)
+
+#### Scenario: Stale lifecycle operations are detected by the start counter
+- **WHEN** a lifecycle watcher observes that the start counter changed since it began
+- **THEN** it treats its own operation as stale and does not touch the new process (current behavior)

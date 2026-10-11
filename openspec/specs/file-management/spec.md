@@ -51,6 +51,14 @@ The daemon SHALL list a workspace directory paginated, rejecting out-of-range pa
 - **WHEN** a listing request supplies a file-name filter
 - **THEN** only entries whose names contain that substring case-insensitively are returned, with no recursion into subdirectories
 
+#### Scenario: Entry metadata encoding and stat-failure placeholder
+- **WHEN** a listing entry's stat fails
+- **THEN** it is reported with zero size and mode but keeps its name and type (current behavior); modes are the permission bits' last octal digits and type distinguishes file from directory
+
+#### Scenario: Panel clamps pagination before forwarding
+- **WHEN** a panel listing request carries out-of-range page values
+- **THEN** the panel clamps them instead of forwarding the daemon's rejection (current behavior)
+
 ### Requirement: File and Directory Creation
 The daemon SHALL create empty files (without truncating an existing file) and create directories including missing parents, for validated destination paths inside the workspace.
 
@@ -77,6 +85,14 @@ Move SHALL refuse to overwrite an existing destination; copy SHALL overwrite sil
 - **WHEN** a delete request targets a path with an active upload or download task
 - **THEN** the transfer task is stopped instead of the file being deleted
 
+#### Scenario: Copy failures are not reported to the caller
+- **WHEN** a copy operation fails after the success response is sent
+- **THEN** no error reaches the caller (copy is fire-and-forget — current behavior)
+
+#### Scenario: Move batches apply partially
+- **WHEN** a batched move fails partway
+- **THEN** earlier moves stay applied and later ones are not attempted (current behavior)
+
 ### Requirement: Text File Editing
 Reading a file through the editor SHALL succeed only for existing workspace files up to a size cap of 5 MiB (larger files SHALL be rejected with a size-limit error), and writing SHALL store the supplied text using the instance's configured file encoding with no size cap and no automatic backup. An empty string SHALL be a valid save. Editing a non-existent target SHALL be rejected; creating a new file SHALL go through file creation first.
 
@@ -92,6 +108,17 @@ Reading a file through the editor SHALL succeed only for existing workspace file
 - **WHEN** a write is issued with empty text for an existing file
 - **THEN** the file is truncated to empty
 
+#### Scenario: Encoding falls back to gbk under zh_cn when unset
+- **WHEN** the instance has no configured file encoding and the daemon language is zh_cn
+- **THEN** reads and writes use gbk instead of utf-8 (current behavior)
+
+### Requirement: File Operation Auditing
+The panel SHALL record file mutations to the operation log: edits (only when content actually changed), moves and renames, deletes, compression and decompression, and downloads from URL. Audit entries SHALL carry the operator and the affected paths.
+
+#### Scenario: Edit audit fires only when content changes
+- **WHEN** a file save writes identical content
+- **THEN** no audit entry is written (current behavior)
+
 ### Requirement: Permission Changes
 The daemon SHALL apply permission mode changes to workspace paths, optionally recursively, using the platform's chmod facility with a bounded execution timeout, and SHALL support batch mode changes that report per-target success or failure without aborting the batch on individual errors.
 
@@ -99,8 +126,12 @@ The daemon SHALL apply permission mode changes to workspace paths, optionally re
 - **WHEN** a batch permission change contains one valid and one invalid target
 - **THEN** the result reports success for the valid target and the error for the invalid one, and the valid change is applied
 
+#### Scenario: chmod is Linux-only
+- **WHEN** a permission change is requested on a non-Linux daemon
+- **THEN** it fails (the implementation spawns the system chmod utility — current behavior)
+
 ### Requirement: Direct File Download
-The daemon SHALL serve a workspace file over HTTP only to a request presenting a valid single-use download mission credential minted by the panel for that file and instance, and SHALL serve exactly the file the credential was issued for regardless of the URL filename. The credential SHALL be consumed once the response is successfully prepared and SHALL expire one hour after minting; a credential of another mission type MUST NOT be accepted.
+The daemon SHALL serve a workspace file over HTTP only to a request presenting a valid download mission credential (see Mission Passport Credentials) minted by the panel for that file and instance, and SHALL serve exactly the file the credential was issued for regardless of the URL filename. The credential SHALL be consumed once the response is successfully prepared.
 
 #### Scenario: Credential binds the file
 - **WHEN** a download request presents a valid credential with a different URL filename
@@ -118,8 +149,31 @@ The daemon SHALL serve a workspace file over HTTP only to a request presenting a
 - **WHEN** a client aborts after the response has been prepared
 - **THEN** the credential is consumed and cannot be reused (current behavior)
 
+#### Scenario: Response headers differ between throttled and unthrottled serving
+- **WHEN** downloads are served with no download speed rate configured
+- **THEN** the response omits the attachment disposition header (current behavior), which appears only on the throttled path
+
+### Requirement: Mission Passport Credentials
+Download and upload credentials SHALL be registered as typed missions with a one-hour lifetime and a unique password, single-use after successful consumption, and retired strictly by their own mission type. Expiry SHALL be enforced lazily by a periodic sweeper (a credential may outlive its nominal TTL until the next sweep — current behavior). Stream-channel credentials SHALL NOT be consumed on use and stay valid within the same lifetime.
+
+#### Scenario: Duplicate mission password is refused
+- **WHEN** a mission registration reuses an existing password
+- **THEN** the registration is rejected
+
+#### Scenario: A probe against one mission type cannot poison another
+- **WHEN** a request misuses a credential of a different mission type
+- **THEN** the credential is not retired and stays valid for its own type (current behavior)
+
+#### Scenario: Expired credentials outlive the nominal TTL until swept
+- **WHEN** a credential passes its one-hour lifetime before the periodic sweeper runs
+- **THEN** it may still be accepted until the next sweep (current behavior)
+
+#### Scenario: Stream-channel credentials are reusable
+- **WHEN** a stream-channel credential is used and reused within its lifetime
+- **THEN** every use succeeds (contrast: file transfer credentials are single-use — current behavior)
+
 ### Requirement: Direct File Upload
-The daemon SHALL accept workspace uploads through a single-shot multipart route (one file per request, 100 MB limit) and a chunked resumable route, both gated by a valid single-use upload mission credential minted by the panel and expiring one hour after minting. All uploads SHALL reduce filenames to their base name and reject unsafe characters, and SHALL auto-rename colliding uploads with a copy suffix when overwrite is disabled.
+The daemon SHALL accept workspace uploads through a single-shot multipart route (one file per request, 100 MB limit) and a chunked resumable route, both gated by a valid upload mission credential (see Mission Passport Credentials) minted by the panel. All uploads SHALL reduce filenames to their base name and reject unsafe characters, and SHALL auto-rename colliding uploads with a copy suffix when overwrite is disabled.
 
 #### Scenario: Traversal filename is neutralized
 - **WHEN** an upload supplies a filename containing path separators or parent segments
@@ -148,6 +202,18 @@ A chunked upload SHALL reject writes beyond the size declared at initialization,
 - **WHEN** chunk writes have covered the declared byte range completely
 - **THEN** the upload finalizes without an explicit finish call
 
+#### Scenario: Received ranges enable resume
+- **WHEN** a chunked upload session is initialized
+- **THEN** the response reports the already-written byte ranges so the client can resume gaps (current behavior)
+
+#### Scenario: Zero-byte uploads complete at initialization
+- **WHEN** a chunked upload declares size 0
+- **THEN** it finalizes immediately without any chunk writes (current behavior)
+
+#### Scenario: A size mismatch restarts the writer
+- **WHEN** a chunked upload session is re-initialized for a path whose declared size differs from the active writer
+- **THEN** the old writer is stopped and replaced (current behavior)
+
 ### Requirement: Download From URL
 The daemon SHALL download a remote file into the workspace only after validating the URL safety rules: http or https scheme only, no IP-literal, localhost, dotless, `.local`/`.localhost`-suffixed, link-local, or private-range targets; every redirect hop SHALL be re-validated with a bounded redirect count. The transfer SHALL have a request timeout, bounded retries for transient failures, an optional fallback URL, a concurrency cap across instances, and cancellation that removes the partial file.
 
@@ -173,6 +239,10 @@ Compression SHALL always produce a ZIP archive from selected workspace inputs an
 #### Scenario: Compression produces a zip
 - **WHEN** compression is requested for a set of workspace files
 - **THEN** a ZIP archive containing those inputs is written at the requested output path
+
+#### Scenario: Request parameters are overloaded by type
+- **WHEN** a compress request is submitted with type 1
+- **THEN** the source field names the output archive and the targets field is the input list; for other type values the source field is the archive and the targets field is the destination directory (current behavior)
 
 #### Scenario: Oversized archive is refused
 - **WHEN** decompression is requested for an archive larger than the configured maximum
@@ -245,3 +315,43 @@ File operations SHALL be confined to the instance workspace root; when the works
 #### Scenario: Root workspace is exclusive by configuration
 - **WHEN** file operations run under an instance whose workspace root is `/`
 - **THEN** paths may address the whole node filesystem, while the same paths remain rejected for ordinary instances
+
+### Requirement: Direct Transfer HTTP Surface Trust Model
+The daemon's HTTP transfer routes SHALL rely solely on the mission credential in the URL path for authorization: no session or header authentication applies, cross-origin requests are allowed, and a multipart gate SHALL reject any multipart request whose path tail is neither a live writer id nor a live upload credential. Request body size and file count SHALL be bounded.
+
+#### Scenario: Multipart request without a live credential is refused
+- **WHEN** a multipart request arrives with an unknown path tail
+- **THEN** it is rejected at the middleware before any handler runs
+
+### Requirement: Chunked Upload Session Authorization
+After a chunked upload session is initialized (which consumes the upload credential), subsequent chunk writes and stop requests SHALL be authorized by the session id alone; the daemon SHALL NOT re-check mission credentials or ownership per chunk. Stopping a download by task id SHALL likewise not verify task ownership (the panel's ownership gate is the only guard — current behavior).
+
+#### Scenario: Chunk writes are authorized by session id after initialization
+- **WHEN** chunk writes arrive with a valid session id
+- **THEN** they are accepted without further credential or ownership checks (current behavior)
+
+#### Scenario: Stopping by task id skips ownership verification
+- **WHEN** a stop request names another instance's download task id
+- **THEN** the daemon stops it (current behavior)
+
+### Requirement: File Status Task Accounting
+File status SHALL report per-instance and global file-task counters, the count of active URL downloads, and the URL-download task list with workspace-relative paths and progress; completed tasks linger in the list briefly before removal (current behavior). Available disks SHALL be enumerated on Windows only and cached for the process lifetime (current behavior), and the panel SHALL redact them for non-administrators.
+
+#### Scenario: Status counters map to the shared task machinery
+- **WHEN** file status is requested while transfers are active
+- **THEN** the counters reflect the instance file-lock count, the global task count, and active URL downloads
+
+#### Scenario: Disk enumeration is Windows-only and cached
+- **WHEN** file status is requested on a Unix daemon
+- **THEN** the disk list is empty; on Windows it is computed once and reused (current behavior)
+
+### Requirement: Transfer Rate Limiting
+Transfer speed limits SHALL be expressed as a packet count per second where each packet is 64 KiB. Direct browser downloads SHALL honor the download speed rate, while URL downloads SHALL honor the upload speed rate (current behavior); a zero rate SHALL mean unlimited.
+
+#### Scenario: Configured rate is counted in 64 KiB packets
+- **WHEN** a transfer rate limit of N is configured
+- **THEN** the transfer is throttled to N × 64 KiB per second
+
+#### Scenario: Direct and URL downloads follow different rates
+- **WHEN** both rate limits are configured
+- **THEN** direct downloads use the download rate and URL downloads use the upload rate (current behavior)
