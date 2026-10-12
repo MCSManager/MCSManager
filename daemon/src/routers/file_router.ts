@@ -6,6 +6,7 @@ import Instance, { GLOBAL_INSTANCE_UUID_KEY } from "../entity/instance/instance"
 import { $t } from "../i18n";
 import downloadManager from "../service/download_manager";
 import { getFileManager, getWindowsDisks } from "../service/file_router_service";
+import { acquireFileTask, validateFileTransferTargets } from "../service/file_task";
 import logger from "../service/log";
 import * as protocol from "../service/protocol";
 import { routerApp } from "../service/router_app";
@@ -190,6 +191,10 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
     const fileManager = getFileManager(data.instanceUuid);
     fileManager.checkPath(fileName);
     const targetPath = fileManager.toAbsolutePath(fileName);
+    const instance = InstanceSubsystem.getInstance(data.instanceUuid)!;
+    const ownership = await resolveInstanceFileOwnership(instance, { rootlessOnly: true });
+    fileManager.assertInsideWorkspace(targetPath);
+    await fileManager.mkdir(path.dirname(targetPath));
 
     // Start download in background
     const fallbackUrl = data.fallbackUrl;
@@ -205,10 +210,24 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
       return;
     }
 
-    downloadManager.downloadFromUrl(url, targetPath, fallbackUrl).catch((err) => {
-      if (err.name === "CanceledError") return;
-      logger.error(`Download failed: ${url} -> ${targetPath}`, err);
-    });
+    let ownershipSynchronized = false;
+    downloadManager
+      .downloadFromUrl(url, targetPath, fallbackUrl, async () => {
+        await fileManager.syncOwnership(targetPath, ownership);
+        ownershipSynchronized = true;
+      })
+      .finally(async () => {
+        if (!ownership || ownershipSynchronized) return;
+        try {
+          await fileManager.syncOwnership(targetPath, ownership);
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+        }
+      })
+      .catch((err) => {
+        if (err.name === "CanceledError") return;
+        logger.error(`Download failed: ${url} -> ${targetPath}`, err);
+      });
 
     protocol.response(ctx, {});
   } catch (error: any) {
@@ -243,11 +262,27 @@ routerApp.on("file/copy", async (ctx, data) => {
     // [["a.txt","b.txt"],["cxz","zzz"]]
     const targets = data.targets;
     const fileManager = getFileManager(data.instanceUuid);
-    for (const target of targets) {
+    const instance = InstanceSubsystem.getInstance(data.instanceUuid)!;
+    validateFileTransferTargets(targets);
+    const release = acquireFileTask(instance.info);
+    try {
+      await resolveInstanceFileOwnership(instance, { rootlessOnly: true });
       // Intentionally NOT awaited: copying very large files can take far longer
       // than the client request timeout, so the copy runs detached in the
       // background and the response returns immediately.
-      fileManager.copy(target[0], target[1]);
+      void (async () => {
+        try {
+          for (const target of targets) await fileManager.copy(target[0], target[1]);
+        } catch (error) {
+          logger.error("Instance file copy failed:", error);
+          instance.println("ERROR", String(error));
+        } finally {
+          release();
+        }
+      })();
+    } catch (error) {
+      release();
+      throw error;
     }
     protocol.response(ctx, true);
   } catch (error: any) {
@@ -261,8 +296,13 @@ routerApp.on("file/move", async (ctx, data) => {
     // [["a.txt","b.txt"],["cxz","zzz"]]
     const targets = data.targets;
     const fileManager = getFileManager(data.instanceUuid);
-    for (const target of targets) {
-      await fileManager.move(target[0], target[1]);
+    const instance = InstanceSubsystem.getInstance(data.instanceUuid)!;
+    validateFileTransferTargets(targets);
+    const release = acquireFileTask(instance.info);
+    try {
+      for (const target of targets) await fileManager.move(target[0], target[1]);
+    } finally {
+      release();
     }
     protocol.response(ctx, true);
   } catch (error: any) {
@@ -308,7 +348,6 @@ routerApp.on("file/edit", async (ctx, data) => {
 
 // compress/decompress the file
 routerApp.on("file/compress", async (ctx, data) => {
-  const maxFileTask = globalConfiguration.config.maxFileTask;
   try {
     const source = data.source;
     const targets = data.targets;
@@ -317,32 +356,7 @@ routerApp.on("file/compress", async (ctx, data) => {
     const fileManager = getFileManager(data.instanceUuid);
     const instance = InstanceSubsystem.getInstance(data.instanceUuid);
     if (!instance) throw new Error($t("TXT_CODE_3bfb9e04"));
-    if (instance.info.fileLock >= maxFileTask) {
-      throw new Error(
-        $t("TXT_CODE_file_router.unzipLimit", {
-          maxFileTask: maxFileTask,
-          fileLock: instance.info.fileLock
-        })
-      );
-    }
-
-    // Statistics of the number of tasks in a single instance file and the number of tasks in the entire daemon process
-    function fileTaskStart() {
-      if (instance) {
-        instance.info.fileLock++;
-        globalEnv.fileTaskCount++;
-      }
-    }
-
-    function fileTaskEnd() {
-      if (instance) {
-        instance.info.fileLock--;
-        globalEnv.fileTaskCount--;
-      }
-    }
-
-    // start decompressing or compressing the file
-    fileTaskStart();
+    const release = acquireFileTask(instance.info);
     try {
       if (type === 1) {
         await fileManager.zip(source, targets, code);
@@ -351,10 +365,8 @@ routerApp.on("file/compress", async (ctx, data) => {
         await fileManager.unzip(source, targets, code, ownership);
       }
       protocol.response(ctx, true);
-    } catch (error: any) {
-      throw error;
     } finally {
-      fileTaskEnd();
+      release();
     }
   } catch (error: any) {
     protocol.responseError(ctx, error);

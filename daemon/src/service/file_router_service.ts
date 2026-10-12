@@ -3,6 +3,7 @@ import { $t } from "../i18n";
 import InstanceSubsystem from "../service/system_instance";
 import FileManager from "./system_file";
 import os from "os";
+import { resolveInstanceFileOwnership } from "../tools/file_ownership";
 
 export function getFileManager(instanceUuid: string) {
   // Initialize a file manager for the instance, and assign codes, restrictions, etc.
@@ -10,7 +11,9 @@ export function getFileManager(instanceUuid: string) {
   if (!instance)
     throw new Error($t("TXT_CODE_file_router_service.instanceNotExit", { uuid: instanceUuid }));
   const fileCode = instance.config?.fileCode;
-  return new FileManager(instance.absoluteCwdPath(), fileCode);
+  return new FileManager(instance.absoluteCwdPath(), fileCode, () =>
+    resolveInstanceFileOwnership(instance, { rootlessOnly: true })
+  );
 }
 
 let cacheDisks: string[] = [];

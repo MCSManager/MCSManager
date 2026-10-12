@@ -1,0 +1,20 @@
+# Run with the dedicated Rootless Docker account, using a newly built release.
+# Set absolute MCSM_ROOTLESS_DATA, MCSM_DAEMON_RELEASE and MCSM_ROOTLESS_SOCKET.
+services:
+  daemon:
+    image: node:20-bookworm-slim
+    container_name: mcsm-rootless-daemon
+    user: "0:0" # Namespace root; the host UID is the unprivileged engine account.
+    working_dir: ${MCSM_ROOTLESS_DATA:?Set an absolute private data directory}
+    entrypoint: ["node", "/opt/mcsmanager/app.js"]
+    environment:
+      DOCKER_HOST: unix:///var/run/docker.sock
+      MCSM_ROOTLESS_DOCKER_CONTAINER: mcsm-rootless-daemon
+    volumes:
+      - ${MCSM_ROOTLESS_DATA}:${MCSM_ROOTLESS_DATA}
+      - ${MCSM_DAEMON_RELEASE:?Set the bundled release directory}/app.js:/opt/mcsmanager/app.js:ro
+      - ${MCSM_DAEMON_RELEASE}/lib:${MCSM_ROOTLESS_DATA}/lib:ro
+      - ${MCSM_ROOTLESS_SOCKET:?Set the Rootless engine socket}:/var/run/docker.sock
+    ports:
+      - "127.0.0.1:24445:24444/tcp"
+    restart: unless-stopped

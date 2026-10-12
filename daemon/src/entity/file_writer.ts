@@ -5,12 +5,9 @@ import logger from "../service/log";
 import { $t } from "../i18n";
 import FileManager from "../service/system_file";
 import uploadManager from "../service/upload_manager";
-import {
-  resolveInstanceFileOwnership,
-  syncInstancePathOwnership
-} from "../tools/file_ownership";
+import { resolveInstanceFileOwnership, syncInstancePathOwnership } from "../tools/file_ownership";
 import type { FileOwnership } from "../tools/file_ownership";
-import { globalEnv } from "./config";
+import { acquireFileTask } from "../service/file_task";
 import Instance from "./instance/instance";
 
 type ChunkRange = { start: number; end: number };
@@ -26,6 +23,7 @@ export default class FileWriter {
   private stopPromise?: Promise<void>;
   private stopping = false;
   private ownsFile = false;
+  private ownership?: FileOwnership;
   readonly received: ChunkRange[] = [];
   lastUpdate: number = Date.now();
 
@@ -89,6 +87,8 @@ export default class FileWriter {
 
   async init() {
     if (this.fd != null) return;
+    this.ownership = await resolveInstanceFileOwnership(this.instance);
+    new FileManager(this.cwd).assertInsideWorkspace(this.path);
     let locked = false;
     try {
       if (lockfile.checkSync(this.path)) locked = true;
@@ -181,7 +181,7 @@ export default class FileWriter {
       uploadManager.delete(this.id);
     }
 
-    const ownership = await resolveInstanceFileOwnership(this.instance);
+    const ownership = this.ownership;
     if (ownership) await syncInstancePathOwnership(this.instance, this.path, ownership);
 
     logger.info("Browser Uploaded File:", this.path);
@@ -192,11 +192,10 @@ export default class FileWriter {
   }
 
   private startExtraction(ownership?: FileOwnership): void {
-    globalEnv.fileTaskCount++;
-    if (this.instance) this.instance.info.fileLock++;
-
     void (async () => {
+      let release: (() => void) | undefined;
       try {
+        release = acquireFileTask(this.instance.info);
         const instanceFiles = new FileManager(this.cwd);
         await instanceFiles.unzip(this.path, path.dirname(this.path), this.zipCode, ownership);
         logger.info("File unzipped:", this.path);
@@ -207,9 +206,9 @@ export default class FileWriter {
         }
       } catch (error) {
         logger.error("Error extracting uploaded archive:", this.path, error);
+        this.instance.println("ERROR", String(error));
       } finally {
-        globalEnv.fileTaskCount--;
-        if (this.instance) this.instance.info.fileLock--;
+        release?.();
       }
     })();
   }
