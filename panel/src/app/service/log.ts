@@ -1,5 +1,5 @@
-import fs from "fs-extra";
 import log4js from "log4js";
+import { rotatingFileAppender, runLogMaintenance } from "mcsmanager-common";
 
 // The auto-update restarter may relaunch this process detached with inherited
 // stdio (interactive console mode). If that terminal is closed later, the
@@ -11,14 +11,8 @@ process.stdin.on("error", () => {});
 
 const LOG_FILE_PATH = "logs/current.log";
 
-// save the log file separately on each startup
-if (fs.existsSync(LOG_FILE_PATH)) {
-  const time = new Date();
-  const timeString = `${time.getFullYear()}-${
-    time.getMonth() + 1
-  }-${time.getDate()}_${time.getHours()}-${time.getMinutes()}-${time.getSeconds()}`;
-  fs.renameSync(LOG_FILE_PATH, `logs/${timeString}.log`);
-}
+const maintenanceWarnings: string[] = [];
+runLogMaintenance("logs", ["current.log"], (message) => maintenanceWarnings.push(message));
 
 log4js.configure({
   appenders: {
@@ -30,8 +24,9 @@ log4js.configure({
       }
     },
     file: {
-      type: "file",
+      type: rotatingFileAppender as any,
       filename: LOG_FILE_PATH,
+      activeNames: ["current.log"],
       layout: {
         type: "pattern",
         pattern: "%d %p %m"
@@ -52,6 +47,8 @@ log4js.configure({
 
 const logger = log4js.getLogger("default");
 const fileLogger = log4js.getLogger("file");
+
+for (const message of maintenanceWarnings) logger.warn(message);
 
 function fullTime(): string {
   const date = new Date();
