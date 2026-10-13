@@ -249,10 +249,48 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     }
     if (config.ssoCallbackUrl != null) {
       const cbUrl = String(config.ssoCallbackUrl);
-      if (cbUrl && !cbUrl.startsWith("https://") && !cbUrl.startsWith("http://")) {
-        throw new Error("SSO Callback URL must use http(s) protocol");
+      if (cbUrl) {
+        if (!cbUrl.startsWith("https://") && !cbUrl.startsWith("http://")) {
+          throw new Error("SSO Callback URL must use http(s) protocol");
+        }
+        let parsed: URL;
+        try {
+          parsed = new URL(cbUrl);
+        } catch {
+          throw new Error("SSO Callback URL is not a valid absolute URL");
+        }
+        if (parsed.search || parsed.hash) {
+          throw new Error("SSO Callback URL must not contain a query string or fragment");
+        }
+        if (!parsed.pathname.endsWith("/api/auth/sso/callback")) {
+          throw new Error("SSO Callback URL must end with /api/auth/sso/callback");
+        }
       }
       systemConfig.ssoCallbackUrl = cbUrl;
+    }
+    if (config.ssoAllowedRedirectHosts != null) {
+      const raw = String(config.ssoAllowedRedirectHosts);
+      const hosts = raw
+        .split(",")
+        .map((s) => s.trim().toLowerCase())
+        .filter(Boolean);
+      for (const h of hosts) {
+        let ok = false;
+        try {
+          const u = new URL(`http://${h}`);
+          ok =
+            u.host === h &&
+            u.pathname === "/" &&
+            !u.username &&
+            !u.password &&
+            !u.search &&
+            !u.hash;
+        } catch {
+          ok = false;
+        }
+        if (!ok) throw new Error(`Invalid SSO allowed redirect host: ${h}`);
+      }
+      systemConfig.ssoAllowedRedirectHosts = hosts.join(",");
     }
 
     const diff = diffConfig(systemConfigBefore, JSON.parse(JSON.stringify(systemConfig)));

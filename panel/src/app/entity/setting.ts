@@ -110,6 +110,10 @@ export default class SystemConfig {
   ssoClientSecret = "";
   ssoTokenAuthMethod: "auto" | "client_secret_basic" | "client_secret_post" = "auto";
   ssoCallbackUrl = "";
+  // Comma-separated allowlist of hosts allowed to appear in a derived
+  // redirect_uri. Only consulted when ssoCallbackUrl is empty AND
+  // reverseProxyMode is enabled; empty means "trust no request header".
+  ssoAllowedRedirectHosts = "";
 
   // Whether to enable SSL/TLS (HTTPS)
   ssl = false;

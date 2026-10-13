@@ -113,10 +113,9 @@ export async function buildAuthorizationUrl(
   state: string,
   nonce: string,
   codeVerifier: string,
-  ctx?: Koa.ParameterizedContext
+  callbackUrl: string
 ): Promise<string> {
   if (!systemConfig) throw new Error("System config not initialized");
-  const callbackUrl = getCallbackUrl(ctx);
   const codeChallenge = generateCodeChallenge(codeVerifier);
 
   if (systemConfig.ssoType === "oauth2") {
@@ -251,11 +250,10 @@ async function oauth2Userinfo(accessToken: string): Promise<Record<string, unkno
 export async function handleOAuth2Callback(
   code: string,
   codeVerifier: string,
-  ctx?: Koa.ParameterizedContext
+  redirectUri: string
 ): Promise<{ sub: string; claims: Record<string, unknown> }> {
   if (!systemConfig) throw new Error("System config not initialized");
 
-  const redirectUri = getCallbackUrl(ctx);
   const accessToken = await oauth2TokenExchange(code, codeVerifier, redirectUri);
   const userinfo = await oauth2Userinfo(accessToken);
 
@@ -273,19 +271,45 @@ export async function handleOAuth2Callback(
 
 // ─── Shared Utilities ───
 
+// The redirect_uri is an OAuth/OIDC security boundary: it must NOT be derived
+// from client-controlled request headers. A forwarded host is trusted only when
+// it is explicitly allowlisted (ssoAllowedRedirectHosts) AND reverse-proxy mode
+// is enabled. An empty allowlist means "trust no forwarded header at all".
+function isTrustedRedirectHost(host: string): boolean {
+  if (!systemConfig) return false;
+  const allow = (systemConfig.ssoAllowedRedirectHosts || "")
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+  return allow.length > 0 && allow.includes(host.toLowerCase());
+}
+
+// Resolve the callback (redirect_uri) used both to build the authorization URL
+// and to perform the server-side token exchange. Resolution order:
+//   1. `ssoCallbackUrl` (explicit admin config) wins unconditionally.
+//   2. Only when reverse-proxy mode is enabled AND the forwarded host is on the
+//      `ssoAllowedRedirectHosts` allowlist may `X-Forwarded-Proto/Host` be used.
+//   3. Otherwise derive from server-side config (`ssl`/`httpIp`/`httpPort`).
+// `Host` / `X-Forwarded-*` are NEVER trusted without an explicit allowlist.
 export function getCallbackUrl(ctx?: Koa.ParameterizedContext): string {
   if (!systemConfig) throw new Error("System config not initialized");
-  if (systemConfig.ssoCallbackUrl) return systemConfig.ssoCallbackUrl;
   const prefix = systemConfig.prefix || "";
-  if (ctx) {
-    const proto = (ctx.get("X-Forwarded-Proto") || ctx.protocol || "http").split(",")[0].trim();
-    const host = (ctx.get("X-Forwarded-Host") || ctx.get("Host") || "").split(",")[0].trim();
-    if (host) {
+
+  if (systemConfig.ssoCallbackUrl) return systemConfig.ssoCallbackUrl;
+
+  if (ctx && systemConfig.reverseProxyMode) {
+    const proto = (ctx.get("X-Forwarded-Proto") || "https").split(",")[0].trim();
+    const host = (ctx.get("X-Forwarded-Host") || "").split(",")[0].trim();
+    if (host && isTrustedRedirectHost(host)) {
       return `${proto}://${host}${prefix}/api/auth/sso/callback`;
     }
   }
+
+  const proto = systemConfig.ssl ? "https" : "http";
+  const host =
+    systemConfig.httpIp && systemConfig.httpIp !== "0.0.0.0" ? systemConfig.httpIp : "localhost";
   const port = systemConfig.httpPort || 23333;
-  return `http://localhost:${port}${prefix}/api/auth/sso/callback`;
+  return `${proto}://${host}:${port}${prefix}/api/auth/sso/callback`;
 }
 
 export function getPublicSsoConfig() {

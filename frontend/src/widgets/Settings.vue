@@ -1360,6 +1360,20 @@ onUnmounted(() => {
 
                     <a-form-item>
                       <a-typography-title :level="5">
+                        {{ t("TXT_CODE_SSO_ALLOWED_REDIRECT_HOSTS") }}
+                      </a-typography-title>
+                      <a-typography-paragraph type="secondary">
+                        {{ t("TXT_CODE_SSO_ALLOWED_REDIRECT_HOSTS_DESC") }}
+                      </a-typography-paragraph>
+                      <a-input
+                        v-model:value="(formData as any).ssoAllowedRedirectHosts"
+                        style="max-width: 480px"
+                        placeholder="panel.example.com,panel2.example.com:8443"
+                      />
+                    </a-form-item>
+
+                    <a-form-item>
+                      <a-typography-title :level="5">
                         {{ t("TXT_CODE_SSO_ONLY_MODE") }}
                       </a-typography-title>
                       <a-typography-paragraph type="secondary">

@@ -62,15 +62,20 @@ router.get(
       const state = generateState();
       const nonce = generateNonce();
       const codeVerifier = generateCodeVerifier();
+      // Resolve the redirect_uri ONCE, from trusted config only, and persist it
+      // in the session. The callback stage reuses this exact value for the token
+      // exchange so the two stages can never disagree.
+      const callbackUrl = getCallbackUrl(ctx);
 
       if (!ctx.session) throw new Error("Session is null");
       ctx.session["ssoState"] = state;
       ctx.session["ssoNonce"] = nonce;
       ctx.session["ssoCodeVerifier"] = codeVerifier;
       ctx.session["ssoTimestamp"] = Date.now();
+      ctx.session["ssoRedirectUri"] = callbackUrl;
       ctx.session.save();
 
-      const url = await buildAuthorizationUrl(state, nonce, codeVerifier, ctx);
+      const url = await buildAuthorizationUrl(state, nonce, codeVerifier, callbackUrl);
       ctx.redirect(url);
     } catch (err: any) {
       const oauthDesc = err.error_description || err.message || "Authorization redirect failed";
@@ -104,16 +109,21 @@ router.get(
     const expectedNonce = ctx.session["ssoNonce"];
     const codeVerifier = ctx.session["ssoCodeVerifier"];
     const ssoTimestamp = ctx.session["ssoTimestamp"];
+    // The redirect_uri pinned by /authorize. Reusing it (instead of deriving a
+    // fresh one from this request's headers) prevents an attacker from pointing
+    // the token exchange at a different origin between the two stages.
+    const ssoRedirectUri = ctx.session["ssoRedirectUri"];
 
     // Clean up session SSO data immediately
     delete ctx.session["ssoState"];
     delete ctx.session["ssoNonce"];
     delete ctx.session["ssoCodeVerifier"];
     delete ctx.session["ssoTimestamp"];
+    delete ctx.session["ssoRedirectUri"];
     ctx.session.save();
 
     const isOAuth2 = systemConfig?.ssoType === "oauth2";
-    if (!expectedState || !codeVerifier || (!isOAuth2 && !expectedNonce)) {
+    if (!expectedState || !codeVerifier || !ssoRedirectUri || (!isOAuth2 && !expectedNonce)) {
       ctx.redirect("/#/login?sso_error=invalid_sso_session");
       return;
     }
@@ -145,10 +155,12 @@ router.get(
         if (!code) throw new Error("OAuth 2.0 callback missing code parameter");
         const stateParam = callbackUrl.searchParams.get("state");
         if (stateParam !== expectedState) throw new Error("OAuth 2.0 state mismatch");
-        ({ sub } = await handleOAuth2Callback(code, codeVerifier, ctx));
+        ({ sub } = await handleOAuth2Callback(code, codeVerifier, ssoRedirectUri));
       } else {
-        const configuredCallback = getCallbackUrl(ctx);
-        const reconstructedUrl = new URL(configuredCallback);
+        // Rebuild the callback URL from the session-pinned redirect_uri (trusted)
+        // plus THIS request's query string (code/state), matching the exact
+        // redirect_uri the IdP saw during /authorize.
+        const reconstructedUrl = new URL(ssoRedirectUri);
         reconstructedUrl.search = callbackUrl.search;
         ({ sub } = await handleOIDCCallback(
           reconstructedUrl,
