@@ -7,6 +7,7 @@ import { $t } from "../i18n";
 import { checkFilePath } from "../tools/filepath";
 import { ConsumerQueue } from "../utils/queue";
 import { sleep } from "../utils/sleep";
+import logger from "./log";
 
 const execPromise = promisify(exec);
 
@@ -56,7 +57,14 @@ class DiskLimitService {
       for (let i = 0; i < this.concurrent; i++) {
         const item = this.queue.pop();
         if (item) {
-          promises.push(this.checkDiskNow(item));
+          promises.push(
+            this.checkDiskNow(item).catch((error) => {
+              logger.warn(
+                `Disk usage check failed for instance ${item.instance.instanceUuid}`,
+                error
+              );
+            })
+          );
         }
       }
       await Promise.all(promises);
