@@ -104,6 +104,17 @@ async function initI18n(lang: string) {
     }
   }
 
+  // Ensure the English base messages are always available as the fallback
+  // source. The install flow above only loads the selected language, so
+  // without this the `fallbackLocale` below would have nothing to resolve to.
+  if (!messages["en_us"]) {
+    const enPath = Object.keys(langFiles).find((p) => toStandardLang(p).includes("en_us"));
+    const enLoader = enPath ? langFiles[enPath] : undefined;
+    if (typeof enLoader === "function") {
+      messages["en_us"] = normalizeLangModule(await enLoader());
+    }
+  }
+
   i18n = createI18n({
     allowComposition: true,
     globalInjection: true,
@@ -161,9 +172,35 @@ const isEN = () => {
   return getCurrentLang() === "en_us";
 };
 
+// eslint-disable-next-line no-unused-vars
+export type TranslateFn = (...args: any[]) => string;
+
+const isEmptyTranslation = (value: unknown): boolean =>
+  value === "" || value === null || value === undefined;
+
+// Resolve a translation, falling back to English when the current locale has no
+// message (missing key) or an empty string for the key. Object/array params are
+// preserved so interpolation keeps working in the English fallback.
+export function resolveWithEnglishFallback(translate: TranslateFn, args: any[]): string {
+  const primary = translate(...args);
+  if (!isEmptyTranslation(primary)) return primary;
+
+  const [key, ...rest] = args;
+  const englishArgs: any[] = [key, "en_us"];
+  for (const arg of rest) {
+    if (arg !== null && typeof arg === "object") englishArgs.push(arg);
+  }
+
+  const english = translate(...englishArgs);
+  return isEmptyTranslation(english) ? primary : english;
+}
+
 const $t = (...args: any[]): string => {
-  if(!i18n?.global?.t) return "";
-  return (i18n.global.t as Function)(...args);
+  if (!i18n?.global?.t) return "";
+  return resolveWithEnglishFallback(
+    (...innerArgs: any[]) => (i18n.global.t as Function)(...innerArgs),
+    args
+  );
 };
 const t = $t;
 
@@ -181,4 +218,3 @@ export {
   setLanguage,
   t
 };
-
