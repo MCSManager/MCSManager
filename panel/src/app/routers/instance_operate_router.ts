@@ -8,6 +8,7 @@ import permission from "../middleware/permission";
 import validator from "../middleware/validator";
 import { updateInstanceWithAudit } from "../service/instance_config_audit";
 import { getInstanceNameSafely } from "../service/instance_name_service";
+import { updateInstanceWithRconAuthorization } from "../service/instance_rcon";
 import { checkInstanceAdvancedParams, getAppMarketList } from "../service/instance_service";
 import { getOperationLoggerOperator, operationLogger } from "../service/operation_logger";
 import { getUserPermission, getUserUuid } from "../service/passport_service";
@@ -404,11 +405,14 @@ router.put(
         instanceTags = instanceTags!.sort((a, b) => (a > b ? 1 : -1));
       }
 
-      // Steam Rcon configuration
+      // RCON configuration
       const rconIp = toText(config.rconIp);
       const rconPort = toNumber(config.rconPort);
       const rconPassword = toText(config.rconPassword);
       const enableRcon = toBoolean(config.enableRcon);
+      const rconProtocol = config.rconProtocol;
+      if (rconProtocol != null && rconProtocol !== "source" && rconProtocol !== "rust-web")
+        throw new Error($t("TXT_CODE_RCON_INVALID_PROTOCOL"));
 
       // Ping protocol configuration
       const pingConfig = {
@@ -462,16 +466,19 @@ router.put(
         rconPort,
         rconPassword,
         enableRcon,
+        rconProtocol,
         tag: instanceTags,
         fileCode,
         ...advancedConfig
       };
 
       await updateInstanceWithAudit(ctx, daemonId || "", instanceUuid || "", () =>
-        new RemoteRequest(remoteService).request("instance/update", {
-          instanceUuid,
-          config: finalConfig
-        })
+        updateInstanceWithRconAuthorization(
+          remoteService,
+          instanceUuid || "",
+          finalConfig,
+          isTopPermission
+        )
       );
       ctx.body = true;
     } catch (err) {

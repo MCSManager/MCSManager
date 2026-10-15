@@ -398,9 +398,9 @@ describe("security: SSRF / URL-fetch gates", () => {
     // is needed: every target below is refused at validation time.
     for (const url of [
       "file:///etc/passwd",
-      "http://127.0.0.1:24444/",
+      `${world.daemonHttpUrl}/`,
       "http://169.254.169.254/latest/meta-data/",
-      "http://localhost:23333/",
+      `${world.panelUrl.replace("127.0.0.1", "localhost")}/`,
       "http://metadata/"
     ]) {
       const r = await requestPanel({

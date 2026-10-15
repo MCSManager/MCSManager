@@ -1,5 +1,7 @@
+import type { RconConfig } from "./src/rcon_config";
+
 declare global {
-  interface IGlobalInstanceConfig {
+  interface IGlobalInstanceConfig extends RconConfig {
     nickname: string;
     startCommand: string;
     stopCommand: string;
@@ -20,12 +22,6 @@ declare global {
     crlf: number;
     category: number;
     basePort: number;
-
-    // Steam RCON
-    enableRcon?: boolean;
-    rconPassword?: string;
-    rconPort?: number;
-    rconIp?: string;
 
     // Java
     java: IInstanceJavaConfig;

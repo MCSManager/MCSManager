@@ -180,8 +180,9 @@ export const defaultInstanceInfo: IGlobalInstanceConfig = {
   category: 0,
   basePort: undefined as any,
 
-  // Steam RCON
+  // RCON
   enableRcon: false,
+  rconProtocol: "source",
   rconPassword: "",
   rconPort: undefined,
   rconIp: "",

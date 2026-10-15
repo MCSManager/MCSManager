@@ -263,7 +263,7 @@ export async function buyOrRenewInstance(
 
     await remoteRequest.request("instance/update", {
       instanceUuid: instance_id,
-      config: config
+      config: { endTime: config.endTime }
     });
 
     return {

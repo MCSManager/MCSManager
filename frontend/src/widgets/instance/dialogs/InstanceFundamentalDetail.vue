@@ -77,7 +77,13 @@ const submit = async () => {
         uuid: props.instanceId ?? "",
         daemonId: props.daemonId ?? ""
       },
-      data: postData.config
+      data: {
+        processType: postData.config.processType,
+        startCommand: postData.config.startCommand,
+        updateCommand: postData.config.updateCommand,
+        fileCode: postData.config.fileCode,
+        docker: { env: postData.config.docker.env }
+      }
     });
     emit("update");
     open.value = false;

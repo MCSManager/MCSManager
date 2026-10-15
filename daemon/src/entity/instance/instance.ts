@@ -20,6 +20,7 @@ import { configureEntityParams } from "mcsmanager-common";
 import path from "path";
 import { CircularBuffer } from "../../common/string_cache";
 import StorageSubsystem from "../../common/system_storage";
+import { validateWebRconTarget, WebRconError } from "../../common/web_rcon";
 import { STEAM_CMD_PATH } from "../../const";
 import { $t } from "../../i18n";
 import javaManager from "../../service/java_manager";
@@ -157,6 +158,45 @@ export default class Instance extends EventEmitter {
 
   // Pass in instance configuration, loosely and dynamically set configuration items for instance parameters
   parameters(cfg: any, persistence = true) {
+    if (
+      cfg?.rconProtocol != null &&
+      cfg.rconProtocol !== "source" &&
+      cfg.rconProtocol !== "rust-web"
+    )
+      throw new Error($t("TXT_CODE_RCON_INVALID_PROTOCOL"));
+
+    if (cfg?.rconProtocol === "rust-web" && this.config.rconProtocol !== "rust-web") {
+      if (cfg.rconIp == null || cfg.rconPassword == null || cfg.rconPort == null)
+        throw new Error($t("TXT_CODE_RCON_WEB_completeTarget"));
+    }
+
+    const resultingProtocol = cfg?.rconProtocol ?? this.config.rconProtocol;
+    const targetChanged =
+      cfg?.rconProtocol != null ||
+      cfg?.rconIp != null ||
+      cfg?.rconPort != null ||
+      cfg?.rconPassword != null;
+    const enablingRcon = cfg?.enableRcon != null && Boolean(cfg.enableRcon);
+    // Validate the merged target before any mutation. Disabling a broken legacy target is allowed.
+    if (resultingProtocol === "rust-web" && (targetChanged || enablingRcon)) {
+      try {
+        validateWebRconTarget(
+          cfg.rconIp ?? this.config.rconIp,
+          cfg.rconPort ?? this.config.rconPort,
+          cfg.rconPassword ?? this.config.rconPassword
+        );
+      } catch (error) {
+        if (!(error instanceof WebRconError)) throw error;
+        throw new Error(
+          $t(
+            error.code === "missingPassword"
+              ? "TXT_CODE_RCON_WEB_missingPassword"
+              : "TXT_CODE_RCON_WEB_invalidTarget"
+          )
+        );
+      }
+    }
+
     // If the instance type changes, default commands and lifecycle events must be reset
     if (cfg?.type && cfg?.type != this.config.type) {
       if (!this.isStoppedOrBusy())
@@ -168,6 +208,12 @@ export default class Instance extends EventEmitter {
     if (cfg?.enableRcon != null && cfg?.enableRcon !== this.config.enableRcon) {
       if (!this.isStoppedOrBusy()) throw new Error($t("TXT_CODE_bdfa3457"));
       configureEntityParams(this.config, cfg, "enableRcon", Boolean);
+      this.forceExec(new FunctionDispatcher());
+    }
+
+    if (cfg?.rconProtocol != null && cfg.rconProtocol !== this.config.rconProtocol) {
+      if (!this.isStoppedOrBusy()) throw new Error($t("TXT_CODE_bdfa3457"));
+      this.config.rconProtocol = cfg.rconProtocol;
       this.forceExec(new FunctionDispatcher());
     }
 
