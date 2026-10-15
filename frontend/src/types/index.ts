@@ -75,6 +75,7 @@ export interface Settings {
   reverseProxyHeader: string;
   dataPort: number;
   forwardType: number;
+  dataPlane: "direct" | "proxy";
   crossDomain: boolean;
   gzip: boolean;
   maxCompress: number;

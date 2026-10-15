@@ -57,6 +57,7 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
       systemConfig.totpDriftToleranceSteps = config.totpDriftToleranceSteps;
     if (config.loginCheckIp != null) systemConfig.loginCheckIp = config.loginCheckIp;
     if (config.forwardType != null) systemConfig.forwardType = Number(config.forwardType);
+    if (config.dataPlane != null) systemConfig.dataPlane = config.dataPlane;
     if (config.dataPort != null) systemConfig.dataPort = Number(config.dataPort);
     if (config.loginInfo != null) systemConfig.loginInfo = String(config.loginInfo);
     if (config.canFileManager != null) systemConfig.canFileManager = Boolean(config.canFileManager);

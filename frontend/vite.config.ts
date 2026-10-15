@@ -65,6 +65,18 @@ export default defineConfig({
       "/socket.io": {
         target: "ws://localhost:23333",
         ws: true
+      },
+      "/upload-new": {
+        target: "http://localhost:23333",
+        changeOrigin: true
+      },
+      "/upload-piece": {
+        target: "http://localhost:23333",
+        changeOrigin: true
+      },
+      "/download": {
+        target: "http://localhost:23333",
+        changeOrigin: true
       }
     }
   },
