@@ -3,6 +3,7 @@ import { t } from "@/lang/i18n";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { Modal, message } from "ant-design-vue";
 import { createVNode, ref, type Ref } from "vue";
+import { TAB_KEY_DOWNLOAD, TAB_KEY_MODS } from "./tabs";
 
 export function useModUpload(
   instanceId: string,
@@ -29,7 +30,7 @@ export function useModUpload(
       return message.warning(t("TXT_CODE_MOD_UPLOAD_NO_FOLDER"));
     }
 
-    const targetDir = activeKey.value === "1" ? "mods" : "plugins";
+    const targetDir = activeKey.value === TAB_KEY_MODS ? "mods" : "plugins";
     await selectedFiles(validFiles, targetDir, async () => {
       await loadMods();
     });
@@ -38,7 +39,7 @@ export function useModUpload(
 
   const handleDragover = (e: DragEvent) => {
     e.preventDefault();
-    if (activeKey.value === "3") return;
+    if (activeKey.value === TAB_KEY_DOWNLOAD) return;
     if (e.dataTransfer) {
       e.dataTransfer.dropEffect = "copy";
     }
@@ -55,7 +56,7 @@ export function useModUpload(
   const handleDrop = (e: DragEvent) => {
     e.preventDefault();
     opacity.value = false;
-    if (activeKey.value === "3") return;
+    if (activeKey.value === TAB_KEY_DOWNLOAD) return;
 
     const files = e.dataTransfer?.files;
     if (!files || files.length === 0) return;
@@ -86,7 +87,7 @@ export function useModUpload(
       icon: createVNode(ExclamationCircleOutlined),
       content: `${t("TXT_CODE_CONFIRM_UPLOAD")} ${name} ?`,
       async onOk() {
-        const targetDir = activeKey.value === "1" ? "mods" : "plugins";
+        const targetDir = activeKey.value === TAB_KEY_MODS ? "mods" : "plugins";
         await selectedFiles(validFiles, targetDir, async () => {
           await loadMods();
         });
