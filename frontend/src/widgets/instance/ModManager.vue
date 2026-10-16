@@ -28,11 +28,7 @@ import { useLocalMods } from "./mod-manager/useLocalMods";
 import { useModConfig } from "./mod-manager/useModConfig";
 import { useModSearch } from "./mod-manager/useModSearch";
 import { useModUpload } from "./mod-manager/useModUpload";
-
-// Tab key constants
-const TAB_KEY_MODS = "TAB_KEY_MODS";
-const TAB_KEY_PLUGINS = "TAB_KEY_PLUGINS";
-const TAB_KEY_DOWNLOAD = "TAB_KEY_DOWNLOAD";
+import { TAB_KEY_DOWNLOAD, TAB_KEY_MODS, TAB_KEY_PLUGINS } from "./mod-manager/tabs";
 
 const props = defineProps<{
   card: LayoutCard;
