@@ -19,6 +19,8 @@ import RemoteRequest, {
 } from "../service/remote_command";
 import RemoteServiceSubsystem from "../service/remote_service";
 import { systemConfig } from "../setting";
+import GatewayToken from "../service/gateway_token";
+import { browserFacingAddr } from "../service/proxy_addr";
 
 const router = new Router({ prefix: "/protected_instance" });
 
@@ -244,6 +246,22 @@ router.post(
       const instanceUuid = String(ctx.query.uuid);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
+      if (systemConfig?.dataPlane === "proxy") {
+        const token = GatewayToken.issueProxyToken({
+          daemonId,
+          instanceUuid,
+          op: "stream",
+          target: instanceUuid,
+          ttlSec: 300
+        });
+        ctx.body = {
+          password: token,
+          addr: browserFacingAddr(ctx),
+          prefix: "",
+          remoteMappings: []
+        };
+        return;
+      }
       const addr = remoteService.config.addr;
       const prefix = remoteService.config.prefix;
       const remoteMappings = remoteService.config.getConvertedRemoteMappings();

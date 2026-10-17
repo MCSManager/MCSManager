@@ -203,7 +203,8 @@ const disable2FACode = async () => {
           </a-typography-paragraph>
           <a-typography-paragraph v-if="generatedApiKey">
             <pre
-              class="flex flex-between align-center">{{ generatedApiKey }} <CopyButton size="small" type="text" :value="generatedApiKey" /> </pre>
+              class="flex flex-between align-center"
+            >{{ generatedApiKey }} <CopyButton size="small" type="text" :value="generatedApiKey" /> </pre>
           </a-typography-paragraph>
           <a-typography-paragraph v-else-if="state.userInfo?.apiKey">
             <pre>{{ t("TXT_CODE_1e7b57ae") }}</pre>

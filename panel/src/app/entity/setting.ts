@@ -16,6 +16,15 @@ export default class SystemConfig {
   // Distributed forwarding mode
   forwardType: number = 1;
 
+  // Data-plane mode: "direct" (browser connects to the daemon directly, default, legacy behavior)
+  // or "proxy" (browser only reaches the panel, which reverse-proxies file download/upload and
+  // terminal IO to the daemon so the daemon port never needs to be public). Hot-reload, no restart.
+  dataPlane: "direct" | "proxy" = "direct";
+
+  // Symmetric HMAC secret used to sign browser-facing proxy data-plane tokens (panel self-signs
+  // and self-verifies; never shared with the daemon). Generated lazily on first use and persisted.
+  gatewaySecret = "";
+
   // Whether to allow cross-domain requests
   crossDomain: boolean = false;
 

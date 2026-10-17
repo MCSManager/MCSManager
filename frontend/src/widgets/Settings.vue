@@ -182,6 +182,17 @@ const apiKeyAccessOptions = [
   }
 ];
 
+const dataPlaneOptions = [
+  {
+    label: t("TXT_CODE_settings_dataPlane_direct"),
+    value: "direct"
+  },
+  {
+    label: t("TXT_CODE_settings_dataPlane_proxy"),
+    value: "proxy"
+  }
+];
+
 const totpDriftOptions = ref([
   {
     label: t("TXT_CODE_718c9310"),
@@ -1013,6 +1024,30 @@ onUnmounted(() => {
                     >
                       <a-select-option
                         v-for="item in totpDriftOptions"
+                        :key="item.value"
+                        :value="item.value"
+                      >
+                        {{ item.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_settings_dataPlane") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        {{ t("TXT_CODE_settings_dataPlane_hint") }}
+                      </a-typography-text>
+                    </a-typography-paragraph>
+
+                    <a-select
+                      v-model:value="(formData as any).dataPlane"
+                      style="max-width: 320px"
+                    >
+                      <a-select-option
+                        v-for="item in dataPlaneOptions"
                         :key="item.value"
                         :value="item.value"
                       >

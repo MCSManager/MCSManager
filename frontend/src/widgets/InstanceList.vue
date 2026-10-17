@@ -589,10 +589,10 @@ onMounted(async () => {
                     isGlobalDaemonMode
                       ? t('TXT_CODE_a60a421a')
                       : computeNodeName(
-                          currentRemoteNode?.ip || '',
-                          currentRemoteNode?.available || true,
-                          currentRemoteNode?.remarks
-                        )
+                        currentRemoteNode?.ip || '',
+                        currentRemoteNode?.available || true,
+                        currentRemoteNode?.remarks
+                      )
                   "
                 />
                 <DownOutlined />

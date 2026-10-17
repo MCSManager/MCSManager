@@ -122,8 +122,8 @@ defineExpose({
                 <a-tag
                   v-if="
                     props.targetPlatforms &&
-                    props.targetPlatforms.length > 0 &&
-                    !isNodeSupported(item)
+                      props.targetPlatforms.length > 0 &&
+                      !isNodeSupported(item)
                   "
                   color="orange"
                 >
@@ -146,8 +146,8 @@ defineExpose({
                 <template
                   v-if="
                     props.targetPlatforms &&
-                    props.targetPlatforms.length > 0 &&
-                    !isNodeSupported(item)
+                      props.targetPlatforms.length > 0 &&
+                      !isNodeSupported(item)
                   "
                 >
                   <ExclamationCircleOutlined />

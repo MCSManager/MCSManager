@@ -125,8 +125,8 @@ const toInstanceTerminal = async () => {
           props.targetInstanceInfo?.status === INSTANCE_STATUS_CODE.RUNNING
             ? 'green'
             : props.targetInstanceInfo?.status === INSTANCE_STATUS_CODE.STARTING
-            ? 'pink'
-            : ''
+              ? 'pink'
+              : ''
         "
       >
         <span>
@@ -134,7 +134,7 @@ const toInstanceTerminal = async () => {
           <ExclamationCircleOutlined v-else />
           {{
             t(String(INSTANCE_STATUS[props.targetInstanceInfo?.status ?? -1])) ||
-            t("TXT_CODE_c8333afa")
+              t("TXT_CODE_c8333afa")
           }}
         </span>
       </a-tag>
