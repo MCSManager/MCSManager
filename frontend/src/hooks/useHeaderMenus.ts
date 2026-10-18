@@ -8,7 +8,6 @@ import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
 import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
-import { getRandomId } from "@/tools/randId";
 import { AppTheme } from "@/types/const";
 import {
   AppstoreAddOutlined,
@@ -19,6 +18,7 @@ import {
   LogoutOutlined,
   RedoOutlined,
   SaveOutlined,
+  ShopOutlined,
   UserOutlined
 } from "@ant-design/icons-vue";
 import { message, Modal, notification } from "ant-design-vue";
@@ -33,6 +33,7 @@ export type SidebarRouteEntry = {
   type: "route";
   path: string;
   name: string | symbol | undefined;
+  icon?: Component;
   customClass?: string[];
   onclick?: () => void;
 };
@@ -110,13 +111,15 @@ export function useHeaderMenus() {
       .map((r) => ({
         name: r.name,
         path: r.path,
+        icon: (r.meta as RouterMetaInfo).icon,
         meta: r.meta,
         customClass: r.meta.customClass ?? []
       }));
 
     routeEntries.splice(1, 0, {
       name: t("TXT_CODE_27594db8"),
-      path: getRandomId(),
+      path: "/market",
+      icon: ShopOutlined,
       meta: {
         mainMenu: true,
         permission: ROLE.ADMIN,
@@ -278,6 +281,7 @@ export function useHeaderMenus() {
       type: "route",
       path: r.path,
       name: r.name,
+      icon: r.icon,
       customClass: Array.isArray(r.customClass) ? r.customClass : [],
       onclick: (r.meta.onclick as () => void) ?? undefined
     }));
