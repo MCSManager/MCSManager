@@ -4,6 +4,7 @@ import { router } from "@/config/router";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import type { ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import { t } from "@/lang/i18n";
+import { overviewInfo } from "@/services/apis";
 import { getDockerHubImagePlatforms } from "@/services/apis/envImage";
 import { createAsyncTask } from "@/services/apis/instance";
 import { reportErrorMsg } from "@/tools/validator";
@@ -45,6 +46,7 @@ const selectedTemplate = ref<QuickStartPackages | null>(null);
 const selectedTemplateType = ref<"normal" | "docker">("normal");
 
 const { state: newTaskInfo, execute: executeCreateAsyncTask } = createAsyncTask();
+const { execute: getOverviewInfo } = overviewInfo();
 
 /**
  * Get Docker image platforms from Docker Hub via backend proxy
@@ -86,7 +88,17 @@ const handleSelectCategory = async (item: QuickStartPackages) => {
   try {
     let node: ComputedNodeInfo | undefined;
     if (!daemonId) {
-      node = await openNodeSelectDialog();
+      const overview = await getOverviewInfo({ forceRequest: true });
+      const onlineNodes = overview.value?.remote?.filter((item) => item.available) ?? [];
+      if (onlineNodes.length === 0) {
+        reportErrorMsg(t("TXT_CODE_e3d96a26"));
+        return;
+      }
+
+      node =
+        onlineNodes.length === 1
+          ? (onlineNodes[0] as ComputedNodeInfo)
+          : await openNodeSelectDialog();
       if (!node) {
         reportErrorMsg(t("TXT_CODE_2de92a5d"));
         return;

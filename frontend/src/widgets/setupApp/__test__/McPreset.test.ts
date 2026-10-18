@@ -6,13 +6,20 @@ import McPreset from "../McPreset.vue";
 
 const mocks = vi.hoisted(() => ({
   executeCreateAsyncTask: vi.fn(),
+  getDockerHubImagePlatforms: vi.fn(),
+  getOverviewInfo: vi.fn(),
+  handleSelectTopCategory: vi.fn(),
   messageInfo: vi.fn(),
+  openNodeSelectDialog: vi.fn(),
+  reportErrorMsg: vi.fn(),
   routerPush: vi.fn(),
-  newTaskInfo: { value: { instanceUuid: "instance-1" } }
+  newTaskInfo: { value: { instanceUuid: "instance-1" } },
+  initialDaemonId: "daemon-1",
+  overviewNodes: [] as Array<{ available: boolean; uuid: string }>
 }));
 
 vi.mock("@/components/fc", () => ({
-  openNodeSelectDialog: vi.fn()
+  openNodeSelectDialog: mocks.openNodeSelectDialog
 }));
 
 vi.mock("@/config/router", () => ({
@@ -20,15 +27,23 @@ vi.mock("@/config/router", () => ({
 }));
 
 vi.mock("@/hooks/useCardTools", () => ({
-  useLayoutCardTools: () => ({ getMetaOrRouteValue: () => "daemon-1" })
+  useLayoutCardTools: () => ({ getMetaOrRouteValue: () => mocks.initialDaemonId })
 }));
 
 vi.mock("@/lang/i18n", () => ({
   t: (key: string) => key
 }));
 
+vi.mock("@/services/apis", () => ({
+  overviewInfo: () => ({
+    execute: mocks.getOverviewInfo
+  })
+}));
+
 vi.mock("@/services/apis/envImage", () => ({
-  getDockerHubImagePlatforms: vi.fn()
+  getDockerHubImagePlatforms: () => ({
+    execute: mocks.getDockerHubImagePlatforms
+  })
 }));
 
 vi.mock("@/services/apis/instance", () => ({
@@ -39,11 +54,15 @@ vi.mock("@/services/apis/instance", () => ({
 }));
 
 vi.mock("@/tools/validator", () => ({
-  reportErrorMsg: vi.fn()
+  reportErrorMsg: mocks.reportErrorMsg
 }));
 
 vi.mock("@/widgets/setupApp/AppPackages.vue", () => ({
-  default: { name: "AppPackages", template: "<div />" }
+  default: {
+    name: "AppPackages",
+    methods: { handleSelectTopCategory: mocks.handleSelectTopCategory },
+    template: "<div />"
+  }
 }));
 
 vi.mock("@/widgets/instance/dialogs/TemplateNameDialog.vue", () => ({
@@ -63,7 +82,13 @@ describe("McPreset", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers();
+    mocks.initialDaemonId = "daemon-1";
+    mocks.overviewNodes = [];
     mocks.executeCreateAsyncTask.mockResolvedValue(undefined);
+    mocks.getDockerHubImagePlatforms.mockResolvedValue({ value: [] });
+    mocks.getOverviewInfo.mockImplementation(async () => ({
+      value: { remote: mocks.overviewNodes }
+    }));
   });
 
   afterEach(() => {
@@ -98,5 +123,94 @@ describe("McPreset", () => {
         instanceId: "instance-1"
       }
     });
+  });
+
+  it("reports an error when no online node is available", async () => {
+    mocks.initialDaemonId = "";
+    mocks.overviewNodes = [{ available: false, uuid: "offline-node" }];
+    const wrapper = mount(McPreset, {
+      props: { card: { meta: {} } as any }
+    });
+
+    wrapper.findComponent({ name: "AppPackages" }).vm.$emit("handle-select-category", {
+      gameType: "Minecraft"
+    });
+    await flushPromises();
+
+    expect(mocks.getOverviewInfo).toHaveBeenCalledTimes(1);
+    expect(mocks.reportErrorMsg).toHaveBeenCalledWith("TXT_CODE_e3d96a26");
+    expect(mocks.openNodeSelectDialog).not.toHaveBeenCalled();
+    expect(mocks.handleSelectTopCategory).not.toHaveBeenCalled();
+  });
+
+  it("uses the only online node without opening the selection dialog", async () => {
+    mocks.initialDaemonId = "";
+    mocks.overviewNodes = [
+      { available: false, uuid: "offline-node" },
+      { available: true, uuid: "online-node" }
+    ];
+    const wrapper = mount(McPreset, {
+      props: { card: { meta: {} } as any }
+    });
+
+    const category = { gameType: "Minecraft" };
+    wrapper.findComponent({ name: "AppPackages" }).vm.$emit("handle-select-category", category);
+    await flushPromises();
+
+    expect(mocks.openNodeSelectDialog).not.toHaveBeenCalled();
+    expect(mocks.handleSelectTopCategory).toHaveBeenCalledWith(
+      category,
+      expect.objectContaining({ uuid: "online-node" })
+    );
+
+    wrapper.findComponent({ name: "TemplateNameDialog" }).vm.$emit("confirm", "Test Server", {
+      setupInfo: { docker: {} }
+    });
+    await flushPromises();
+
+    expect(mocks.executeCreateAsyncTask).toHaveBeenCalledWith(
+      expect.objectContaining({ params: expect.objectContaining({ daemonId: "online-node" }) })
+    );
+  });
+
+  it("opens the selection dialog when multiple online nodes are available", async () => {
+    mocks.initialDaemonId = "";
+    mocks.overviewNodes = [
+      { available: true, uuid: "online-node-1" },
+      { available: true, uuid: "online-node-2" }
+    ];
+    mocks.openNodeSelectDialog.mockResolvedValue({ uuid: "online-node-2" });
+    const wrapper = mount(McPreset, {
+      props: { card: { meta: {} } as any }
+    });
+
+    const category = { gameType: "Minecraft" };
+    wrapper.findComponent({ name: "AppPackages" }).vm.$emit("handle-select-category", category);
+    await flushPromises();
+
+    expect(mocks.openNodeSelectDialog).toHaveBeenCalledTimes(1);
+    expect(mocks.handleSelectTopCategory).toHaveBeenCalledWith(
+      category,
+      expect.objectContaining({ uuid: "online-node-2" })
+    );
+  });
+
+  it("keeps Docker platform filtering as the confirmation fallback", async () => {
+    mocks.initialDaemonId = "";
+    mocks.getDockerHubImagePlatforms.mockResolvedValue({ value: ["linux/amd64"] });
+    mocks.openNodeSelectDialog.mockResolvedValue({ uuid: "docker-node" });
+    const wrapper = mount(McPreset, {
+      props: { card: { meta: {} } as any }
+    });
+
+    wrapper.findComponent({ name: "TemplateNameDialog" }).vm.$emit("confirm", "Test Server", {
+      setupInfo: { docker: { image: "example/server:latest" } }
+    });
+    await flushPromises();
+
+    expect(mocks.openNodeSelectDialog).toHaveBeenCalledWith(["linux/amd64"]);
+    expect(mocks.executeCreateAsyncTask).toHaveBeenCalledWith(
+      expect.objectContaining({ params: expect.objectContaining({ daemonId: "docker-node" }) })
+    );
   });
 });
