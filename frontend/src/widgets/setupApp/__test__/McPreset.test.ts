@@ -195,6 +195,22 @@ describe("McPreset", () => {
     );
   });
 
+  it("opens an initial category and emits back to the parent flow", async () => {
+    const category = { gameType: "Minecraft" } as any;
+    const wrapper = mount(McPreset, {
+      props: {
+        card: { meta: {} } as any,
+        initialCategory: category
+      }
+    });
+    await flushPromises();
+
+    expect(mocks.handleSelectTopCategory).toHaveBeenCalledWith(category, undefined);
+
+    wrapper.findComponent({ name: "AppPackages" }).vm.$emit("handle-back-to-category");
+    expect(wrapper.emitted("back")).toHaveLength(1);
+  });
+
   it("keeps Docker platform filtering as the confirmation fallback", async () => {
     mocks.initialDaemonId = "";
     mocks.getDockerHubImagePlatforms.mockResolvedValue({ value: ["linux/amd64"] });

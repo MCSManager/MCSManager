@@ -11,13 +11,15 @@ The market UI is opened from the shared `fc` module through an independently mou
 **Goals:**
 
 - Give the full application market and instance preset reinstall flows distinct helper names and components.
-- Keep the market install and preset UI in one dialog component.
+- Add a market-only category -> creation method -> creation branch flow.
+- Reuse the existing preset browser and instance creation form instead of duplicating their business logic.
 - Preserve the existing reinstall API arguments and confirmation behavior for internal frontend callers.
 - Keep navigation callers simple and keep unrelated routing/layout behavior unchanged.
 
 **Non-Goals:**
 
-- Redesign the market, quick-start, or reinstall experiences.
+- Redesign the instance reinstall experience.
+- Reproduce the reference image's exact colors, illustrations, spacing, or border radii.
 - Change backend install/reinstall APIs, permissions, or persisted data.
 - Restore `/market` as a layout-configured page or re-add the market widget to the customizable card pool.
 - Add a replacement iframe action for market or reinstall dialogs.
@@ -30,11 +32,11 @@ The existing helper becomes `openInstanceReinstallDialog`, and its options type 
 
 This is preferred over a generic name such as `openPresetDialog` because the helper can immediately execute the destructive reinstall flow when `autoInstall` is enabled.
 
-### 2. Keep the full market UI in its dialog component
+### 2. Keep market flow orchestration in the market dialog
 
-A market-owned dialog component will contain the full market UI inside the existing Ant Design modal pattern. It will supply a minimal synthetic `LayoutCard` with empty metadata for `McPreset` and the existing card helper contract.
+A market-owned dialog component will contain the full market UI inside the existing Ant Design modal pattern. It owns an explicit category, creation-method, preset, and manual-form step state plus the selected category and method.
 
-The former `frontend/src/widgets/market/index.vue` component has no other caller, so merging it into `MarketDialog.vue` removes an unnecessary forwarding layer without changing behavior.
+Category selection only records the category and advances to method selection. Node selection and creation-specific behavior begin only after the user chooses a method, so the new method step is never skipped by preset-specific logic.
 
 ### 3. Load the full market dialog lazily from the shared helper
 
@@ -62,6 +64,22 @@ The market editor action will keep its existing `/market/editor` navigation and 
 
 `McPreset` will emit an `install-started` event after the async installation task is created and `startDownloadTask` is invoked. `MarketDialog` will handle the event with its existing `cancel` handler, keeping the reusable preset flow independent from the dialog mounting implementation.
 
+### 9. Reuse the preset browser through a category entry prop
+
+`McPreset` keeps its existing default category-first behavior for layout-card callers. The market dialog passes the selected category through an optional prop so the preset branch selects a compatible node and opens that category's detail list directly. Its back action emits to the market dialog, which returns to creation-method selection instead of exposing unrelated categories.
+
+This is preferred over adding market/reinstall mode flags or copying the preset installation logic into a second component.
+
+### 10. Reuse existing manual creation forms
+
+The package-upload, Docker-image, and no-file choices map to the existing `QUICKSTART_METHOD.IMPORT`, `QUICKSTART_METHOD.DOCKER`, and `QUICKSTART_METHOD.EXIST` methods. After a node is selected, `MarketDialog` renders `CreateInstanceForm` with that method and the selected node.
+
+The creation-method choice UI is market-owned and intentionally thin: it presents four selectable cards inspired by the reference layout and emits the selected method. It does not own API calls or instance configuration state.
+
+### 11. Preserve the reinstall component boundary
+
+`InstanceReinstallDialog` continues to render `AppPackages` directly and is not routed through the new market state machine or `McPreset`. Existing reinstall category selection, confirmation, and automatic reinstall behavior remain unchanged.
+
 ## Risks / Trade-offs
 
 - [The market dialog is a comparatively large UI surface] → Keep the existing dynamic import so callers do not load it eagerly.
@@ -70,10 +88,14 @@ The market editor action will keep its existing `/market/editor` navigation and 
 - [A standalone mounted widget has no injected route] → Guard route query access in the shared card helper and cover optional and required lookups without a router.
 - [Route navigation does not unmount an independently mounted dialog] → Explicitly cancel the market dialog when opening the market editor.
 - [The preset component cannot destroy its independently mounted parent] → Emit an installation lifecycle event and let the market dialog close itself.
+- [The same preset component is also registered as a layout card] → Make category entry optional and preserve the current default path when the prop is absent.
+- [Manual creation methods require a target node] → Select the node only after the method choice and pass the node id into the existing creation form.
+- [Back navigation could expose the wrong parent step] → Let the market dialog own step transitions and treat child back events as branch exits.
 
 ## Migration Plan
 
 1. Rename the reinstall helper, type, component, and internal callers without changing behavior.
 2. Add the full market dialog wrapper and implement the new `openMarketDialog` lazy mount.
 3. Verify navigation entry points open the full market, terminal flows still open the reinstall selector, and the iframe action is absent.
-4. Run frontend type checking, linting, and tests. Roll back by reverting the frontend-only changes; there is no data migration.
+4. Add the market creation-method step and connect each branch to existing preset or manual creation components.
+5. Run frontend type checking, linting, and tests. Roll back by reverting the frontend-only changes; there is no data migration.

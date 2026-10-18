@@ -1,20 +1,50 @@
 <script setup lang="ts">
+import { openNodeSelectDialog } from "@/components/fc";
 import { router } from "@/config/router";
 import { useDialog } from "@/hooks/useDialog";
+import type { ComputedNodeInfo } from "@/hooks/useOverviewInfo";
+import { QUICKSTART_METHOD } from "@/hooks/widgets/quickStartFlow";
 import { t } from "@/lang/i18n";
+import { overviewInfo } from "@/services/apis";
 import { useAppStateStore } from "@/stores/useAppStateStore";
-import type { LayoutCard, MountComponent } from "@/types";
+import { reportErrorMsg } from "@/tools/validator";
+import type { LayoutCard, MountComponent, QuickStartPackages } from "@/types";
+import MarketCreateMethodStep from "@/widgets/market/MarketCreateMethodStep.vue";
 import { useMarketTour } from "@/widgets/market/useMarketTour";
+import AppPackages from "@/widgets/setupApp/AppPackages.vue";
+import CreateInstanceForm from "@/widgets/setupApp/CreateInstanceForm.vue";
 import McPreset from "@/widgets/setupApp/McPreset.vue";
-import { DatabaseOutlined } from "@ant-design/icons-vue";
+import { ArrowLeftOutlined, DatabaseOutlined } from "@ant-design/icons-vue";
 import { Divider, Flex, Tour } from "ant-design-vue";
 import Link from "ant-design-vue/es/typography/Link";
+import { ref } from "vue";
 
 const props = defineProps<{
   destroyComponent: MountComponent["destroyComponent"];
 }>();
 
 const { isVisible, openDialog, cancel } = useDialog<void>(props);
+const daemonId = ref<string | undefined>(
+  router.currentRoute.value.query.daemonId as string | undefined
+);
+const { execute: getOverviewInfo } = overviewInfo();
+
+enum MarketStep {
+  CATEGORY = 0,
+  METHOD,
+  PRESET,
+  MANUAL
+}
+type MarketCreateMethod =
+  | "preset"
+  | QUICKSTART_METHOD.IMPORT
+  | QUICKSTART_METHOD.DOCKER
+  | QUICKSTART_METHOD.EXIST;
+
+const currentStep = ref(MarketStep.CATEGORY);
+const selectedCategory = ref<QuickStartPackages>();
+const selectedMethod = ref<QUICKSTART_METHOD>();
+const selectedDaemonId = ref(daemonId.value ?? "");
 
 const marketCard: LayoutCard = {
   id: "application-market-dialog",
@@ -34,6 +64,66 @@ const openEditor = () => {
   cancel();
 };
 
+const handleSelectCategory = (category: QuickStartPackages) => {
+  selectedCategory.value = category;
+  currentStep.value = MarketStep.METHOD;
+};
+
+const handleSelectMethod = async (method: MarketCreateMethod) => {
+  if (method === "preset") {
+    currentStep.value = MarketStep.PRESET;
+    return;
+  }
+  try {
+    let node: ComputedNodeInfo | undefined;
+    if (!daemonId.value) {
+      const overview = await getOverviewInfo({ forceRequest: true });
+      const onlineNodes = overview.value?.remote?.filter((item) => item.available) ?? [];
+      if (onlineNodes.length === 0) {
+        reportErrorMsg(t("TXT_CODE_e3d96a26"));
+        return;
+      }
+
+      node = onlineNodes.length === 1 ? onlineNodes[0] : await openNodeSelectDialog();
+      if (!node) {
+        reportErrorMsg(t("TXT_CODE_2de92a5d"));
+        return;
+      }
+      selectedDaemonId.value = node.uuid;
+    }
+
+    selectedMethod.value = method;
+    currentStep.value = MarketStep.MANUAL;
+  } catch (err: any) {
+    console.error(err);
+    return;
+  }
+};
+
+const backToCategory = () => {
+  selectedCategory.value = undefined;
+  currentStep.value = MarketStep.CATEGORY;
+};
+
+const backToMethod = () => {
+  selectedDaemonId.value = "";
+  selectedMethod.value = undefined;
+  currentStep.value = MarketStep.METHOD;
+};
+
+const handleManualCreated = (instanceId?: string) => {
+  if (instanceId) {
+    router.push({
+      path: "/instances/terminal",
+      query: {
+        daemonId: selectedDaemonId.value,
+        instanceId
+      }
+    });
+  }
+  cancel();
+};
+
 defineExpose({
   openDialog
 });
@@ -50,7 +140,7 @@ defineExpose({
   >
     <div style="height: 100%">
       <div>
-        <div ref="step3Ref">
+        <div v-if="currentStep !== MarketStep.METHOD">
           <a-typography-title :level="4" style="margin-bottom: 8px">
             <DatabaseOutlined />
             {{ t("TXT_CODE_88249aee") }}
@@ -72,7 +162,38 @@ defineExpose({
             </Flex>
           </a-typography-paragraph>
         </div>
-        <McPreset :card="marketCard" @install-started="cancel" />
+        <AppPackages
+          v-if="currentStep === MarketStep.CATEGORY"
+          @handle-select-category="handleSelectCategory"
+          @handle-select-template="() => {}"
+          @handle-back-to-category="() => {}"
+        />
+        <MarketCreateMethodStep
+          v-else-if="currentStep === MarketStep.METHOD"
+          :category-title="selectedCategory?.title"
+          @back="backToCategory"
+          @select="handleSelectMethod"
+        />
+        <McPreset
+          v-else-if="currentStep === MarketStep.PRESET && selectedCategory"
+          :card="marketCard"
+          :initial-category="selectedCategory"
+          @back="backToMethod"
+          @install-started="cancel"
+        />
+        <div v-else-if="currentStep === MarketStep.MANUAL && selectedMethod" class="manual-step">
+          <a-button class="manual-back" @click="backToMethod">
+            <template #icon>
+              <ArrowLeftOutlined />
+            </template>
+            {{ t("TXT_CODE_c14b2ea3") }}
+          </a-button>
+          <CreateInstanceForm
+            :create-method="selectedMethod"
+            :daemon-id="selectedDaemonId"
+            @next-step="handleManualCreated"
+          />
+        </div>
       </div>
 
       <Tour
@@ -85,3 +206,13 @@ defineExpose({
     </div>
   </a-modal>
 </template>
+
+<style scoped>
+.manual-step {
+  padding-top: 8px;
+}
+
+.manual-back {
+  margin-bottom: 20px;
+}
+</style>

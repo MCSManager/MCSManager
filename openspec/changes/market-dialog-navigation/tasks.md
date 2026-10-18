@@ -12,9 +12,15 @@
 - [x] 2.4 Merge the single-use market widget into `MarketDialog.vue`, remove `widgets/market/index.vue`, and close the dialog when opening `/market/editor`; add focused coverage and verify with `cd frontend && npm run type-check && npm test`.
 - [x] 2.5 Emit an installation-started event after `McPreset` launches the download task and close `MarketDialog` in response; add focused coverage and verify with `cd frontend && npm run type-check && npm test`.
 
-## 3. Frontend integration checks
+## 3. Add the market creation method flow
 
-- [ ] 3.1 Run the complete frontend validation and review the final diff for unrelated changes with `cd frontend && npm run type-check && npm run lint && npm test`.
+- [x] 3.1 Add the market-owned four-option creation-method step and category/method/branch navigation, with focused component tests; verify with `cd frontend && npm run type-check && npm test`.
+- [x] 3.2 Let `McPreset` enter an optional preselected category while preserving its default layout-card flow and route its market back action to method selection; verify with `cd frontend && npm run type-check && npm test`.
+- [x] 3.3 Connect package upload, Docker image, and no-file choices to the existing creation form after node selection without changing `InstanceReinstallDialog`; verify with `cd frontend && npm run type-check && npm test`.
+
+## 4. Frontend integration checks
+
+- [ ] 4.1 Run the complete frontend validation and review the final diff for unrelated changes with `cd frontend && npm run type-check && npm run lint && npm test`.
 
 ## Workflow follow-up
 

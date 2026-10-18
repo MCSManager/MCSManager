@@ -12,13 +12,15 @@ import type { LayoutCard, QuickStartPackages } from "@/types";
 import TemplateNameDialog from "@/widgets/instance/dialogs/TemplateNameDialog.vue";
 import AppPackages from "@/widgets/setupApp/AppPackages.vue";
 import { message } from "ant-design-vue";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 const props = defineProps<{
   card: LayoutCard;
+  initialCategory?: QuickStartPackages;
 }>();
 
 const emit = defineEmits<{
+  back: [];
   "install-started": [];
 }>();
 
@@ -92,7 +94,7 @@ const handleSelectCategory = async (item: QuickStartPackages) => {
       const onlineNodes = overview.value?.remote?.filter((item) => item.available) ?? [];
       if (onlineNodes.length === 0) {
         reportErrorMsg(t("TXT_CODE_e3d96a26"));
-        return;
+        return false;
       }
 
       node =
@@ -101,14 +103,16 @@ const handleSelectCategory = async (item: QuickStartPackages) => {
           : await openNodeSelectDialog();
       if (!node) {
         reportErrorMsg(t("TXT_CODE_2de92a5d"));
-        return;
+        return false;
       }
       daemonId = node.uuid;
       currentNode.value = node;
     }
     appPackages.value?.handleSelectTopCategory(item, node);
+    return true;
   } catch (err: any) {
     console.error(err);
+    return false;
   }
 };
 
@@ -202,9 +206,19 @@ const startDownloadTask = async () => {
 };
 
 const handleBackToCategory = () => {
+  if (props.initialCategory) {
+    emit("back");
+    return;
+  }
   daemonId = "";
   currentNode.value = undefined;
 };
+
+onMounted(async () => {
+  if (props.initialCategory && !(await handleSelectCategory(props.initialCategory))) {
+    emit("back");
+  }
+});
 </script>
 
 <template>

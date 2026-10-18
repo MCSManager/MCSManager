@@ -27,6 +27,28 @@ The frontend SHALL provide a market dialog that displays the complete applicatio
 - **THEN** the application market dialog closes
 - **AND** the existing terminal navigation continues
 
+### Requirement: Category-scoped creation method selection
+The frontend SHALL ask how the user wants to create a server after the user selects a market category and before any creation-specific form or preset list is displayed.
+
+#### Scenario: Select a market category
+- **WHEN** the user selects a category in the application market
+- **THEN** the frontend displays choices to upload a server package, use a preset template, create from a Docker image, or create without uploading files
+- **AND** no existing instance is modified
+
+#### Scenario: Continue with a preset template
+- **WHEN** the user selects the preset-template creation method
+- **THEN** the frontend displays the detailed preset list for the previously selected category
+- **AND** presets from other categories are not displayed
+
+#### Scenario: Continue with a manual creation method
+- **WHEN** the user selects package upload, Docker image, or no-file creation
+- **THEN** the frontend continues to the existing compatible creation form for that method
+
+#### Scenario: Navigate back through market creation steps
+- **WHEN** the user navigates back from a creation branch
+- **THEN** the frontend returns to the creation-method choices for the selected category
+- **AND** navigating back again returns to the category list
+
 ### Requirement: Dedicated instance reinstall selector
 The frontend SHALL keep preset selection for an existing instance reinstall separate from the full application market dialog and SHALL preserve the existing reinstall confirmation and execution behavior.
 
