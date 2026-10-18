@@ -1,4 +1,5 @@
-import { router, type RouterMetaInfo } from "@/config/router";
+import { openMarketDialog } from "@/components/fc";
+import { ROLE, router, type RouterMetaInfo } from "@/config/router";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { t } from "@/lang/i18n";
 import { logoutUser } from "@/services/apis/index";
@@ -7,6 +8,7 @@ import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useAppToolsStore } from "@/stores/useAppToolsStore";
 import { useLayoutConfigStore } from "@/stores/useLayoutConfig";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
+import { getRandomId } from "@/tools/randId";
 import { AppTheme } from "@/types/const";
 import {
   AppstoreAddOutlined,
@@ -32,6 +34,7 @@ export type SidebarRouteEntry = {
   path: string;
   name: string | symbol | undefined;
   customClass?: string[];
+  onclick?: () => void;
 };
 
 /** Sidebar item: app menu (no submenu) */
@@ -84,7 +87,7 @@ export function useHeaderMenus() {
   };
 
   const menus = computed(() => {
-    return router
+    const routeEntries = router
       .getRoutes()
       .filter((v) => {
         if (v.path === "/" || !v.name) return false;
@@ -110,6 +113,19 @@ export function useHeaderMenus() {
         meta: r.meta,
         customClass: r.meta.customClass ?? []
       }));
+
+    routeEntries.splice(1, 0, {
+      name: t("TXT_CODE_27594db8"),
+      path: getRandomId(),
+      meta: {
+        mainMenu: true,
+        permission: ROLE.ADMIN,
+        onclick: () => openMarketDialog().catch(() => undefined)
+      },
+      customClass: []
+    });
+
+    return routeEntries;
   });
 
   const appMenus = computed(() => {
@@ -262,7 +278,8 @@ export function useHeaderMenus() {
       type: "route",
       path: r.path,
       name: r.name,
-      customClass: Array.isArray(r.customClass) ? r.customClass : []
+      customClass: Array.isArray(r.customClass) ? r.customClass : [],
+      onclick: (r.meta.onclick as () => void) ?? undefined
     }));
     const divider: SidebarDividerEntry = { type: "divider" };
     const appEntries: (SidebarAppEntry | SidebarAppDropdownEntry)[] = appMenus.value

@@ -75,7 +75,7 @@ const onAppDropdownClick = (item: SidebarAppDropdownEntry, info: { key: Key }) =
           v-else-if="entry.type === 'route'"
           class="sidebar-item"
           :class="[entry.customClass, { 'sidebar-item-active': isRouteActive(entry.path) }]"
-          @click.prevent="handleToPage(entry.path)"
+          @click.prevent="entry.onclick ? entry.onclick() : handleToPage(entry.path)"
         >
           <component :is="getRouteIcon(entry.path)" class="sidebar-item-icon" />
           <span class="sidebar-item-text">{{ entry.name }}</span>

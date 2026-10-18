@@ -33,6 +33,7 @@ export interface RouterMetaInfo {
     mainMenu?: boolean;
     permission: number;
   }>;
+  onclick?: () => void;
 }
 
 export interface RouterConfig {
@@ -172,9 +173,9 @@ const originRouterConfig: RouterConfig[] = [
   {
     path: "/market",
     name: t("TXT_CODE_27594db8"),
-    component: LayoutContainer,
+    redirect: "/overview",
     meta: {
-      mainMenu: true,
+      mainMenu: false,
       permission: ROLE.ADMIN
     },
     children: [

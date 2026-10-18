@@ -19,7 +19,6 @@ import InstanceChart from "@/widgets/InstanceChart.vue";
 import InstanceList from "@/widgets/InstanceList.vue";
 import LoginCard from "@/widgets/LoginCard.vue";
 import MarketEditor from "@/widgets/market/editor.vue";
-import Market from "@/widgets/market/index.vue";
 import NodeItem from "@/widgets/node/NodeItem.vue";
 import NodeList from "@/widgets/NodeList.vue";
 import NodeOverview from "@/widgets/NodeOverview.vue";
@@ -94,7 +93,6 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   MusicCard,
   OperationLogCard,
   AuditLog,
-  Market,
   MarketEditor
 };
 
@@ -528,17 +526,6 @@ export function getLayoutCardPool() {
       description: t("TXT_CODE_cb84b22"),
       height: LayoutCardHeight.SMALL,
       category: NEW_CARD_TYPE.COMMON
-    },
-    {
-      id: getRandomId(),
-      permission: ROLE.ADMIN,
-      meta: {},
-      type: "Market",
-      title: t("TXT_CODE_27594db8"),
-      width: 12,
-      description: t("TXT_CODE_9b45858c"),
-      height: LayoutCardHeight.BIG,
-      category: NEW_CARD_TYPE.OTHER
     },
     {
       id: getRandomId(),

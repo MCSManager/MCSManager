@@ -9,7 +9,6 @@ import {
   LoginOutlined,
   MenuOutlined,
   SettingOutlined,
-  ShopOutlined,
   TeamOutlined,
   UserOutlined
 } from "@ant-design/icons-vue";
@@ -23,7 +22,6 @@ const isExpanded = ref(false);
 
 const routePathIcons: Record<string, Component> = {
   "/instances": AppstoreOutlined,
-  "/market": ShopOutlined,
   "/overview": AreaChartOutlined,
   "/users": TeamOutlined,
   "/node": ApartmentOutlined,

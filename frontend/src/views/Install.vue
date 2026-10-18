@@ -70,7 +70,7 @@ const setLang = (lang: string) => {
 
 const toQuickStart = () => {
   toPage({
-    path: "/market",
+    path: "/quickstart/minecraft",
     query: {
       from_install: 1
     }

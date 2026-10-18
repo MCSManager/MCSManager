@@ -23,11 +23,6 @@ const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 let daemonId = getMetaOrRouteValue("daemonId", false) ?? "";
 let currentNode = ref<ComputedNodeInfo | undefined>(undefined);
 
-const isMarketPage = router.currentRoute.value.path.includes("/market");
-if (isMarketPage) {
-  daemonId = "";
-}
-
 const installView = ref(false);
 const percentage = ref(0);
 const isInstalled = ref(false);

@@ -241,14 +241,6 @@ const uploadToPanel = async () => {
       }
     });
     message.success(t("TXT_CODE_a7907771"));
-    setTimeout(() => {
-      router.push({
-        path: "/market",
-        query: {
-          newTemplate: "true"
-        }
-      });
-    }, 500);
   } catch (err: any) {
     reportErrorMsg(err);
   }
