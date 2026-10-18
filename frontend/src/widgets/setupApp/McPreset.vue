@@ -17,6 +17,10 @@ const props = defineProps<{
   card: LayoutCard;
 }>();
 
+const emit = defineEmits<{
+  "install-started": [];
+}>();
+
 const appPackages = ref<InstanceType<typeof AppPackages>>();
 
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
@@ -164,6 +168,7 @@ const handleTemplateConfirm = async (instanceName: string, template: QuickStartP
       eta: 0
     };
     await startDownloadTask();
+    emit("install-started");
   } catch (err: any) {
     console.error(err);
     return reportErrorMsg(err.message);

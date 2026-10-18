@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { OpenMarketDialogProps } from "@/components/fc";
+import type { OpenInstanceReinstallDialogProps } from "@/components/fc";
 import { useDialog } from "@/hooks/useDialog";
 import { t } from "@/lang/i18n";
 import { reinstallInstance } from "@/services/apis/instance";
@@ -9,7 +9,7 @@ import AppPackages from "@/widgets/setupApp/AppPackages.vue";
 import { Modal } from "ant-design-vue";
 import { ref } from "vue";
 
-interface Props extends OpenMarketDialogProps, MountComponent<QuickStartPackages> {}
+interface Props extends OpenInstanceReinstallDialogProps, MountComponent<QuickStartPackages> {}
 
 const props = defineProps<Props>();
 
@@ -26,10 +26,7 @@ const handleSelectCategory = (item: QuickStartPackages) => {
   appPackages.value?.handleSelectTopCategory(item);
 };
 
-const handleSelectTemplate = async (
-  item: QuickStartPackages | null,
-  _type: "normal" | "docker"
-) => {
+const handleSelectTemplate = async (item: QuickStartPackages | null) => {
   if (!item) {
     return submit(undefined);
   }

@@ -10,7 +10,7 @@ import type { DownloadFileConfigItem } from "@/types/fileManager";
 import type { AddJavaConfigItem, DownloadJavaConfigItem } from "@/types/javaManager";
 import DeleteInstanceDialog from "@/widgets/instance/dialogs/DeleteInstanceDialog.vue";
 import ImageViewerDialog from "@/widgets/instance/dialogs/ImageViewer.vue";
-import MarketDialog from "@/widgets/instance/dialogs/MarketDialog.vue";
+import InstanceReinstallDialog from "@/widgets/instance/dialogs/InstanceReinstallDialog.vue";
 import AddJavaDialog from "./AddJavaDialog.vue";
 import DockerCapabilityDialogVue from "./DockerCapabilityDialog.vue";
 import DockerDeviceDialogVue from "./DockerDeviceDialog.vue";
@@ -252,7 +252,7 @@ export async function openDockerVersionSelectDialog() {
   return dialog!.openDialog();
 }
 
-export interface OpenMarketDialogProps {
+export interface OpenInstanceReinstallDialogProps {
   daemonId?: string;
   instanceId?: string;
   autoInstall?: boolean;
@@ -262,16 +262,23 @@ export interface OpenMarketDialogProps {
   onlyDockerTemplate?: boolean;
 }
 
-export async function openMarketDialog(
+export async function openInstanceReinstallDialog(
   daemonId?: string,
   instanceId?: string,
-  options: OpenMarketDialogProps = {}
+  options: OpenInstanceReinstallDialogProps = {}
 ) {
   const dialog = useMountComponent({
     daemonId,
     instanceId,
     ...options
-  }).load<InstanceType<typeof MarketDialog>>(MarketDialog);
+  }).load<InstanceType<typeof InstanceReinstallDialog>>(InstanceReinstallDialog);
+  return dialog!.openDialog();
+}
+
+export async function openMarketDialog() {
+  const { default: MarketDialog } = await import("@/widgets/market/MarketDialog.vue");
+  const dialog = useMountComponent()
+    .load<InstanceType<typeof MarketDialog>>(MarketDialog);
   return dialog!.openDialog();
 }
 

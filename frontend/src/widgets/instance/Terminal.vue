@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import CardPanel from "@/components/CardPanel.vue";
-import { openMarketDialog, openRenewalDialog } from "@/components/fc";
+import { openInstanceReinstallDialog, openRenewalDialog } from "@/components/fc";
 import IconBtn from "@/components/IconBtn.vue";
 import TerminalCore from "@/components/TerminalCore.vue";
 import TerminalTopTags from "@/components/TerminalTopTags.vue";
@@ -216,7 +216,7 @@ const instanceOperations = computed(() =>
       click: async () => {
         try {
           clearTerminal();
-          await openMarketDialog(daemonId ?? "", instanceId ?? "", {
+          await openInstanceReinstallDialog(daemonId ?? "", instanceId ?? "", {
             autoInstall: true,
             onlyDockerTemplate: isDockerMode.value
           });

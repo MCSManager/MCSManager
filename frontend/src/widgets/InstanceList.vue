@@ -296,8 +296,14 @@ const handleChangeNode = async (item: NodeStatus) => {
   }
 };
 
+const toCreateAppPage = () => {
+  router.push({
+    path: "/quickstart"
+  });
+};
+
 const toMarketPage = () => {
-  void openMarketDialog().catch(() => undefined);
+  openMarketDialog().catch(() => undefined);
 };
 
 const toNodesPage = () => {
@@ -588,7 +594,7 @@ onMounted(async () => {
             <a-button
               type="primary"
               :disabled="!currentRemoteNode?.available"
-              @click="toMarketPage"
+              @click="toCreateAppPage()"
             >
               {{ t("TXT_CODE_53408064") }}
             </a-button>
