@@ -20,6 +20,14 @@ export enum NEW_CARD_TYPE {
   OTHER = "OTHER"
 }
 
+// Data-plane mode values. Mirrors `DataPlaneMode` in
+// `panel/src/app/entity/setting.ts`; the contract between the two is the
+// string wire format (`"direct"` / `"proxy"`), not a shared TS symbol.
+export enum DataPlaneMode {
+  Direct = "direct",
+  Proxy = "proxy"
+}
+
 export interface InstanceRuntimeInfo {
   mcPingOnline: boolean;
   currentPlayers: number;
@@ -75,7 +83,7 @@ export interface Settings {
   reverseProxyHeader: string;
   dataPort: number;
   forwardType: number;
-  dataPlane: "direct" | "proxy";
+  dataPlane: DataPlaneMode;
   crossDomain: boolean;
   gzip: boolean;
   maxCompress: number;

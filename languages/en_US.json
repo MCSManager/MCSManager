@@ -3154,7 +3154,7 @@
   "TXT_CODE_gzip_compress": "HTTP Compression",
   "TXT_CODE_gzip_compress_desc": "Compress HTTP responses (zstd, gzip, etc., auto-negotiated). Responses under 1 KB are skipped.",
   "TXT_CODE_settings_dataPlane": "Data Plane Mode",
-  "TXT_CODE_settings_dataPlane_hint": "Browser→daemon direct connection (legacy default) or panel reverse-proxy (daemon port stays private). Changes take effect without restart.",
+  "TXT_CODE_settings_dataPlane_hint": "Browser→daemon direct connection or panel reverse-proxy (daemon port stays private; default on new installs). Existing installs keep their current mode. Changes take effect without restart.",
   "TXT_CODE_settings_dataPlane_direct": "Direct Connection",
   "TXT_CODE_settings_dataPlane_proxy": "Panel Proxy",
   "TXT_CODE_59653f38": "Device Read Rate Limit (BPS)",

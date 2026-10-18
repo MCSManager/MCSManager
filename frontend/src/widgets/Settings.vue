@@ -17,7 +17,7 @@ import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { arrayFilter } from "@/tools/array";
 import { pickLocalizedNotes } from "@/tools/localizedNotes";
 import { reportErrorMsg } from "@/tools/validator";
-import type { LayoutCard, Settings } from "@/types";
+import { DataPlaneMode, type LayoutCard, type Settings } from "@/types";
 import {
   ApiOutlined,
   BankOutlined,
@@ -185,11 +185,11 @@ const apiKeyAccessOptions = [
 const dataPlaneOptions = [
   {
     label: t("TXT_CODE_settings_dataPlane_direct"),
-    value: "direct"
+    value: DataPlaneMode.Direct
   },
   {
     label: t("TXT_CODE_settings_dataPlane_proxy"),
-    value: "proxy"
+    value: DataPlaneMode.Proxy
   }
 ];
 

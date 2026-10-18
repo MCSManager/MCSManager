@@ -3,6 +3,7 @@ import axios from "axios";
 import fs from "fs-extra";
 import path from "path";
 import { MARKET_CACHE_FILE_PATH, SAVE_DIR_PATH } from "../const";
+import { DataPlaneMode } from "../entity/setting";
 import { ROLE } from "../entity/user";
 import { $t } from "../i18n";
 import permission from "../middleware/permission";
@@ -94,7 +95,7 @@ router.post(
         ...getOperationLoggerOperator(ctx),
         instance_name: result.nickname
       });
-      if (systemConfig?.dataPlane === "proxy") {
+      if (systemConfig?.dataPlane === DataPlaneMode.Proxy) {
         const token = GatewayToken.issueProxyToken({
           daemonId,
           instanceUuid: newInstanceUuid,
