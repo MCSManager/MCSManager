@@ -33,6 +33,12 @@ enum MarketStep {
   PRESET,
   MANUAL
 }
+const marketStepWidths: Record<MarketStep, string> = {
+  [MarketStep.CATEGORY]: "1600px",
+  [MarketStep.METHOD]: "800px",
+  [MarketStep.PRESET]: "1600px",
+  [MarketStep.MANUAL]: "950px"
+};
 type MarketCreateMethod =
   | "preset"
   | QUICKSTART_METHOD.IMPORT
@@ -127,7 +133,7 @@ defineExpose({
   <a-modal
     v-model:open="isVisible"
     centered
-    width="1600px"
+    :width="marketStepWidths[currentStep]"
     :footer="null"
     :destroy-on-close="true"
     @cancel="cancel"
