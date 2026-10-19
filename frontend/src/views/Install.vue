@@ -227,11 +227,11 @@ const toOverview = () => {
           class="p-10"
           status="success"
           :title="t('TXT_CODE_97be50a8')"
-          :sub-title="t('面板已准备就绪，点击下方按钮即可开始使用')"
+          :sub-title="t('TXT_CODE_5a455c84')"
         >
           <template #extra>
             <a-button key="console" type="primary" @click="toOverview">
-              {{ t("立即使用") }}
+              {{ t("TXT_CODE_637d8b7c") }}
             </a-button>
           </template>
         </a-result>

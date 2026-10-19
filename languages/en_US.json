@@ -3266,5 +3266,8 @@
   "TXT_CODE_file_ownership.invalidId": "Invalid {{label}} in instance runAs setting",
   "TXT_CODE_file_ownership.invalidTarget": "Access denied: Invalid ownership target",
   "TXT_CODE_file_ownership.outsideWorkspace": "Access denied: Ownership target escapes instance workspace",
-  "TXT_CODE_file_ownership.targetChanged": "Access denied: Ownership target changed during validation"
+  "TXT_CODE_file_ownership.targetChanged": "Access denied: Ownership target changed during validation",
+  "TXT_CODE_5a455c84": "The panel is ready. Click the button below to get started.",
+  "TXT_CODE_637d8b7c": "Use now",
+  "TXT_CODE_dcdbc73": "Start with existing resources or build from scratch. Choose an option to continue."
 }

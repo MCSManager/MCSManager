@@ -40,7 +40,7 @@ const handleConfirm = async () => {
       handleCancel();
     }
   } catch (error) {
-    console.error("表单验证失败:", error);
+    console.error("Form validation failed:", error);
   }
 };
 </script>

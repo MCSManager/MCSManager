@@ -82,7 +82,7 @@ const submit = () => {
       </a-typography-title>
 
       <a-typography-text type="secondary">
-        {{ t("从已有资源开始，或从零搭建。选择适合你的方式，继续下一步。") }}
+        {{ t("TXT_CODE_dcdbc73") }}
       </a-typography-text>
     </div>
 
