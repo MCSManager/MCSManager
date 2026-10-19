@@ -193,6 +193,7 @@ defineExpose({
           <CreateInstanceForm
             :create-method="selectedMethod"
             :daemon-id="selectedDaemonId"
+            :app-type="selectedCategory?.gameType"
             @back="backToMethod"
             @next-step="handleManualCreated"
           />

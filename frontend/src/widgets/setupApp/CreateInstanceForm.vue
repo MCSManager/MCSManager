@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { getFileConfigAddr } from "@/hooks/useFileManager";
-import { INSTANCE_TYPE_TRANSLATION, TYPE_MINECRAFT_BUNGEECORD } from "@/hooks/useInstance";
+import {
+  INSTANCE_TYPE_TRANSLATION,
+  TYPE_HYTALE,
+  TYPE_MINECRAFT_BEDROCK,
+  TYPE_MINECRAFT_BUNGEECORD,
+  TYPE_MINECRAFT_JAVA,
+  TYPE_STEAM_SERVER_UNIVERSAL,
+  TYPE_TERRARIA,
+  TYPE_UNIVERSAL
+} from "@/hooks/useInstance";
 import { QUICKSTART_ACTION_TYPE, QUICKSTART_METHOD } from "@/hooks/widgets/quickStartFlow";
 import { t } from "@/lang/i18n";
 import { createInstance as createInstanceApi, uploadAddress } from "@/services/apis/instance";
@@ -26,6 +35,7 @@ const selectUnzipCodeDialog = ref<InstanceType<typeof SelectUnzipCode>>();
 const props = defineProps<{
   createMethod: QUICKSTART_METHOD;
   daemonId: string;
+  appType?: string;
 }>();
 
 const emit = defineEmits<{
@@ -63,6 +73,18 @@ function changeInstanceType(appType: string) {
     formData.stopCommand = "^c";
   }
 }
+
+const appTypeInstanceTypes: Record<string, string> = {
+  [QUICKSTART_ACTION_TYPE.Minecraft]: TYPE_MINECRAFT_JAVA,
+  [QUICKSTART_ACTION_TYPE.Bedrock]: TYPE_MINECRAFT_BEDROCK,
+  [QUICKSTART_ACTION_TYPE.Hytale]: TYPE_HYTALE,
+  [QUICKSTART_ACTION_TYPE.Terraria]: TYPE_TERRARIA,
+  [QUICKSTART_ACTION_TYPE.SteamGameServer]: TYPE_STEAM_SERVER_UNIVERSAL,
+  [QUICKSTART_ACTION_TYPE.AnyApp]: TYPE_UNIVERSAL
+};
+
+formData.type = appTypeInstanceTypes[(props.appType ?? "").toLowerCase()] ?? TYPE_UNIVERSAL;
+changeInstanceType(formData.type);
 
 const rules: Record<string, Rule[]> = {
   nickname: [{ required: true, message: t("TXT_CODE_68a504b3") }],
