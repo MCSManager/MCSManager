@@ -6,7 +6,6 @@ import {
   AppstoreAddOutlined,
   AppstoreTwoTone,
   CalculatorTwoTone,
-  CloudUploadOutlined,
   CodeOutlined,
   DatabaseTwoTone,
   FileExcelOutlined,
@@ -33,7 +32,6 @@ export enum QUICKSTART_ACTION_TYPE {
 
 export enum QUICKSTART_METHOD {
   FAST = "FAST",
-  FILE = "FILE",
   IMPORT = "IMPORT",
   SELECT = "SELECT",
   EXIST = "EXIST",
@@ -147,11 +145,6 @@ export function useQuickStartFlow() {
         title: t("TXT_CODE_acd4abda"),
         key: QUICKSTART_METHOD.DOCKER,
         icon: CodeOutlined
-      },
-      {
-        title: t("TXT_CODE_444db70f"),
-        key: QUICKSTART_METHOD.FILE,
-        icon: CloudUploadOutlined
       },
       {
         title: t("TXT_CODE_f2a58270"),

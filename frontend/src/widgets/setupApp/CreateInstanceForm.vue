@@ -37,9 +37,7 @@ const zipCode = ref("utf-8");
 const formRef = ref<FormInstance>();
 const formData = reactive<IGlobalInstanceConfig>(defaultInstanceInfo);
 
-const isImportMode = props.createMethod === QUICKSTART_METHOD.IMPORT;
-const isFileMode = props.createMethod === QUICKSTART_METHOD.FILE;
-const needUpload = isImportMode || isFileMode;
+const needUpload = props.createMethod === QUICKSTART_METHOD.IMPORT;
 
 function changeInstanceType(appType: string) {
   if (appType.includes(QUICKSTART_ACTION_TYPE.Minecraft)) {
@@ -76,7 +74,7 @@ const uFile = ref<File>();
 const beforeUpload: UploadProps["beforeUpload"] = async (file) => {
   uFile.value = file;
 
-  if (isImportMode) {
+  if (needUpload) {
     const extName = file.name.split(".").pop()?.toLowerCase() || "";
     if (!["zip", "jar"].includes(extName)) return reportErrorMsg(t("TXT_CODE_808e5ad9"));
     selectUnzipCodeDialog.value?.openDialog();
@@ -152,8 +150,6 @@ const selectedFile = async () => {
   try {
     if (!formData.cwd) formData.cwd = ".";
     if (formData.docker.image) formData.processType = "docker";
-    if (isFileMode)
-      formData.startCommand = formData.startCommand.replace("${ProgramName}", uFile.value!.name);
     await getCfg({
       params: {
         upload_dir: ".",
@@ -173,7 +169,7 @@ const selectedFile = async () => {
       cfg.value.password,
       {
         overwrite: false,
-        unzip: isImportMode,
+        unzip: needUpload,
         code: zipCode.value
       },
       (task) => {
@@ -416,35 +412,7 @@ const createInstance = async () => {
         </a-col>
       </a-row>
 
-      <!-- TODO: Delete -->
-      <a-form-item v-if="createMethod === QUICKSTART_METHOD.FILE">
-        <a-typography-title :level="5" class="require-field">
-          {{ t("TXT_CODE_444db70f") }}
-        </a-typography-title>
-        <a-typography-paragraph>
-          <a-typography-text type="secondary">
-            {{ t("TXT_CODE_fc4e2173") }}
-          </a-typography-text>
-        </a-typography-paragraph>
-        <a-upload
-          accept=".jar"
-          :before-upload="beforeUpload"
-          :max-count="1"
-          :change="selectedFile"
-          :disabled="percentComplete > 0"
-        >
-          <a-button type="primary" :loading="percentComplete > 0">
-            <upload-outlined v-if="percentComplete === 0" />
-            {{
-              percentComplete > 0
-                ? t("TXT_CODE_b625dbf0") + percentComplete + "%"
-                : t("TXT_CODE_335ba209")
-            }}
-          </a-button>
-        </a-upload>
-      </a-form-item>
-
-      <template v-else-if="createMethod === QUICKSTART_METHOD.IMPORT">
+      <template v-if="createMethod === QUICKSTART_METHOD.IMPORT">
         <Flex justify="space-between" align="end">
           <a-form-item class="mb-0">
             <a-typography-title :level="5" class="require-field">
