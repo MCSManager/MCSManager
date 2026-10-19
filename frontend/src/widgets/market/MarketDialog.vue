@@ -6,16 +6,14 @@ import type { ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import { QUICKSTART_METHOD } from "@/hooks/widgets/quickStartFlow";
 import { t } from "@/lang/i18n";
 import { overviewInfo } from "@/services/apis";
-import { useAppStateStore } from "@/stores/useAppStateStore";
 import { reportErrorMsg } from "@/tools/validator";
 import type { LayoutCard, MountComponent, QuickStartPackages } from "@/types";
 import MarketCreateMethodStep from "@/widgets/market/MarketCreateMethodStep.vue";
-import { useMarketTour } from "@/widgets/market/useMarketTour";
 import AppPackages from "@/widgets/setupApp/AppPackages.vue";
 import CreateInstanceForm from "@/widgets/setupApp/CreateInstanceForm.vue";
 import McPreset from "@/widgets/setupApp/McPreset.vue";
 import { AppstoreAddOutlined, DatabaseOutlined } from "@ant-design/icons-vue";
-import { Divider, Flex, Tour } from "ant-design-vue";
+import { Divider, Flex } from "ant-design-vue";
 import Link from "ant-design-vue/es/typography/Link";
 import { ref } from "vue";
 
@@ -54,10 +52,6 @@ const marketCard: LayoutCard = {
   height: "auto",
   meta: {}
 };
-
-const { isAdmin } = useAppStateStore();
-
-const { step3Ref, openTour, tourCurrent, tourSteps, markTourDone } = useMarketTour(isAdmin);
 
 const openEditor = () => {
   router.push("/market/editor");
@@ -199,14 +193,6 @@ defineExpose({
           />
         </div>
       </div>
-
-      <Tour
-        v-model:current="tourCurrent"
-        :open="openTour"
-        :steps="tourSteps"
-        @close="markTourDone"
-        @finish="markTourDone"
-      />
     </div>
   </a-modal>
 </template>

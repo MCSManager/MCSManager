@@ -33,11 +33,9 @@ import PluginCard from "@/widgets/others/PluginCard.vue";
 import TextCard from "@/widgets/others/TextCard.vue";
 import Page404 from "@/widgets/Page404.vue";
 import DataOverview from "@/widgets/PanelOverview.vue";
-import QuickStart from "@/widgets/QuickStart.vue";
 import RequestChart from "@/widgets/RequestChart.vue";
 import Settings from "@/widgets/Settings.vue";
 import McPreset from "@/widgets/setupApp/McPreset.vue";
-import QuickStartFlow from "@/widgets/setupApp/QuickStartFlow.vue";
 import StatusBlock from "@/widgets/StatusBlock.vue";
 import TitleCard from "@/widgets/TitleCard.vue";
 import UserAccessSettings from "@/widgets/user/AccessSettings.vue";
@@ -57,7 +55,6 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   EmptyCard,
   DataOverview,
   StatusBlock,
-  QuickStart,
   NodeOverview,
   RequestChart,
   InstanceChart,
@@ -75,7 +72,6 @@ export const LAYOUT_CARD_TYPES: { [key: string]: any } = {
   InstanceModManager,
   UserAccessSettings,
   ImageBox,
-  QuickStartFlow,
   McPreset,
   IframeCard,
   TextCard,
@@ -453,17 +449,6 @@ export function getLayoutCardPool() {
       description: t("TXT_CODE_55ade942"),
       height: LayoutCardHeight.MEDIUM,
       category: NEW_CARD_TYPE.DATA
-    },
-    {
-      id: getRandomId(),
-      permission: ROLE.ADMIN,
-      type: "QuickStart",
-      title: t("TXT_CODE_e01539f1"),
-      meta: {},
-      width: 4,
-      description: t("TXT_CODE_d628e631"),
-      height: LayoutCardHeight.MEDIUM,
-      category: NEW_CARD_TYPE.INSTANCE
     },
     {
       id: getRandomId(),

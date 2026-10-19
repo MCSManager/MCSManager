@@ -83,25 +83,6 @@ const originRouterConfig: RouterConfig[] = [
     }
   },
   {
-    path: "/quickstart",
-    name: t("TXT_CODE_2799a1dd"),
-    component: LayoutContainer,
-    meta: {
-      permission: ROLE.ADMIN,
-      mainMenu: false
-    },
-    children: [
-      {
-        path: "/quickstart/minecraft",
-        name: t("TXT_CODE_88249aee"),
-        component: LayoutContainer,
-        meta: {
-          permission: ROLE.ADMIN
-        }
-      }
-    ]
-  },
-  {
     path: "/",
     name: "",
     component: LayoutContainer,
