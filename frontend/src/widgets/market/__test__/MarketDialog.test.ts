@@ -9,6 +9,7 @@ const mocks = vi.hoisted(() => ({
   destroyComponent: vi.fn(),
   openNodeSelectDialog: vi.fn(),
   getOverviewInfo: vi.fn(),
+  reportErrorMsg: vi.fn(),
   routeQuery: {} as Record<string, string | undefined>
 }));
 
@@ -27,6 +28,10 @@ vi.mock("@/services/apis", () => ({
   overviewInfo: () => ({
     execute: mocks.getOverviewInfo
   })
+}));
+
+vi.mock("@/tools/validator", () => ({
+  reportErrorMsg: mocks.reportErrorMsg
 }));
 
 vi.mock("@/lang/i18n", () => ({
@@ -196,5 +201,21 @@ describe("MarketDialog", () => {
     const form = wrapper.findComponent({ name: "CreateInstanceForm" });
     expect(form.props("createMethod")).toBe("IMPORT");
     expect(form.props("daemonId")).toBe("route-node");
+  });
+
+  it("handles an empty overview response without reading value from undefined", async () => {
+    mocks.getOverviewInfo.mockResolvedValueOnce(undefined);
+    const wrapper = mountDialog();
+
+    wrapper.findComponent({ name: "AppPackages" }).vm.$emit("handle-select-category", {
+      title: "Minecraft",
+      gameType: "Minecraft"
+    });
+    await flushPromises();
+    wrapper.findComponent({ name: "MarketCreateMethodStep" }).vm.$emit("select", "IMPORT");
+    await flushPromises();
+
+    expect(mocks.openNodeSelectDialog).not.toHaveBeenCalled();
+    expect(wrapper.findComponent({ name: "CreateInstanceForm" }).exists()).toBe(false);
   });
 });

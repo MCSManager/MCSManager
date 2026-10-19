@@ -9,24 +9,28 @@ import { parseForwardAddress } from "@/tools/protocol";
 import { reportErrorMsg } from "@/tools/validator";
 import { defaultInstanceInfo } from "@/types/const";
 import {
+  ArrowLeftOutlined,
   CheckOutlined,
   CloseOutlined,
   InfoCircleOutlined,
   UploadOutlined
 } from "@ant-design/icons-vue";
-import type { FormInstance } from "ant-design-vue";
-import { message, Modal, type UploadProps } from "ant-design-vue";
+import { Flex, message, Modal, type FormInstance, type UploadProps } from "ant-design-vue";
 import type { Rule } from "ant-design-vue/es/form";
 import { computed, createVNode, onUnmounted, reactive, ref } from "vue";
 import DockerImageSelect from "../instance/dialogs/components/DockerImageSelect.vue";
 import SelectUnzipCode from "../instance/dialogs/SelectUnzipCode.vue";
 
 const selectUnzipCodeDialog = ref<InstanceType<typeof SelectUnzipCode>>();
-const emit = defineEmits(["nextStep"]);
 
 const props = defineProps<{
   createMethod: QUICKSTART_METHOD;
   daemonId: string;
+}>();
+
+const emit = defineEmits<{
+  nextStep: [instanceUuid: string];
+  back: [];
 }>();
 
 const zipCode = ref("utf-8");
@@ -374,12 +378,11 @@ const createInstance = async () => {
             {{ t("TXT_CODE_4f387c5a") }}
           </a-typography-text>
         </a-typography-paragraph>
-        <!-- eslint-disable-next-line vue/html-quotes -->
         <a-textarea
           v-model:value="formData.updateCommand"
           :rows="2"
           style="min-height: 30px"
-          :placeholder="$t('TXT_CODE_36bd6348')"
+          :placeholder="t('TXT_CODE_36bd6348')"
         />
       </a-form-item>
 
@@ -413,6 +416,7 @@ const createInstance = async () => {
         </a-col>
       </a-row>
 
+      <!-- TODO: Delete -->
       <a-form-item v-if="createMethod === QUICKSTART_METHOD.FILE">
         <a-typography-title :level="5" class="require-field">
           {{ t("TXT_CODE_444db70f") }}
@@ -440,45 +444,66 @@ const createInstance = async () => {
         </a-upload>
       </a-form-item>
 
-      <a-form-item v-else-if="createMethod === QUICKSTART_METHOD.IMPORT">
-        <a-typography-title :level="5" class="require-field">
-          {{ t("TXT_CODE_f9b6e61b") }}
-        </a-typography-title>
-        <a-typography-paragraph>
-          <a-typography-text type="secondary">
-            {{ t("TXT_CODE_510bd294") }}
-            <br />
-            {{ t("TXT_CODE_1561198c") }}
-          </a-typography-text>
-        </a-typography-paragraph>
-        <a-upload
-          accept=".zip"
-          :before-upload="beforeUpload"
-          :max-count="1"
-          :change="selectedFile"
-          :disabled="percentComplete > 0 || uploadFileInstance != undefined"
-        >
+      <template v-else-if="createMethod === QUICKSTART_METHOD.IMPORT">
+        <Flex justify="space-between" align="end">
+          <a-form-item class="mb-0">
+            <a-typography-title :level="5" class="require-field">
+              {{ t("TXT_CODE_f9b6e61b") }}
+            </a-typography-title>
+            <a-typography-paragraph>
+              <a-typography-text type="secondary">
+                {{ t("TXT_CODE_510bd294") }}
+                <br />
+                {{ t("TXT_CODE_1561198c") }}
+              </a-typography-text>
+            </a-typography-paragraph>
+            <a-upload
+              accept=".zip"
+              :before-upload="beforeUpload"
+              :max-count="1"
+              :change="selectedFile"
+              :disabled="percentComplete > 0 || uploadFileInstance != undefined"
+            >
+              <a-button
+                :disabled="!formData.nickname"
+                type="primary"
+                :loading="percentComplete > 0 || uploadFileInstance != undefined"
+              >
+                <upload-outlined v-if="percentComplete == 0 && uploadFileInstance == undefined" />
+                {{ percentText() }}
+              </a-button>
+            </a-upload>
+          </a-form-item>
           <a-button
-            :disabled="!formData.nickname"
-            type="primary"
-            :loading="percentComplete > 0 || uploadFileInstance != undefined"
+            :disabled="percentComplete > 0 || uploadFileInstance != undefined"
+            @click="emit('back')"
           >
-            <upload-outlined v-if="percentComplete == 0 && uploadFileInstance == undefined" />
-            {{ percentText() }}
+            <template #icon>
+              <ArrowLeftOutlined />
+            </template>
+            {{ t("TXT_CODE_c14b2ea3") }}
           </a-button>
-        </a-upload>
-      </a-form-item>
+        </Flex>
+      </template>
 
-      <a-form-item v-else>
-        <a-typography-paragraph class="mt-10">
+      <template v-else>
+        <a-typography-paragraph style="text-align: right">
           <a-typography-text>
-            <span>{{ t("TXT_CODE_7da6e84") }}</span>
+            {{ t("TXT_CODE_7da6e84") }}
           </a-typography-text>
         </a-typography-paragraph>
-        <a-button type="primary" :loading="createInstanceLoading" @click="finalConfirm">
-          {{ t("TXT_CODE_5a74975b") }}
-        </a-button>
-      </a-form-item>
+        <Flex justify="space-between" align="end">
+          <a-button @click="emit('back')">
+            <template #icon>
+              <ArrowLeftOutlined />
+            </template>
+            {{ t("TXT_CODE_c14b2ea3") }}
+          </a-button>
+          <a-button type="primary" :loading="createInstanceLoading" @click="finalConfirm">
+            {{ t("TXT_CODE_5a74975b") }}
+          </a-button>
+        </Flex>
+      </template>
     </a-form>
   </div>
 

@@ -14,7 +14,7 @@ import { useMarketTour } from "@/widgets/market/useMarketTour";
 import AppPackages from "@/widgets/setupApp/AppPackages.vue";
 import CreateInstanceForm from "@/widgets/setupApp/CreateInstanceForm.vue";
 import McPreset from "@/widgets/setupApp/McPreset.vue";
-import { ArrowLeftOutlined, DatabaseOutlined } from "@ant-design/icons-vue";
+import { AppstoreAddOutlined, DatabaseOutlined } from "@ant-design/icons-vue";
 import { Divider, Flex, Tour } from "ant-design-vue";
 import Link from "ant-design-vue/es/typography/Link";
 import { ref } from "vue";
@@ -78,7 +78,7 @@ const handleSelectMethod = async (method: MarketCreateMethod) => {
     let node: ComputedNodeInfo | undefined;
     if (!daemonId.value) {
       const overview = await getOverviewInfo({ forceRequest: true });
-      const onlineNodes = overview.value?.remote?.filter((item) => item.available) ?? [];
+      const onlineNodes = overview?.value?.remote?.filter((item) => item.available) ?? [];
       if (onlineNodes.length === 0) {
         reportErrorMsg(t("TXT_CODE_e3d96a26"));
         return;
@@ -140,7 +140,10 @@ defineExpose({
   >
     <div style="height: 100%">
       <div>
-        <div v-if="currentStep !== MarketStep.METHOD">
+        <div
+          v-if="currentStep === MarketStep.CATEGORY || currentStep === MarketStep.PRESET"
+          class="market-header"
+        >
           <a-typography-title :level="4" style="margin-bottom: 8px">
             <DatabaseOutlined />
             {{ t("TXT_CODE_88249aee") }}
@@ -181,16 +184,16 @@ defineExpose({
           @back="backToMethod"
           @install-started="cancel"
         />
-        <div v-else-if="currentStep === MarketStep.MANUAL && selectedMethod" class="manual-step">
-          <a-button class="manual-back" @click="backToMethod">
-            <template #icon>
-              <ArrowLeftOutlined />
-            </template>
-            {{ t("TXT_CODE_c14b2ea3") }}
-          </a-button>
+        <div v-else-if="currentStep === MarketStep.MANUAL && selectedMethod">
+          <a-typography-title :level="4" style="margin-bottom: 8px">
+            <AppstoreAddOutlined />
+            {{ t("TXT_CODE_9b99b72e") }}
+          </a-typography-title>
+
           <CreateInstanceForm
             :create-method="selectedMethod"
             :daemon-id="selectedDaemonId"
+            @back="backToMethod"
             @next-step="handleManualCreated"
           />
         </div>
@@ -206,13 +209,3 @@ defineExpose({
     </div>
   </a-modal>
 </template>
-
-<style scoped>
-.manual-step {
-  padding-top: 8px;
-}
-
-.manual-back {
-  margin-bottom: 20px;
-}
-</style>

@@ -55,8 +55,7 @@ const handleClick = (e: Event, action: EventListener) => {
     border-color 0.25s ease;
 
   &:hover {
-    transform: scale(1.02);
-    border-color: transparent;
+    // border-color: transparent;
     background: linear-gradient(
       135deg,
       var(--ai-gradient-from),
@@ -70,16 +69,12 @@ const handleClick = (e: Event, action: EventListener) => {
 
   &.selected {
     border-color: var(--color-blue-6);
-    background: var(--color-blue-6);
+    // background: var(--color-blue-6);
     box-shadow: 0 0 0 1px var(--color-blue-6);
   }
 
   &.selected .button-inner {
     background: var(--color-gray-2);
-  }
-
-  &:active {
-    transform: scale(1.01);
   }
 
   .button-inner {
