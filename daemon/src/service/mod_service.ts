@@ -67,9 +67,14 @@ export class ModService {
   }
 
   private async parseJarMetadata(jarPath: string): Promise<Partial<ModInfo> | null> {
-    const zip = new StreamZip.async({ file: jarPath });
+    // Open the fd ourselves: StreamZip.async never closes its fd when the archive
+    // fails to open (e.g. a zero-filled file during upload), and close() rejects too.
+    const fd = await fs.open(jarPath, "r");
+    const zip = new StreamZip.async({ fd });
+    let ready = false;
     try {
       const entries = await zip.entries();
+      ready = true;
 
       // Fabric
       if (entries["fabric.mod.json"]) {
@@ -176,7 +181,8 @@ export class ModService {
     } catch (e) {
       // Ignore parse errors
     } finally {
-      await zip.close();
+      if (ready) await zip.close().catch(() => {});
+      else await fs.close(fd).catch(() => {});
     }
     return null;
   }
@@ -207,10 +213,16 @@ export class ModService {
     const result: ModInfo[] = [];
     const folders: string[] = [];
     const tasks: (() => Promise<void>)[] = [];
+    // "plugins" and "Plugins" are the same directory on case-insensitive file systems
+    const scannedDirs = new Set<string>();
 
     const scanDir = async (dirName: string, defaultType: "mod" | "plugin") => {
       const dir = fileManager.toAbsolutePath(dirName);
       if (await fs.pathExists(dir)) {
+        const dirStat = await fs.stat(dir);
+        const dirKey = `${dirStat.dev}:${dirStat.ino}`;
+        if (scannedDirs.has(dirKey)) return;
+        scannedDirs.add(dirKey);
         if (!folders.includes(dirName.toLowerCase())) {
           folders.push(dirName.toLowerCase());
         }
