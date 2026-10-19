@@ -131,6 +131,12 @@ const handleClick = (e: Event, action: EventListener) => {
     line-height: 1.35;
     max-height: 50px;
     overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   .button-cta {
