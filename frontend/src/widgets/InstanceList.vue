@@ -796,11 +796,6 @@ onMounted(async () => {
         <div>
           <Empty :description="t('TXT_CODE_5415f009')" />
         </div>
-        <div class="mt-20">
-          <a-button type="primary" @click="toMarketPage">
-            {{ t("TXT_CODE_871cb8bc") }}
-          </a-button>
-        </div>
       </a-col>
     </a-row>
   </div>
