@@ -12,9 +12,10 @@ import { verifyProxyToken } from "./gateway_token";
 // --------------------------------------------------------------------------
 // ProxyDataPlane — reverse-proxies the daemon's HTTP data-plane surface
 // (download / upload / upload-new / upload-piece) through the panel when
-// `systemConfig.dataPlane === "proxy"`. The panel holds a daemon mission
-// passport internally as the URL `:key` and presents its own panel-signed
-// token to the browser. No daemon address is ever exposed to the browser.
+// `systemConfig.dataPlane === DataPlaneMode.Proxy`. The panel holds a daemon
+// mission passport internally as the URL `:key` and presents its own
+// panel-signed token to the browser. No daemon address is ever exposed to the
+// browser.
 //
 // Zero buffering: request and response bodies are streamed with
 // `stream.pipeline`, `ctx.respond` is set `false` synchronously in `handle()`

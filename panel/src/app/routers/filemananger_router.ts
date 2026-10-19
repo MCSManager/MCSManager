@@ -1,5 +1,6 @@
 import Router from "@koa/router";
 import path from "path";
+import { DataPlaneMode } from "../entity/setting";
 import { ROLE } from "../entity/user";
 import { $t } from "../i18n";
 import { speedLimit } from "../middleware/limit";
@@ -490,7 +491,7 @@ router.all(
         instance_name: await getInstanceNameSafely(daemonId, instanceUuid),
         file: fileName
       });
-      if (systemConfig?.dataPlane === "proxy") {
+      if (systemConfig?.dataPlane === DataPlaneMode.Proxy) {
         const token = GatewayToken.issueProxyToken({
           daemonId,
           instanceUuid,
@@ -544,7 +545,7 @@ router.all(
         daemon_id: daemonId,
         instance_name: await getInstanceNameSafely(daemonId, instanceUuid)
       });
-      if (systemConfig?.dataPlane === "proxy") {
+      if (systemConfig?.dataPlane === DataPlaneMode.Proxy) {
         const token = GatewayToken.issueProxyToken({
           daemonId,
           instanceUuid,

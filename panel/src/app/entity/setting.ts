@@ -1,3 +1,11 @@
+// Data-plane mode values. String-valued so the persisted JSON and HTTP API
+// payload stay `"direct"` / `"proxy"` (backward compatible with existing
+// `panel/data/SystemConfig/config.json` files and API clients).
+export enum DataPlaneMode {
+  Direct = "direct",
+  Proxy = "proxy"
+}
+
 // @Entity
 export default class SystemConfig {
   // HTTP service port, IP and path prefix
@@ -16,10 +24,16 @@ export default class SystemConfig {
   // Distributed forwarding mode
   forwardType: number = 1;
 
-  // Data-plane mode: "direct" (browser connects to the daemon directly, default, legacy behavior)
-  // or "proxy" (browser only reaches the panel, which reverse-proxies file download/upload and
-  // terminal IO to the daemon so the daemon port never needs to be public). Hot-reload, no restart.
-  dataPlane: "direct" | "proxy" = "direct";
+  // Data-plane mode: DataPlaneMode.Direct (browser connects to the daemon directly) or
+  // DataPlaneMode.Proxy (browser only reaches the panel, which reverse-proxies file
+  // download/upload and terminal IO to the daemon so the daemon port never needs to be
+  // public). Hot-reload, no restart.
+  //
+  // Class-level default is Direct so a config that predates this field (loaded by
+  // StorageSubsystem.load, which deep-copies persisted JSON onto a fresh instance)
+  // falls back to Direct on upgrade. initSystemConfig overrides to Proxy only on the
+  // fresh-install branch (no config file on first boot).
+  dataPlane: DataPlaneMode = DataPlaneMode.Direct;
 
   // Symmetric HMAC secret used to sign browser-facing proxy data-plane tokens (panel self-signs
   // and self-verifies; never shared with the daemon). Generated lazily on first use and persisted.

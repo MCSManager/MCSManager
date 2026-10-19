@@ -3154,7 +3154,7 @@
   "TXT_CODE_gzip_compress": "HTTP 压缩",
   "TXT_CODE_gzip_compress_desc": "启用 HTTP 响应压缩（zstd、gzip 等，自动协商）。小于 1 KB 的响应不压缩。",
   "TXT_CODE_settings_dataPlane": "数据面模式",
-  "TXT_CODE_settings_dataPlane_hint": "浏览器直连 daemon(传统默认)或经 panel 反向代理中转(daemon 端口无需公网暴露)。切换后无需重启即时生效。",
+  "TXT_CODE_settings_dataPlane_hint": "浏览器直连 daemon 或经 panel 反向代理中转(daemon 端口无需公网暴露,新装默认)。已有安装保留当前模式。切换后无需重启即时生效。",
   "TXT_CODE_settings_dataPlane_direct": "浏览器直连",
   "TXT_CODE_settings_dataPlane_proxy": "Panel 中转",
   "TXT_CODE_59653f38": "设备读取速率限制 (BPS)",

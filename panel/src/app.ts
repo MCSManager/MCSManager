@@ -13,6 +13,7 @@ import path from "path";
 import { v4 } from "uuid";
 import RedisStorage from "./app/common/storage/redis_storage";
 import Storage from "./app/common/storage/sys_storage";
+import { DataPlaneMode } from "./app/entity/setting";
 import { $t } from "./app/i18n";
 import { mountRouters } from "./app/index";
 import { preCheckMiddleware } from "./app/middleware/precheck";
@@ -161,7 +162,7 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
   // to the normal Koa pipeline — zero behavior change.
   app.use(async (ctx, next) => {
     if (
-      systemConfig?.dataPlane === "proxy" &&
+      systemConfig?.dataPlane === DataPlaneMode.Proxy &&
       ProxyDataPlane.matchRequest(ctx.method, ctx.path)
     ) {
       await ProxyDataPlane.handle(ctx);

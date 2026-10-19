@@ -1,6 +1,7 @@
 import Router from "@koa/router";
 import { isEmpty, toBoolean, toNumber, toText } from "mcsmanager-common";
 import { diffConfig } from "../common/config_diff";
+import { DataPlaneMode } from "../entity/setting";
 import { ROLE } from "../entity/user";
 import { $t } from "../i18n";
 import { speedLimit } from "../middleware/limit";
@@ -246,7 +247,7 @@ router.post(
       const instanceUuid = String(ctx.query.uuid);
       const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
       if (!remoteService) throw new Error($t("TXT_CODE_dd559000") + ` Daemon ID: ${daemonId}`);
-      if (systemConfig?.dataPlane === "proxy") {
+      if (systemConfig?.dataPlane === DataPlaneMode.Proxy) {
         const token = GatewayToken.issueProxyToken({
           daemonId,
           instanceUuid,

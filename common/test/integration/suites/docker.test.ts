@@ -13,6 +13,7 @@ import {
   saveState,
   getUploadPassport,
   uploadToDaemon,
+  setDataPlane,
   type Stream
 } from "../lib";
 
@@ -26,6 +27,11 @@ import {
 // Instance_router.integration.test.ts` (which drives the DAEMON in-process) and
 // verified against `daemon/src/service/docker_process_service.ts`
 // SetupDockerContainer — the only place the docker config fields are validated.
+//
+// Pinned to `direct` data-plane mode: the container terminal round-trips
+// (sum/echo via `test.mjs` on the attach stream) are asserted against the
+// daemon's own stream endpoint. Proxy-mode terminal bridging is covered by
+// dataplane.test.ts.
 //
 // Visible-skip design: every docker `it` is `it.skip` on non-Linux or unreachable
 // dockerd so vitest's verbose reporter shows SKIPPED (not silent passes). One
@@ -117,6 +123,13 @@ async function ensureUsersOnce() {
   world.admin.uuid = await ensureUser("admin", world.key);
   world.u1.uuid = await ensureUser("u1", world.key);
   saveState();
+  // Pin dataPlane to `direct` so the container terminal round-trips below hit
+  // the daemon's own stream endpoint (the fresh-install default is `proxy`).
+  const setRes = await setDataPlane("direct");
+  expect(
+    setRes.httpStatus,
+    `setDataPlane(direct): ${JSON.stringify(setRes.raw).slice(0, 200)}`
+  ).toBe(200);
   usersReady = true;
 }
 

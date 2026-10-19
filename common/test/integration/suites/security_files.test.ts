@@ -15,6 +15,7 @@ import {
   createStream,
   buildZip,
   setupSecurityWorld,
+  setDataPlane,
   names,
   daemonBase,
   di,
@@ -33,6 +34,13 @@ import {
 //   absolute-entry zips, chunked size/offset) · SSRF / URL-fetch gates
 //   (download_from_url checkSafeUrl; /auth/proxy is admin-gated).
 //
+// Pinned to `direct` data-plane mode: several assertions here document the
+// DAEMON's mission-passport semantics (single-use file passports, and the
+// stream passport being reusable within its TTL because `stream_router` never
+// `deleteMission`s). In `proxy` mode `stream_channel` returns a panel-signed
+// GatewayToken instead, so those premises do not hold. Proxy-mode data-plane
+// behavior is covered by dataplane.test.ts and proxy_advanced.test.ts.
+//
 // Sibling modules: security_user (privilege escalation / permission states /
 // input boundaries / unauthorized matrix), security_instance (command
 // injection), security_auth (API-key / 2FA / rate limit / login ban — that
@@ -46,6 +54,11 @@ import {
 describe("security: setup (users + main instance owned by u1)", () => {
   it("ensure admin/u1/u2, promote admin to ROLE.ADMIN, create + assign main instance, upload fixture", async () => {
     await setupSecurityWorld();
+    const setRes = await setDataPlane("direct");
+    expect(
+      setRes.httpStatus,
+      `setDataPlane(direct): ${JSON.stringify(setRes.raw).slice(0, 200)}`
+    ).toBe(200);
   });
 });
 
