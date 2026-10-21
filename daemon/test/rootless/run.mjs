@@ -294,6 +294,23 @@ async function testUser(runAs, gameImage = image) {
       fs.chmodSync(target, 0o600);`
     );
   }
+  for (const mode of [0o1777, 0o2770]) {
+    const source = `special-${mode}`;
+    await file("file/mkdir", { target: source });
+    await execNode(
+      container,
+      `require("fs").chmodSync(${JSON.stringify(path.join(workspace, source))}, ${mode});`
+    );
+    await file("file/copy", { targets: [[source, source + "-copy"]] });
+    await waitFor(
+      async () => (await file("file/status", {})).instanceFileTask === 0,
+      "special-mode copy"
+    );
+    await execNode(
+      container,
+      `if ((require("fs").statSync(${JSON.stringify(path.join(workspace, source + "-copy"))}).mode & 0o7777) !== ${mode}) throw new Error("Special directory bits lost");`
+    );
+  }
   await request("instance/update", {
     instanceUuid,
     config: {
@@ -358,6 +375,18 @@ async function testUser(runAs, gameImage = image) {
     "private file"
   );
   const expectedUid = runAs ? Number(runAs.split(":")[0]) : 1000;
+  if (!runAs) {
+    const originalImage = (await docker.getImage(gameImage).inspect()).Id;
+    try {
+      await docker.getImage(image).tag({ repo: name, tag: "uid1000" });
+      assert.equal((await docker.getImage(gameImage).inspect()).Config.User || "", "");
+      await upload(instanceUuid, "retagged.txt", Buffer.from("owned by the running game"));
+      await execNode(game, 'require("fs").appendFileSync("retagged.txt", " writable");');
+      assert.equal((await game.inspect()).Config.User, "1000:1000");
+    } finally {
+      await docker.getImage(originalImage).tag({ repo: name, tag: "uid1000" });
+    }
+  }
   await execNode(
     container,
     `const fs = require("fs");
@@ -552,8 +581,41 @@ async function main() {
     await seed.remove();
   }
   await testUser("", userImage);
+  await testGeneralContainerUpdate();
   await testNativeDaemon();
   console.log("Rootless compatibility checks passed (newly built Daemon; no customer data).");
+}
+
+async function testGeneralContainerUpdate() {
+  const workspace = path.join(root, "instances/general-update");
+  const { instanceUuid } = await request("instance/new", {
+    cwd: workspace,
+    processType: "general",
+    runAs: "",
+    updateCommand: "touch updated",
+    docker: { image: "", updateCommandImage: image }
+  });
+  instanceIds.add(instanceUuid);
+  await request("instance/asynchronous", {
+    instanceUuid,
+    taskName: "update",
+    role: 10,
+    parameter: {}
+  });
+  await waitFor(
+    () =>
+      fs.stat(path.join(workspace, "updated")).then(
+        () => true,
+        () => false
+      ),
+    "general instance container update"
+  );
+  await waitFor(
+    async () => (await request("instance/detail", { instanceUuid })).status === 0,
+    "general update completion"
+  );
+  await request("instance/delete", { instanceUuids: [instanceUuid], deleteFile: true });
+  instanceIds.delete(instanceUuid);
 }
 
 async function testNativeDaemon() {

@@ -40,19 +40,30 @@ Remote Rootless engines and ambiguous users (`1000`, `user`, `user:group`) are n
 supported. Specify numeric `UID:GID` in `runAs`, or use an image whose `USER` has
 that format. An image with no `USER` defaults to `0:0`. An inaccessible engine or
 unverifiable identity is an error, not permission to fall back to host IDs.
-Update containers use the same instance identity, even when a different update
-image is configured. With empty `runAs`, the main instance image must be installed
-so its `USER` can be resolved. Prefer explicit `runAs` for separate update images.
+Docker instance update containers use the main instance identity, even when a
+different update image is configured. With empty `runAs`, the main instance image
+must be installed so its `USER` can be resolved. General process instances using
+an update container instead resolve the actual update image. Prefer explicit
+`runAs` for separate update images.
 
-Engine checks are deduplicated and cached for 30 seconds; image metadata uses a
-30-second, 32-entry cache. Archive ownership is resolved once per operation, not
-once per entry. Restart the Daemon after changing its engine or namespace setup.
+Engine checks are deduplicated and cached for 30 seconds. Image reads coalesce
+concurrent requests (at most 32 distinct images in flight), but do not retain USER
+metadata by mutable tag. Rootless container creation pins the inspected image ID.
+File operations on an active instance use its labeled container's actual user,
+not a changed tag or next-start configuration. Archive ownership is resolved once
+per operation, not once per entry. Restart the Daemon after changing its engine
+or namespace setup.
 After containment validation, already-correct ownership is checked with `lstat`
 without opening the file, including mode `000` or write-only files. Ownership
 changes still require an inode-verified descriptor and `fstat` before `fchown`.
 Permission errors are reported; modes are not widened to work around them.
-Docker-backed file writes require a reachable engine for initial verification;
-ordinary processes and Windows do not query Docker for file ownership.
+`MCSM_ROOTLESS_DOCKER_CONTAINER` also explicitly enables Rootless file ownership.
+Without this administrator-owned setting, Rootful file management keeps its
+existing behavior, including while the engine is offline. Container startup still
+verifies the actual engine and rejects an unconfigured Rootless engine. With the
+setting enabled, file writes require successful Rootless verification and never
+fall back to host IDs. Ordinary processes and Windows do not query Docker for
+file ownership.
 
 ## Deployment
 
@@ -116,7 +127,9 @@ limits via actual cgroup files, not only Docker's requested configuration.
   descriptors, not all entry paths. These pathname-based operations are not atomic against a tenant
   process concurrently replacing parent directories or destination entries.
   New copy directories use private writable permissions during creation and restore
-  the source mode through an inode-verified descriptor, including read-only modes.
+  the source mode through an inode-verified descriptor, including read-only, sticky
+  and setgid bits. If the filesystem cannot preserve these bits, copying reports
+  an error rather than silently weakening the directory's permissions.
   Source removal failures are reported; source permissions are not automatically relaxed.
 - Archives with backslash entry names are rejected when synchronizing Rootless ownership;
   the Go and 7-Zip extractors can interpret them differently. Repack with `/`
@@ -173,10 +186,32 @@ ephemeral test key, then removes its own resources. It tests namespace users
 `0:0`, `1000:1000`, image `USER` inheritance with a different update image, and a
 native non-root Daemon limited to `0:0`. Both upload APIs, manual/automatic
 extraction, copy/move ownership, game writes in moved directories, private-file access,
-mode `000`/write-only file moves, nested extra-bind write/rename/delete and unchanged
-external bind ownership/modes are checked, along with updates, console I/O, restart,
-local UDP and actual cgroup limits. Unsupported native-host UID 1000 uploads must
+mode `000`/write-only file moves, sticky/setgid directory copies, nested extra-bind
+write/rename/delete and unchanged external bind ownership/modes are checked, along
+with updates, console I/O, restart, local UDP and actual cgroup limits. It also
+checks file writes after retagging an active instance's image and a general process
+instance's update container without a main image. Unsupported native-host UID 1000 uploads must
 fail before overwriting existing files, and `HOST` updates must not run.
 
 This is not a public game-client or production migration test. The harness does
 not restart the host Docker engine or read customer instances.
+
+### File operation measurements
+
+A single-pass Linux microbenchmark compared `055037e` with the ownership-check
+optimization. The fixture contained 100 one-byte files per directory; both runs
+used the current UID/GID, no symlinks and the same filesystem. Setup and cleanup
+were excluded from elapsed time.
+
+| Files   | Move before / after | Copy before / after |
+| ------- | ------------------- | ------------------- |
+| 1,000   | 218 / 156 ms        | 336 / 349 ms        |
+| 10,000  | 1,987 / 1,155 ms    | 2,790 / 2,886 ms    |
+| 100,000 | 18,571 / 13,131 ms  | 29,518 / 29,842 ms  |
+
+For 100,000 files, move's instrumented `realpath` calls fell from 404,011 to
+202,009. These are application-level calls, not OS syscall counts. Peak process
+RSS was 115–139 MiB including the isolated TypeScript loader and fixture setup;
+this is not an incremental Daemon-memory measurement. Move still visits the tree
+before and after rename to validate relocated links and ownership. These timings
+are not throughput guarantees or Rootless networking benchmarks.
