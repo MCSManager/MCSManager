@@ -6,6 +6,10 @@ Use a separate account for the Rootless Docker engine and Daemon. Membership in
 the host `docker` group grants root-equivalent access and is not a substitute for
 Rootless Docker.
 
+This does not establish a race-free filesystem sandbox for malicious instance
+processes. Pathname-based file APIs still need separate security hardening before
+claiming protection against concurrent cross-instance path-replacement attacks.
+
 ## Supported deployments
 
 | Daemon runtime                                                            | Instance user                                                   | File ownership                               |
@@ -136,18 +140,33 @@ limits via actual cgroup files, not only Docker's requested configuration.
   separators. Failed extraction reconciles only known entry paths and parents,
   not the entire destination tree. Partial files may remain, but permission
   reconciliation failures are reported, not treated as successful extraction.
-- Rootless edits, new files, chunked uploads and URL download destinations resolve
+- Rootless edits, new files, both upload APIs and URL download destinations resolve
   internal symlinks and synchronize the actual target inode before truncating it.
   Linux directory descriptors and `O_NOFOLLOW` anchor creation and writing; a
   replaced symlink cannot redirect an already-open write outside the workspace.
   Ownership failures are reported before existing contents are truncated.
-  Chunked uploads lock by inode in private Daemon data, so aliases of the same
-  file cannot upload concurrently. Cancellation checks the pinned destination's
+  Both upload APIs lock by inode in private Daemon data, so aliases of the same
+  file cannot upload concurrently. Legacy uploads stream the parser's temporary
+  file in bounded chunks, adding a data copy instead of a same-filesystem rename.
+  Rootful uploads keep their existing replacement behavior.
+  New Rootless uploads use owner-only mode `0600`; existing file modes are preserved.
+  Like chunked uploads, these are not atomic replacements: an interrupted transfer
+  can leave its target truncated or removed.
+  Failed ownership validation removes a newly created file only if its inode still
+  matches. A just-created directory is removed only if still matching and empty;
+  already-owned ancestor directories may remain after a later failure. This is
+  not recursive rollback and does not delete concurrent instance data.
+  Cancellation checks the pinned destination's
   inode before removing a partial file, and always releases its descriptors.
   This hardens these content-write paths, not every file API: copy, move,
   extraction, reads and deletion still have the pathname race limitations above.
   Do not treat this PR as a complete hostile-process filesystem sandbox; those
   APIs need a separate descriptor-relative/native implementation and security review.
+- Rootless ZIP creation rejects a final symlink output, including dangling links,
+  before starting the external compressor. Choose a regular output file path.
+  This policy avoids the compressor following a link whose target ownership
+  would not be synchronized. External compression remains pathname-based and is
+  not protected against a concurrent replacement after this check.
 - Host `tc` upload/download limits are rejected for Rootless instances. No sudo
   fallback or extra host capability is added.
 - Rootless Docker instances reject `HOST` as the update environment. Set
@@ -201,8 +220,9 @@ extraction, copy/move ownership, game writes in moved directories, private-file 
 mode `000`/write-only file moves, sticky/setgid directory copies, nested extra-bind
 write/rename/delete and unchanged external bind ownership/modes are checked, along
 with updates, console I/O, restart, local UDP and actual cgroup limits. It checks
-edits and chunked uploads through internal links to differently owned files,
+edits and both upload APIs through internal links to differently owned files,
 including the target UID/GID, preservation of the link and subsequent game writes.
+Symlink ZIP outputs are rejected without modifying their targets or leaking a task reservation.
 It also checks file writes after retagging an active instance's image and a general process
 instance's update container without a main image. Unsupported native-host UID 1000 uploads must
 fail before overwriting existing files, and `HOST` updates must not run.

@@ -154,6 +154,42 @@ describe.skipIf(process.platform !== "linux")("owned content writes", () => {
     }
   });
 
+  it.each(["new-file", "new-directory/file"])(
+    "removes the newly created entry when ownership fails for %s",
+    async (filename) => {
+      const sample = await promises.open(path.join(workspace, "config"), "r");
+      const prototype = Object.getPrototypeOf(sample);
+      await sample.close();
+      vi.spyOn(prototype, "chown").mockRejectedValue(
+        Object.assign(new Error("denied"), { code: "EPERM" })
+      );
+      await expect(
+        openOwnedWriteFile(workspace, path.join(workspace, filename), {
+          ...ownership,
+          uid: ownership.uid + 1
+        })
+      ).rejects.toThrow();
+      expect(await fs.pathExists(path.join(workspace, filename.split("/")[0]))).toBe(false);
+      expect(await fs.readFile(path.join(workspace, "config"), "utf8")).toBe("original");
+    }
+  );
+
+  it("preserves a replacement inode when new-file ownership fails", async () => {
+    const sample = await promises.open(path.join(workspace, "config"), "r");
+    const prototype = Object.getPrototypeOf(sample);
+    await sample.close();
+    const filename = path.join(workspace, "new-file");
+    vi.spyOn(prototype, "chown").mockImplementation(async () => {
+      await fs.rename(filename, path.join(workspace, "replaced"));
+      await fs.writeFile(filename, "concurrent replacement");
+      throw Object.assign(new Error("denied"), { code: "EPERM" });
+    });
+    await expect(
+      openOwnedWriteFile(workspace, filename, { ...ownership, uid: ownership.uid + 1 })
+    ).rejects.toThrow();
+    expect(await fs.readFile(filename, "utf8")).toBe("concurrent replacement");
+  });
+
   it.skipIf(process.getuid?.() === 0)(
     "does not truncate when ownership cannot be corrected",
     async () => {

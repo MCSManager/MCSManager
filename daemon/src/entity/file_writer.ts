@@ -101,7 +101,7 @@ export default class FileWriter {
     }
     try {
       if (this.ownership?.rootless) {
-        this.ownedTarget = await openOwnedWriteFile(this.cwd!, this.path, this.ownership);
+        this.ownedTarget = await openOwnedWriteFile(this.cwd!, this.path, this.ownership, 0o600);
         this.fd = this.ownedTarget.file.fd;
         const info = await this.ownedTarget.file.stat();
         // Keep lock metadata outside tenant-controlled directories. Inode keys

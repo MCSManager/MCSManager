@@ -3,7 +3,7 @@ import os from "os";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import FileManager from "./system_file";
-import { decompress } from "../common/compress";
+import { compress, decompress } from "../common/compress";
 
 vi.mock("../common/compress", () => ({
   decompress: vi.fn(async () => true),
@@ -34,6 +34,32 @@ describe.skipIf(process.platform !== "linux")("file manager ownership boundaries
     await expect(files.edit("existing", "overwritten")).rejects.toThrow("unsupported mapping");
     expect(await fs.readdir(workspace)).toEqual(["existing"]);
     expect(await fs.readFile(path.join(workspace, "existing"), "utf8")).toBe("original");
+  });
+
+  it.each(["existing", "missing"])(
+    "rejects a Rootless symlink ZIP output to %s before compression",
+    async (target) => {
+      await fs.symlink(target, path.join(workspace, "output.zip"));
+      const files = new FileManager(workspace, "utf-8", async () => ({
+        uid: process.getuid!(),
+        gid: process.getgid!(),
+        rootless: true
+      }));
+      vi.mocked(compress).mockClear();
+      await expect(files.zip("output.zip", ["existing"])).rejects.toThrow();
+      expect(compress).not.toHaveBeenCalled();
+      expect((await fs.lstat(path.join(workspace, "output.zip"))).isSymbolicLink()).toBe(true);
+      expect(await fs.readFile(path.join(workspace, "existing"), "utf8")).toBe("original");
+      expect(await fs.pathExists(path.join(workspace, "missing"))).toBe(false);
+    }
+  );
+
+  it("keeps the existing Rootful ZIP output policy", async () => {
+    await fs.symlink("existing", path.join(workspace, "output.zip"));
+    const files = new FileManager(workspace);
+    vi.mocked(compress).mockClear();
+    await files.zip("output.zip", ["existing"]);
+    expect(compress).toHaveBeenCalledOnce();
   });
 
   it("preserves private file mode when editing and handles nested creation and copy", async () => {

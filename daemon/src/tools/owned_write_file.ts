@@ -1,4 +1,5 @@
 import { constants } from "fs";
+import type { Stats } from "fs";
 import fs from "fs/promises";
 import type { FileHandle } from "fs/promises";
 import path from "path";
@@ -18,6 +19,19 @@ function isInside(root: string, target: string): boolean {
     relative === "" ||
     (!path.isAbsolute(relative) && relative !== ".." && !relative.startsWith(".." + path.sep))
   );
+}
+
+async function removeMatchingEntry(entry: string, expected: Stats): Promise<void> {
+  try {
+    const current = await fs.lstat(entry);
+    if (current.dev !== expected.dev || current.ino !== expected.ino) return;
+    if (expected.isDirectory()) await fs.rmdir(entry);
+    else await fs.unlink(entry);
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException).code;
+    // Never recursively remove a directory that another process has populated.
+    if (code !== "ENOENT" && !(expected.isDirectory() && code === "ENOTEMPTY")) throw error;
+  }
 }
 
 /** Only use with a handle opened and validated by openOwnedWriteFile. */
@@ -40,7 +54,8 @@ export async function syncOwnedFileHandle(
 export async function openOwnedWriteFile(
   workspace: string,
   target: string,
-  ownership: FileOwnership
+  ownership: FileOwnership,
+  mode = 0o666
 ): Promise<OwnedWriteFile> {
   if (process.platform !== "linux" || !isInside(path.resolve(workspace), path.resolve(target)))
     throw new Error($t("TXT_CODE_file_ownership.invalidTarget"));
@@ -53,6 +68,7 @@ export async function openOwnedWriteFile(
   const directoryFlags = constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW;
   let parent: FileHandle | undefined;
   let file: FileHandle | undefined;
+  let createdFile: { entry: string; info: Stats } | undefined;
   try {
     parent = await fs.open(root, directoryFlags);
     if ((await fs.realpath(`/proc/self/fd/${parent.fd}`)) !== root)
@@ -60,17 +76,30 @@ export async function openOwnedWriteFile(
     for (const segment of segments.slice(0, -1)) {
       const entry = `/proc/self/fd/${parent.fd}/${segment}`;
       let next: FileHandle;
+      let created = false;
       try {
         next = await fs.open(entry, directoryFlags);
       } catch (error) {
         if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
         await fs.mkdir(entry, { mode: 0o755 });
+        created = true;
         next = await fs.open(entry, directoryFlags);
+      }
+      let createdDirectory: Stats | undefined;
+      try {
+        if (created) createdDirectory = await next.stat();
+        await syncOwnedFileHandle(next, ownership);
+      } catch (error) {
+        try {
+          if (createdDirectory) await removeMatchingEntry(entry, createdDirectory);
+        } finally {
+          await next.close();
+        }
+        throw error;
       }
       const previous = parent;
       parent = next;
       await previous.close();
-      await syncOwnedFileHandle(parent, ownership);
     }
     const entry = `/proc/self/fd/${parent.fd}/${segments[segments.length - 1]}`;
     let before: Awaited<ReturnType<typeof fs.lstat>> | undefined;
@@ -87,9 +116,10 @@ export async function openOwnedWriteFile(
         constants.O_NOFOLLOW |
         constants.O_NONBLOCK |
         (before ? 0 : constants.O_CREAT | constants.O_EXCL),
-      0o666
+      mode
     );
     const opened = await file.stat();
+    if (!before) createdFile = { entry, info: opened };
     if (!opened.isFile() || (before && (before.dev !== opened.dev || before.ino !== opened.ino)))
       throw new Error($t("TXT_CODE_file_ownership.targetChanged"));
     await syncOwnedFileHandle(file, ownership);
@@ -100,12 +130,7 @@ export async function openOwnedWriteFile(
       file: heldFile,
       async remove() {
         if (closed) throw new Error($t("TXT_CODE_file_ownership.targetChanged"));
-        try {
-          const current = await fs.lstat(entry);
-          if (current.dev === opened.dev && current.ino === opened.ino) await fs.unlink(entry);
-        } catch (error) {
-          if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
-        }
+        await removeMatchingEntry(entry, opened);
       },
       async close() {
         if (closed) return;
@@ -119,9 +144,13 @@ export async function openOwnedWriteFile(
     };
   } catch (error) {
     try {
-      await file?.close();
+      if (createdFile) await removeMatchingEntry(createdFile.entry, createdFile.info);
     } finally {
-      await parent?.close();
+      try {
+        await file?.close();
+      } finally {
+        await parent?.close();
+      }
     }
     throw error;
   }

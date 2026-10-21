@@ -124,10 +124,34 @@ router.post("/upload/:key", async (ctx) => {
       const ownership = await resolveInstanceFileOwnership(instance);
       fileManager.assertInsideWorkspace(fileSaveAbsolutePath);
 
-      await fs.move(uploadedFile.filepath, fileSaveAbsolutePath, {
-        overwrite: true
-      });
-      if (ownership) await syncInstancePathOwnership(instance, fileSaveAbsolutePath, ownership);
+      if (ownership?.rootless) {
+        // Use the same pinned target and inode lock as chunked uploads. Read the
+        // parser's temporary file in bounded chunks rather than buffering it.
+        const writer = new FileWriter(
+          instance,
+          originFileName,
+          uploadedFile.size,
+          false,
+          zipCode,
+          fileSaveAbsolutePath
+        );
+        try {
+          await writer.init();
+          let offset = 0;
+          for await (const chunk of fs.createReadStream(uploadedFile.filepath)) {
+            await writer.write(offset, chunk);
+            offset += chunk.length;
+          }
+          if (offset !== uploadedFile.size) throw new Error($t("TXT_CODE_http_router.updateErr"));
+          await writer.completeIfCovered();
+        } catch (error) {
+          await writer.stop();
+          throw error;
+        }
+      } else {
+        await fs.move(uploadedFile.filepath, fileSaveAbsolutePath, { overwrite: true });
+        if (ownership) await syncInstancePathOwnership(instance, fileSaveAbsolutePath, ownership);
+      }
 
       if (unzip) {
         const release = acquireFileTask(instance.info);

@@ -408,12 +408,13 @@ async function testUser(runAs, gameImage = image) {
       [
         'const fs = require("fs");',
         'const files = ["legacy.txt", "chunk.txt", "archive/item.txt", "legacy-extract/item.txt", "chunk-extract/item.txt", "nested/directory/new", "moved/nested/file", "update-marker"];',
-        'console.log(JSON.stringify({uid: process.getuid(), owners: files.map(p => fs.statSync("/data/" + p).uid), memory: fs.readFileSync("/sys/fs/cgroup/memory.max", "utf8").trim(), cpu: fs.readFileSync("/sys/fs/cgroup/cpu.max", "utf8").trim()}));'
+        'console.log(JSON.stringify({uid: process.getuid(), owners: files.map(p => fs.statSync("/data/" + p).uid), uploadModes: ["legacy.txt", "chunk.txt"].map(p => fs.statSync("/data/" + p).mode & 0o777), memory: fs.readFileSync("/sys/fs/cgroup/memory.max", "utf8").trim(), cpu: fs.readFileSync("/sys/fs/cgroup/cpu.max", "utf8").trim()}));'
       ].join("\n")
     )
   );
   assert.equal(report.uid, expectedUid);
   assert.deepEqual(report.owners, Array(8).fill(expectedUid));
+  assert.deepEqual(report.uploadModes, [0o600, 0o600]);
   assert.equal(report.memory, "268435456");
   const gameHostUid = (await fs.stat(`/proc/${(await game.inspect()).State.Pid}`)).uid;
   assert.notEqual(gameHostUid, 0, "Game must not run as host root");
@@ -427,7 +428,7 @@ async function testUser(runAs, gameImage = image) {
     container,
     `
     const fs = require("fs"), path = require("path");
-    for (const name of ["edit", "chunk"]) {
+    for (const name of ["edit", "chunk", "legacy"]) {
       const target = path.join(${JSON.stringify(workspace)}, "linked-" + name);
       fs.writeFileSync(target, "original", { mode: 0o666 });
       fs.chownSync(target, ${linkedOwner}, ${linkedOwner});
@@ -437,11 +438,12 @@ async function testUser(runAs, gameImage = image) {
   );
   await file("file/edit", { target: "linked-edit-alias", text: "edited through link" });
   await upload(instanceUuid, "linked-chunk-alias", Buffer.from("uploaded through link"), true);
+  await upload(instanceUuid, "linked-legacy-alias", Buffer.from("legacy through link"));
   await execNode(
     game,
     `
     const fs = require("fs");
-    for (const name of ["edit", "chunk"]) {
+    for (const name of ["edit", "chunk", "legacy"]) {
       const target = "/data/linked-" + name;
       const info = fs.statSync(target);
       if (info.uid !== ${expectedUid} || info.gid !== ${expectedUid}) throw new Error("Linked target ownership mismatch");
@@ -450,6 +452,37 @@ async function testUser(runAs, gameImage = image) {
     }
   `
   );
+  await execNode(
+    container,
+    `require("fs").symlinkSync("linked-edit", ${JSON.stringify(path.join(workspace, "linked-output.zip"))})`
+  );
+  await assert.rejects(
+    file("file/compress", {
+      source: "linked-output.zip",
+      targets: ["linked-edit"],
+      type: 1,
+      code: "UTF-8"
+    })
+  );
+  assert.equal((await file("file/status", {})).instanceFileTask, 0);
+  await execNode(
+    game,
+    `if (!require("fs").readFileSync("/data/linked-edit", "utf8").startsWith("edited through link")) throw new Error("Rejected ZIP modified its target")`
+  );
+  await file("file/compress", {
+    source: "ordinary-output.zip",
+    targets: ["linked-legacy"],
+    type: 1,
+    code: "UTF-8"
+  });
+  await execNode(
+    game,
+    `
+    const fs = require("fs"), target = "/data/ordinary-output.zip";
+    if (fs.statSync(target).uid !== ${expectedUid} || fs.readFileSync(target).subarray(0, 2).toString() !== "PK") throw new Error("Regular ZIP output failed");
+  `
+  );
+  assert.equal((await file("file/status", {})).instanceFileTask, 0);
   const downloadKey = crypto.randomBytes(24).toString("hex");
   await request("passport/register", {
     name: "download",

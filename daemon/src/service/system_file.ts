@@ -742,6 +742,14 @@ export default class FileManager {
       throw new Error($t("TXT_CODE_system_file.unzipLimit", { max: MAX_ZIP_GB }));
     const ownership = await this.ownershipResolver?.();
     this.assertInsideWorkspace(sourceZipPath);
+    if (ownership?.rootless) {
+      try {
+        if ((await fs.lstat(sourceZipPath)).isSymbolicLink())
+          throw new Error($t("TXT_CODE_rootless.archiveSymlinkOutput"));
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+      }
+    }
     const result = await compress(sourceZipPath, filesPath, code);
     await this.syncOwnership(sourceZipPath, ownership);
     return result;

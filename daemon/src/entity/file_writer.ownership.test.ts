@@ -70,6 +70,18 @@ describe.skipIf(process.platform !== "linux")("owned chunked uploads", () => {
     expect(await fs.readFile(path.join(workspace, "actual"), "utf8")).toBe("okay");
   });
 
+  it("creates private files without changing existing file modes", async () => {
+    const writer = create("new-upload");
+    await writer.init();
+    await writer.write(0, Buffer.from("done"));
+    expect((await fs.stat(path.join(workspace, "new-upload"))).mode & 0o777).toBe(0o600);
+    await fs.chmod(path.join(workspace, "actual"), 0o640);
+    const existing = create("actual");
+    await existing.init();
+    await existing.write(0, Buffer.from("done"));
+    expect((await fs.stat(path.join(workspace, "actual"))).mode & 0o777).toBe(0o640);
+  });
+
   it("never writes or removes the target of a replaced symlink", async () => {
     const writer = create("link");
     await writer.init();
