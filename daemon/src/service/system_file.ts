@@ -370,8 +370,12 @@ export default class FileManager {
         if (destinationFd !== undefined) {
           try {
             // The descriptor cannot be redirected by replacing the destination pathname.
-            if (destinationIdentityVerified)
-              await fs.fchmod(destinationFd, sourceInfo.mode & 0o777);
+            if (destinationIdentityVerified) {
+              const mode = sourceInfo.mode & 0o7777;
+              await fs.fchmod(destinationFd, mode);
+              if (((await fs.fstat(destinationFd)).mode & 0o7777) !== mode)
+                throw new Error($t("TXT_CODE_file_ownership.permissionDenied"));
+            }
           } finally {
             await fs.close(destinationFd);
           }
@@ -491,9 +495,12 @@ export default class FileManager {
       await fs.remove(targetPath);
       return;
     }
-    await this.visitTree(destPath, realRoot, (entry) =>
-      syncPathOwnershipWithinRoot(this.topPath, entry, ownership)
-    );
+    await this.visitTree(destPath, realRoot, async (entry, info) => {
+      // visitTree already checked containment and read this inode's ownership.
+      // Avoid a second path/metadata pass for the common rename-preserved case.
+      if (info.uid !== ownership.uid || info.gid !== ownership.gid)
+        await syncPathOwnershipWithinRoot(this.topPath, entry, ownership);
+    });
   }
 
   private async assertMoveDestinationAbsent(destination: string): Promise<void> {

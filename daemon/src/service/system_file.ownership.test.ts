@@ -83,6 +83,55 @@ describe.skipIf(process.platform !== "linux")("file manager ownership boundaries
     expect(copy.mock.calls.every(([, , options]) => options === undefined)).toBe(true);
   });
 
+  it.each([0o1777, 0o2770, 0o3750])(
+    "preserves directory permission bits %s after copying",
+    async (mode) => {
+      await fs.mkdir(path.join(workspace, "source"));
+      await fs.writeFile(path.join(workspace, "source/file"), "data");
+      await fs.chmod(path.join(workspace, "source"), mode);
+      const files = new FileManager(workspace, "utf-8", async () => ({
+        uid: process.getuid!(),
+        gid: process.getgid!()
+      }));
+      await files.copy("source", "destination");
+      expect((await fs.stat(path.join(workspace, "destination"))).mode & 0o7777).toBe(mode);
+      expect(await fs.readFile(path.join(workspace, "destination/file"), "utf8")).toBe("data");
+    }
+  );
+
+  it("reports silently stripped directory bits and closes the descriptor", async () => {
+    await fs.mkdir(path.join(workspace, "source"));
+    await fs.chmod(path.join(workspace, "source"), 0o2770);
+    const files = new FileManager(workspace, "utf-8", async () => ({
+      uid: process.getuid!(),
+      gid: process.getgid!()
+    }));
+    const fchmod = fs.fchmod;
+    vi.spyOn(fs, "fchmod").mockImplementation((fd, mode) => fchmod(fd, mode & 0o777));
+    const close = vi.spyOn(fs, "close");
+    await expect(files.copy("source", "destination")).rejects.toThrow();
+    expect(close).toHaveBeenCalled();
+  });
+
+  it("does not reopen already-owned entries after a same-filesystem move", async () => {
+    await fs.outputFile(path.join(workspace, "source/nested/file"), "data");
+    const files = new FileManager(workspace, "utf-8", async () => ({
+      uid: process.getuid!(),
+      gid: process.getgid!()
+    }));
+    const open = vi.spyOn(fs, "open");
+    const realpath = vi.spyOn(fs, "realpath");
+    await files.move("source", "destination");
+    expect(open).not.toHaveBeenCalled();
+    // Every entry is still visited for symlink and ownership validation, but
+    // correctly owned inodes do not repeat syncPathOwnershipWithinRoot's pass.
+    expect(
+      realpath.mock.calls.filter(
+        ([target]) => target === path.join(workspace, "destination/nested/file")
+      )
+    ).toHaveLength(1);
+  });
+
   it("rejects source-to-child copies and outward links without writing outside", async () => {
     await fs.mkdir(path.join(workspace, "source"));
     const files = new FileManager(workspace, "utf-8", async () => ({
