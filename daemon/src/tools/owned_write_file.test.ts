@@ -3,7 +3,7 @@ import promises from "fs/promises";
 import os from "os";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { openOwnedWriteFile } from "./owned_write_file";
+import { openOwnedWriteFile, replaceOwnedFile } from "./owned_write_file";
 import FileManager from "../service/system_file";
 
 describe.skipIf(process.platform !== "linux")("owned content writes", () => {
@@ -30,6 +30,141 @@ describe.skipIf(process.platform !== "linux")("owned content writes", () => {
     await files.edit("link", "edited");
     expect(await fs.readFile(path.join(workspace, "config"), "utf8")).toBe("edited");
     expect((await fs.lstat(path.join(workspace, "link"))).isSymbolicLink()).toBe(true);
+  });
+
+  it("blocks destructive file operations through aliases and ancestors", async () => {
+    const files = new FileManager(workspace, "utf-8", async () => ownership);
+    await fs.link(path.join(workspace, "config"), path.join(workspace, "hard-link"));
+    const target = await openOwnedWriteFile(workspace, path.join(workspace, "link"), ownership);
+    try {
+      for (const name of ["config", "link", "hard-link", "."])
+        await expect(files.delete(name)).rejects.toThrow();
+      await expect(files.move("config", "moved")).rejects.toThrow();
+      await expect(files.copy("hard-link", "config")).rejects.toThrow();
+      await expect(files.edit("hard-link", "changed")).rejects.toThrow();
+      expect(await fs.readFile(path.join(workspace, "config"), "utf8")).toBe("original");
+    } finally {
+      await target.close();
+    }
+    await files.delete("hard-link");
+  });
+
+  it("preserves the old file when a replacement source cannot be read", async () => {
+    await expect(
+      replaceOwnedFile(
+        workspace,
+        path.join(workspace, "link"),
+        ownership,
+        path.join(workspace, "missing-source"),
+        10
+      )
+    ).rejects.toThrow();
+    expect(await fs.readFile(path.join(workspace, "config"), "utf8")).toBe("original");
+    expect((await fs.readdir(workspace)).sort()).toEqual(["config", "link"]);
+  });
+
+  it.each(["write", "chmod", "rename"] as const)(
+    "preserves existing contents and cleans staging after %s failure",
+    async (step) => {
+      const before = await fs.stat(path.join(workspace, "config"));
+      const sample = await promises.open(path.join(workspace, "config"), "r");
+      const prototype = Object.getPrototypeOf(sample);
+      await sample.close();
+      const failure = Object.assign(new Error("I/O failure"), { code: "EIO" });
+      if (step === "rename") vi.spyOn(promises, "rename").mockRejectedValueOnce(failure);
+      else vi.spyOn(prototype, step).mockRejectedValueOnce(failure);
+      await expect(
+        replaceOwnedFile(
+          workspace,
+          path.join(workspace, "link"),
+          ownership,
+          path.join(workspace, "config"),
+          before.size
+        )
+      ).rejects.toThrow("I/O failure");
+      expect(await fs.readFile(path.join(workspace, "config"), "utf8")).toBe("original");
+      expect((await fs.stat(path.join(workspace, "config"))).ino).toBe(before.ino);
+      expect((await fs.readdir(workspace)).sort()).toEqual(["config", "link"]);
+    }
+  );
+
+  it("does not remove newly created directories populated by another writer", async () => {
+    const target = await openOwnedWriteFile(
+      workspace,
+      path.join(workspace, "new/nested/file"),
+      ownership
+    );
+    try {
+      await fs.writeFile(path.join(workspace, "new/nested/concurrent"), "keep");
+      await target.removeCreated();
+    } finally {
+      await target.close();
+    }
+    expect(await fs.readFile(path.join(workspace, "new/nested/concurrent"), "utf8")).toBe("keep");
+    expect(await fs.pathExists(path.join(workspace, "new/nested/file"))).toBe(false);
+  });
+
+  it("cleans all newly created empty parents after a staged failure", async () => {
+    await expect(
+      replaceOwnedFile(
+        workspace,
+        path.join(workspace, "new/nested/file"),
+        ownership,
+        path.join(workspace, "config"),
+        100
+      )
+    ).rejects.toThrow();
+    expect(await fs.pathExists(path.join(workspace, "new"))).toBe(false);
+  });
+
+  it("does not publish a replacement after its destination changes", async () => {
+    const target = await openOwnedWriteFile(workspace, path.join(workspace, "link"), ownership, {
+      mode: 0o600,
+      staged: true
+    });
+    try {
+      await target.file.writeFile("replacement");
+      await fs.rename(path.join(workspace, "config"), path.join(workspace, "old"));
+      await fs.writeFile(path.join(workspace, "config"), "concurrent file");
+      await expect(target.commit()).rejects.toThrow();
+    } finally {
+      await target.close();
+    }
+    expect(await fs.readFile(path.join(workspace, "config"), "utf8")).toBe("concurrent file");
+    expect(await fs.readFile(path.join(workspace, "old"), "utf8")).toBe("original");
+    expect((await fs.readdir(workspace)).sort()).toEqual(["config", "link", "old"]);
+  });
+
+  it("never overwrites a concurrently created destination", async () => {
+    const filename = path.join(workspace, "new");
+    const target = await openOwnedWriteFile(workspace, filename, ownership, { staged: true });
+    try {
+      await target.file.writeFile("uploaded");
+      await fs.writeFile(filename, "concurrent file");
+      await expect(target.commit()).rejects.toThrow();
+    } finally {
+      await target.close();
+    }
+    expect(await fs.readFile(filename, "utf8")).toBe("concurrent file");
+    expect((await fs.readdir(workspace)).sort()).toEqual(["config", "link", "new"]);
+  });
+
+  it("cleans empty ancestors after a deeper ownership failure", async () => {
+    const sample = await promises.open(path.join(workspace, "config"), "r");
+    const prototype = Object.getPrototypeOf(sample);
+    await sample.close();
+    vi.spyOn(prototype, "chown").mockImplementation(async function (
+      this: import("fs/promises").FileHandle
+    ) {
+      if ((await this.stat()).isFile()) throw Object.assign(new Error("denied"), { code: "EPERM" });
+    });
+    await expect(
+      openOwnedWriteFile(workspace, path.join(workspace, "new/nested/file"), {
+        ...ownership,
+        uid: ownership.uid + 1
+      })
+    ).rejects.toThrow();
+    expect(await fs.pathExists(path.join(workspace, "new"))).toBe(false);
   });
 
   it("keeps writes and cleanup anchored when a parent is replaced", async () => {

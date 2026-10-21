@@ -2,6 +2,8 @@ import { PassThrough, Readable } from "node:stream";
 import fs from "fs-extra";
 import os from "os";
 import path from "path";
+import FileManager from "./system_file";
+import * as ownedFiles from "../tools/owned_write_file";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("axios", () => ({ default: vi.fn() }));
@@ -23,6 +25,7 @@ describe("download ownership completion", () => {
   });
 
   afterEach(async () => {
+    vi.restoreAllMocks();
     await fs.remove(workspace);
     // The manager retires completed/failed tasks after one second.
     await new Promise((resolve) => setTimeout(resolve, 1100));
@@ -119,6 +122,56 @@ describe("download ownership completion", () => {
   });
 
   const ownership = { uid: process.getuid?.() ?? 0, gid: process.getgid?.() ?? 0, rootless: true };
+
+  it.skipIf(process.platform !== "linux")(
+    "protects an active download through its actual target",
+    async () => {
+      const body = new PassThrough();
+      vi.mocked(axios).mockResolvedValue({ status: 200, headers: {}, data: body });
+      await fs.writeFile(path.join(workspace, "actual"), "old");
+      await fs.symlink("actual", path.join(workspace, "link"));
+      const result = downloadManager.downloadFromUrl(
+        "https://example.invalid/file",
+        path.join(workspace, "link"),
+        undefined,
+        undefined,
+        { workspace, ownership }
+      );
+      await waitForTransfer(body);
+      const files = new FileManager(workspace, "utf-8", async () => ownership);
+      await expect(files.delete("actual")).rejects.toThrow();
+      await expect(files.move("actual", "moved")).rejects.toThrow();
+      body.end("complete");
+      await result;
+      expect(await fs.readFile(path.join(workspace, "actual"), "utf8")).toBe("complete");
+      expect(downloadManager.tasks[0].status).toBe(DOWNLOAD_STATUS.COMPLETED);
+    }
+  );
+
+  it.skipIf(process.platform !== "linux").each(["new/nested/file", "existing"])(
+    "cleans only new artifacts when canceled immediately after opening %s",
+    async (name) => {
+      const targetPath = path.join(workspace, name);
+      if (name === "existing") await fs.writeFile(targetPath, "original");
+      vi.mocked(axios).mockResolvedValue(response());
+      const open = ownedFiles.openOwnedWriteFile;
+      vi.spyOn(ownedFiles, "openOwnedWriteFile").mockImplementationOnce(async (...args) => {
+        const target = await open(...args);
+        downloadManager.stop(targetPath);
+        return target;
+      });
+      await downloadManager.downloadFromUrl(
+        "https://example.invalid/file",
+        targetPath,
+        undefined,
+        undefined,
+        { workspace, ownership }
+      );
+      if (name === "existing") expect(await fs.readFile(targetPath, "utf8")).toBe("original");
+      else expect(await fs.pathExists(path.join(workspace, "new"))).toBe(false);
+      expect(downloadManager.tasks).toHaveLength(0);
+    }
+  );
 
   it.skipIf(process.platform !== "linux")(
     "downloads through an internal symlink without replacing it",

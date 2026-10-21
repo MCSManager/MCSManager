@@ -1,10 +1,15 @@
 import fs from "fs-extra";
 import os from "os";
 import path from "path";
+import * as lockfile from "proper-lockfile";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("../service/log", () => ({ default: { info: vi.fn(), error: vi.fn() } }));
 vi.mock("../service/upload_manager", () => ({ default: { delete: vi.fn() } }));
+vi.mock("proper-lockfile", async () => {
+  const actual = await vi.importActual<typeof import("proper-lockfile")>("proper-lockfile");
+  return { ...actual, lock: vi.fn(actual.lock) };
+});
 vi.mock("../tools/file_ownership", async () => ({
   ...(await vi.importActual<object>("../tools/file_ownership")),
   resolveInstanceFileOwnership: vi.fn(async () => ({
@@ -30,6 +35,7 @@ describe.skipIf(process.platform !== "linux")("owned chunked uploads", () => {
   });
   afterEach(async () => {
     for (const writer of writers) await writer.stop();
+    vi.restoreAllMocks();
     await fs.remove(workspace);
   });
   function create(filename: string) {
@@ -80,6 +86,22 @@ describe.skipIf(process.platform !== "linux")("owned chunked uploads", () => {
     await existing.init();
     await existing.write(0, Buffer.from("done"));
     expect((await fs.stat(path.join(workspace, "actual"))).mode & 0o777).toBe(0o640);
+  });
+
+  it.each(["lock", "truncate"])("cleans newly created files after %s failure", async (failure) => {
+    if (failure === "lock") vi.spyOn(lockfile, "lock").mockRejectedValue(new Error("lock failed"));
+    else vi.spyOn(fs, "ftruncate").mockRejectedValue(new Error("truncate failed"));
+    await expect(create("new/nested/upload").init()).rejects.toThrow();
+    expect(await fs.pathExists(path.join(workspace, "new"))).toBe(false);
+    await expect(create("link").init()).rejects.toThrow();
+    expect(await fs.readFile(path.join(workspace, "actual"), "utf8")).toBe("original");
+  });
+
+  it("does not report success when a game process unlinks the pinned target", async () => {
+    const writer = create("link");
+    await writer.init();
+    await fs.unlink(path.join(workspace, "actual"));
+    await expect(writer.write(0, Buffer.from("done"))).rejects.toThrow();
   });
 
   it("never writes or removes the target of a replaced symlink", async () => {

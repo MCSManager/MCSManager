@@ -73,6 +73,7 @@ class DownloadManager {
       if (!target) return;
       try {
         if (controller.signal.aborted && targetModified) await target.remove();
+        else if (!targetModified) await target.removeCreated();
       } finally {
         await target.close();
       }
@@ -132,6 +133,7 @@ class DownloadManager {
         const onFinish = async () => {
           if (settled) return;
           try {
+            if (ownedTarget) await ownedTarget.assertCurrent();
             if (onDownloaded && !controller.signal.aborted) await onDownloaded();
           } catch (error) {
             onError(error as Error);

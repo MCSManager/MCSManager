@@ -1,14 +1,20 @@
-import { constants } from "fs";
+import { constants, createReadStream } from "fs";
 import type { Stats } from "fs";
 import fs from "fs/promises";
 import type { FileHandle } from "fs/promises";
 import path from "path";
+import { randomUUID } from "crypto";
 import { $t } from "../i18n";
 import type { FileOwnership } from "./file_ownership";
 import { resolvePhysicalPath } from "./path_link_check";
+import { reserveFileWrite } from "./active_file_write";
 
 export interface OwnedWriteFile {
   file: FileHandle;
+  created: boolean;
+  assertCurrent: () => Promise<void>;
+  commit: () => Promise<void>;
+  removeCreated: () => Promise<void>;
   remove: () => Promise<void>;
   close: () => Promise<void>;
 }
@@ -55,8 +61,9 @@ export async function openOwnedWriteFile(
   workspace: string,
   target: string,
   ownership: FileOwnership,
-  mode = 0o666
+  options: { mode?: number; staged?: boolean } = {}
 ): Promise<OwnedWriteFile> {
+  const { mode = 0o666, staged = false } = options;
   if (process.platform !== "linux" || !isInside(path.resolve(workspace), path.resolve(target)))
     throw new Error($t("TXT_CODE_file_ownership.invalidTarget"));
   const root = await fs.realpath(workspace);
@@ -69,6 +76,22 @@ export async function openOwnedWriteFile(
   let parent: FileHandle | undefined;
   let file: FileHandle | undefined;
   let createdFile: { entry: string; info: Stats } | undefined;
+  const createdDirectories: { parent: FileHandle; entry: string; info: Stats }[] = [];
+  let release: (() => void) | undefined;
+  const cleanDirectories = async () => {
+    for (const directory of [...createdDirectories].reverse())
+      await removeMatchingEntry(directory.entry, directory.info);
+  };
+  const closeDirectories = async () => {
+    const handles = new Set(createdDirectories.map((directory) => directory.parent));
+    if (parent) handles.add(parent);
+    const results = await Promise.allSettled([...handles].map((handle) => handle.close()));
+    release?.();
+    const failure = results.find(
+      (result): result is PromiseRejectedResult => result.status === "rejected"
+    );
+    if (failure) throw failure.reason;
+  };
   try {
     parent = await fs.open(root, directoryFlags);
     if ((await fs.realpath(`/proc/self/fd/${parent.fd}`)) !== root)
@@ -83,6 +106,7 @@ export async function openOwnedWriteFile(
         if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
         await fs.mkdir(entry, { mode: 0o755 });
         created = true;
+        createdDirectories.push({ parent, entry, info: await fs.lstat(entry) });
         next = await fs.open(entry, directoryFlags);
       }
       let createdDirectory: Stats | undefined;
@@ -99,46 +123,104 @@ export async function openOwnedWriteFile(
       }
       const previous = parent;
       parent = next;
-      await previous.close();
+      if (!created) await previous.close();
     }
     const entry = `/proc/self/fd/${parent.fd}/${segments[segments.length - 1]}`;
-    let before: Awaited<ReturnType<typeof fs.lstat>> | undefined;
+    let before: Stats | undefined;
     try {
       before = await fs.lstat(entry);
       if (!before.isFile()) throw new Error($t("TXT_CODE_file_ownership.invalidTarget"));
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
     }
-    // Never truncate until both the opened inode and its owner are verified.
+    release = reserveFileWrite(destination, before);
+    // Staged replacements never truncate or change the existing target.
+    const writeEntry = staged ? `/proc/self/fd/${parent.fd}/.mcsm-write-${randomUUID()}` : entry;
     file = await fs.open(
-      entry,
+      writeEntry,
       constants.O_WRONLY |
         constants.O_NOFOLLOW |
         constants.O_NONBLOCK |
-        (before ? 0 : constants.O_CREAT | constants.O_EXCL),
-      mode
+        (before && !staged ? 0 : constants.O_CREAT | constants.O_EXCL),
+      staged ? 0o600 : mode
     );
     const opened = await file.stat();
-    if (!before) createdFile = { entry, info: opened };
-    if (!opened.isFile() || (before && (before.dev !== opened.dev || before.ino !== opened.ino)))
+    if (!before || staged) createdFile = { entry: writeEntry, info: opened };
+    if (
+      !opened.isFile() ||
+      (!staged && before && (before.dev !== opened.dev || before.ino !== opened.ino))
+    )
       throw new Error($t("TXT_CODE_file_ownership.targetChanged"));
-    await syncOwnedFileHandle(file, ownership);
+    if (!staged) {
+      release();
+      release = reserveFileWrite(destination, opened);
+    }
+    if (!staged) await syncOwnedFileHandle(file, ownership);
     const heldFile = file;
     const heldParent = parent;
     let closed = false;
+    let committed = false;
+    let rollback = false;
+    const assertCurrent = async () => {
+      if (
+        closed ||
+        (await fs.realpath(`/proc/self/fd/${heldParent.fd}`)) !== path.dirname(destination)
+      )
+        throw new Error($t("TXT_CODE_file_ownership.targetChanged"));
+      const current = await fs.lstat(entry);
+      const expected = staged && !committed ? before : opened;
+      if (!expected || current.dev !== expected.dev || current.ino !== expected.ino)
+        throw new Error($t("TXT_CODE_file_ownership.targetChanged"));
+    };
     return {
       file: heldFile,
+      created: !before,
+      assertCurrent,
+      async commit() {
+        if (!staged) return assertCurrent();
+        if (closed || committed) throw new Error($t("TXT_CODE_file_ownership.targetChanged"));
+        if ((await fs.realpath(`/proc/self/fd/${heldParent.fd}`)) !== path.dirname(destination))
+          throw new Error($t("TXT_CODE_file_ownership.targetChanged"));
+        const temporary = await fs.lstat(writeEntry);
+        if (temporary.dev !== opened.dev || temporary.ino !== opened.ino)
+          throw new Error($t("TXT_CODE_file_ownership.targetChanged"));
+        await syncOwnedFileHandle(heldFile, ownership);
+        await heldFile.chmod((before?.mode ?? mode) & 0o777);
+        if (before) {
+          await assertCurrent();
+          await fs.rename(writeEntry, entry);
+        } else {
+          // link() refuses a concurrently created destination instead of overwriting it.
+          await fs.link(writeEntry, entry);
+          await fs.unlink(writeEntry);
+        }
+        committed = true;
+      },
+      async removeCreated() {
+        if (closed) throw new Error($t("TXT_CODE_file_ownership.targetChanged"));
+        rollback = true;
+        if (!staged && !before) await removeMatchingEntry(entry, opened);
+      },
       async remove() {
         if (closed) throw new Error($t("TXT_CODE_file_ownership.targetChanged"));
-        await removeMatchingEntry(entry, opened);
+        rollback = true;
+        await removeMatchingEntry(staged && !committed ? writeEntry : entry, opened);
       },
       async close() {
         if (closed) return;
         closed = true;
         try {
-          await heldFile.close();
+          try {
+            if (staged && !committed) await removeMatchingEntry(writeEntry, opened);
+          } finally {
+            await heldFile.close();
+          }
         } finally {
-          await heldParent.close();
+          try {
+            if (rollback || (staged && !committed)) await cleanDirectories();
+          } finally {
+            await closeDirectories();
+          }
         }
       }
     };
@@ -149,9 +231,51 @@ export async function openOwnedWriteFile(
       try {
         await file?.close();
       } finally {
-        await parent?.close();
+        try {
+          await cleanDirectories();
+        } finally {
+          await closeDirectories();
+        }
       }
     }
     throw error;
+  }
+}
+
+/** Stream a complete replacement, then publish it without truncating the old inode. */
+export async function replaceOwnedFile(
+  workspace: string,
+  destination: string,
+  ownership: FileOwnership,
+  sourcePath: string,
+  size: number
+): Promise<void> {
+  if (!Number.isSafeInteger(size) || size < 0)
+    throw new Error($t("TXT_CODE_http_router.updateErr"));
+  const target = await openOwnedWriteFile(workspace, destination, ownership, {
+    mode: 0o600,
+    staged: true
+  });
+  try {
+    let offset = 0;
+    for await (const chunk of createReadStream(sourcePath)) {
+      if (offset + chunk.length > size) throw new Error($t("TXT_CODE_http_router.updateErr"));
+      let written = 0;
+      while (written < chunk.length) {
+        const result = await target.file.write(
+          chunk,
+          written,
+          chunk.length - written,
+          offset + written
+        );
+        if (result.bytesWritten <= 0) throw new Error($t("TXT_CODE_http_router.updateErr"));
+        written += result.bytesWritten;
+      }
+      offset += chunk.length;
+    }
+    if (offset !== size) throw new Error($t("TXT_CODE_http_router.updateErr"));
+    await target.commit();
+  } finally {
+    await target.close();
   }
 }

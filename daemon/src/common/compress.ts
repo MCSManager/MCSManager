@@ -55,11 +55,12 @@ function checkFileName(fileName: string) {
 export async function compress(
   sourceZip: string,
   files: string[],
-  fileCode?: string
+  fileCode?: string,
+  workingDirectory?: string
 ): Promise<boolean> {
   if (!checkFileName(sourceZip) || files.some((v) => !checkFileName(v)))
     throw new Error(COMPRESS_ERROR_MSG.invalidName);
-  return await useZip(sourceZip, files, fileCode);
+  return await useZip(sourceZip, files, fileCode, workingDirectory);
 }
 
 export async function decompress(
@@ -262,24 +263,24 @@ async function useUnzip(sourceZip: string, destDir: string, code = "utf-8"): Pro
 }
 
 // ./file-zip -mode 1 --file main.go --file file-zip --file 123 --file README.md --zipPath aaabb.zip
-async function useZip(distZip: string, files: string[], code = "utf-8"): Promise<boolean> {
+async function useZip(
+  distZip: string,
+  files: string[],
+  code = "utf-8",
+  workingDirectory?: string
+): Promise<boolean> {
   if (!files || files.length == 0) throw new Error(t("TXT_CODE_2038ec2c"));
-  const params = ["--mode=1", `--code=${code}`, `--zipPath=${path.basename(distZip)}`];
+  const cwd = workingDirectory || path.dirname(distZip);
+  const params = [
+    "--mode=1",
+    `--code=${code}`,
+    `--zipPath=${workingDirectory ? distZip : path.basename(distZip)}`
+  ];
   files.forEach((v) => {
     params.push(`--file=${path.basename(v)}`);
   });
-  logger.info(
-    `Function useZip(): Command: ${GOLANG_ZIP_PATH} ${params.join(" ")}, CWD: ${path.dirname(
-      distZip
-    )}`
-  );
-  const subProcess = new ProcessWrapper(
-    GOLANG_ZIP_PATH,
-    params,
-    path.dirname(distZip),
-    ZIP_TIMEOUT_SECONDS,
-    code
-  );
+  logger.info(`Function useZip(): Command: ${GOLANG_ZIP_PATH} ${params.join(" ")}, CWD: ${cwd}`);
+  const subProcess = new ProcessWrapper(GOLANG_ZIP_PATH, params, cwd, ZIP_TIMEOUT_SECONDS, code);
   subProcess.setErrMsg(COMPRESS_ERROR_MSG);
   return subProcess.start();
 }

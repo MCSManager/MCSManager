@@ -62,6 +62,70 @@ describe.skipIf(process.platform !== "linux")("file manager ownership boundaries
     expect(compress).toHaveBeenCalledOnce();
   });
 
+  it("generates a Rootless ZIP privately before replacing a regular output", async () => {
+    const files = new FileManager(workspace, "utf-8", async () => ({
+      uid: process.getuid!(),
+      gid: process.getgid!(),
+      rootless: true
+    }));
+    await fs.writeFile(path.join(workspace, "output.zip"), "old archive");
+    let privateArchive = "";
+    vi.mocked(compress).mockImplementationOnce(async (output, inputs, _code, cwd) => {
+      privateArchive = output;
+      expect(output.startsWith(workspace + path.sep)).toBe(false);
+      expect(inputs).toEqual([path.join(workspace, "existing")]);
+      expect(cwd).toBe(workspace);
+      await fs.writeFile(output, "new archive");
+      expect(await fs.readFile(path.join(workspace, "output.zip"), "utf8")).toBe("old archive");
+      return true;
+    });
+    await files.zip("output.zip", ["existing"]);
+    expect(await fs.readFile(path.join(workspace, "output.zip"), "utf8")).toBe("new archive");
+    expect(await fs.pathExists(path.dirname(privateArchive))).toBe(false);
+  });
+
+  it("does not redirect ZIP output after the destination is swapped to an external link", async () => {
+    const outside = await fs.mkdtemp(path.join(os.tmpdir(), "mcsm-zip-outside-"));
+    const files = new FileManager(workspace, "utf-8", async () => ({
+      uid: process.getuid!(),
+      gid: process.getgid!(),
+      rootless: true
+    }));
+    let privateArchive = "";
+    try {
+      await fs.writeFile(path.join(outside, "private"), "other tenant");
+      vi.mocked(compress).mockImplementationOnce(async (output) => {
+        privateArchive = output;
+        await fs.writeFile(output, "archive");
+        await fs.symlink(path.join(outside, "private"), path.join(workspace, "output.zip"));
+        return true;
+      });
+      await expect(files.zip("output.zip", ["existing"])).rejects.toThrow();
+      expect(await fs.readFile(path.join(outside, "private"), "utf8")).toBe("other tenant");
+      expect(await fs.pathExists(path.dirname(privateArchive))).toBe(false);
+    } finally {
+      await fs.remove(outside);
+    }
+  });
+
+  it("preserves an existing ZIP and cleans staging after a compressor failure", async () => {
+    const files = new FileManager(workspace, "utf-8", async () => ({
+      uid: process.getuid!(),
+      gid: process.getgid!(),
+      rootless: true
+    }));
+    await fs.writeFile(path.join(workspace, "output.zip"), "old archive");
+    let privateArchive = "";
+    vi.mocked(compress).mockImplementationOnce(async (output) => {
+      privateArchive = output;
+      await fs.writeFile(output, "incomplete archive");
+      throw new Error("compressor failed");
+    });
+    await expect(files.zip("output.zip", ["existing"])).rejects.toThrow("compressor failed");
+    expect(await fs.readFile(path.join(workspace, "output.zip"), "utf8")).toBe("old archive");
+    expect(await fs.pathExists(path.dirname(privateArchive))).toBe(false);
+  });
+
   it("preserves private file mode when editing and handles nested creation and copy", async () => {
     const resolver = vi.fn(async () => ({ uid: process.getuid!(), gid: process.getgid!() }));
     const files = new FileManager(workspace, "utf-8", resolver);

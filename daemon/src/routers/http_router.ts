@@ -4,6 +4,7 @@ import fs from "fs-extra";
 import path from "path";
 import { DAEMON_INDEX_HTML } from "../const/index_html";
 import FileWriter from "../entity/file_writer";
+import { replaceOwnedFile } from "../tools/owned_write_file";
 import { $t } from "../i18n";
 import { missionPassport } from "../service/mission_passport";
 import { acquireFileTask } from "../service/file_task";
@@ -125,29 +126,13 @@ router.post("/upload/:key", async (ctx) => {
       fileManager.assertInsideWorkspace(fileSaveAbsolutePath);
 
       if (ownership?.rootless) {
-        // Use the same pinned target and inode lock as chunked uploads. Read the
-        // parser's temporary file in bounded chunks rather than buffering it.
-        const writer = new FileWriter(
-          instance,
-          originFileName,
-          uploadedFile.size,
-          false,
-          zipCode,
-          fileSaveAbsolutePath
+        await replaceOwnedFile(
+          instance.absoluteCwdPath(),
+          fileSaveAbsolutePath,
+          ownership,
+          uploadedFile.filepath,
+          uploadedFile.size
         );
-        try {
-          await writer.init();
-          let offset = 0;
-          for await (const chunk of fs.createReadStream(uploadedFile.filepath)) {
-            await writer.write(offset, chunk);
-            offset += chunk.length;
-          }
-          if (offset !== uploadedFile.size) throw new Error($t("TXT_CODE_http_router.updateErr"));
-          await writer.completeIfCovered();
-        } catch (error) {
-          await writer.stop();
-          throw error;
-        }
       } else {
         await fs.move(uploadedFile.filepath, fileSaveAbsolutePath, { overwrite: true });
         if (ownership) await syncInstancePathOwnership(instance, fileSaveAbsolutePath, ownership);

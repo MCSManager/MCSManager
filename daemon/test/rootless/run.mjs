@@ -437,6 +437,29 @@ async function testUser(runAs, gameImage = image) {
   `
   );
   await file("file/edit", { target: "linked-edit-alias", text: "edited through link" });
+  const activeKey = await passport(instanceUuid);
+  const activeResponse = await fetch(
+    `${url}/upload-new/${activeKey}?filename=linked-chunk-alias&size=4`,
+    { method: "POST", signal: AbortSignal.timeout(10_000) }
+  );
+  assert.equal(activeResponse.status, 200, await activeResponse.clone().text());
+  const {
+    data: { id: activeUpload }
+  } = await activeResponse.json();
+  await assert.rejects(file("file/delete", { targets: ["linked-chunk"] }));
+  await assert.rejects(file("file/move", { targets: [["linked-chunk", "moved-active"]] }));
+  const activeForm = new FormData();
+  activeForm.append("file", new Blob(["done"]), "piece");
+  const finishedUpload = await fetch(`${url}/upload-piece/${activeUpload}?offset=0`, {
+    method: "POST",
+    body: activeForm,
+    signal: AbortSignal.timeout(15_000)
+  });
+  assert.equal(finishedUpload.status, 200, await finishedUpload.clone().text());
+  await execNode(
+    game,
+    'if (require("fs").readFileSync("/data/linked-chunk", "utf8") !== "done") throw new Error("Protected upload disappeared")'
+  );
   await upload(instanceUuid, "linked-chunk-alias", Buffer.from("uploaded through link"), true);
   await upload(instanceUuid, "linked-legacy-alias", Buffer.from("legacy through link"));
   await execNode(

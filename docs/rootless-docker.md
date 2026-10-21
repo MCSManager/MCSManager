@@ -140,22 +140,32 @@ limits via actual cgroup files, not only Docker's requested configuration.
   separators. Failed extraction reconciles only known entry paths and parents,
   not the entire destination tree. Partial files may remain, but permission
   reconciliation failures are reported, not treated as successful extraction.
-- Rootless edits, new files, both upload APIs and URL download destinations resolve
+- Rootless edits, new files, chunked uploads and URL download destinations resolve
   internal symlinks and synchronize the actual target inode before truncating it.
   Linux directory descriptors and `O_NOFOLLOW` anchor creation and writing; a
   replaced symlink cannot redirect an already-open write outside the workspace.
   Ownership failures are reported before existing contents are truncated.
-  Both upload APIs lock by inode in private Daemon data, so aliases of the same
-  file cannot upload concurrently. Legacy uploads stream the parser's temporary
-  file in bounded chunks, adding a data copy instead of a same-filesystem rename.
+  Active owned writes reserve their resolved path and inode. Aliases and hard links
+  cannot start a second write; panel delete/move/copy/edit/extract operations reject
+  targets or ancestor directories used by an active transfer. Reservations are
+  released with the descriptors, not tracked separately by the caller's link name.
+  Chunked uploads additionally retain their private Daemon inode lock.
+  Legacy uploads stream the parser's temporary file in bounded chunks into an
+  exclusive sibling staging file, validate its size and ownership, then replace
+  the resolved target using the pinned parent directory. Failures leave the old
+  inode and contents intact. Existing hard links retain the old inode, as with
+  normal file replacement. This adds a data copy and temporary disk space rather
+  than a same-filesystem move of the parser's file.
   Rootful uploads keep their existing replacement behavior.
-  New Rootless uploads use owner-only mode `0600`; existing file modes are preserved.
-  Like chunked uploads, these are not atomic replacements: an interrupted transfer
-  can leave its target truncated or removed.
+  New Rootless uploads use owner-only mode `0600`; existing ordinary permission
+  bits are preserved. Staged replacement does not carry setuid/setgid/sticky bits.
+  Chunked uploads and URL downloads still write in place: interruption after
+  truncation can leave their target truncated or removed.
   Failed ownership validation removes a newly created file only if its inode still
-  matches. A just-created directory is removed only if still matching and empty;
-  already-owned ancestor directories may remain after a later failure. This is
-  not recursive rollback and does not delete concurrent instance data.
+  matches, including lock/truncate failures and cancellation before truncation.
+  Newly created parents are retained by descriptor (bounded by path depth) for
+  reverse-order rollback; only matching, empty directories are removed. Existing,
+  replaced or concurrently populated directories are never recursively deleted.
   Cancellation checks the pinned destination's
   inode before removing a partial file, and always releases its descriptors.
   This hardens these content-write paths, not every file API: copy, move,
@@ -164,9 +174,13 @@ limits via actual cgroup files, not only Docker's requested configuration.
   APIs need a separate descriptor-relative/native implementation and security review.
 - Rootless ZIP creation rejects a final symlink output, including dangling links,
   before starting the external compressor. Choose a regular output file path.
-  This policy avoids the compressor following a link whose target ownership
-  would not be synchronized. External compression remains pathname-based and is
-  not protected against a concurrent replacement after this check.
+  The compressor writes to private Daemon staging, not to a tenant-controlled
+  output path. A complete archive is then streamed and committed through the same
+  descriptor-relative replacement helper as legacy uploads. Concurrent output
+  symlink replacement cannot redirect the compressor's writes outside the workspace.
+  This adds an archive-sized copy and temporary disk usage; file-task quotas still
+  bound concurrent compression. Compressor input paths remain pathname-based and
+  retain the concurrent path replacement limitations described above.
 - Host `tc` upload/download limits are rejected for Rootless instances. No sudo
   fallback or extra host capability is added.
 - Rootless Docker instances reject `HOST` as the update environment. Set
@@ -223,6 +237,9 @@ with updates, console I/O, restart, local UDP and actual cgroup limits. It check
 edits and both upload APIs through internal links to differently owned files,
 including the target UID/GID, preservation of the link and subsequent game writes.
 Symlink ZIP outputs are rejected without modifying their targets or leaking a task reservation.
+Regular ZIP output is checked for ownership and a valid ZIP header. An active
+chunked upload through a symlink must reject deletion/movement of its actual
+target and still finish with a visible, game-writable file.
 It also checks file writes after retagging an active instance's image and a general process
 instance's update container without a main image. Unsupported native-host UID 1000 uploads must
 fail before overwriting existing files, and `HOST` updates must not run.

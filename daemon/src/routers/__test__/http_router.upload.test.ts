@@ -110,10 +110,21 @@ describe.skipIf(process.platform !== "linux")("legacy upload ownership", () => {
     expect(missionPassport.deleteMission).not.toHaveBeenCalled();
   });
 
-  it("rejects incomplete source data and removes only the partial target", async () => {
-    expect((await upload("link", Buffer.from("short"), 10)).status).toBe(500);
-    expect(await fs.pathExists(path.join(workspace, "actual"))).toBe(false);
-    expect((await fs.lstat(path.join(workspace, "link"))).isSymbolicLink()).toBe(true);
-    expect(missionPassport.deleteMission).not.toHaveBeenCalled();
+  it.each(["actual", "link"])("preserves %s when the source size is wrong", async (name) => {
+    const before = await fs.stat(path.join(workspace, "actual"));
+    for (const size of [3, 10]) {
+      expect((await upload(name, Buffer.from("short"), size)).status).toBe(500);
+      expect(await fs.readFile(path.join(workspace, "actual"), "utf8")).toBe("original");
+      expect((await fs.stat(path.join(workspace, "actual"))).ino).toBe(before.ino);
+      expect((await fs.lstat(path.join(workspace, "link"))).isSymbolicLink()).toBe(true);
+      expect((await fs.readdir(workspace)).sort()).toEqual(["actual", "link"]);
+      expect(missionPassport.deleteMission).not.toHaveBeenCalled();
+    }
+  });
+
+  it("preserves the existing mode after an atomic replacement", async () => {
+    await fs.chmod(path.join(workspace, "actual"), 0o640);
+    expect((await upload("link", Buffer.from("new"))).body).toBe("OK");
+    expect((await fs.stat(path.join(workspace, "actual"))).mode & 0o777).toBe(0o640);
   });
 });

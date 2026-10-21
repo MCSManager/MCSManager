@@ -14,7 +14,8 @@ import { syncPathOwnershipWithinRoot } from "../tools/file_ownership";
 import type { FileOwnership } from "../tools/file_ownership";
 import { normalizedJoin } from "../tools/filepath";
 import { resolvePhysicalPath } from "../tools/path_link_check";
-import { openOwnedWriteFile } from "../tools/owned_write_file";
+import { openOwnedWriteFile, replaceOwnedFile } from "../tools/owned_write_file";
+import { assertNoActiveFileWrite } from "../tools/active_file_write";
 
 const ERROR_MSG_01 = $t("TXT_CODE_system_file.illegalAccess");
 const ERROR_PATH_NOT_FOUND = $t("TXT_CODE_96281410");
@@ -230,6 +231,7 @@ export default class FileManager {
     const buf = iconv.encode(data, this.fileCode || "utf-8");
     const ownership = await this.ownershipResolver?.();
     this.assertInsideWorkspace(absPath);
+    assertNoActiveFileWrite(absPath);
     if (ownership?.rootless) {
       const target = await openOwnedWriteFile(this.topPath, absPath, ownership);
       try {
@@ -250,6 +252,7 @@ export default class FileManager {
     const target = this.toAbsolutePath(fileName);
     const ownership = await this.ownershipResolver?.();
     this.assertInsideWorkspace(target);
+    assertNoActiveFileWrite(target);
     if (ownership?.rootless) {
       const file = await openOwnedWriteFile(this.topPath, target, ownership);
       await file.close();
@@ -266,6 +269,8 @@ export default class FileManager {
     const targetPath = this.toAbsolutePath(target1);
     target2 = this.toAbsolutePath(target2);
     const ownership = await this.ownershipResolver?.();
+    assertNoActiveFileWrite(targetPath);
+    assertNoActiveFileWrite(target2);
     if (!ownership) return await fs.copy(targetPath, target2);
     const realRoot = await fs.realpath(this.topPath);
     const source = await this.resolveCopyPath(targetPath, realRoot);
@@ -454,6 +459,7 @@ export default class FileManager {
   async delete(target: string, options: { ignoreMissing?: boolean } = {}): Promise<boolean> {
     if (!this.checkPath(target)) throw new Error(ERROR_MSG_01);
     const targetPath = this.toAbsolutePath(target);
+    assertNoActiveFileWrite(targetPath);
     if (!options.ignoreMissing && !fs.existsSync(targetPath)) throw new Error(ERROR_MSG_01);
     return new Promise((r, j) => {
       fs.remove(targetPath, (err) => {
@@ -470,6 +476,8 @@ export default class FileManager {
     const targetPath = this.toAbsolutePath(target);
     destPath = this.toAbsolutePath(destPath);
     const ownership = await this.ownershipResolver?.();
+    assertNoActiveFileWrite(targetPath);
+    assertNoActiveFileWrite(destPath);
     if (!ownership) return await fs.move(targetPath, destPath);
 
     const realRoot = await fs.realpath(this.topPath);
@@ -570,6 +578,8 @@ export default class FileManager {
     this.zipFileCheck(this.toAbsolutePath(sourceZip));
     const absSource = this.toAbsolutePath(sourceZip);
     const absDest = this.toAbsolutePath(destDir);
+    assertNoActiveFileWrite(absSource);
+    assertNoActiveFileWrite(absDest);
 
     const archiveEntries = await this.getArchiveEntries(absSource);
     const hasZipSlip = this.hasZipSlip(absDest, archiveEntries);
@@ -742,12 +752,31 @@ export default class FileManager {
       throw new Error($t("TXT_CODE_system_file.unzipLimit", { max: MAX_ZIP_GB }));
     const ownership = await this.ownershipResolver?.();
     this.assertInsideWorkspace(sourceZipPath);
+    assertNoActiveFileWrite(sourceZipPath);
     if (ownership?.rootless) {
       try {
         if ((await fs.lstat(sourceZipPath)).isSymbolicLink())
           throw new Error($t("TXT_CODE_rootless.archiveSymlinkOutput"));
       } catch (error) {
         if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+      }
+      // The compressor never receives a tenant-controlled output path.
+      const stagingRoot = path.join(process.cwd(), "data", "ArchiveStaging");
+      await fs.ensureDir(stagingRoot, { mode: 0o700 });
+      const staging = await fs.mkdtemp(path.join(stagingRoot, "zip-"));
+      try {
+        const archive = path.join(staging, "output.zip");
+        const result = await compress(archive, filesPath, code, path.dirname(sourceZipPath));
+        await replaceOwnedFile(
+          this.topPath,
+          sourceZipPath,
+          ownership,
+          archive,
+          (await fs.stat(archive)).size
+        );
+        return result;
+      } finally {
+        await fs.remove(staging);
       }
     }
     const result = await compress(sourceZipPath, filesPath, code);

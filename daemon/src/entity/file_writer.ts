@@ -101,7 +101,9 @@ export default class FileWriter {
     }
     try {
       if (this.ownership?.rootless) {
-        this.ownedTarget = await openOwnedWriteFile(this.cwd!, this.path, this.ownership, 0o600);
+        this.ownedTarget = await openOwnedWriteFile(this.cwd!, this.path, this.ownership, {
+          mode: 0o600
+        });
         this.fd = this.ownedTarget.file.fd;
         const info = await this.ownedTarget.file.stat();
         // Keep lock metadata outside tenant-controlled directories. Inode keys
@@ -188,6 +190,7 @@ export default class FileWriter {
   async done() {
     if (this.fd != null) {
       if (this.ownedTarget) {
+        await this.ownedTarget.assertCurrent();
         await syncOwnedFileHandle(this.ownedTarget.file, this.ownership!);
         await this.ownedTarget.close();
         this.ownedTarget = undefined;
@@ -256,6 +259,7 @@ export default class FileWriter {
     if (ownedTarget) {
       try {
         if (this.ownsFile) await ownedTarget.remove();
+        else await ownedTarget.removeCreated();
       } catch (error) {
         cleanupError ||= error;
       } finally {
