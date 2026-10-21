@@ -2,7 +2,10 @@ import fs from "fs-extra";
 import os from "os";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { syncPathOwnershipWithinRoot } from "./file_ownership";
+import { resolveInstanceFileOwnership, syncPathOwnershipWithinRoot } from "./file_ownership";
+import { dockerFileOwnership } from "../service/docker_file_ownership";
+import FileManager from "../service/system_file";
+import type Instance from "../entity/instance/instance";
 
 describe.skipIf(process.platform !== "linux")("descriptor-based file ownership", () => {
   let workspace: string;
@@ -16,6 +19,27 @@ describe.skipIf(process.platform !== "linux")("descriptor-based file ownership",
     vi.restoreAllMocks();
     await fs.remove(workspace);
   });
+
+  it.skipIf(Boolean(process.env.MCSM_ROOTLESS_DOCKER_CONTAINER))(
+    "edits, creates and copies Rootful files without contacting Docker",
+    async () => {
+      const resolve = vi
+        .spyOn(dockerFileOwnership, "resolve")
+        .mockRejectedValue(new Error("offline"));
+      const instance = {
+        config: { processType: "docker", runAs: "1000:1000", docker: { image: "game" } }
+      } as Instance;
+      const files = new FileManager(workspace, "utf-8", () =>
+        resolveInstanceFileOwnership(instance, { rootlessOnly: true })
+      );
+      await files.edit("file", "edited");
+      await files.mkdir("new");
+      await files.copy("file", "new/copy");
+      expect(await fs.readFile(path.join(workspace, "new/copy"), "utf8")).toBe("edited");
+      expect(await resolveInstanceFileOwnership(instance)).toEqual({ uid: 1000, gid: 1000 });
+      expect(resolve).not.toHaveBeenCalled();
+    }
+  );
 
   it("does not chown an already-correct 0600 file or directory", async () => {
     const chown = vi.spyOn(fs, "fchown");

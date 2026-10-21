@@ -202,10 +202,11 @@ export class SetupDockerContainer extends AsyncTask {
     if (!dockerConfig) {
       throw new Error("Instance's Docker configuration is not found! ");
     }
-    const effectiveImage = useImageOverride ? this.imageOverride! : dockerConfig.image;
-    const identity = await dockerFileOwnership.resolve(
+    const effectiveImage = useImageOverride ? this.imageOverride!.trim() : dockerConfig.image || "";
+    const identity = await dockerFileOwnership.resolveForContainer(
       instance.config.runAs || "",
-      dockerConfig.image || ""
+      instance.config.processType === "docker" ? dockerConfig.image || "" : effectiveImage,
+      effectiveImage
     );
     validateRootlessResourceLimits(identity, dockerConfig);
     const workspace = instance.absoluteCwdPath();
@@ -552,7 +553,7 @@ export class SetupDockerContainer extends AsyncTask {
       Cmd: startCmd,
       name: containerName,
       Hostname: containerName,
-      Image: effectiveImage,
+      Image: identity.imageId || effectiveImage,
       AttachStdin: true,
       AttachStdout: true,
       AttachStderr: true,

@@ -8,6 +8,7 @@ import {
 
 const namespaceMap = "0 1005 1\n1 165536 65536\n";
 const hostMap = "0 0 4294967295\n";
+const imageId = `sha256:${"a".repeat(64)}`;
 const runtime = {
   uid: 0,
   gid: 0,
@@ -95,9 +96,16 @@ describe("Rootless Docker file identity", () => {
   });
 });
 
-function service(rootless = true, user = "1000:1000", socketPath = "/run/docker.sock") {
+function service(
+  rootless = true,
+  user = "1000:1000",
+  socketPath = "/run/docker.sock",
+  rootlessDeployment = rootless
+) {
   const info = vi.fn(async () => ({ SecurityOptions: rootless ? ["name=rootless"] : [] }));
-  const inspect = vi.fn(async () => ({ Config: { User: user } }) as Docker.ImageInspectInfo);
+  const inspect = vi.fn(
+    async () => ({ Id: imageId, Config: { User: user } }) as Docker.ImageInspectInfo
+  );
   const getImage = vi.fn(() => ({ inspect }) as unknown as Docker.Image);
   const getContainer = vi.fn();
   const readRuntime = vi.fn(async () => runtime);
@@ -107,16 +115,39 @@ function service(rootless = true, user = "1000:1000", socketPath = "/run/docker.
       { info, getImage, getContainer },
       socketPath,
       readRuntime,
-      readNamespace
+      readNamespace,
+      rootlessDeployment
     ),
     info,
     inspect,
+    getImage,
+    getContainer,
     readRuntime,
     readNamespace
   };
 }
 
 describe.skipIf(process.platform !== "linux")("Docker ownership metadata", () => {
+  it("keeps Rootful file operations independent of an offline engine", async () => {
+    const test = service(false);
+    test.info.mockRejectedValue(new Error("offline"));
+    expect(await test.resolver.resolveForFiles("1000:1000", "game")).toEqual({ rootless: false });
+    expect(test.info).not.toHaveBeenCalled();
+    await expect(test.resolver.resolve("1000:1000", "game")).rejects.toThrow();
+  });
+
+  it("never falls back to host IDs when the Rootless engine is offline", async () => {
+    const test = service();
+    test.info.mockRejectedValue(new Error("offline"));
+    await expect(test.resolver.resolveForFiles("1000:1000", "game")).rejects.toThrow();
+    expect(test.inspect).not.toHaveBeenCalled();
+  });
+
+  it("rejects a Rootful engine in an explicitly Rootless deployment", async () => {
+    const test = service(false, "1000:1000", "/run/docker.sock", true);
+    await expect(test.resolver.resolveForFiles("1000:1000", "game")).rejects.toThrow();
+  });
+
   it.each([
     { CgroupVersion: "1", CgroupDriver: "systemd" },
     { CgroupVersion: "2", CgroupDriver: "none" },
@@ -176,6 +207,120 @@ describe.skipIf(process.platform !== "linux")("Docker ownership metadata", () =>
     expect((await test.resolver.resolve("", "test-image")).ownership).toEqual({ uid: 0, gid: 0 });
   });
 
+  it("resolves retagged images immediately and pins the creation image ID", async () => {
+    const test = service(true, "0:0");
+    expect((await test.resolver.resolveForContainer("", "game:latest", "game:latest")).user).toBe(
+      "0:0"
+    );
+    const nextId = `sha256:${"b".repeat(64)}`;
+    test.inspect.mockResolvedValue({
+      Id: nextId,
+      Config: { User: "1000:1000" }
+    } as Docker.ImageInspectInfo);
+    expect(await test.resolver.resolveForContainer("", "game:latest", "game:latest")).toMatchObject(
+      {
+        user: "1000:1000",
+        imageId: nextId,
+        ownership: { uid: 1000, gid: 1000 }
+      }
+    );
+    expect(test.inspect).toHaveBeenCalledTimes(2);
+  });
+
+  it("uses the main image identity for Docker updates, but the effective image for process updates", async () => {
+    const test = service();
+    test.getImage.mockImplementation(
+      (image) =>
+        ({
+          inspect: async () => ({
+            Id: imageId,
+            Config: { User: image === "game" ? "1000:1000" : "0:0" }
+          })
+        }) as unknown as Docker.Image
+    );
+    expect((await test.resolver.resolveForContainer("", "game", "update")).user).toBe("1000:1000");
+    expect((await test.resolver.resolveForContainer("", "update", "update")).user).toBe("0:0");
+    expect((await test.resolver.resolveForContainer("1000:1000", "", "update")).user).toBe(
+      "1000:1000"
+    );
+  });
+
+  it("uses the actual assigned container's user rather than a changed tag or runAs", async () => {
+    const test = service(true, "0:0");
+    test.getContainer.mockReturnValue({
+      inspect: async () => ({
+        Config: { User: "1000:1000", Labels: { "mcsmanager.instance.uuid": "instance" } }
+      })
+    });
+    expect(
+      (
+        await test.resolver.resolveForFiles("0:0", "game", {
+          id: "container",
+          instanceUuid: "instance"
+        })
+      ).user
+    ).toBe("1000:1000");
+    expect(test.inspect).not.toHaveBeenCalled();
+    await expect(
+      test.resolver.resolveForFiles("", "game", { id: "container", instanceUuid: "other" })
+    ).rejects.toThrow();
+  });
+
+  it("deduplicates concurrent image reads without retaining stale values", async () => {
+    const test = service();
+    await Promise.all(Array.from({ length: 20 }, () => test.resolver.resolve("", "game")));
+    expect(test.inspect).toHaveBeenCalledTimes(1);
+    await test.resolver.resolve("", "game");
+    expect(test.inspect).toHaveBeenCalledTimes(2);
+  });
+
+  it("releases failed image requests for a later retry", async () => {
+    const test = service();
+    test.inspect.mockRejectedValueOnce(new Error("unavailable"));
+    await expect(test.resolver.resolve("", "game")).rejects.toThrow();
+    await expect(test.resolver.resolve("", "game")).resolves.toMatchObject({ user: "1000:1000" });
+    expect(test.inspect).toHaveBeenCalledTimes(2);
+  });
+
+  it.each([
+    { Id: "game:latest", Config: { User: "1000:1000" } },
+    { Id: imageId, Config: { User: 1000 } }
+  ])("rejects unverifiable image metadata before container creation", async (info) => {
+    const test = service();
+    test.inspect.mockResolvedValue(info as Docker.ImageInspectInfo);
+    await expect(test.resolver.resolveForContainer("", "game", "game")).rejects.toThrow();
+  });
+
+  it("does not use the next-start user when the active container cannot be verified", async () => {
+    const test = service();
+    test.getContainer.mockReturnValue({
+      inspect: async () => {
+        throw new Error("offline");
+      }
+    });
+    await expect(
+      test.resolver.resolveForFiles("0:0", "game", { id: "container", instanceUuid: "instance" })
+    ).rejects.toThrow();
+    expect(test.inspect).not.toHaveBeenCalled();
+  });
+
+  it("bounds concurrent requests for different images and releases capacity", async () => {
+    const test = service();
+    let release!: (value: Docker.ImageInspectInfo) => void;
+    // Share a deferred response while retaining separate per-image requests.
+    const response = new Promise<Docker.ImageInspectInfo>((resolve) => {
+      release = resolve;
+    });
+    test.inspect.mockReturnValue(response);
+    await test.resolver.resolve("0:0", "game");
+    const requests = Array.from({ length: 32 }, (_, i) => test.resolver.resolve("", `game:${i}`));
+    await Promise.resolve();
+    await expect(test.resolver.resolve("", "excess")).rejects.toThrow();
+    release({ Id: imageId, Config: { User: "0:0" } } as Docker.ImageInspectInfo);
+    await Promise.all(requests);
+    await expect(test.resolver.resolve("", "next")).resolves.toMatchObject({ user: "0:0" });
+  });
+
   it("deduplicates concurrent engine checks and caches metadata", async () => {
     const test = service();
     await Promise.all(
@@ -202,7 +347,7 @@ describe.skipIf(process.platform !== "linux")("Docker ownership metadata", () =>
     expect(test.readRuntime).not.toHaveBeenCalled();
   });
 
-  it("expires engine and image metadata", async () => {
+  it("expires engine verification without retaining image metadata", async () => {
     const test = service();
     const now = vi.spyOn(Date, "now").mockReturnValue(1000);
     await test.resolver.resolve("", "test-image");

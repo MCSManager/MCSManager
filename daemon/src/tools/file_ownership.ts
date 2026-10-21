@@ -36,7 +36,13 @@ export async function resolveInstanceFileOwnership(
 
   const runAs = String(instance.config.runAs || "").trim();
   if (instance.config.processType === "docker") {
-    const identity = await dockerFileOwnership.resolve(runAs, instance.config.docker.image || "");
+    const identity = await dockerFileOwnership.resolveForFiles(
+      runAs,
+      instance.config.docker.image || "",
+      typeof instance.process?.pid === "string"
+        ? { id: instance.process.pid, instanceUuid: instance.instanceUuid }
+        : undefined
+    );
     if (identity.rootless && identity.ownership) return { ...identity.ownership, rootless: true };
   }
   if (options.rootlessOnly) return undefined;

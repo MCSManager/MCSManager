@@ -26,6 +26,7 @@ export interface DockerFileIdentity {
   rootless: boolean;
   ownership?: FileOwnership;
   user?: string;
+  imageId?: string;
   resourceLimits?: { memory: boolean; cpu: boolean };
 }
 
@@ -129,7 +130,12 @@ export function resolveRootlessFileOwnership(
 }
 
 const CACHE_TTL_MS = 30_000;
-const MAX_CACHED_IMAGES = 32;
+const MAX_IMAGE_REQUESTS = 32;
+
+interface ImageIdentity {
+  id: string;
+  user: string;
+}
 
 export class DockerFileOwnershipService {
   private engine?: {
@@ -140,7 +146,7 @@ export class DockerFileOwnershipService {
     resourceLimits: { memory: boolean; cpu: boolean };
   };
   private engineRequest?: Promise<NonNullable<DockerFileOwnershipService["engine"]>>;
-  private readonly images = new Map<string, { user: string; expires: number }>();
+  private readonly imageRequests = new Map<string, Promise<ImageIdentity>>();
 
   constructor(
     private readonly docker: Pick<Docker, "info" | "getImage" | "getContainer"> = new DefaultDocker(
@@ -150,8 +156,33 @@ export class DockerFileOwnershipService {
     ),
     private readonly socketPath = DefaultDocker.defaultConfig.socketPath,
     private readonly readRuntime = readDockerOwnershipRuntime,
-    private readonly readEngineNamespace = readRootlessEngineNamespace
+    private readonly readEngineNamespace = readRootlessEngineNamespace,
+    private readonly rootlessDeployment = Boolean(process.env.MCSM_ROOTLESS_DOCKER_CONTAINER)
   ) {}
+
+  public async resolveForFiles(
+    runAs: string,
+    image: string,
+    container?: { id: string; instanceUuid: string }
+  ): Promise<DockerFileIdentity> {
+    // Rootless is an administrator opt-in. Offline Rootful file operations must
+    // not depend on an engine probe or infer host IDs after a failed probe.
+    if (!this.rootlessDeployment) return { rootless: false };
+    const engine = await this.getEngine();
+    if (!engine.rootless) throw unsupported();
+    if (!container) return this.resolve(runAs, image);
+    // A running instance keeps its creation-time identity even if its tag or
+    // configured runAs has since changed. Never apply the next boot's owner to it.
+    let info: Docker.ContainerInspectInfo;
+    try {
+      info = await this.docker.getContainer(container.id).inspect();
+    } catch {
+      throw new Error($t("TXT_CODE_rootless.engineUnavailable"));
+    }
+    if (info.Config.Labels?.["mcsmanager.instance.uuid"] !== container.instanceUuid)
+      throw unsupported();
+    return this.identityForUser(info.Config.User || "0:0", engine);
+  }
 
   private async getEngine() {
     if (this.engine && this.engine.expires > Date.now()) return this.engine;
@@ -177,6 +208,7 @@ export class DockerFileOwnershipService {
         throw new Error($t("TXT_CODE_rootless.engineUnavailable"));
       }
       const rootless = info.SecurityOptions?.some((option) => option === "name=rootless") ?? false;
+      if (this.rootlessDeployment && !rootless) throw unsupported();
       let runtime: DockerOwnershipRuntime | undefined;
       let namespace: NamespaceMaps | undefined;
       if (rootless) {
@@ -222,24 +254,59 @@ export class DockerFileOwnershipService {
     const engine = await this.getEngine();
     if (!engine.rootless) return { rootless: false };
 
-    let user = runAs.trim();
-    if (!user) {
-      const cached = this.images.get(image);
-      if (cached && cached.expires > Date.now()) {
-        user = cached.user;
-      } else {
-        try {
-          user = (await this.docker.getImage(image).inspect()).Config?.User?.trim() || "0:0";
-        } catch {
-          throw new Error($t("TXT_CODE_rootless.imageUnavailable"));
-        }
-        if (this.images.size >= MAX_CACHED_IMAGES)
-          this.images.delete(this.images.keys().next().value!);
-        this.images.set(image, { user, expires: Date.now() + CACHE_TTL_MS });
-      }
-    }
+    const user = runAs.trim() || (await this.inspectImage(image)).user;
+    return this.identityForUser(user, engine);
+  }
+
+  public async resolveForContainer(
+    runAs: string,
+    identityImage: string,
+    effectiveImage: string
+  ): Promise<DockerFileIdentity> {
+    const engine = await this.getEngine();
+    if (!engine.rootless) return { rootless: false };
+    const image = await this.inspectImage(effectiveImage);
+    const user =
+      runAs.trim() ||
+      (identityImage === effectiveImage
+        ? image.user
+        : (await this.inspectImage(identityImage)).user);
+    return { ...this.identityForUser(user, engine), imageId: image.id };
+  }
+
+  private identityForUser(
+    user: string,
+    engine: NonNullable<DockerFileOwnershipService["engine"]>
+  ): DockerFileIdentity {
     const ownership = resolveRootlessFileOwnership(user, engine.runtime!, engine.namespace!);
     return { rootless: true, ownership, user, resourceLimits: engine.resourceLimits };
+  }
+
+  private async inspectImage(image: string): Promise<ImageIdentity> {
+    const pending = this.imageRequests.get(image);
+    if (pending) return pending;
+    if (!image || this.imageRequests.size >= MAX_IMAGE_REQUESTS)
+      throw new Error($t("TXT_CODE_rootless.imageUnavailable"));
+    // Coalesce concurrent reads, but never cache USER by a mutable image tag.
+    const request = (async () => {
+      try {
+        const info = await this.docker.getImage(image).inspect();
+        if (
+          !/^sha256:[a-f0-9]{64}$/.test(info.Id) ||
+          (info.Config?.User != null && typeof info.Config.User !== "string")
+        )
+          throw unsupported();
+        return { id: info.Id, user: info.Config?.User?.trim() || "0:0" };
+      } catch {
+        throw new Error($t("TXT_CODE_rootless.imageUnavailable"));
+      }
+    })();
+    this.imageRequests.set(image, request);
+    try {
+      return await request;
+    } finally {
+      this.imageRequests.delete(image);
+    }
   }
 }
 
