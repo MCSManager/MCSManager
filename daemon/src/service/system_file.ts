@@ -14,6 +14,7 @@ import { syncPathOwnershipWithinRoot } from "../tools/file_ownership";
 import type { FileOwnership } from "../tools/file_ownership";
 import { normalizedJoin } from "../tools/filepath";
 import { resolvePhysicalPath } from "../tools/path_link_check";
+import { openOwnedWriteFile } from "../tools/owned_write_file";
 
 const ERROR_MSG_01 = $t("TXT_CODE_system_file.illegalAccess");
 const ERROR_PATH_NOT_FOUND = $t("TXT_CODE_96281410");
@@ -229,6 +230,16 @@ export default class FileManager {
     const buf = iconv.encode(data, this.fileCode || "utf-8");
     const ownership = await this.ownershipResolver?.();
     this.assertInsideWorkspace(absPath);
+    if (ownership?.rootless) {
+      const target = await openOwnedWriteFile(this.topPath, absPath, ownership);
+      try {
+        await target.file.truncate(0);
+        await target.file.writeFile(buf);
+      } finally {
+        await target.close();
+      }
+      return;
+    }
     await fs.writeFile(absPath, buf);
     await this.syncOwnership(absPath, ownership);
   }
@@ -239,6 +250,11 @@ export default class FileManager {
     const target = this.toAbsolutePath(fileName);
     const ownership = await this.ownershipResolver?.();
     this.assertInsideWorkspace(target);
+    if (ownership?.rootless) {
+      const file = await openOwnedWriteFile(this.topPath, target, ownership);
+      await file.close();
+      return;
+    }
     const parentDir = path.resolve(path.dirname(target));
     if (parentDir !== path.parse(parentDir).root) await fs.mkdir(parentDir, { recursive: true });
     await fs.createFile(target);

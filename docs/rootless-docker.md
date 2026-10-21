@@ -136,6 +136,18 @@ limits via actual cgroup files, not only Docker's requested configuration.
   separators. Failed extraction reconciles only known entry paths and parents,
   not the entire destination tree. Partial files may remain, but permission
   reconciliation failures are reported, not treated as successful extraction.
+- Rootless edits, new files, chunked uploads and URL download destinations resolve
+  internal symlinks and synchronize the actual target inode before truncating it.
+  Linux directory descriptors and `O_NOFOLLOW` anchor creation and writing; a
+  replaced symlink cannot redirect an already-open write outside the workspace.
+  Ownership failures are reported before existing contents are truncated.
+  Chunked uploads lock by inode in private Daemon data, so aliases of the same
+  file cannot upload concurrently. Cancellation checks the pinned destination's
+  inode before removing a partial file, and always releases its descriptors.
+  This hardens these content-write paths, not every file API: copy, move,
+  extraction, reads and deletion still have the pathname race limitations above.
+  Do not treat this PR as a complete hostile-process filesystem sandbox; those
+  APIs need a separate descriptor-relative/native implementation and security review.
 - Host `tc` upload/download limits are rejected for Rootless instances. No sudo
   fallback or extra host capability is added.
 - Rootless Docker instances reject `HOST` as the update environment. Set
@@ -188,8 +200,10 @@ native non-root Daemon limited to `0:0`. Both upload APIs, manual/automatic
 extraction, copy/move ownership, game writes in moved directories, private-file access,
 mode `000`/write-only file moves, sticky/setgid directory copies, nested extra-bind
 write/rename/delete and unchanged external bind ownership/modes are checked, along
-with updates, console I/O, restart, local UDP and actual cgroup limits. It also
-checks file writes after retagging an active instance's image and a general process
+with updates, console I/O, restart, local UDP and actual cgroup limits. It checks
+edits and chunked uploads through internal links to differently owned files,
+including the target UID/GID, preservation of the link and subsequent game writes.
+It also checks file writes after retagging an active instance's image and a general process
 instance's update container without a main image. Unsupported native-host UID 1000 uploads must
 fail before overwriting existing files, and `HOST` updates must not run.
 
@@ -215,3 +229,24 @@ RSS was 115–139 MiB including the isolated TypeScript loader and fixture setup
 this is not an incremental Daemon-memory measurement. Move still visits the tree
 before and after rename to validate relocated links and ownership. These timings
 are not throughput guarantees or Rootless networking benchmarks.
+
+A separate run exercised actual ownership changes inside the non-root account's
+Rootless Engine (host UID 1005, container UID 0, target UID/GID 1000:1000). It used
+the same small-file layout on a bind mount, Node 20, a one-CPU limit, 512 MiB memory
+and no network. Every file started with a different owner; each operation also
+changed its 100-files-per-directory parents and the destination root.
+
+| Files   | Move / Copy elapsed | `fchown` calls per operation | Sampled RSS rise, Move / Copy |
+| ------- | ------------------- | --------------------------- | ---------------------------- |
+| 1,000   | 429 / 718 ms        | 1,011                       | 1.7 / 4.5 MiB                |
+| 10,000  | 2,629 / 4,831 ms    | 10,101                      | 1.9 / 3.3 MiB                |
+| 100,000 | 26,835 / 43,094 ms  | 101,001                     | 3.6 / 5.1 MiB                |
+
+RSS rise was sampled every 10 ms relative to the post-setup process RSS, not the
+memory footprint of a running Daemon. API counters wrap the real `fs-extra`
+operations; they are not complete kernel syscall counts. For 100,000 files,
+move/copy issued 507,018/508,012 `lstat`, 404,011/405,010 `realpath`, and
+101,001/102,002 `open` calls. The single-CPU limit and different ownership workload
+mean these numbers are not a like-for-like comparison with the earlier table.
+This checks bounded memory under actual `fchown` work, not cancellation latency,
+cross-filesystem moves, end-to-end HTTP throughput or game-network performance.

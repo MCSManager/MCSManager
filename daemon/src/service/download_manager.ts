@@ -6,6 +6,14 @@ import { Throttle } from "stream-throttle";
 import { getCommonHeaders } from "../common/network";
 import { globalConfiguration } from "../entity/config";
 import { checkSafeUrl } from "../utils/url";
+import { openOwnedWriteFile } from "../tools/owned_write_file";
+import type { OwnedWriteFile } from "../tools/owned_write_file";
+import type { FileOwnership } from "../tools/file_ownership";
+import { $t } from "../i18n";
+
+function createCancellationError(): Error {
+  return Object.assign(new Error($t("TXT_CODE_1b7a8832")), { name: "CanceledError" });
+}
 
 export const DOWNLOAD_STATUS = {
   DOWNLOADING: 0,
@@ -21,6 +29,12 @@ interface DownloadTask {
   status: number;
   error?: string;
   controller: AbortController;
+  descriptorCleanup?: boolean;
+}
+
+export interface DownloadDestination {
+  workspace: string;
+  ownership: FileOwnership;
 }
 
 class DownloadManager {
@@ -34,7 +48,8 @@ class DownloadManager {
     url: string,
     targetPath: string,
     fallbackUrl?: string,
-    onDownloaded?: () => Promise<void>
+    onDownloaded?: () => Promise<void>,
+    destination?: DownloadDestination
   ): Promise<void> {
     const taskId = Math.random().toString(36).substring(2, 15);
     const controller = new AbortController();
@@ -44,30 +59,60 @@ class DownloadManager {
       total: 0,
       current: 0,
       status: DOWNLOAD_STATUS.DOWNLOADING,
-      controller
+      controller,
+      descriptorCleanup: Boolean(destination)
     };
     this.tasks.push(task);
 
+    let ownedTarget: OwnedWriteFile | undefined;
+    let responseStream: import("stream").Readable | undefined;
+    let targetModified = false;
+    const closeTarget = async () => {
+      const target = ownedTarget;
+      ownedTarget = undefined;
+      if (!target) return;
+      try {
+        if (controller.signal.aborted && targetModified) await target.remove();
+      } finally {
+        await target.close();
+      }
+    };
     try {
       // Ensure directory exists
       const dir = path.dirname(targetPath);
-      if (!fs.existsSync(dir)) fs.mkdirpSync(dir);
+      if (!destination && !fs.existsSync(dir)) fs.mkdirpSync(dir);
 
       const response = await this.requestWithRetry(url, controller);
       const total = parseInt(response.headers["content-length"] || "0");
       let current = 0;
       const stream = response.data;
-      const writeStream = createWriteStream(targetPath);
+      responseStream = stream;
+      if (destination) {
+        ownedTarget = await openOwnedWriteFile(
+          destination.workspace,
+          targetPath,
+          destination.ownership
+        );
+        if (controller.signal.aborted) throw createCancellationError();
+        await ownedTarget.file.truncate(0);
+        targetModified = true;
+      }
+      const writeStream = ownedTarget
+        ? ownedTarget.file.createWriteStream({ autoClose: false })
+        : createWriteStream(targetPath);
 
       task.total = total;
 
-      return new Promise((resolve, reject) => {
+      return await new Promise<void>((resolve, reject) => {
         let settled = false;
+        let throttleStream: Throttle | undefined;
+        const onAbort = () => onError(createCancellationError());
         const onError = (err: Error) => {
           if (settled) return;
           settled = true;
+          controller.signal.removeEventListener("abort", onAbort);
           stream.destroy();
-          writeStream.destroy();
+          throttleStream?.destroy();
           const activeTask = this.tasks.find((t) => t.id === taskId);
           if (activeTask) {
             activeTask.status = DOWNLOAD_STATUS.ERROR;
@@ -77,11 +122,11 @@ class DownloadManager {
             this.tasks = this.tasks.filter((t) => t.id !== taskId);
           }, 1000);
 
-          if (err.name === "CanceledError") {
-            resolve();
-            return;
-          }
-          reject(err);
+          const settle = () => (err.name === "CanceledError" ? resolve() : reject(err));
+          // Wait for pending stream I/O before releasing the destination handles.
+          if (ownedTarget && !writeStream.closed) writeStream.once("close", settle);
+          else settle();
+          writeStream.destroy();
         };
 
         const onFinish = async () => {
@@ -94,6 +139,7 @@ class DownloadManager {
           }
           if (settled) return;
           settled = true;
+          controller.signal.removeEventListener("abort", onAbort);
           const activeTask = this.tasks.find((t) => t.id === taskId);
           if (activeTask) {
             activeTask.status = DOWNLOAD_STATUS.COMPLETED;
@@ -102,7 +148,12 @@ class DownloadManager {
           setTimeout(() => {
             this.tasks = this.tasks.filter((t) => t.id !== taskId);
           }, 1000);
-          resolve();
+          if (ownedTarget) {
+            writeStream.once("close", resolve);
+            writeStream.destroy();
+          } else {
+            resolve();
+          }
         };
 
         stream.on("data", (chunk: any) => {
@@ -115,20 +166,33 @@ class DownloadManager {
         stream.on("error", onError);
         writeStream.on("error", onError);
         writeStream.on("finish", onFinish);
+        controller.signal.addEventListener("abort", onAbort, { once: true });
+        if (controller.signal.aborted) {
+          onAbort();
+          return;
+        }
 
         const speedLimit = globalConfiguration.config.uploadSpeedRate;
         if (speedLimit <= 0) {
           stream.pipe(writeStream);
           return;
         }
-        const throttleStream = new Throttle({ rate: speedLimit * 64 * 1024 });
+        throttleStream = new Throttle({ rate: speedLimit * 64 * 1024 });
         throttleStream.on("error", onError);
         stream.pipe(throttleStream).pipe(writeStream);
-      });
+      }).finally(closeTarget);
     } catch (err: any) {
+      responseStream?.destroy();
+      await closeTarget();
       if (fallbackUrl && !controller.signal.aborted) {
         this.tasks = this.tasks.filter((t) => t.id !== taskId);
-        return await this.downloadFromUrl(fallbackUrl, targetPath, undefined, onDownloaded);
+        return await this.downloadFromUrl(
+          fallbackUrl,
+          targetPath,
+          undefined,
+          onDownloaded,
+          destination
+        );
       }
 
       if (err.name === "CanceledError") {
@@ -154,9 +218,10 @@ class DownloadManager {
 
     task.controller.abort();
     this.tasks = this.tasks.filter((t) => t.id !== task.id);
-    setTimeout(() => {
-      fs.remove(task.path).catch(() => {});
-    }, 1000);
+    if (!task.descriptorCleanup)
+      setTimeout(() => {
+        fs.remove(task.path).catch(() => {});
+      }, 1000);
     return true;
   }
 
@@ -166,9 +231,10 @@ class DownloadManager {
 
     task.controller.abort();
     this.tasks = this.tasks.filter((t) => t.id !== task.id);
-    setTimeout(() => {
-      fs.remove(task.path).catch(() => {});
-    }, 1000);
+    if (!task.descriptorCleanup)
+      setTimeout(() => {
+        fs.remove(task.path).catch(() => {});
+      }, 1000);
     return true;
   }
 

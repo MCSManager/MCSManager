@@ -8,6 +8,8 @@ import uploadManager from "../service/upload_manager";
 import { resolveInstanceFileOwnership, syncInstancePathOwnership } from "../tools/file_ownership";
 import type { FileOwnership } from "../tools/file_ownership";
 import { acquireFileTask } from "../service/file_task";
+import { openOwnedWriteFile, syncOwnedFileHandle } from "../tools/owned_write_file";
+import type { OwnedWriteFile } from "../tools/owned_write_file";
 import Instance from "./instance/instance";
 
 type ChunkRange = { start: number; end: number };
@@ -24,6 +26,7 @@ export default class FileWriter {
   private stopping = false;
   private ownsFile = false;
   private ownership?: FileOwnership;
+  private ownedTarget?: OwnedWriteFile;
   readonly received: ChunkRange[] = [];
   lastUpdate: number = Date.now();
 
@@ -91,16 +94,31 @@ export default class FileWriter {
     new FileManager(this.cwd).assertInsideWorkspace(this.path);
     let locked = false;
     try {
-      if (lockfile.checkSync(this.path)) locked = true;
+      if (!this.ownership?.rootless && lockfile.checkSync(this.path)) locked = true;
     } catch {}
     if (locked) {
       throw new Error("File is locked");
     }
     try {
-      this.fd = await fs.open(this.path, "w+");
-      this.ownsFile = true;
-      this.releaseLock = await lockfile.lock(this.path);
+      if (this.ownership?.rootless) {
+        this.ownedTarget = await openOwnedWriteFile(this.cwd!, this.path, this.ownership);
+        this.fd = this.ownedTarget.file.fd;
+        const info = await this.ownedTarget.file.stat();
+        // Keep lock metadata outside tenant-controlled directories. Inode keys
+        // also serialize uploads using different links to the same file.
+        const lockDirectory = path.join(process.cwd(), "data", "UploadLocks");
+        await fs.ensureDir(lockDirectory, { mode: 0o700 });
+        this.releaseLock = await lockfile.lock(
+          path.join(lockDirectory, `${info.dev}-${info.ino}`),
+          { realpath: false }
+        );
+      } else {
+        this.fd = await fs.open(this.path, "w+");
+        this.ownsFile = true;
+        this.releaseLock = await lockfile.lock(this.path);
+      }
       await fs.ftruncate(this.fd, this.size);
+      this.ownsFile = true;
     } catch (e) {
       try {
         await this.stop();
@@ -169,7 +187,14 @@ export default class FileWriter {
 
   async done() {
     if (this.fd != null) {
-      await fs.close(this.fd);
+      if (this.ownedTarget) {
+        await syncOwnedFileHandle(this.ownedTarget.file, this.ownership!);
+        await this.ownedTarget.close();
+        this.ownedTarget = undefined;
+        this.ownsFile = false;
+      } else {
+        await fs.close(this.fd);
+      }
       this.fd = null;
       if (typeof this.releaseLock === "function") {
         await this.releaseLock();
@@ -182,7 +207,8 @@ export default class FileWriter {
     }
 
     const ownership = this.ownership;
-    if (ownership) await syncInstancePathOwnership(this.instance, this.path, ownership);
+    if (ownership && !ownership.rootless)
+      await syncInstancePathOwnership(this.instance, this.path, ownership);
 
     logger.info("Browser Uploaded File:", this.path);
 
@@ -225,7 +251,21 @@ export default class FileWriter {
     let cleanupError: unknown;
     const fd = this.fd;
     this.fd = null;
-    if (fd != null) {
+    const ownedTarget = this.ownedTarget;
+    this.ownedTarget = undefined;
+    if (ownedTarget) {
+      try {
+        if (this.ownsFile) await ownedTarget.remove();
+      } catch (error) {
+        cleanupError ||= error;
+      } finally {
+        try {
+          await ownedTarget.close();
+        } catch (error) {
+          cleanupError ||= error;
+        }
+      }
+    } else if (fd != null) {
       try {
         await fs.close(fd);
       } catch (error) {
@@ -243,7 +283,7 @@ export default class FileWriter {
       }
     }
 
-    if (this.ownsFile) {
+    if (this.ownsFile && !ownedTarget) {
       try {
         await fs.remove(this.path);
       } catch (error) {

@@ -420,6 +420,36 @@ async function testUser(runAs, gameImage = image) {
   const [quota, period] = report.cpu.split(" ").map(Number);
   assert.equal(quota / period, 0.5);
   assert.equal(await file("file/edit", { target: "private" }), "private");
+  // Seed writable files with the wrong namespace owner. Writes through links
+  // must reconcile the target inode, not skip ownership at the link itself.
+  const linkedOwner = daemonRuntime === "container" ? (expectedUid === 0 ? 1000 : 0) : expectedUid;
+  await execNode(
+    container,
+    `
+    const fs = require("fs"), path = require("path");
+    for (const name of ["edit", "chunk"]) {
+      const target = path.join(${JSON.stringify(workspace)}, "linked-" + name);
+      fs.writeFileSync(target, "original", { mode: 0o666 });
+      fs.chownSync(target, ${linkedOwner}, ${linkedOwner});
+      fs.symlinkSync("linked-" + name, target + "-alias");
+    }
+  `
+  );
+  await file("file/edit", { target: "linked-edit-alias", text: "edited through link" });
+  await upload(instanceUuid, "linked-chunk-alias", Buffer.from("uploaded through link"), true);
+  await execNode(
+    game,
+    `
+    const fs = require("fs");
+    for (const name of ["edit", "chunk"]) {
+      const target = "/data/linked-" + name;
+      const info = fs.statSync(target);
+      if (info.uid !== ${expectedUid} || info.gid !== ${expectedUid}) throw new Error("Linked target ownership mismatch");
+      if (!fs.lstatSync(target + "-alias").isSymbolicLink()) throw new Error("Link was replaced");
+      fs.appendFileSync(target, " game write");
+    }
+  `
+  );
   const downloadKey = crypto.randomBytes(24).toString("hex");
   await request("passport/register", {
     name: "download",

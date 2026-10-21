@@ -1,4 +1,4 @@
-import { Readable } from "node:stream";
+import { PassThrough, Readable } from "node:stream";
 import fs from "fs-extra";
 import os from "os";
 import path from "path";
@@ -31,6 +31,13 @@ describe("download ownership completion", () => {
 
   function response() {
     return { status: 200, headers: {}, data: Readable.from([Buffer.from("downloaded")]) };
+  }
+
+  async function waitForTransfer(body: Readable) {
+    const deadline = Date.now() + 3000;
+    while (body.listenerCount("data") === 0 && Date.now() < deadline)
+      await new Promise((resolve) => setTimeout(resolve, 5));
+    expect(body.listenerCount("data")).toBeGreaterThan(0);
   }
 
   it("waits for ownership synchronization before reporting completion", async () => {
@@ -110,4 +117,72 @@ describe("download ownership completion", () => {
     await new Promise((resolve) => setImmediate(resolve));
     expect(downloadManager.tasks[0].status).toBe(DOWNLOAD_STATUS.ERROR);
   });
+
+  const ownership = { uid: process.getuid?.() ?? 0, gid: process.getgid?.() ?? 0, rootless: true };
+
+  it.skipIf(process.platform !== "linux")(
+    "downloads through an internal symlink without replacing it",
+    async () => {
+      await fs.writeFile(path.join(workspace, "actual"), "old");
+      const link = path.join(workspace, "link");
+      await fs.symlink("actual", link);
+      vi.mocked(axios).mockResolvedValue(response());
+      await downloadManager.downloadFromUrl(
+        "https://example.invalid/file",
+        link,
+        undefined,
+        undefined,
+        { workspace, ownership }
+      );
+      expect(await fs.readFile(path.join(workspace, "actual"), "utf8")).toBe("downloaded");
+      expect((await fs.lstat(link)).isSymbolicLink()).toBe(true);
+      expect(downloadManager.tasks[0].status).toBe(DOWNLOAD_STATUS.COMPLETED);
+    }
+  );
+
+  it.skipIf(process.platform !== "linux")(
+    "closes an owned destination on stream failure",
+    async () => {
+      const body = new PassThrough();
+      vi.mocked(axios).mockResolvedValue({ status: 200, headers: {}, data: body });
+      const filename = path.join(workspace, "partial");
+      const result = downloadManager.downloadFromUrl(
+        "https://example.invalid/file",
+        filename,
+        undefined,
+        undefined,
+        { workspace, ownership }
+      );
+      const rejected = expect(result).rejects.toThrow("stream failed");
+      await waitForTransfer(body);
+      body.destroy(new Error("stream failed"));
+      await rejected;
+      expect(body.destroyed).toBe(true);
+      expect(downloadManager.tasks[0].status).toBe(DOWNLOAD_STATUS.ERROR);
+    }
+  );
+
+  it.skipIf(process.platform !== "linux")(
+    "cancels using the pinned target rather than a replaced link",
+    async () => {
+      const body = new PassThrough();
+      vi.mocked(axios).mockResolvedValue({ status: 200, headers: {}, data: body });
+      const filename = path.join(workspace, "partial");
+      const result = downloadManager.downloadFromUrl(
+        "https://example.invalid/file",
+        filename,
+        undefined,
+        undefined,
+        { workspace, ownership }
+      );
+      await waitForTransfer(body);
+      await fs.rename(filename, path.join(workspace, "original"));
+      await fs.writeFile(filename, "replacement");
+      expect(downloadManager.stop(filename)).toBe(true);
+      await result;
+      expect(body.destroyed).toBe(true);
+      expect(await fs.readFile(filename, "utf8")).toBe("replacement");
+      expect(downloadManager.tasks).toHaveLength(0);
+    }
+  );
 });

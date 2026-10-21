@@ -194,7 +194,7 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
     const instance = InstanceSubsystem.getInstance(data.instanceUuid)!;
     const ownership = await resolveInstanceFileOwnership(instance, { rootlessOnly: true });
     fileManager.assertInsideWorkspace(targetPath);
-    await fileManager.mkdir(path.dirname(targetPath));
+    if (!ownership) await fileManager.mkdir(path.dirname(targetPath));
 
     // Start download in background
     const fallbackUrl = data.fallbackUrl;
@@ -210,20 +210,14 @@ routerApp.on("file/download_from_url", async (ctx, data) => {
       return;
     }
 
-    let ownershipSynchronized = false;
     downloadManager
-      .downloadFromUrl(url, targetPath, fallbackUrl, async () => {
-        await fileManager.syncOwnership(targetPath, ownership);
-        ownershipSynchronized = true;
-      })
-      .finally(async () => {
-        if (!ownership || ownershipSynchronized) return;
-        try {
-          await fileManager.syncOwnership(targetPath, ownership);
-        } catch (error) {
-          if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
-        }
-      })
+      .downloadFromUrl(
+        url,
+        targetPath,
+        fallbackUrl,
+        undefined,
+        ownership ? { workspace: instance.absoluteCwdPath(), ownership } : undefined
+      )
       .catch((err) => {
         if (err.name === "CanceledError") return;
         logger.error(`Download failed: ${url} -> ${targetPath}`, err);

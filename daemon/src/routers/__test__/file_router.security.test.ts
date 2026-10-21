@@ -295,9 +295,9 @@ describe("file move quotas", () => {
   });
 });
 
-describe("download ownership completion", () => {
+describe("descriptor-owned download destinations", () => {
   it.each(["success", "failure", "cancellation"])(
-    "synchronizes %s downloads once",
+    "delegates %s ownership and cleanup to the download manager",
     async (outcome) => {
       const ownership = {
         uid: process.getuid?.() ?? 0,
@@ -326,9 +326,14 @@ describe("download ownership completion", () => {
           ).status
         ).toBe(200);
         await new Promise<void>((resolve) => setImmediate(resolve));
-        expect(
-          sync.mock.calls.filter(([target]) => target === path.join(sandbox.dirA, "download.bin"))
-        ).toHaveLength(1);
+        expect(downloadManager.downloadFromUrl).toHaveBeenCalledWith(
+          "https://example.com/file",
+          path.join(sandbox.dirA, "download.bin"),
+          undefined,
+          undefined,
+          { workspace: sandbox.dirA, ownership }
+        );
+        expect(sync).not.toHaveBeenCalled();
       } finally {
         resolver.mockRestore();
         sync.mockRestore();
@@ -413,7 +418,8 @@ describe("file_router security: per-instance workspace isolation (real FileManag
       "https://example.com/file.zip",
       path.join(sandbox.dirA, "dl.bin"),
       "",
-      expect.any(Function)
+      undefined,
+      undefined
     );
   });
 
