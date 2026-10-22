@@ -7,7 +7,7 @@ import { randomUUID } from "crypto";
 import { $t } from "../i18n";
 import type { FileOwnership } from "./file_ownership";
 import { resolvePhysicalPath } from "./path_link_check";
-import { reserveFileWrite } from "./active_file_write";
+import { reserveFileWrite } from "./file_reservation";
 
 export interface OwnedWriteFile {
   file: FileHandle;
@@ -72,12 +72,13 @@ export async function openOwnedWriteFile(
     throw new Error($t("TXT_CODE_file_ownership.outsideWorkspace"));
   const segments = path.relative(root, destination).split(path.sep);
   if (segments.length > 129) throw new Error($t("TXT_CODE_file_task.copyDepthExceeded"));
+  // Acquire before opening or creating any workspace entry, not just the leaf.
+  const reservation = reserveFileWrite(root, destination);
   const directoryFlags = constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW;
   let parent: FileHandle | undefined;
   let file: FileHandle | undefined;
   let createdFile: { entry: string; info: Stats } | undefined;
   const createdDirectories: { parent: FileHandle; entry: string; info: Stats }[] = [];
-  let release: (() => void) | undefined;
   const cleanDirectories = async () => {
     for (const directory of [...createdDirectories].reverse())
       await removeMatchingEntry(directory.entry, directory.info);
@@ -86,7 +87,7 @@ export async function openOwnedWriteFile(
     const handles = new Set(createdDirectories.map((directory) => directory.parent));
     if (parent) handles.add(parent);
     const results = await Promise.allSettled([...handles].map((handle) => handle.close()));
-    release?.();
+    reservation.release();
     const failure = results.find(
       (result): result is PromiseRejectedResult => result.status === "rejected"
     );
@@ -133,7 +134,7 @@ export async function openOwnedWriteFile(
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
     }
-    release = reserveFileWrite(destination, before);
+    if (before) reservation.updateIdentity(before);
     // Staged replacements never truncate or change the existing target.
     const writeEntry = staged ? `/proc/self/fd/${parent.fd}/.mcsm-write-${randomUUID()}` : entry;
     file = await fs.open(
@@ -152,8 +153,7 @@ export async function openOwnedWriteFile(
     )
       throw new Error($t("TXT_CODE_file_ownership.targetChanged"));
     if (!staged) {
-      release();
-      release = reserveFileWrite(destination, opened);
+      reservation.updateIdentity(opened);
     }
     if (!staged) await syncOwnedFileHandle(file, ownership);
     const heldFile = file;

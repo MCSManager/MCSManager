@@ -3276,7 +3276,7 @@
   "TXT_CODE_rootless.hostUpdateUnsupported": "Rootless Docker instances must use a container for updates, not HOST. Select the main instance image or a separate update image.",
   "TXT_CODE_rootless.externalBindMissing": "External Rootless bind sources must already exist. Ask the administrator to prepare their ownership and permissions; MCSManager will not create or change them.",
   "TXT_CODE_rootless.archiveSymlinkOutput": "ZIP output must not be a symbolic link when using Rootless Docker. Choose a regular file path.",
-  "TXT_CODE_file_task.activeWrite": "A file transfer is using this target. Wait for it to finish or cancel it before modifying the target.",
+  "TXT_CODE_file_task.activeWrite": "Another file operation is using this workspace or target. Wait for it to finish, or cancel the transfer before trying again.",
   "TXT_CODE_rootless.unverifiedResourceLimit": "Rootless Docker support cannot verify cpuset, device I/O, swap or swappiness limits. Remove these settings before starting the instance.",
   "TXT_CODE_file_task.limitExceeded": "The instance or Daemon file task limit has been reached. Wait for an existing task to finish.",
   "TXT_CODE_file_task.invalidTransferTargets": "A file transfer request must contain between 1 and 100 source/destination pairs.",

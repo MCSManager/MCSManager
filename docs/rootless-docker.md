@@ -145,10 +145,20 @@ limits via actual cgroup files, not only Docker's requested configuration.
   Linux directory descriptors and `O_NOFOLLOW` anchor creation and writing; a
   replaced symlink cannot redirect an already-open write outside the workspace.
   Ownership failures are reported before existing contents are truncated.
-  Active owned writes reserve their resolved path and inode. Aliases and hard links
-  cannot start a second write; panel delete/move/copy/edit/extract operations reject
-  targets or ancestor directories used by an active transfer. Reservations are
-  released with the descriptors, not tracked separately by the caller's link name.
+  Active owned writes reserve their workspace, resolved path and inode before
+  opening or creating any entries. Different files may be written concurrently;
+  aliases and hard links to the same file cannot start a second write. Rootless
+  copy/move/delete/extract/mkdir/chmod operations take exclusive workspace access
+  for their entire lifetime, including traversal, mutation and ownership repair.
+  This blocks conflicts in either start order, including writes through hard-link
+  aliases elsewhere in the same workspace. Nested or symlink-aliased workspaces
+  also conflict; unrelated workspaces can continue in parallel.
+  This deliberately serializes mutations within one workspace during a long file
+  operation instead of indexing every descendant inode. Reservations are acquired
+  synchronously, conflicts are rejected without queueing or automatic retries,
+  and `finally` releases them on success or failure. Descriptor-close cleanup
+  releases write access, including failed initialization and cancellation.
+  These are in-process API reservations, not OS locks on running game processes.
   Chunked uploads additionally retain their private Daemon inode lock.
   Legacy uploads stream the parser's temporary file in bounded chunks into an
   exclusive sibling staging file, validate its size and ownership, then replace
