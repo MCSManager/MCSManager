@@ -23,6 +23,11 @@ export interface FileWriteReservation {
   release: () => void;
 }
 
+export interface FileOperationReservation {
+  reserveWrite: (workspace: string, target: string) => FileWriteReservation;
+  release: () => void;
+}
+
 const activeWrites = new Set<ActiveWrite>();
 const activeOperations = new Set<ActiveOperation>();
 
@@ -79,13 +84,29 @@ export function assertFileAvailable(target: string): void {
 
 /** Shared workspace access: different files may be written concurrently. */
 export function reserveFileWrite(workspace: string, target: string): FileWriteReservation {
+  return acquireFileWrite(workspace, target);
+}
+
+function acquireFileWrite(
+  workspace: string,
+  target: string,
+  owner?: ActiveOperation
+): FileWriteReservation {
   const active: ActiveWrite = { ...readTarget(target), workspace: readTarget(workspace).path };
   const assertAvailable = () => {
+    if (
+      owner &&
+      (!activeOperations.has(owner) ||
+        active.workspace !== owner.workspace ||
+        !contains(owner.workspace, active.path))
+    )
+      conflict();
     for (const writer of activeWrites) {
       if (writer !== active && (overlaps(active.path, writer.path) || sameInode(active, writer)))
         conflict();
     }
     for (const operation of activeOperations) {
+      if (operation === owner) continue;
       if (
         overlaps(active.workspace, operation.workspace) ||
         operation.targets.some((entry) => sameInode(active, entry))
@@ -111,7 +132,10 @@ export function reserveFileWrite(workspace: string, target: string): FileWriteRe
  * Exclusive workspace access avoids retaining every descendant inode during a
  * recursive operation. Check-and-insert is synchronous; conflicts are not queued.
  */
-export function reserveFileOperation(workspace: string, targets: string[]): () => void {
+export function reserveFileOperation(
+  workspace: string,
+  targets: string[]
+): FileOperationReservation {
   const operation = { workspace: readTarget(workspace).path, targets: targets.map(readTarget) };
   for (const active of activeOperations)
     if (
@@ -126,7 +150,12 @@ export function reserveFileOperation(workspace: string, targets: string[]): () =
     )
       conflict();
   activeOperations.add(operation);
-  return () => {
-    activeOperations.delete(operation);
+  return {
+    reserveWrite(workspace, target) {
+      return acquireFileWrite(workspace, target, operation);
+    },
+    release() {
+      activeOperations.delete(operation);
+    }
   };
 }

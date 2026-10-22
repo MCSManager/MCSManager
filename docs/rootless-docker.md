@@ -148,17 +148,23 @@ limits via actual cgroup files, not only Docker's requested configuration.
   Active owned writes reserve their workspace, resolved path and inode before
   opening or creating any entries. Different files may be written concurrently;
   aliases and hard links to the same file cannot start a second write. Rootless
-  copy/move/delete/extract/mkdir/chmod operations take exclusive workspace access
-  for their entire lifetime, including traversal, mutation and ownership repair.
+  copy/move/delete/extract/compress/mkdir/chmod operations take exclusive workspace
+  access for their entire lifetime, including traversal, mutation and ownership repair.
   This blocks conflicts in either start order, including writes through hard-link
   aliases elsewhere in the same workspace. Nested or symlink-aliased workspaces
   also conflict; unrelated workspaces can continue in parallel.
+  Across separate workspaces, only explicitly reserved target inodes are compared;
+  hard links to descendants of a reserved directory are not indexed or protected.
+  Do not share writable files between tenant workspaces using hard links.
   This deliberately serializes mutations within one workspace during a long file
   operation instead of indexing every descendant inode. Reservations are acquired
   synchronously, conflicts are rejected without queueing or automatic retries,
   and `finally` releases them on success or failure. Descriptor-close cleanup
   releases write access, including failed initialization and cancellation.
   These are in-process API reservations, not OS locks on running game processes.
+  Background copy replies mean the validated batch was accepted, not completed.
+  Reservation conflicts are returned before acceptance. Later I/O failures are
+  reported to the instance console and Daemon log; the API has no completion ID.
   Chunked uploads additionally retain their private Daemon inode lock.
   Legacy uploads stream the parser's temporary file in bounded chunks into an
   exclusive sibling staging file, validate its size and ownership, then replace
@@ -189,8 +195,11 @@ limits via actual cgroup files, not only Docker's requested configuration.
   descriptor-relative replacement helper as legacy uploads. Concurrent output
   symlink replacement cannot redirect the compressor's writes outside the workspace.
   This adds an archive-sized copy and temporary disk usage; file-task quotas still
-  bound concurrent compression. Compressor input paths remain pathname-based and
-  retain the concurrent path replacement limitations described above.
+  bound concurrent compression. Rootless ZIP holds its workspace reservation from
+  compression through staged publication; publication acquires write access from
+  that same operation, not a second independent operation. Compressor input paths
+  remain pathname-based and retain the concurrent path replacement limitations
+  described above.
 - Host `tc` upload/download limits are rejected for Rootless instances. No sudo
   fallback or extra host capability is added.
 - Rootless Docker instances reject `HOST` as the update environment. Set
@@ -284,10 +293,10 @@ and no network. Every file started with a different owner; each operation also
 changed its 100-files-per-directory parents and the destination root.
 
 | Files   | Move / Copy elapsed | `fchown` calls per operation | Sampled RSS rise, Move / Copy |
-| ------- | ------------------- | --------------------------- | ---------------------------- |
-| 1,000   | 429 / 718 ms        | 1,011                       | 1.7 / 4.5 MiB                |
-| 10,000  | 2,629 / 4,831 ms    | 10,101                      | 1.9 / 3.3 MiB                |
-| 100,000 | 26,835 / 43,094 ms  | 101,001                     | 3.6 / 5.1 MiB                |
+| ------- | ------------------- | ---------------------------- | ----------------------------- |
+| 1,000   | 429 / 718 ms        | 1,011                        | 1.7 / 4.5 MiB                 |
+| 10,000  | 2,629 / 4,831 ms    | 10,101                       | 1.9 / 3.3 MiB                 |
+| 100,000 | 26,835 / 43,094 ms  | 101,001                      | 3.6 / 5.1 MiB                 |
 
 RSS rise was sampled every 10 ms relative to the post-setup process RSS, not the
 memory footprint of a running Daemon. API counters wrap the real `fs-extra`

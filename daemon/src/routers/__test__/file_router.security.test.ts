@@ -162,7 +162,7 @@ describe("background file copy quotas", () => {
       finish = resolve;
     });
     const copy = vi
-      .spyOn(FileManager.prototype, "copy")
+      .spyOn(fs, "copy")
       .mockImplementationOnce(() => pending)
       .mockResolvedValue(undefined);
     try {
@@ -189,7 +189,7 @@ describe("background file copy quotas", () => {
 
   it("rejects new copies at the global quota before starting work", async () => {
     globalEnv.fileTaskCount = globalConfiguration.config.maxGlobalFileTask;
-    const copy = vi.spyOn(FileManager.prototype, "copy");
+    const copy = vi.spyOn(fs, "copy");
     try {
       const packet = await call("file/copy", { instanceUuid: "a", targets: [["ok.txt", "copy"]] });
       expect(packet.status).toBe(500);
@@ -201,17 +201,90 @@ describe("background file copy quotas", () => {
   });
 
   it("releases a failed copy and rejects malformed or oversized batches", async () => {
-    const copy = vi
-      .spyOn(FileManager.prototype, "copy")
-      .mockRejectedValue(new Error("copy failed"));
+    const copy = vi.spyOn(fs, "copy").mockRejectedValue(new Error("copy failed"));
     try {
       const packet = await call("file/copy", { instanceUuid: "a", targets: [["ok.txt", "copy"]] });
       expect(packet.status).toBe(200);
       await new Promise<void>((resolve) => setImmediate(resolve));
       expect(globalEnv.fileTaskCount).toBe(0);
+      expect(InstanceSubsystem.getInstance("a")!.println).toHaveBeenCalledWith(
+        "ERROR",
+        expect.stringContaining("copy failed")
+      );
       for (const targets of [[], [["ok.txt"]], Array(101).fill(["ok.txt", "copy"])]) {
         expect((await call("file/copy", { instanceUuid: "a", targets })).status).toBe(500);
       }
+    } finally {
+      copy.mockRestore();
+    }
+  });
+
+  it.skipIf(process.platform !== "linux")(
+    "rejects a conflicting copy before acknowledging acceptance",
+    async () => {
+      const ownership = vi.spyOn(fileOwnership, "resolveInstanceFileOwnership").mockResolvedValue({
+        uid: process.getuid!(),
+        gid: process.getgid!(),
+        rootless: true
+      });
+      let finish!: () => void;
+      let entered!: () => void;
+      let completed!: () => void;
+      const pending = new Promise<void>((resolve) => {
+        finish = resolve;
+      });
+      const done = new Promise<void>((resolve) => {
+        completed = resolve;
+      });
+      const started = new Promise<void>((resolve) => {
+        entered = resolve;
+      });
+      const copy = vi
+        .spyOn(FileManager.prototype as any, "copyOwnedEntry")
+        .mockImplementationOnce(async () => {
+          entered();
+          await pending;
+          completed();
+        });
+      const println = InstanceSubsystem.getInstance("a")!.println as ReturnType<typeof vi.fn>;
+      try {
+        expect(
+          (await call("file/copy", { instanceUuid: "a", targets: [["ok.txt", "first"]] })).status
+        ).toBe(200);
+        await started;
+        expect(
+          (await call("file/copy", { instanceUuid: "a", targets: [["ok.txt", "second"]] })).status
+        ).toBe(500);
+        expect(copy).toHaveBeenCalledTimes(1);
+        expect(println).not.toHaveBeenCalled();
+        expect(InstanceSubsystem.getInstance("a")!.info.fileLock).toBe(1);
+        expect(globalEnv.fileTaskCount).toBe(1);
+        finish();
+        await done;
+        await new Promise<void>((resolve) => setImmediate(resolve));
+        expect(globalEnv.fileTaskCount).toBe(0);
+      } finally {
+        finish();
+        await done;
+        copy.mockRestore();
+        ownership.mockRestore();
+      }
+    }
+  );
+
+  it("rejects an invalid batch before acceptance or any partial copy", async () => {
+    const copy = vi.spyOn(fs, "copy");
+    try {
+      const packet = await call("file/copy", {
+        instanceUuid: "a",
+        targets: [
+          ["ok.txt", "valid"],
+          ["missing-source", "invalid"]
+        ]
+      });
+      expect(packet.status).toBe(500);
+      expect(copy).not.toHaveBeenCalled();
+      expect(globalEnv.fileTaskCount).toBe(0);
     } finally {
       copy.mockRestore();
     }

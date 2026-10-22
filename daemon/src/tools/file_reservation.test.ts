@@ -32,9 +32,9 @@ describe.skipIf(process.platform !== "linux")("file reservations", () => {
   }
 
   function operation(base: string, name = "file") {
-    const release = reserveFileOperation(base, [path.join(base, name)]);
-    releases.push(release);
-    return release;
+    const reservation = reserveFileOperation(base, [path.join(base, name)]);
+    releases.push(reservation.release);
+    return reservation.release;
   }
 
   it("allows concurrent writes to different files, but not an overlapping operation", () => {
@@ -93,5 +93,29 @@ describe.skipIf(process.platform !== "linux")("file reservations", () => {
     writer.release();
     expect(() => writer.updateIdentity(fs.statSync(path.join(workspace, "new")))).toThrow();
     expect(() => operation(workspace)).not.toThrow();
+  });
+
+  it("allows only an active operation to reserve a write in its own workspace", () => {
+    const reservation = reserveFileOperation(workspace, [path.join(workspace, "file")]);
+    releases.push(reservation.release);
+    expect(() => write(workspace, "file")).toThrow();
+    expect(() => reservation.reserveWrite(other, path.join(other, "file"))).toThrow();
+    expect(() => reservation.reserveWrite(workspace, path.join(other, "file"))).toThrow();
+    const owned = reservation.reserveWrite(workspace, path.join(workspace, "file"));
+    releases.push(owned.release);
+    expect(() => reservation.reserveWrite(workspace, path.join(workspace, "file"))).toThrow();
+    owned.release();
+    reservation.release();
+    expect(() => reservation.reserveWrite(workspace, path.join(workspace, "new"))).toThrow();
+    expect(() => write(workspace, "file")).not.toThrow();
+  });
+
+  it("does not index descendant hard links in an unrelated workspace", async () => {
+    await fs.mkdir(path.join(workspace, "tree"));
+    await fs.link(path.join(workspace, "file"), path.join(workspace, "tree/child"));
+    await fs.link(path.join(workspace, "file"), path.join(other, "alias"));
+    operation(workspace, "tree");
+    // Only explicit target inodes are compared across separate workspace scopes.
+    expect(() => write(other, "alias")).not.toThrow();
   });
 });

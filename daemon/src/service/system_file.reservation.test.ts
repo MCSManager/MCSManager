@@ -28,7 +28,7 @@ import FileManager from "./system_file";
 import FileWriter from "../entity/file_writer";
 import type Instance from "../entity/instance/instance";
 import downloadManager from "./download_manager";
-import { decompress } from "../common/compress";
+import { compress, decompress } from "../common/compress";
 import { openOwnedWriteFile, replaceOwnedFile } from "../tools/owned_write_file";
 import { reserveFileOperation } from "../tools/file_reservation";
 
@@ -185,8 +185,8 @@ describe.skipIf(process.platform !== "linux")("Rootless file operation lifetimes
       const target = await opening;
       await target.close();
     }
-    const release = reserveFileOperation(workspace, [path.join(workspace, "source")]);
-    release();
+    const reservation = reserveFileOperation(workspace, [path.join(workspace, "source")]);
+    reservation.release();
   });
 
   it("releases write access when the first descriptor cannot be opened", async () => {
@@ -194,8 +194,8 @@ describe.skipIf(process.platform !== "linux")("Rootless file operation lifetimes
     await expect(
       openOwnedWriteFile(workspace, path.join(workspace, "new"), ownership)
     ).rejects.toThrow("open failed");
-    const release = reserveFileOperation(workspace, [path.join(workspace, "source")]);
-    release();
+    const reservation = reserveFileOperation(workspace, [path.join(workspace, "source")]);
+    reservation.release();
     expect(await fs.pathExists(path.join(workspace, "new"))).toBe(false);
   });
 
@@ -218,4 +218,91 @@ describe.skipIf(process.platform !== "linux")("Rootless file operation lifetimes
       }
     }
   );
+
+  it.each([false, true])(
+    "ZIP holds access through compression and publication (failure=%s)",
+    async (fail) => {
+      const gate = barrier();
+      await fs.writeFile(path.join(workspace, "output.zip"), "old archive");
+      vi.mocked(compress).mockImplementationOnce(async (output) => {
+        gate.entered();
+        await gate.wait;
+        if (fail) throw new Error("compression failed");
+        await fs.writeFile(output, "new archive");
+        return true;
+      });
+      const operation = files.zip("output.zip", ["source"]);
+      try {
+        await gate.started;
+        for (const name of ["source", "output.zip"]) {
+          await expect(files.move(name, name + ".moved")).rejects.toThrow();
+          await expect(files.delete(name)).rejects.toThrow();
+        }
+        await expect(
+          openOwnedWriteFile(workspace, path.join(workspace, "source/file"), ownership)
+        ).rejects.toThrow();
+        expect(await fs.readFile(path.join(workspace, "output.zip"), "utf8")).toBe("old archive");
+        const completed = fail
+          ? expect(operation).rejects.toThrow("compression failed")
+          : operation;
+        gate.release();
+        await completed;
+        expect(await fs.readFile(path.join(workspace, "output.zip"), "utf8")).toBe(
+          fail ? "old archive" : "new archive"
+        );
+        const after = await openOwnedWriteFile(workspace, path.join(workspace, "after"), ownership);
+        await after.close();
+      } finally {
+        gate.release();
+        await operation.catch(() => {});
+      }
+    }
+  );
+
+  it("rejects ZIP before compression when a source writer is already active", async () => {
+    const writer = await openOwnedWriteFile(
+      workspace,
+      path.join(workspace, "source/file"),
+      ownership
+    );
+    const compressor = vi.mocked(compress);
+    compressor.mockClear();
+    try {
+      await expect(files.zip("output.zip", ["source"])).rejects.toThrow();
+      expect(compressor).not.toHaveBeenCalled();
+    } finally {
+      await writer.close();
+    }
+  });
+
+  it("keeps ZIP reserved until publication finishes, including publication failure", async () => {
+    const gate = barrier();
+    await fs.writeFile(path.join(workspace, "output.zip"), "old archive");
+    vi.mocked(compress).mockImplementationOnce(async (output) => {
+      await fs.writeFile(output, "new archive");
+      return true;
+    });
+    vi.spyOn(promises, "rename").mockImplementationOnce(async () => {
+      gate.entered();
+      await gate.wait;
+      throw new Error("publication failed");
+    });
+    const operation = files.zip("output.zip", ["source"]);
+    try {
+      await gate.started;
+      await expect(files.delete("source")).rejects.toThrow();
+      await expect(files.move("output.zip", "moved.zip")).rejects.toThrow();
+      const failed = expect(operation).rejects.toThrow("publication failed");
+      gate.release();
+      await failed;
+      expect(await fs.readFile(path.join(workspace, "output.zip"), "utf8")).toBe("old archive");
+      expect((await fs.readdir(workspace)).some((name) => name.startsWith(".mcsm-write-"))).toBe(
+        false
+      );
+      await files.delete("output.zip");
+    } finally {
+      gate.release();
+      await operation.catch(() => {});
+    }
+  });
 });

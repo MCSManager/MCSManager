@@ -8,6 +8,7 @@ import { $t } from "../i18n";
 import type { FileOwnership } from "./file_ownership";
 import { resolvePhysicalPath } from "./path_link_check";
 import { reserveFileWrite } from "./file_reservation";
+import type { FileOperationReservation } from "./file_reservation";
 
 export interface OwnedWriteFile {
   file: FileHandle;
@@ -61,7 +62,7 @@ export async function openOwnedWriteFile(
   workspace: string,
   target: string,
   ownership: FileOwnership,
-  options: { mode?: number; staged?: boolean } = {}
+  options: { mode?: number; staged?: boolean; operation?: FileOperationReservation } = {}
 ): Promise<OwnedWriteFile> {
   const { mode = 0o666, staged = false } = options;
   if (process.platform !== "linux" || !isInside(path.resolve(workspace), path.resolve(target)))
@@ -73,7 +74,9 @@ export async function openOwnedWriteFile(
   const segments = path.relative(root, destination).split(path.sep);
   if (segments.length > 129) throw new Error($t("TXT_CODE_file_task.copyDepthExceeded"));
   // Acquire before opening or creating any workspace entry, not just the leaf.
-  const reservation = reserveFileWrite(root, destination);
+  const reservation = options.operation
+    ? options.operation.reserveWrite(root, destination)
+    : reserveFileWrite(root, destination);
   const directoryFlags = constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW;
   let parent: FileHandle | undefined;
   let file: FileHandle | undefined;
@@ -248,13 +251,15 @@ export async function replaceOwnedFile(
   destination: string,
   ownership: FileOwnership,
   sourcePath: string,
-  size: number
+  size: number,
+  operation?: FileOperationReservation
 ): Promise<void> {
   if (!Number.isSafeInteger(size) || size < 0)
     throw new Error($t("TXT_CODE_http_router.updateErr"));
   const target = await openOwnedWriteFile(workspace, destination, ownership, {
     mode: 0o600,
-    staged: true
+    staged: true,
+    operation
   });
   try {
     let offset = 0;

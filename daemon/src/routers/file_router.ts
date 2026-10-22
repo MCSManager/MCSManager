@@ -252,6 +252,7 @@ routerApp.on("file/download_from_url_stop", (ctx, data) => {
 
 // copy the file
 routerApp.on("file/copy", async (ctx, data) => {
+  let accepted = false;
   try {
     // [["a.txt","b.txt"],["cxz","zzz"]]
     const targets = data.targets;
@@ -260,27 +261,20 @@ routerApp.on("file/copy", async (ctx, data) => {
     validateFileTransferTargets(targets);
     const release = acquireFileTask(instance.info);
     try {
-      await resolveInstanceFileOwnership(instance, { rootlessOnly: true });
-      // Intentionally NOT awaited: copying very large files can take far longer
-      // than the client request timeout, so the copy runs detached in the
-      // background and the response returns immediately.
-      void (async () => {
-        try {
-          for (const target of targets) await fileManager.copy(target[0], target[1]);
-        } catch (error) {
-          logger.error("Instance file copy failed:", error);
-          instance.println("ERROR", String(error));
-        } finally {
-          release();
-        }
-      })();
-    } catch (error) {
+      // Reply once the batch owns its reservation, without waiting for large copies.
+      await fileManager.copyBatch(targets, () => {
+        accepted = true;
+        protocol.response(ctx, true);
+      });
+    } finally {
       release();
-      throw error;
     }
-    protocol.response(ctx, true);
   } catch (error: any) {
-    protocol.responseError(ctx, error);
+    if (!accepted) protocol.responseError(ctx, error);
+    else {
+      logger.error("Instance file copy failed:", error);
+      InstanceSubsystem.getInstance(data.instanceUuid)?.println("ERROR", String(error));
+    }
   }
 });
 

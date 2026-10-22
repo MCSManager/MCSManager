@@ -16,6 +16,8 @@ import { normalizedJoin } from "../tools/filepath";
 import { resolvePhysicalPath } from "../tools/path_link_check";
 import { openOwnedWriteFile, replaceOwnedFile } from "../tools/owned_write_file";
 import { assertFileAvailable, reserveFileOperation } from "../tools/file_reservation";
+import type { FileOperationReservation } from "../tools/file_reservation";
+import { validateFileTransferTargets } from "./file_task";
 
 const ERROR_MSG_01 = $t("TXT_CODE_system_file.illegalAccess");
 const ERROR_PATH_NOT_FOUND = $t("TXT_CODE_96281410");
@@ -53,15 +55,17 @@ export default class FileManager {
   private async withFileOperation<T>(
     ownership: FileOwnership | undefined,
     targets: string[],
-    operation: () => Promise<T>
+    operation: (reservation?: FileOperationReservation) => Promise<T>
   ): Promise<T> {
-    const release = ownership?.rootless ? reserveFileOperation(this.topPath, targets) : undefined;
+    const reservation = ownership?.rootless
+      ? reserveFileOperation(this.topPath, targets)
+      : undefined;
     try {
       for (const target of targets) this.assertInsideWorkspace(target);
       if (!ownership?.rootless) for (const target of targets) assertFileAvailable(target);
-      return await operation();
+      return await operation(reservation);
     } finally {
-      release?.();
+      reservation?.release();
     }
   }
 
@@ -284,24 +288,40 @@ export default class FileManager {
   }
 
   async copy(target1: string, target2: string) {
-    if (!this.checkPath(target2) || !this.check(target1)) throw new Error(ERROR_MSG_01);
-    const targetPath = this.toAbsolutePath(target1);
-    target2 = this.toAbsolutePath(target2);
+    return this.copyBatch([[target1, target2]]);
+  }
+
+  /** Signal acceptance only after validating the batch and reserving its workspace. */
+  async copyBatch(targets: [string, string][], onAccepted?: () => void): Promise<void> {
+    validateFileTransferTargets(targets);
+    const paths = targets.map(([source, destination]) => {
+      if (!this.checkPath(destination) || !this.check(source)) throw new Error(ERROR_MSG_01);
+      return [this.toAbsolutePath(source), this.toAbsolutePath(destination)] as const;
+    });
     const ownership = await this.ownershipResolver?.();
-    return this.withFileOperation(ownership, [targetPath, target2], async () => {
-      if (!ownership) return await fs.copy(targetPath, target2);
-      const realRoot = await fs.realpath(this.topPath);
-      const source = await this.resolveCopyPath(targetPath, realRoot);
-      const destination = await this.resolveCopyPath(target2, realRoot);
-      const relative = path.relative(source, destination);
-      if (
-        relative === "" ||
-        (!relative.startsWith(".." + path.sep) && relative !== ".." && !path.isAbsolute(relative))
-      ) {
-        throw new Error(ERROR_MSG_01);
+    return this.withFileOperation(ownership, paths.flat(), async () => {
+      const realRoot = ownership ? await fs.realpath(this.topPath) : undefined;
+      // Reject invalid destinations before acknowledging this background job.
+      for (const [sourcePath, destinationPath] of paths) {
+        if (!realRoot) continue;
+        const source = await this.resolveCopyPath(sourcePath, realRoot);
+        const destination = await this.resolveCopyPath(destinationPath, realRoot);
+        const relative = path.relative(source, destination);
+        if (
+          relative === "" ||
+          (!relative.startsWith(".." + path.sep) && relative !== ".." && !path.isAbsolute(relative))
+        ) {
+          throw new Error(ERROR_MSG_01);
+        }
       }
-      await this.prepareOwnedDirectory(path.dirname(target2), ownership);
-      await this.copyOwnedEntry(targetPath, target2, realRoot, ownership, 0);
+      onAccepted?.();
+      for (const [source, destination] of paths) {
+        if (!ownership || !realRoot) await fs.copy(source, destination);
+        else {
+          await this.prepareOwnedDirectory(path.dirname(destination), ownership);
+          await this.copyOwnedEntry(source, destination, realRoot, ownership, 0);
+        }
+      }
     });
   }
 
@@ -761,7 +781,7 @@ export default class FileManager {
     const MAX_ZIP_GB = globalConfiguration.config.maxZipFileSize;
     const MAX_TOTAL_FIELS_SIZE = 1024 * 1024 * 1024 * MAX_ZIP_GB;
     const sourceZipPath = this.toAbsolutePath(sourceZip);
-    const filesPath = [];
+    const filesPath: string[] = [];
     let totalSize = 0;
     for (const iterator of files) {
       try {
@@ -777,30 +797,37 @@ export default class FileManager {
     this.assertInsideWorkspace(sourceZipPath);
     assertFileAvailable(sourceZipPath);
     if (ownership?.rootless) {
-      try {
-        if ((await fs.lstat(sourceZipPath)).isSymbolicLink())
-          throw new Error($t("TXT_CODE_rootless.archiveSymlinkOutput"));
-      } catch (error) {
-        if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
-      }
-      // The compressor never receives a tenant-controlled output path.
-      const stagingRoot = path.join(process.cwd(), "data", "ArchiveStaging");
-      await fs.ensureDir(stagingRoot, { mode: 0o700 });
-      const staging = await fs.mkdtemp(path.join(stagingRoot, "zip-"));
-      try {
-        const archive = path.join(staging, "output.zip");
-        const result = await compress(archive, filesPath, code, path.dirname(sourceZipPath));
-        await replaceOwnedFile(
-          this.topPath,
-          sourceZipPath,
-          ownership,
-          archive,
-          (await fs.stat(archive)).size
-        );
-        return result;
-      } finally {
-        await fs.remove(staging);
-      }
+      return this.withFileOperation(
+        ownership,
+        [sourceZipPath, ...filesPath],
+        async (reservation) => {
+          try {
+            if ((await fs.lstat(sourceZipPath)).isSymbolicLink())
+              throw new Error($t("TXT_CODE_rootless.archiveSymlinkOutput"));
+          } catch (error) {
+            if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+          }
+          // The compressor never receives a tenant-controlled output path.
+          const stagingRoot = path.join(process.cwd(), "data", "ArchiveStaging");
+          await fs.ensureDir(stagingRoot, { mode: 0o700 });
+          const staging = await fs.mkdtemp(path.join(stagingRoot, "zip-"));
+          try {
+            const archive = path.join(staging, "output.zip");
+            const result = await compress(archive, filesPath, code, path.dirname(sourceZipPath));
+            await replaceOwnedFile(
+              this.topPath,
+              sourceZipPath,
+              ownership,
+              archive,
+              (await fs.stat(archive)).size,
+              reservation
+            );
+            return result;
+          } finally {
+            await fs.remove(staging);
+          }
+        }
+      );
     }
     const result = await compress(sourceZipPath, filesPath, code);
     await this.syncOwnership(sourceZipPath, ownership);
