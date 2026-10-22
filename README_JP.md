@@ -8,7 +8,7 @@
 
 [![--](https://img.shields.io/badge/Support%20Platform-Windows/Linux/Mac-green.svg)](https://github.com/MCSManager)
 [![Status](https://img.shields.io/badge/NPM-v8.9.14-blue.svg)](https://www.npmjs.com/)
-[![Status](https://img.shields.io/badge/Node-v16.20.2-blue.svg)](https://nodejs.org/en/download/)
+[![Status](https://img.shields.io/badge/Node-v22.23.4-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
 <p align="center">
@@ -61,7 +61,7 @@ MCSManager は `Minecraft` と `Steam` ゲーミングコミュニティ内で�
 
 コントロールパネルは `Windows` と `Linux` プラットフォームで実行でき、データベースのインストールは不要で、`Node.js` 環境といくつかの**解凍用コマンド**をインストールするだけで済みます。
 
-[Node.js 16.20.2](https://nodejs.org/en) 以上を使用する必要があり、最新の LTS バージョンの使用を推奨します。
+[Node.js 22.23.4](https://nodejs.org/en) 以上を使用する必要があり、最新の LTS バージョンの使用を推奨します。
 
 <br />
 
@@ -112,13 +112,13 @@ systemctl stop mcsm-{web,daemon}  # パネルを停止
 ```bash
 # インストールディレクトリに切り替え。存在しない場合は、まず 'mkdir /opt/' で作成してください。
 cd /opt/
-# 実行環境（Node.js）をダウンロード。すでに Node.js 16+ がインストールされている場合は、この手順をスキップしてください。
-wget https://nodejs.org/dist/v20.11.0/node-v20.11.0-linux-x64.tar.xz
+# 実行環境（Node.js）をダウンロード。すでに Node.js 22.23.4+ がインストールされている場合は、この手順をスキップしてください。
+wget https://nodejs.org/dist/v22.23.4/node-v22.23.4-linux-x64.tar.xz
 # アーカイブを解凍
-tar -xvf node-v20.11.0-linux-x64.tar.xz
+tar -xvf node-v22.23.4-linux-x64.tar.xz
 # プログラムをシステム環境変数に追加。
-ln -s /opt/node-v20.11.0-linux-x64/bin/node /usr/bin/node
-ln -s /opt/node-v20.11.0-linux-x64/bin/npm /usr/bin/npm
+ln -s /opt/node-v22.23.4-linux-x64/bin/node /usr/bin/node
+ln -s /opt/node-v22.23.4-linux-x64/bin/npm /usr/bin/npm
 
 # インストールディレクトリを準備。
 mkdir /opt/mcsmanager/

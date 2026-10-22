@@ -69,7 +69,7 @@ const RUNNING = 3;
 // cpuUsage, memory, memorySwap, memorySwappiness, labels, uploadSpeedLimit,
 // downloadSpeedLimit, gpu* fields. Ports are deliberately empty here (we do not
 // exercise port forwarding; an empty array is valid and avoids host port races).
-const NODE_IMAGE = "node:20-alpine";
+const NODE_IMAGE = "node:22-alpine";
 const CONTAINER_PREFIX = "mcsm-it-docker-";
 const LABEL_KEY = "mcsmanager.instance.uuid";
 const TEST_IMG_NAME = "mcsm-it-test";
@@ -299,7 +299,7 @@ describe("docker instance + image integration (Linux + reachable dockerd only)",
 
       // Poll /environment/progress until the build settles (1=building,
       // 2=complete, -1=error). Allow generous time for the alpine pull on a
-      // cold cache (first CI run only — node:20-alpine for the lifecycle test
+      // cold cache (first CI run only — node:22-alpine for the lifecycle test
       // is the same image reused by the instance suite).
       await waitFor(
         async () => {
@@ -377,7 +377,7 @@ describe("docker instance + image integration (Linux + reachable dockerd only)",
   //    restart must produce a NEW container id (same name — the daemon's
   //    createContainerWithNameRetry waits for AutoRemove to release the name).
   dockerIt(
-    "docker instance full cycle: new processType=docker (node:20-alpine) → open RUNNING → command round-trip (echo/sum/pid via test.mjs) → stop graceful → kill → restart new container → delete",
+    "docker instance full cycle: new processType=docker (node:22-alpine) → open RUNNING → command round-trip (echo/sum/pid via test.mjs) → stop graceful → kill → restart new container → delete",
     async () => {
       await ensureUsersOnce();
       const cName = containerName("cycle");

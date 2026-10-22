@@ -8,7 +8,7 @@
 
 [![--](https://img.shields.io/badge/Support%20Platform-Windows/Linux/Mac-green.svg)](https://github.com/MCSManager)
 [![Status](https://img.shields.io/badge/NPM-v8.9.14-blue.svg)](https://www.npmjs.com/)
-[![Status](https://img.shields.io/badge/Node-v16.20.2-blue.svg)](https://nodejs.org/en/download/)
+[![Status](https://img.shields.io/badge/Node-v22.23.4-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
 <p align="center">
@@ -61,7 +61,7 @@ MCSManager ได้รับความนิยมในชุมชนเก
 
 แผงควบคุมสามารถทำงานบนแพลตฟอร์ม `Windows` และ `Linux` ไม่ต้องติดตั้งฐานข้อมูล คุณเพียงแค่ต้องติดตั้งสภาพแวดล้อม `Node.js` และ**คำสั่งสำหรับแตกไฟล์**หลายคำสั่ง
 
-ต้องใช้ [Node.js 16.20.2](https://nodejs.org/en) หรือสูงกว่า แนะนำให้ใช้เวอร์ชัน LTS ล่าสุด
+ต้องใช้ [Node.js 22.23.4](https://nodejs.org/en) หรือสูงกว่า แนะนำให้ใช้เวอร์ชัน LTS ล่าสุด
 
 <br />
 
@@ -112,13 +112,13 @@ systemctl stop mcsm-{web,daemon}  # หยุดแผง
 ```bash
 # เปลี่ยนไปยังไดเรกทอรีการติดตั้ง หากไม่มีอยู่ กรุณาสร้างด้วย 'mkdir /opt/' ก่อน
 cd /opt/
-# ดาวน์โหลดสภาพแวดล้อมการทำงาน (Node.js) หากคุณมี Node.js 16+ ติดตั้งแล้ว กรุณาข้ามขั้นตอนนี้
-wget https://nodejs.org/dist/v20.11.0/node-v20.11.0-linux-x64.tar.xz
+# ดาวน์โหลดสภาพแวดล้อมการทำงาน (Node.js) หากคุณมี Node.js 22.23.4+ ติดตั้งแล้ว กรุณาข้ามขั้นตอนนี้
+wget https://nodejs.org/dist/v22.23.4/node-v22.23.4-linux-x64.tar.xz
 # แตกไฟล์
-tar -xvf node-v20.11.0-linux-x64.tar.xz
+tar -xvf node-v22.23.4-linux-x64.tar.xz
 # เพิ่มโปรแกรมไปยังตัวแปรสภาพแวดล้อมของระบบ
-ln -s /opt/node-v20.11.0-linux-x64/bin/node /usr/bin/node
-ln -s /opt/node-v20.11.0-linux-x64/bin/npm /usr/bin/npm
+ln -s /opt/node-v22.23.4-linux-x64/bin/node /usr/bin/node
+ln -s /opt/node-v22.23.4-linux-x64/bin/npm /usr/bin/npm
 
 # เตรียมไดเรกทอรีการติดตั้ง
 mkdir /opt/mcsmanager/
