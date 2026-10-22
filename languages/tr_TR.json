@@ -3176,7 +3176,7 @@
   "TXT_CODE_AUTOUPDATE_BTN_CANCEL": "İptal",
   "TXT_CODE_AUTOUPDATE_BTN_REFRESH": "Yenile",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE": "Güncelleme kaynağı (manifest URL'si)",
-  "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "https://mcsmanager.com/upgrade/manifest.json",
+  "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_update_manifest.json",
   "TXT_CODE_AUTOUPDATE_WEB_SAVE": "Kaydet",
   "TXT_CODE_AUTOUPDATE_B_ALREADY_PROGRESS": "Zaten bir güncelleme devam ediyor",
   "TXT_CODE_AUTOUPDATE_B_LATEST_VER": "Zaten güncel (v{{v}})",

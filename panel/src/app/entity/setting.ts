@@ -1,3 +1,5 @@
+import { DEFAULT_UPDATE_SOURCE_URL } from "mcsmanager-common";
+
 // Data-plane mode values. String-valued so the persisted JSON and HTTP API
 // payload stay `"direct"` / `"proxy"` (backward compatible with existing
 // `panel/data/SystemConfig/config.json` files and API clients).
@@ -146,7 +148,8 @@ export default class SystemConfig {
   sslKeyPath = "";
 
   // ---- Update source (manifest URL for manual self-update) ----
-  // Full URL to a manifest.json describing available updates, e.g.
-  // "https://mcsmanager.com/upgrade/manifest.json". Empty => update info unavailable.
-  updateSourceUrl = "https://mcsmanager.com/upgrade/manifest.json";
+  // Full URL to a manifest describing available updates, e.g. the official
+  // GitHub Release manifest (DEFAULT_UPDATE_SOURCE_URL). Empty => update info
+  // unavailable.
+  updateSourceUrl = DEFAULT_UPDATE_SOURCE_URL;
 }

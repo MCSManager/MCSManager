@@ -28,9 +28,16 @@ export { arrayUnique } from "./array";
 export {
   applyUpgradePackage,
   compareVersions,
+  DEFAULT_UPDATE_SOURCE_URL,
   downloadToFile,
+  extractArchive,
+  extractTarGz,
   extractZip,
-  fetchJson
+  fetchJson,
+  isComparableVersion,
+  LEGACY_DEFAULT_UPDATE_SOURCE_URL,
+  migrateLegacyUpdateSourceUrl,
+  normalizeVersion
 } from "./upgrade";
 
 export { removeTrail } from "./string_utils";

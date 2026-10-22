@@ -1,6 +1,7 @@
 import fs from "fs-extra";
 import path from "path";
 import { v4 } from "uuid";
+import { DEFAULT_UPDATE_SOURCE_URL } from "mcsmanager-common";
 import StorageSubsystem from "../common/system_storage";
 import logger from "../service/log";
 
@@ -54,9 +55,10 @@ class Config {
   sslKeyPath = "";
 
   // ---- Update source (manifest URL for manual self-update) ----
-  // Full URL to a manifest.json describing available updates, e.g.
-  // "https://mcsmanager.com/upgrade/manifest.json". Empty => update info unavailable.
-  public updateSourceUrl = "https://mcsmanager.com/upgrade/manifest.json";
+  // Full URL to a manifest describing available updates, e.g. the official
+  // GitHub Release manifest (DEFAULT_UPDATE_SOURCE_URL). Empty => update info
+  // unavailable.
+  public updateSourceUrl = DEFAULT_UPDATE_SOURCE_URL;
 }
 
 // daemon configuration class

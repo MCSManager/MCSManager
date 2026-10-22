@@ -3176,7 +3176,7 @@
   "TXT_CODE_AUTOUPDATE_BTN_CANCEL": "キャンセル",
   "TXT_CODE_AUTOUPDATE_BTN_REFRESH": "再読み込み",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE": "更新ソース(manifest の URL)",
-  "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "https://mcsmanager.com/upgrade/manifest.json",
+  "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_update_manifest.json",
   "TXT_CODE_AUTOUPDATE_WEB_SAVE": "保存",
   "TXT_CODE_AUTOUPDATE_B_ALREADY_PROGRESS": "既に更新が進行中です",
   "TXT_CODE_AUTOUPDATE_B_LATEST_VER": "すでに最新版です (v{{v}})",

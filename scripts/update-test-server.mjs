@@ -14,6 +14,8 @@ const PORT = 9999;
 const MIME = {
   ".json": "application/json; charset=utf-8",
   ".zip": "application/zip",
+  ".gz": "application/gzip",
+  ".tgz": "application/gzip",
   ".html": "text/html"
 };
 
@@ -52,6 +54,6 @@ http
   .listen(PORT, () => {
     console.log(`[update-server] serving ${ROOT}`);
     console.log(`[update-server] manifest:  http://localhost:${PORT}/manifest.json`);
-    console.log(`[update-server] daemon.zip: http://localhost:${PORT}/daemon.zip`);
-    console.log(`[update-server] web.zip:    http://localhost:${PORT}/web.zip`);
+  console.log(`[update-server] daemon.tar.gz: http://localhost:${PORT}/daemon.tar.gz`);
+  console.log(`[update-server] web.tar.gz:    http://localhost:${PORT}/web.tar.gz`);
   });

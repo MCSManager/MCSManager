@@ -2,9 +2,9 @@
 //
 // No new external dependencies are introduced here: everything uses Node
 // built-ins (http/https/fs/path/stream) plus packages that `common` already
-// declares (fs-extra, node-stream-zip). Both daemon and panel consume `common`
-// from source (see webpack `resolve.alias` -> ../common/src), so exporting from
-// here makes these helpers available to both bundles.
+// declares (fs-extra, node-stream-zip, compressing). Both daemon and panel
+// consume `common` from source (see webpack `resolve.alias` -> ../common/src),
+// so exporting from here makes these helpers available to both bundles.
 
 import fs from "fs-extra";
 import http from "http";
@@ -15,8 +15,28 @@ import { pipeline } from "stream";
 // node-stream-zip has no bundled types in this version; import it loosely.
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const StreamZip: any = require("node-stream-zip");
+// compressing (tar-stream based) has no bundled types; import it loosely.
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const compressing: any = require("compressing");
 
 type LogFn = (msg: string) => void;
+
+/** Default update source: the manifest asset of the official GitHub Release. */
+export const DEFAULT_UPDATE_SOURCE_URL =
+  "https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_update_manifest.json";
+
+/** Deprecated pre-GitHub update source (mcsmanager.com hosting). */
+export const LEGACY_DEFAULT_UPDATE_SOURCE_URL = "https://mcsmanager.com/upgrade/manifest.json";
+
+/**
+ * Migrate a persisted `updateSourceUrl` to the current default when it still
+ * holds the deprecated legacy source. Operator-customized URLs are returned
+ * unchanged.
+ */
+export function migrateLegacyUpdateSourceUrl(current?: string): string {
+  const url = String(current ?? "").trim();
+  return url === LEGACY_DEFAULT_UPDATE_SOURCE_URL ? DEFAULT_UPDATE_SOURCE_URL : url;
+}
 
 /**
  * Compare two dotted version strings (e.g. "4.18.3" vs "4.18.4").
@@ -37,6 +57,27 @@ export function compareVersions(a?: string, b?: string): number {
     if (va < vb) return -1;
   }
   return 0;
+}
+
+/**
+ * Normalize a version string for comparison: trim whitespace and strip one
+ * leading "v"/"V" marker when it precedes a digit (e.g. GitHub tags "v10.21.2"
+ * -> "10.21.2"). Non-marker text such as "version" is left untouched.
+ */
+export function normalizeVersion(v?: string): string {
+  return String(v ?? "")
+    .trim()
+    .replace(/^[vV](?=\d)/, "");
+}
+
+/**
+ * True when `v` is a plain dotted-numeric version ("10.21.2", "4", "v1.2.3").
+ * Anything else (empty, "1.2.3-beta", "abc", "1..2") is NOT comparable: update
+ * checks must treat it as "no update available" (fail-closed) instead of
+ * guessing how it ranks against the running version.
+ */
+export function isComparableVersion(v?: string): boolean {
+  return /^\d+(\.\d+)*$/.test(normalizeVersion(v));
 }
 
 /**
@@ -187,6 +228,94 @@ export async function extractZip(zipPath: string, destDir: string): Promise<void
     });
     zip.on("error", (err: any) => reject(err));
   });
+}
+
+/**
+ * Extract every entry of a `.tar.gz`/`.tgz` archive into `destDir` (overwrite
+ * existing files).
+ *
+ * Tar-Slip guard: each entry's resolved target must stay inside `destDir`
+ * (`../`, absolute or drive-rooted names are rejected), and only regular files
+ * and directories are written — symlink/hardlink/device entries are rejected
+ * outright, since a link could later redirect writes outside the destination.
+ * Entries are validated BEFORE they are written; a violating entry aborts the
+ * whole extraction with an error (callers treat that as a failed update and
+ * leave the install directory untouched).
+ */
+export async function extractTarGz(tgzPath: string, destDir: string): Promise<void> {
+  await fs.ensureDir(destDir);
+  const destResolved = path.resolve(destDir);
+  return await new Promise<void>((resolve, reject) => {
+    const uncompress = new compressing.tgz.UncompressStream({ source: tgzPath });
+    let settled = false;
+    const fail = (err: Error) => {
+      if (settled) return;
+      settled = true;
+      reject(err);
+      uncompress.destroy();
+    };
+    uncompress.on("entry", (header: any, stream: any, next: (err?: Error) => void) => {
+      const name = String(header?.name || "");
+      const type = String(header?.type || "");
+      const target = path.resolve(destDir, name);
+      const escapes =
+        target !== destResolved && !target.startsWith(destResolved + path.sep);
+      const isFile = type === "file" || type === "contiguous-file";
+      const isDir = type === "directory";
+      if (settled) {
+        stream.resume();
+        return next();
+      }
+      if (escapes) {
+        stream.resume();
+        return fail(new Error(`Tar-slip detected (entry escapes destDir): ${name}`));
+      }
+      if (!isFile && !isDir) {
+        stream.resume();
+        return fail(new Error(`Unsupported tar entry type "${type}" in update package: ${name}`));
+      }
+      const done = (err?: Error) => {
+        if (err) fail(err);
+        else next();
+      };
+      if (isDir) {
+        stream.resume();
+        fs.ensureDir(target).then(() => done(), done);
+        return;
+      }
+      fs.ensureDir(path.dirname(target))
+        .then(
+          () =>
+            new Promise<void>((res, rej) => {
+              pipeline(stream, fs.createWriteStream(target), (e: any) => (e ? rej(e) : res()));
+            })
+        )
+        .then(() => done(), done);
+    });
+    uncompress.on("error", (err: any) => fail(err instanceof Error ? err : new Error(String(err))));
+    uncompress.on("finish", () => {
+      if (!settled) {
+        settled = true;
+        resolve();
+      }
+    });
+  });
+}
+
+/**
+ * Extract an update package into `destDir`, dispatching on the archive format
+ * by file extension: `.tar.gz`/`.tgz` (release update packages) and `.zip`
+ * (legacy / custom update sources). Throws on any other extension.
+ */
+export async function extractArchive(archivePath: string, destDir: string): Promise<void> {
+  const lower = archivePath.toLowerCase();
+  if (lower.endsWith(".tar.gz") || lower.endsWith(".tgz")) {
+    return extractTarGz(archivePath, destDir);
+  }
+  if (lower.endsWith(".zip")) {
+    return extractZip(archivePath, destDir);
+  }
+  throw new Error(`Unsupported update package format: ${path.basename(archivePath)}`);
 }
 
 // Directories at the installation root that an update package must NOT overlay:
