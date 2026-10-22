@@ -13,7 +13,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
  *
  * Three suites live here:
  *  - "Docker instance lifecycle (real)" — the same interactive fixture
- *    `test/fixtures/test.mjs` running inside a real `node:20-alpine` container
+ *    `test/fixtures/test.mjs` running inside a real `node:22-alpine` container
  *    (started as `node test.mjs` with the instance workspace bind-mounted at
  *    `/data`) (Linux + reachable Docker daemon only, otherwise the cases return
  *    early);
@@ -87,7 +87,7 @@ const FIXTURE_APP = path.join(
 // Node Docker image used by the Docker suite. It ships `node`, so every Docker
 // case runs the very same interactive fixture as the non-Docker process suite
 // (`node test.mjs`) instead of a throw-away shell loop.
-const DOCKER_NODE_IMAGE = "node:20-alpine";
+const DOCKER_NODE_IMAGE = "node:22-alpine";
 
 let tmpDir = "";
 let dockerOk = false;

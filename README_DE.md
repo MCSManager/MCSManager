@@ -8,7 +8,7 @@
 
 [![--](https://img.shields.io/badge/Support%20Platform-Windows/Linux/Mac-green.svg)](https://github.com/MCSManager)
 [![Status](https://img.shields.io/badge/NPM-v8.9.14-blue.svg)](https://www.npmjs.com/)
-[![Status](https://img.shields.io/badge/Node-v16.20.2-blue.svg)](https://nodejs.org/en/download/)
+[![Status](https://img.shields.io/badge/Node-v22.23.4-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
 <p align="center">
@@ -61,7 +61,7 @@ Es eignet sich auch für alle kommerziellen Aktivitäten, wie z.B. IDC-Dienstanb
 
 Das Kontrollpanel kann auf `Windows`- und `Linux`-Plattformen laufen, keine Datenbankinstallation erforderlich, Sie müssen nur die `Node.js`-Umgebung und mehrere **Entpackungsbefehle** installieren.
 
-Sie müssen [Node.js 16.20.2](https://nodejs.org/en) oder höher verwenden, empfehlen wir die Verwendung der neuesten LTS-Version.
+Sie müssen [Node.js 22.23.4](https://nodejs.org/en) oder höher verwenden, empfehlen wir die Verwendung der neuesten LTS-Version.
 
 <br />
 
@@ -112,13 +112,13 @@ systemctl stop mcsm-{web,daemon}  # Panel stoppen
 ```bash
 # Zum Installationsverzeichnis wechseln. Wenn es nicht existiert, erstellen Sie es bitte mit 'mkdir /opt/' zuerst.
 cd /opt/
-# Laufzeitumgebung (Node.js) herunterladen. Wenn Sie bereits Node.js 16+ installiert haben, ignorieren Sie bitte diesen Schritt.
-wget https://nodejs.org/dist/v20.11.0/node-v20.11.0-linux-x64.tar.xz
+# Laufzeitumgebung (Node.js) herunterladen. Wenn Sie bereits Node.js 22.23.4+ installiert haben, ignorieren Sie bitte diesen Schritt.
+wget https://nodejs.org/dist/v22.23.4/node-v22.23.4-linux-x64.tar.xz
 # Archiv entpacken
-tar -xvf node-v20.11.0-linux-x64.tar.xz
+tar -xvf node-v22.23.4-linux-x64.tar.xz
 # Programm zu System-Umgebungsvariablen hinzufügen.
-ln -s /opt/node-v20.11.0-linux-x64/bin/node /usr/bin/node
-ln -s /opt/node-v20.11.0-linux-x64/bin/npm /usr/bin/npm
+ln -s /opt/node-v22.23.4-linux-x64/bin/node /usr/bin/node
+ln -s /opt/node-v22.23.4-linux-x64/bin/npm /usr/bin/npm
 
 # Installationsverzeichnis vorbereiten.
 mkdir /opt/mcsmanager/

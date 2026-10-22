@@ -8,7 +8,7 @@
 
 [![--](https://img.shields.io/badge/Support%20Platform-Windows/Linux/Mac-green.svg)](https://github.com/MCSManager)
 [![Status](https://img.shields.io/badge/NPM-v8.9.14-blue.svg)](https://www.npmjs.com/)
-[![Status](https://img.shields.io/badge/Node-v16.20.2-blue.svg)](https://nodejs.org/en/download/)
+[![Status](https://img.shields.io/badge/Node-v22.23.4-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
 <p align="center">
@@ -61,7 +61,7 @@ MCSManager завоевал популярность в сообществах �
 
 Панель управления может работать на платформах `Windows` и `Linux`, не требует установки базы данных, вам нужно только установить среду `Node.js` и несколько **команд для распаковки**.
 
-Необходимо использовать [Node.js 16.20.2](https://nodejs.org/en) или выше, рекомендуется использовать последнюю LTS-версию.
+Необходимо использовать [Node.js 22.23.4](https://nodejs.org/en) или выше, рекомендуется использовать последнюю LTS-версию.
 
 <br />
 
@@ -112,13 +112,13 @@ systemctl stop mcsm-{web,daemon}  # Остановка панели
 ```bash
 # Перейти в каталог установки. Если он не существует, создайте его с помощью 'mkdir /opt/' сначала.
 cd /opt/
-# Скачать среду выполнения (Node.js). Если у вас уже установлен Node.js 16+, пожалуйста, пропустите этот шаг.
-wget https://nodejs.org/dist/v20.11.0/node-v20.11.0-linux-x64.tar.xz
+# Скачать среду выполнения (Node.js). Если у вас уже установлен Node.js 22.23.4+, пожалуйста, пропустите этот шаг.
+wget https://nodejs.org/dist/v22.23.4/node-v22.23.4-linux-x64.tar.xz
 # Распаковать архив
-tar -xvf node-v20.11.0-linux-x64.tar.xz
+tar -xvf node-v22.23.4-linux-x64.tar.xz
 # Добавить программу в системные переменные окружения.
-ln -s /opt/node-v20.11.0-linux-x64/bin/node /usr/bin/node
-ln -s /opt/node-v20.11.0-linux-x64/bin/npm /usr/bin/npm
+ln -s /opt/node-v22.23.4-linux-x64/bin/node /usr/bin/node
+ln -s /opt/node-v22.23.4-linux-x64/bin/npm /usr/bin/npm
 
 # Подготовить каталог установки.
 mkdir /opt/mcsmanager/

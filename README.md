@@ -8,7 +8,7 @@
 
 [![--](https://img.shields.io/badge/Support%20Platform-Windows/Linux/Mac-green.svg)](https://github.com/MCSManager)
 [![Status](https://img.shields.io/badge/NPM-v8.9.14-blue.svg)](https://www.npmjs.com/)
-[![Status](https://img.shields.io/badge/Node-v16.20.2-blue.svg)](https://nodejs.org/en/download/)
+[![Status](https://img.shields.io/badge/Node-v22.23.4-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
 <p align="center">
@@ -66,7 +66,7 @@ MCSManager takes the needs of **commercial applications** into account., such as
 
 The control panel runs on both **`Windows`** and **`Linux`** platforms. No database installation is required. Simply install the **`Node.js`** runtime and a few basic **decompression utilities**.
 
-> Requires **[Node.js 16.20.2](https://nodejs.org/en)** or higher.
+> Requires **[Node.js 22.23.4](https://nodejs.org/en)** or higher.
 > It is recommended to use the **latest LTS version** for best compatibility and stability.
 
 <br />
@@ -120,12 +120,12 @@ systemctl stop mcsm-{web,daemon}  # Stop panel
 cd /opt/
 
 # Step 2: (Optional) Download and install Node.js if it's not already installed
-wget https://nodejs.org/dist/v20.11.0/node-v20.11.0-linux-x64.tar.xz
-tar -xvf node-v20.11.0-linux-x64.tar.xz
+wget https://nodejs.org/dist/v22.23.4/node-v22.23.4-linux-x64.tar.xz
+tar -xvf node-v22.23.4-linux-x64.tar.xz
 
 # Add Node.js and npm to the system path
-ln -s /opt/node-v20.11.0-linux-x64/bin/node /usr/bin/node
-ln -s /opt/node-v20.11.0-linux-x64/bin/npm /usr/bin/npm
+ln -s /opt/node-v22.23.4-linux-x64/bin/node /usr/bin/node
+ln -s /opt/node-v22.23.4-linux-x64/bin/npm /usr/bin/npm
 
 # Step 3: Prepare the MCSManager installation directory
 mkdir /opt/mcsmanager/

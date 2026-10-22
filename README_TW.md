@@ -8,7 +8,7 @@
 
 [![--](https://img.shields.io/badge/Support%20Platform-Windows/Linux/Mac-green.svg)](https://github.com/MCSManager)
 [![Status](https://img.shields.io/badge/NPM-v8.9.14-blue.svg)](https://www.npmjs.com/)
-[![Status](https://img.shields.io/badge/Node-v16.20.2-blue.svg)](https://nodejs.org/en/download/)
+[![Status](https://img.shields.io/badge/Node-v22.23.4-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
 <p align="center">
@@ -61,7 +61,7 @@ MCSM 同樣也考慮了**商業應用**，例如由 **IDC 服務提供商**進�
 
 控制面板可以在 `Windows` 和 `Linux` 平台上執行，無需安裝資料庫，只需安裝 `Node.js` 環境和幾個**解壓縮命令**。
 
-必須使用 [Node.js 16.20.2](https://nodejs.org/en) 或更高版本，建議使用最新的 LTS 版本。
+必須使用 [Node.js 22.23.4](https://nodejs.org/en) 或更高版本，建議使用最新的 LTS 版本。
 
 <br />
 
@@ -112,13 +112,13 @@ systemctl stop mcsm-{web,daemon}  # 停止面板
 ```bash
 # 切換到安裝目錄。如果不存在，請先使用 'mkdir /opt/' 建立。
 cd /opt/
-# 下載執行環境（Node.js）。如果您已經安裝了 Node.js 16+，請忽略此步驟。
-wget https://nodejs.org/dist/v20.11.0/node-v20.11.0-linux-x64.tar.xz
+# 下載執行環境（Node.js）。如果您已經安裝了 Node.js 22.23.4+，請忽略此步驟。
+wget https://nodejs.org/dist/v22.23.4/node-v22.23.4-linux-x64.tar.xz
 # 解壓縮檔案
-tar -xvf node-v20.11.0-linux-x64.tar.xz
+tar -xvf node-v22.23.4-linux-x64.tar.xz
 # 將程式加入系統環境變數。
-ln -s /opt/node-v20.11.0-linux-x64/bin/node /usr/bin/node
-ln -s /opt/node-v20.11.0-linux-x64/bin/npm /usr/bin/npm
+ln -s /opt/node-v22.23.4-linux-x64/bin/node /usr/bin/node
+ln -s /opt/node-v22.23.4-linux-x64/bin/npm /usr/bin/npm
 
 # 準備安裝目錄。
 mkdir /opt/mcsmanager/
