@@ -1,4 +1,4 @@
-import { DEFAULT_UPDATE_SOURCE_URL } from "mcsmanager-common";
+import { DEFAULT_UPDATE_SOURCE_URL, LEGACY_DEFAULT_UPDATE_SOURCE_URL } from "mcsmanager-common";
 
 // Data-plane mode values. String-valued so the persisted JSON and HTTP API
 // payload stay `"direct"` / `"proxy"` (backward compatible with existing
@@ -148,8 +148,11 @@ export default class SystemConfig {
   sslKeyPath = "";
 
   // ---- Update source (manifest URL for manual self-update) ----
-  // Full URL to a manifest describing available updates, e.g. the official
-  // GitHub Release manifest (DEFAULT_UPDATE_SOURCE_URL). Empty => update info
-  // unavailable.
+  // Primary source: full URL to a manifest describing available updates, e.g.
+  // the official GitHub Release manifest (DEFAULT_UPDATE_SOURCE_URL).
   updateSourceUrl = DEFAULT_UPDATE_SOURCE_URL;
+  // Backup source (LEGACY_DEFAULT_UPDATE_SOURCE_URL by default): tried when the
+  // primary source cannot be fetched or parsed. Feature disabled only when
+  // BOTH source fields are empty.
+  updateSourceUrlFallback = LEGACY_DEFAULT_UPDATE_SOURCE_URL;
 }

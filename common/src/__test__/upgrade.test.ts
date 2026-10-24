@@ -1,14 +1,16 @@
 import { spawnSync } from "child_process";
 import fs from "fs-extra";
+import http from "http";
 import os from "os";
 import path from "path";
 import zlib from "zlib";
-import { describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   compareVersions,
   DEFAULT_UPDATE_SOURCE_URL,
   extractArchive,
   extractTarGz,
+  fetchJsonFromSources,
   isComparableVersion,
   LEGACY_DEFAULT_UPDATE_SOURCE_URL,
   migrateLegacyUpdateSourceUrl,
@@ -205,6 +207,113 @@ describe("migrateLegacyUpdateSourceUrl", () => {
     expect(migrateLegacyUpdateSourceUrl(DEFAULT_UPDATE_SOURCE_URL)).toBe(DEFAULT_UPDATE_SOURCE_URL);
     expect(migrateLegacyUpdateSourceUrl("")).toBe("");
     expect(migrateLegacyUpdateSourceUrl(undefined)).toBe("");
+  });
+
+  it("pins the legacy URL as the default backup source value", () => {
+    expect(LEGACY_DEFAULT_UPDATE_SOURCE_URL).toBe("https://mcsmanager.com/upgrade/manifest.json");
+  });
+});
+
+describe("fetchJsonFromSources", () => {
+  const hits: Record<string, number> = {};
+  let server: http.Server;
+  let base = "";
+
+  beforeAll(async () => {
+    server = http.createServer((req, res) => {
+      const url = String(req.url || "");
+      hits[url] = (hits[url] || 0) + 1;
+      if (url === "/ok") {
+        res.writeHead(200, { "content-type": "application/json" });
+        res.end(JSON.stringify({ ok: 1 }));
+      } else if (url === "/badjson") {
+        res.writeHead(200, { "content-type": "text/html" });
+        res.end("<html>not json</html>");
+      } else if (url === "/hang") {
+        // never respond: exercises the socket-inactivity timeout
+      } else {
+        res.writeHead(404);
+        res.end("missing");
+      }
+    });
+    await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", () => resolve()));
+    const addr = server.address();
+    if (typeof addr === "object" && addr) base = `http://127.0.0.1:${addr.port}`;
+  });
+
+  afterAll(async () => {
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+  });
+
+  const deadUrl = (p: string) => `http://127.0.0.1:1${p}`;
+
+  it("returns the primary payload without touching the fallback", async () => {
+    const r = await fetchJsonFromSources(`${base}/ok`, deadUrl("/backup"), 2000);
+    expect(r.data).toEqual({ ok: 1 });
+    expect(r.sourceUrl).toBe(`${base}/ok`);
+    expect(r.usedFallback).toBe(false);
+  });
+
+  it("falls back after a connection error on the primary", async () => {
+    const r = await fetchJsonFromSources(deadUrl("/primary"), `${base}/ok`, 2000);
+    expect(r.data).toEqual({ ok: 1 });
+    expect(r.sourceUrl).toBe(`${base}/ok`);
+    expect(r.usedFallback).toBe(true);
+  });
+
+  it("falls back after an HTTP error on the primary", async () => {
+    const r = await fetchJsonFromSources(`${base}/missing`, `${base}/ok`, 2000);
+    expect(r.data).toEqual({ ok: 1 });
+    expect(r.sourceUrl).toBe(`${base}/ok`);
+    expect(r.usedFallback).toBe(true);
+  });
+
+  it("falls back after invalid JSON on the primary", async () => {
+    const r = await fetchJsonFromSources(`${base}/badjson`, `${base}/ok`, 2000);
+    expect(r.data).toEqual({ ok: 1 });
+    expect(r.sourceUrl).toBe(`${base}/ok`);
+    expect(r.usedFallback).toBe(true);
+  });
+
+  it("falls back after a timeout on the primary", async () => {
+    const r = await fetchJsonFromSources(`${base}/hang`, `${base}/ok`, 250);
+    expect(r.data).toEqual({ ok: 1 });
+    expect(r.sourceUrl).toBe(`${base}/ok`);
+    expect(r.usedFallback).toBe(true);
+  });
+
+  it("uses the backup directly when the primary is empty", async () => {
+    const r = await fetchJsonFromSources("   ", `${base}/ok`, 2000);
+    expect(r.data).toEqual({ ok: 1 });
+    expect(r.sourceUrl).toBe(`${base}/ok`);
+    expect(r.usedFallback).toBe(false);
+  });
+
+  it("tries a duplicated candidate only once", async () => {
+    const before = hits["/ok"] || 0;
+    const r = await fetchJsonFromSources(`${base}/ok`, `${base}/ok`, 2000);
+    expect(r.data).toEqual({ ok: 1 });
+    expect(r.usedFallback).toBe(false);
+    expect((hits["/ok"] || 0) - before).toBe(1);
+  });
+
+  it("aggregates every attempt when all sources fail", async () => {
+    const err = await fetchJsonFromSources(deadUrl("/primary"), `${base}/missing`, 2000).then(
+      () => null,
+      (e: Error) => e
+    );
+    expect(err).toBeTruthy();
+    expect(err!.message).toContain("All update sources failed");
+    expect(err!.message).toContain(deadUrl("/primary"));
+    expect(err!.message).toContain(`${base}/missing`);
+  });
+
+  it("rejects when no source is configured", async () => {
+    const err = await fetchJsonFromSources("", "  ", 2000).then(
+      () => null,
+      (e: Error) => e
+    );
+    expect(err?.message).toBe("No update source configured");
   });
 });
 

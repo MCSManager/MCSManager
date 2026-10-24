@@ -124,6 +124,8 @@ export interface Settings {
   operationLogRecordSystem: boolean;
   // Auto update (panel self-update)
   updateSourceUrl: string;
+  // Backup update source: tried when the primary source cannot be fetched
+  updateSourceUrlFallback: string;
 }
 
 export interface ImageInfo {

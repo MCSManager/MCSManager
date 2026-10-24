@@ -8,6 +8,8 @@
 //   B2. Missing app.js         -> applyUpgradePackage requiredFiles gate rejects before any overlay.
 //   B-TAR. Tar-Slip malicious tar.gz -> extractTarGz rejects the ../ entry (and link entries); no traversal written.
 //   E. Malformed online version -> fail-closed: no "update available" prompt, explicit update refused.
+//   F. Dead primary + healthy backup -> the backup source serves the update info.
+//   G. Malformed-version primary + healthy backup -> stays fail-closed (semantic problems never cross sources).
 //   C. Panel happy update      -> app.js gets a UNIQUE content marker appended in the package; after the
 //                                 update the on-disk app.js CONTAINS that marker (real content replaced),
 //                                 a NEW public/ file appears, an EXISTING public file is overwritten, the
@@ -351,12 +353,24 @@ async function main() {
     assert(login.status === 200 && typeof login.data === "string" && login.data !== "Logined", "login returns real token");
     token = login.data;
   }
-  const setSource = async (manifestFile) => {
+  const strictUrl = (manifestFile) => `http://localhost:${PORT}/strict/${manifestFile}`;
+  // Guaranteed-unreachable source (connection refused): exercises the
+  // backup-source fallback without ever touching the live internet.
+  const DEAD_URL = "http://127.0.0.1:1/manifest.json";
+  // Accepts a strict manifest file name (served under /strict/) or a full URL.
+  // ALWAYS manages BOTH source fields: updateSourceUrlFallback defaults to a
+  // live external host, so a failing primary must never leak a fetch to the
+  // internet during these runs.
+  const setSource = async (manifestFileOrUrl, fallbackUrl = "") => {
+    const primary = /^https?:/i.test(manifestFileOrUrl)
+      ? manifestFileOrUrl
+      : strictUrl(manifestFileOrUrl);
     const g = await httpReq("GET", "/api/overview/setting", undefined, token);
     const merged = { ...(typeof g.data === "string" ? {} : g.data || {}) };
-    merged.updateSourceUrl = `http://localhost:${PORT}/strict/${manifestFile}`;
+    merged.updateSourceUrl = primary;
+    merged.updateSourceUrlFallback = fallbackUrl;
     const r = await httpReq("PUT", "/api/overview/setting", merged, token);
-    assert(r.status === 200 || r.status === 204, `set source -> ${manifestFile}`);
+    assert(r.status === 200 || r.status === 204, `set source -> ${primary} (backup: ${fallbackUrl || "none"})`);
   };
   const baselineAppHasMarker = (dir, name) =>
     fs.readFileSync(path.join(dir, "app.js"), "utf-8").includes(APP_MARKER(name));
@@ -364,20 +378,23 @@ async function main() {
   // ----- SCENARIO 0: no update source configured (no mutation) -----
   log("\n== SCENARIO 0: no update source configured ==");
   {
-    // updateSourceUrl defaults to the official source ("fix: default addr") on
-    // BOTH sides, so the unconfigured path must clear the panel source and the
-    // daemon's local source (config is read at boot -> restart the daemon).
+    // BOTH source fields default to live sources ("fix: default addr") on BOTH
+    // sides, so the unconfigured path must clear both panel fields and both of
+    // the daemon's local fields (config is read at boot -> restart the daemon):
+    // with the two-candidate source list, one empty field is not enough.
     const g = await httpReq("GET", "/api/overview/setting", undefined, token);
     const merged = { ...(typeof g.data === "string" ? {} : g.data || {}) };
     merged.updateSourceUrl = "";
+    merged.updateSourceUrlFallback = "";
     const put = await httpReq("PUT", "/api/overview/setting", merged, token);
-    assert(put.status === 200 || put.status === 204, "cleared panel updateSourceUrl");
+    assert(put.status === 200 || put.status === 204, "cleared panel updateSourceUrl + updateSourceUrlFallback");
     killChild(procDaemon);
     killPort(24444);
     await sleep(500);
     const daemonCfgPath = path.join(daemonDir, "data", "Config", "global.json");
     const dCfg = JSON.parse(fs.readFileSync(daemonCfgPath, "utf-8"));
     dCfg.updateSourceUrl = "";
+    dCfg.updateSourceUrlFallback = "";
     fs.writeFileSync(daemonCfgPath, JSON.stringify(dCfg, null, 2));
     procDaemon = spawnProc("daemon", process.execPath, ["app.js"], daemonDir);
     await waitForPort(24444);
@@ -480,6 +497,40 @@ async function main() {
     assert(!baselineAppHasMarker(webDir, "web"), "badver: panel app.js untouched (no content marker)");
   }
 
+  // ----- SCENARIO F: network-level failure falls back to the backup source -----
+  log("\n== SCENARIO F: dead primary + healthy backup -> served by the backup ==");
+  {
+    await setSource(DEAD_URL, strictUrl("manifest-strict.json"));
+    const info = await httpReq("GET", "/api/upgrade/panel_info", undefined, token);
+    assert(
+      info.data?.updateAvailable === true && info.data?.onlineVersion === NEW_WEB,
+      "fallback manifest: update available " + NEW_WEB
+    );
+    assert(
+      info.data?.updateSourceUrl === strictUrl("manifest-strict.json"),
+      "panel_info reports the backup URL as the serving source"
+    );
+  }
+
+  // ----- SCENARIO G: semantic manifest problems never cross sources -----
+  log("\n== SCENARIO G: malformed-version primary + healthy backup stays fail-closed ==");
+  {
+    // The primary serves a parseable manifest with a NON-comparable version and
+    // the backup advertises NEW_WEB: if the resolver wrongly retried the backup
+    // here, panel_info would offer the update. It must stay fail-closed.
+    await setSource("manifest-badver.json", strictUrl("manifest-strict.json"));
+    const info = await httpReq("GET", "/api/upgrade/panel_info", undefined, token);
+    assert(
+      info.data?.updateAvailable === false,
+      "semantic problem on the primary must NOT fall back to another source"
+    );
+    assert(
+      typeof info.data?.error === "string" && info.data.error.length > 0,
+      "malformed version still surfaces an error"
+    );
+    assert(!info.data?.onlineVersion, "no onlineVersion advertised across the source list");
+  }
+
   // ----- SCENARIO C: panel happy content-update (REAL content replaced) -----
   log("\n== SCENARIO C: panel happy update — actual on-disk content must change ==");
   await setSource("manifest-strict.json");
@@ -565,6 +616,8 @@ async function main() {
   log("B2 missing app.js     : requiredFiles gate rejects, no overlay        OK");
   log("B-TAR tar-slip        : rejected, service up, no traversal written    OK");
   log("E malformed version   : fail-closed, no prompt, update refused        OK");
+  log("F dead primary        : healthy backup serves the update info         OK");
+  log("G semantic no-cross   : badver primary + healthy backup stays closed  OK");
   log("C panel content-update: app.js marker + new+overwritten public + ver  OK");
   log("D daemon content-update: app.js marker + version + overlay marker     OK");
   log("==============================================");

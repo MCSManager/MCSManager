@@ -1545,6 +1545,19 @@ onUnmounted(() => {
                       :placeholder="t('TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH')"
                     />
                   </a-form-item>
+                  <a-form-item v-if="formData">
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_SOURCE_BACKUP") }}
+                    </a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_SOURCE_BACKUP_DESC") }}
+                    </a-typography-paragraph>
+                    <a-input
+                      v-model:value="formData.updateSourceUrlFallback"
+                      style="max-width: 480px"
+                      :placeholder="t('TXT_CODE_AUTOUPDATE_WEB_SOURCE_BACKUP_PH')"
+                    />
+                  </a-form-item>
 
                   <div class="button mb-24">
                     <a-button type="primary" :loading="submitIsLoading" @click="submit(false)">

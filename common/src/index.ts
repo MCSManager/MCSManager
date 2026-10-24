@@ -34,11 +34,13 @@ export {
   extractTarGz,
   extractZip,
   fetchJson,
+  fetchJsonFromSources,
   isComparableVersion,
   LEGACY_DEFAULT_UPDATE_SOURCE_URL,
   migrateLegacyUpdateSourceUrl,
   normalizeVersion
 } from "./upgrade";
+export type { FetchedJsonResult } from "./upgrade";
 
 export { removeTrail } from "./string_utils";
 

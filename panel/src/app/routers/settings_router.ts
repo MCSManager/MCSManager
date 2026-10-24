@@ -75,9 +75,11 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     if (config.panelId != null) systemConfig.panelId = String(config.panelId);
     if (config.enableApiKey != null) systemConfig.enableApiKey = config.enableApiKey;
 
-    // Update source (panel self-update manifest URL)
+    // Update source (panel self-update manifest URLs)
     if (config.updateSourceUrl != null)
       systemConfig.updateSourceUrl = String(config.updateSourceUrl);
+    if (config.updateSourceUrlFallback != null)
+      systemConfig.updateSourceUrlFallback = String(config.updateSourceUrlFallback);
 
     if (config.operationLogEnabled != null)
       systemConfig.operationLogEnabled = config.operationLogEnabled;

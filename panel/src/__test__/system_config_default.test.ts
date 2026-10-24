@@ -1,6 +1,10 @@
 import fs from "fs-extra";
 import path from "path";
-import { DEFAULT_UPDATE_SOURCE_URL, StorageSubsystem } from "mcsmanager-common";
+import {
+  DEFAULT_UPDATE_SOURCE_URL,
+  LEGACY_DEFAULT_UPDATE_SOURCE_URL,
+  StorageSubsystem
+} from "mcsmanager-common";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import StorageSystem from "../app/common/system_storage";
 import SystemConfig, { DataPlaneMode } from "../app/entity/setting";
@@ -38,7 +42,7 @@ function writeConfig(json: Record<string, unknown>) {
   fs.writeFileSync(path.join(STORED, "config.json"), JSON.stringify(json, null, 2));
 }
 
-describe("SystemConfig.dataPlane â€?install-aware default", () => {
+describe("SystemConfig.dataPlane ï¿½?install-aware default", () => {
   it("class-level default is Direct (upgrade-safe for a config that predates the field)", () => {
     const cfg = new SystemConfig();
     expect(cfg.dataPlane).toBe(DataPlaneMode.Direct);
@@ -75,7 +79,7 @@ describe("SystemConfig.dataPlane â€?install-aware default", () => {
   });
 });
 
-describe("SystemConfig.updateSourceUrl â€?GitHub Release default", () => {
+describe("SystemConfig.updateSourceUrl ï¿½?GitHub Release default", () => {
   it("class-level default points at the official GitHub Release manifest", () => {
     const cfg = new SystemConfig();
     expect(cfg.updateSourceUrl).toBe(DEFAULT_UPDATE_SOURCE_URL);
@@ -96,5 +100,40 @@ describe("SystemConfig.updateSourceUrl â€?GitHub Release default", () => {
     const loaded = StorageSystem.load(CATEGORY, SystemConfig, "config");
     expect(loaded, "config must load").toBeTruthy();
     expect(loaded.updateSourceUrl).toBe("https://mirror.example.com/manifest.json");
+  });
+});
+
+describe("SystemConfig.updateSourceUrlFallback ï¿½?legacy backup default", () => {
+  it("class-level default points at the legacy mcsmanager.com manifest", () => {
+    const cfg = new SystemConfig();
+    expect(cfg.updateSourceUrlFallback).toBe(LEGACY_DEFAULT_UPDATE_SOURCE_URL);
+    expect(cfg.updateSourceUrlFallback).toBe("https://mcsmanager.com/upgrade/manifest.json");
+  });
+
+  it("upgrade: a persisted config with no updateSourceUrlFallback key keeps the default", () => {
+    writeConfig({ httpPort: 23333, updateSourceUrl: "https://mirror.example.com/manifest.json" });
+    const loaded = StorageSystem.load(CATEGORY, SystemConfig, "config");
+    expect(loaded, "config must load").toBeTruthy();
+    expect(loaded.updateSourceUrlFallback).toBe(LEGACY_DEFAULT_UPDATE_SOURCE_URL);
+  });
+
+  it("upgrade: an explicit custom backup source is preserved", () => {
+    writeConfig({
+      httpPort: 23333,
+      updateSourceUrl: "https://mirror.example.com/manifest.json",
+      updateSourceUrlFallback: "https://backup.example.com/manifest.json"
+    });
+    const loaded = StorageSystem.load(CATEGORY, SystemConfig, "config");
+    expect(loaded, "config must load").toBeTruthy();
+    expect(loaded.updateSourceUrlFallback).toBe("https://backup.example.com/manifest.json");
+    expect(loaded.updateSourceUrl).toBe("https://mirror.example.com/manifest.json");
+  });
+
+  it("upgrade: both source fields explicitly empty are preserved (feature disabled)", () => {
+    writeConfig({ httpPort: 23333, updateSourceUrl: "", updateSourceUrlFallback: "" });
+    const loaded = StorageSystem.load(CATEGORY, SystemConfig, "config");
+    expect(loaded, "config must load").toBeTruthy();
+    expect(loaded.updateSourceUrl).toBe("");
+    expect(loaded.updateSourceUrlFallback).toBe("");
   });
 });

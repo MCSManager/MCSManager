@@ -94,7 +94,8 @@ const settingsData = () => ({
   httpIp: "",
   panelId: "",
   loginInfo: "",
-  updateSourceUrl: "https://example.com/manifest.json"
+  updateSourceUrl: "https://example.com/manifest.json",
+  updateSourceUrlFallback: "https://backup.example.com/manifest.json"
 });
 
 const upgradeInfo = (overrides = {}) => ({
@@ -290,6 +291,44 @@ describe("Settings.vue auto update tab", () => {
     const payload = mocks.submitExecute.mock.calls[0][0];
     expect(payload.data.updateSourceUrl).toBe("https://new-source.example.com/manifest.json");
     expect(messageSpy).toHaveBeenCalledWith("TXT_CODE_a7907771");
+  });
+
+  it("renders and binds the backup source input with dual-empty disable copy", async () => {
+    await mountSettings();
+    await openAutoUpdateTab();
+
+    const backupInput = wrapper.find(
+      'input[placeholder="TXT_CODE_AUTOUPDATE_WEB_SOURCE_BACKUP_PH"]'
+    );
+    expect(backupInput.exists()).toBe(true);
+    expect((backupInput.element as HTMLInputElement).value).toBe(
+      "https://backup.example.com/manifest.json"
+    );
+
+    // copy explaining the primary-first order and the dual-empty disable rule
+    expect(wrapper.text()).toContain("TXT_CODE_AUTOUPDATE_WEB_SOURCE_BACKUP");
+    expect(wrapper.text()).toContain("TXT_CODE_AUTOUPDATE_WEB_SOURCE_BACKUP_DESC");
+  });
+
+  it("saves updateSourceUrlFallback together with the primary source", async () => {
+    await mountSettings();
+    await openAutoUpdateTab();
+
+    await wrapper
+      .find('input[placeholder="TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH"]')
+      .setValue("https://primary.example.com/manifest.json");
+    await wrapper
+      .find('input[placeholder="TXT_CODE_AUTOUPDATE_WEB_SOURCE_BACKUP_PH"]')
+      .setValue("https://new-backup.example.com/manifest.json");
+
+    vi.spyOn(message, "success").mockImplementation((() => ({})) as any);
+    await findButton("TXT_CODE_AUTOUPDATE_WEB_SAVE")!.trigger("click");
+    await flushPromises();
+
+    expect(mocks.submitExecute).toHaveBeenCalledTimes(1);
+    const payload = mocks.submitExecute.mock.calls[0][0];
+    expect(payload.data.updateSourceUrl).toBe("https://primary.example.com/manifest.json");
+    expect(payload.data.updateSourceUrlFallback).toBe("https://new-backup.example.com/manifest.json");
   });
 
   it("refreshes upgrade info via getPanelUpgradeInfo", async () => {

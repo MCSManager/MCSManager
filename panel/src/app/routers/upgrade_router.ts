@@ -17,18 +17,25 @@ import { systemConfig } from "../setting";
 
 const router = new Router({ prefix: "/upgrade" });
 
-// Forward the panel's own updateSourceUrl to the daemon so the daemon can be
-// updated from the panel UI without the operator editing the daemon config.
-function forwardedSource(): { updateSourceUrl?: string } {
-  const url = (systemConfig?.updateSourceUrl || "").trim();
-  return url ? { updateSourceUrl: url } : {};
+// Forward the panel's own update source URLs (primary + backup) to the daemon
+// so the daemon can be updated from the panel UI without the operator editing
+// the daemon config. Each non-empty field is forwarded; the daemon prefers a
+// forwarded value over its own configuration field by field.
+function forwardedSource(): { updateSourceUrl?: string; updateSourceUrlFallback?: string } {
+  const primary = (systemConfig?.updateSourceUrl || "").trim();
+  const fallback = (systemConfig?.updateSourceUrlFallback || "").trim();
+  return {
+    ...(primary ? { updateSourceUrl: primary } : {}),
+    ...(fallback ? { updateSourceUrlFallback: fallback } : {})
+  };
 }
 
 // Timeouts must be larger than the longest step the remote performs:
-//   - upgrade/info: daemon fetches the manifest (15s internal) -> forward 25s.
+//   - upgrade/info: daemon may fetch the manifest from up to two sources
+//     (15s internal each) -> forward 40s.
 //   - upgrade/daemon: daemon downloads+extracts+overlays BEFORE responding ->
 //     allow generous time for a large package on a slow link (180s).
-const DAEMON_INFO_TIMEOUT = 25000;
+const DAEMON_INFO_TIMEOUT = 40000;
 const DAEMON_UPGRADE_TIMEOUT = 180000;
 
 function requireDaemon(uuid: string) {

@@ -332,9 +332,11 @@ export interface IUpgradeResult {
   message?: string;
 }
 
-// Panel self-update info (current vs online version).
+// Panel self-update info (current vs online version). Long timeout: the panel
+// may try up to two manifest sources (primary + backup) before answering.
 export const getPanelUpgradeInfo = useDefineApi<any, IUpgradeInfo>({
-  url: "/api/upgrade/panel_info"
+  url: "/api/upgrade/panel_info",
+  timeout: 1000 * 60
 });
 
 // Trigger the panel self-update (downloads/extracts/overlays & restarts).
@@ -346,7 +348,8 @@ export const upgradePanel = useDefineApi<any, IUpgradeResult>({
   timeout: 1000 * 60 * 5
 });
 
-// Forward: query a daemon for its update info.
+// Forward: query a daemon for its update info. Long timeout: the daemon may
+// try up to two manifest sources (primary + backup) before answering.
 export const getDaemonUpgradeInfo = useDefineApi<
   {
     params: {
@@ -355,7 +358,8 @@ export const getDaemonUpgradeInfo = useDefineApi<
   },
   IUpgradeInfo
 >({
-  url: "/api/upgrade/daemon_info"
+  url: "/api/upgrade/daemon_info",
+  timeout: 1000 * 60
 });
 
 // Forward: trigger a daemon self-update.

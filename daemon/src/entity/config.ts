@@ -1,7 +1,7 @@
 import fs from "fs-extra";
 import path from "path";
 import { v4 } from "uuid";
-import { DEFAULT_UPDATE_SOURCE_URL } from "mcsmanager-common";
+import { DEFAULT_UPDATE_SOURCE_URL, LEGACY_DEFAULT_UPDATE_SOURCE_URL } from "mcsmanager-common";
 import StorageSubsystem from "../common/system_storage";
 import logger from "../service/log";
 
@@ -55,10 +55,13 @@ class Config {
   sslKeyPath = "";
 
   // ---- Update source (manifest URL for manual self-update) ----
-  // Full URL to a manifest describing available updates, e.g. the official
-  // GitHub Release manifest (DEFAULT_UPDATE_SOURCE_URL). Empty => update info
-  // unavailable.
+  // Primary source: full URL to a manifest describing available updates, e.g.
+  // the official GitHub Release manifest (DEFAULT_UPDATE_SOURCE_URL).
   public updateSourceUrl = DEFAULT_UPDATE_SOURCE_URL;
+  // Backup source (LEGACY_DEFAULT_UPDATE_SOURCE_URL by default): tried when the
+  // primary source cannot be fetched or parsed. Feature disabled only when
+  // BOTH source fields are empty.
+  public updateSourceUrlFallback = LEGACY_DEFAULT_UPDATE_SOURCE_URL;
 }
 
 // daemon configuration class

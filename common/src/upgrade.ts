@@ -25,13 +25,19 @@ type LogFn = (msg: string) => void;
 export const DEFAULT_UPDATE_SOURCE_URL =
   "https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_update_manifest.json";
 
-/** Deprecated pre-GitHub update source (mcsmanager.com hosting). */
+/**
+ * Default BACKUP update source: the legacy mcsmanager.com manifest hosting.
+ * Used as the second candidate when the primary source cannot be fetched or
+ * parsed (see `fetchJsonFromSources`). It is also the value that
+ * `migrateLegacyUpdateSourceUrl` rewrites away from a persisted PRIMARY field.
+ */
 export const LEGACY_DEFAULT_UPDATE_SOURCE_URL = "https://mcsmanager.com/upgrade/manifest.json";
 
 /**
- * Migrate a persisted `updateSourceUrl` to the current default when it still
- * holds the deprecated legacy source. Operator-customized URLs are returned
- * unchanged.
+ * Migrate a persisted `updateSourceUrl` (the PRIMARY source) to the current
+ * default when it still holds the legacy mcsmanager.com hosting. That URL is
+ * now the default backup source (`updateSourceUrlFallback`), not a valid
+ * primary value. Operator-customized URLs are returned unchanged.
  */
 export function migrateLegacyUpdateSourceUrl(current?: string): string {
   const url = String(current ?? "").trim();
@@ -136,6 +142,49 @@ export async function fetchJson(url: string, timeoutMs = 15000): Promise<any> {
     });
     res.on("error", reject);
   });
+}
+
+/** Successful multi-source JSON fetch: which URL served the parsed payload. */
+export interface FetchedJsonResult {
+  data: any;
+  /** The candidate URL that actually served the parsed JSON. */
+  sourceUrl: string;
+  /** True when a later candidate answered, i.e. the first candidate failed. */
+  usedFallback: boolean;
+}
+
+/**
+ * Fetch JSON from an ordered list of update-source candidates: `primaryUrl`
+ * first, then `fallbackUrl`. Empty/whitespace values are skipped and a
+ * duplicate candidate is tried only once. A fetch-level failure (timeout,
+ * connection error, HTTP non-2xx, redirect limit, invalid JSON) moves on to
+ * the next candidate; the first parseable response wins. When no candidate can
+ * be fetched and parsed, an error aggregating every attempt is thrown.
+ */
+export async function fetchJsonFromSources(
+  primaryUrl?: string,
+  fallbackUrl?: string,
+  timeoutMs = 15000
+): Promise<FetchedJsonResult> {
+  const candidates: string[] = [];
+  for (const raw of [primaryUrl, fallbackUrl]) {
+    const url = String(raw ?? "").trim();
+    if (url && !candidates.includes(url)) candidates.push(url);
+  }
+  if (candidates.length === 0) {
+    throw new Error("No update source configured");
+  }
+  const attempts: string[] = [];
+  for (let i = 0; i < candidates.length; i++) {
+    const url = candidates[i];
+    try {
+      const data = await fetchJson(url, timeoutMs);
+      return { data, sourceUrl: url, usedFallback: i > 0 };
+    } catch (e) {
+      attempts.push(`${url} (${(e as Error)?.message || e})`);
+    }
+  }
+  throw new Error(`All update sources failed: ${attempts.join("; ")}`);
 }
 
 /**

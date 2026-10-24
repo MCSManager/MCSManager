@@ -54,11 +54,12 @@ function upgradePresetPackAddr() {
 }
 
 /**
- * The auto-update source moved from the deprecated mcsmanager.com hosting to
- * the official GitHub Release manifest. A persisted `updateSourceUrl` still
- * pointing at the legacy source is rewritten to the current default; any
- * operator-customized URL is left untouched. Idempotent: after one rewrite the
- * value no longer matches the legacy source.
+ * The primary auto-update source moved from the legacy mcsmanager.com hosting
+ * to the official GitHub Release manifest (the same mcsmanager.com URL is now
+ * the default BACKUP source, `updateSourceUrlFallback`). A persisted primary
+ * `updateSourceUrl` still pointing at the legacy source is rewritten to the
+ * current default; any operator-customized URL is left untouched. Idempotent:
+ * after one rewrite the value no longer matches the legacy source.
  */
 function upgradeUpdateSourceUrl() {
   const config = systemConfig;

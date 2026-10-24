@@ -65,9 +65,14 @@ describe("gateway_token — rejection cases", () => {
       op: "download",
       target: "file.txt"
     });
-    // Flip the last character of the signature.
-    const last = token[token.length - 1] === "A" ? "B" : "A";
-    const tampered = token.slice(0, -1) + last;
+    // Corrupt the FIRST character of the base64url signature (all of its 6
+    // bits are significant). Flipping the LAST character is NOT deterministic:
+    // an unpadded base64url SHA-256 digest ends with 4 significant + 2 ignored
+    // bits, so an A/B swap there decodes to the same bytes with probability
+    // 4/64 and the tampered token would still verify.
+    const sigStart = token.lastIndexOf(".") + 1;
+    const first = token[sigStart] === "A" ? "B" : "A";
+    const tampered = token.slice(0, sigStart) + first + token.slice(sigStart + 1);
     expect(verifyProxyToken(tampered, "download")).toBeNull();
   });
 
