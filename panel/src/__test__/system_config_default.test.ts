@@ -1,6 +1,6 @@
 import fs from "fs-extra";
 import path from "path";
-import { StorageSubsystem } from "mcsmanager-common";
+import { DEFAULT_UPDATE_SOURCE_URL, StorageSubsystem } from "mcsmanager-common";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import StorageSystem from "../app/common/system_storage";
 import SystemConfig, { DataPlaneMode } from "../app/entity/setting";
@@ -38,7 +38,7 @@ function writeConfig(json: Record<string, unknown>) {
   fs.writeFileSync(path.join(STORED, "config.json"), JSON.stringify(json, null, 2));
 }
 
-describe("SystemConfig.dataPlane â€” install-aware default", () => {
+describe("SystemConfig.dataPlane â€?install-aware default", () => {
   it("class-level default is Direct (upgrade-safe for a config that predates the field)", () => {
     const cfg = new SystemConfig();
     expect(cfg.dataPlane).toBe(DataPlaneMode.Direct);
@@ -72,5 +72,29 @@ describe("SystemConfig.dataPlane â€” install-aware default", () => {
   it("enum wire values are the persisted strings", () => {
     expect(DataPlaneMode.Direct).toBe("direct");
     expect(DataPlaneMode.Proxy).toBe("proxy");
+  });
+});
+
+describe("SystemConfig.updateSourceUrl â€?GitHub Release default", () => {
+  it("class-level default points at the official GitHub Release manifest", () => {
+    const cfg = new SystemConfig();
+    expect(cfg.updateSourceUrl).toBe(DEFAULT_UPDATE_SOURCE_URL);
+    expect(cfg.updateSourceUrl).toBe(
+      "https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_update_manifest.json"
+    );
+  });
+
+  it("upgrade: a persisted config with no updateSourceUrl key falls back to the new default", () => {
+    writeConfig({ httpPort: 23333 });
+    const loaded = StorageSystem.load(CATEGORY, SystemConfig, "config");
+    expect(loaded, "config must load").toBeTruthy();
+    expect(loaded.updateSourceUrl).toBe(DEFAULT_UPDATE_SOURCE_URL);
+  });
+
+  it("upgrade: an explicit custom update source is preserved", () => {
+    writeConfig({ httpPort: 23333, updateSourceUrl: "https://mirror.example.com/manifest.json" });
+    const loaded = StorageSystem.load(CATEGORY, SystemConfig, "config");
+    expect(loaded, "config must load").toBeTruthy();
+    expect(loaded.updateSourceUrl).toBe("https://mirror.example.com/manifest.json");
   });
 });

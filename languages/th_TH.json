@@ -3176,7 +3176,7 @@
   "TXT_CODE_AUTOUPDATE_BTN_CANCEL": "ยกเลิก",
   "TXT_CODE_AUTOUPDATE_BTN_REFRESH": "รีเฟรช",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE": "แหล่งอัปเดต (URL ของ manifest)",
-  "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "https://mcsmanager.com/upgrade/manifest.json",
+  "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_update_manifest.json",
   "TXT_CODE_AUTOUPDATE_WEB_SAVE": "บันทึก",
   "TXT_CODE_AUTOUPDATE_B_ALREADY_PROGRESS": "มีการอัปเดตกำลังดำเนินการอยู่",
   "TXT_CODE_AUTOUPDATE_B_LATEST_VER": "เป็นเวอร์ชันล่าสุดแล้ว (v{{v}})",

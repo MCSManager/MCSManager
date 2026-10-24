@@ -1,13 +1,15 @@
 // End-to-end verification of the MCSManager auto-update feature.
 //
 // Orchestrates:
-//   1. Local update static server (manifest.json + daemon.zip + web.zip) on :9999
+//   1. Local update static server (manifest.json + daemon.tar.gz + web.tar.gz) on :9999
 //   2. A fresh daemon (product-code/daemon)
 //   3. A fresh panel  (product-code/web)
 //   4. Real HTTP calls against the panel API (install -> login -> upgrade endpoints)
 //      EXACTLY the endpoints the new web UI buttons hit, then asserts:
-//        - panel self-update: package overlaid (incl. an OVERLAY_MARKER), process stays up,\n//          a simulated manual restart makes the new version take effect (-> 10.19.1)
-//        - daemon self-update (forwarded panel->daemon): package overlaid, process stays up,\n//          a simulated manual restart makes the new version take effect (-> 4.19.1)
+//        - panel self-update: package overlaid (incl. an OVERLAY_MARKER), process stays up,
+//          a simulated manual restart makes the new version take effect
+//        - daemon self-update (forwarded panel->daemon): package overlaid, process stays up,
+//          a simulated manual restart makes the new version take effect
 //
 // Usage:  node scripts/verify-auto-update.mjs
 //
@@ -18,7 +20,7 @@ import fs from "fs";
 import net from "net";
 import path from "path";
 import { spawn, execSync } from "child_process";
-import { killChild, killPattern, killPort } from "./auto-update-test-utils.mjs";
+import { bumpPatch, killChild, killPattern, killPort } from "./auto-update-test-utils.mjs";
 
 const repo = path.resolve(import.meta.dirname, "..");
 const prod = path.join(repo, "production-code");
@@ -30,10 +32,14 @@ const PANEL = "http://localhost:23333";
 
 const ADMIN_USER = "admin";
 const ADMIN_PASS = "Admin#12345"; // satisfies validatePassword
-const BASE_DAEMON = "4.19.0";
-const BASE_WEB = "10.19.0";
-const NEW_DAEMON = "4.19.1";
-const NEW_WEB = "10.19.1";
+// Baseline = the versions in the repo package.json files (step 0 copies them
+// into production-code); "online" versions are the same with one patch bumped
+// (build-update-packages.mjs derives the same numbers from production-code).
+const repoVersion = (p) => String(JSON.parse(fs.readFileSync(path.join(repo, p), "utf-8")).version);
+const BASE_DAEMON = repoVersion("daemon/package.json");
+const BASE_WEB = repoVersion("panel/package.json");
+const NEW_DAEMON = bumpPatch(BASE_DAEMON);
+const NEW_WEB = bumpPatch(BASE_WEB);
 
 const cookies = {};
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -195,7 +201,7 @@ async function main() {
   // to re-run from the baseline version.
   fs.copyFileSync(path.join(repo, "daemon", "package.json"), path.join(daemonDir, "package.json"));
   fs.copyFileSync(path.join(repo, "panel", "package.json"), path.join(webDir, "package.json"));
-  log("  baseline restored: daemon 4.19.0 / panel 10.19.0");
+  log(`  baseline restored: daemon ${BASE_DAEMON} / panel ${BASE_WEB}`);
 
   log("step 1: build update packages + manifest");
   execSync("node scripts/build-update-packages.mjs", { stdio: "inherit", cwd: repo });

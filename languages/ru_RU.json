@@ -3191,7 +3191,7 @@
   "TXT_CODE_AUTOUPDATE_BTN_CANCEL": "Отмена",
   "TXT_CODE_AUTOUPDATE_BTN_REFRESH": "Обновить",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE": "Источник обновления (URL манифеста)",
-  "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "https://mcsmanager.com/upgrade/manifest.json",
+  "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_update_manifest.json",
   "TXT_CODE_AUTOUPDATE_WEB_SAVE": "Сохранить",
   "TXT_CODE_AUTOUPDATE_B_ALREADY_PROGRESS": "Обновление уже выполняется",
   "TXT_CODE_AUTOUPDATE_B_LATEST_VER": "Уже последняя версия (v{{v}})",

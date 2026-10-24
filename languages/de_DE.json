@@ -3176,7 +3176,7 @@
   "TXT_CODE_AUTOUPDATE_BTN_CANCEL": "Abbrechen",
   "TXT_CODE_AUTOUPDATE_BTN_REFRESH": "Aktualisieren",
   "TXT_CODE_AUTOUPDATE_WEB_SOURCE": "Update-Quelle (Manifest-URL)",
-  "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "https://mcsmanager.com/upgrade/manifest.json",
+  "TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH": "https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_update_manifest.json",
   "TXT_CODE_AUTOUPDATE_WEB_SAVE": "Speichern",
   "TXT_CODE_AUTOUPDATE_B_ALREADY_PROGRESS": "Eine Aktualisierung läuft bereits",
   "TXT_CODE_AUTOUPDATE_B_LATEST_VER": "Bereits aktuell (v{{v}})",
