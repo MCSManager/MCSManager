@@ -17,7 +17,7 @@ export function useLayoutCardTools(card: LayoutCard) {
     if (card.meta[key] != null) {
       return card.meta[key];
     }
-    if (route.query[key] != null) {
+    if (route?.query?.[key] != null) {
       return String(route.query[key]);
     }
 

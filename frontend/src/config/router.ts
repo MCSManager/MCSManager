@@ -7,6 +7,18 @@ import LayoutContainer from "@/views/LayoutContainer.vue";
 import LoginPage from "@/views/Login.vue";
 import SsoBindLogin from "@/views/SsoBindLogin.vue";
 import {
+  ApartmentOutlined,
+  AppstoreOutlined,
+  AreaChartOutlined,
+  LinkOutlined,
+  LoginOutlined,
+  SettingOutlined,
+  ShopOutlined,
+  TeamOutlined,
+  UserOutlined
+} from "@ant-design/icons-vue";
+import type { Component } from "vue";
+import {
   createRouter,
   createWebHashHistory,
   type RouteLocationNormalized,
@@ -14,7 +26,7 @@ import {
 } from "vue-router";
 
 export interface RouterMetaInfo {
-  icon?: string;
+  icon?: Component;
   mainMenu?: boolean;
   permission?: number;
   redirect?:
@@ -33,6 +45,7 @@ export interface RouterMetaInfo {
     mainMenu?: boolean;
     permission: number;
   }>;
+  onclick?: () => void;
 }
 
 export interface RouterConfig {
@@ -70,25 +83,6 @@ const originRouterConfig: RouterConfig[] = [
     }
   },
   {
-    path: "/quickstart",
-    name: t("TXT_CODE_2799a1dd"),
-    component: LayoutContainer,
-    meta: {
-      permission: ROLE.ADMIN,
-      mainMenu: false
-    },
-    children: [
-      {
-        path: "/quickstart/minecraft",
-        name: t("TXT_CODE_88249aee"),
-        component: LayoutContainer,
-        meta: {
-          permission: ROLE.ADMIN
-        }
-      }
-    ]
-  },
-  {
     path: "/",
     name: "",
     component: LayoutContainer,
@@ -112,7 +106,8 @@ const originRouterConfig: RouterConfig[] = [
     component: LayoutContainer,
     meta: {
       mainMenu: true,
-      permission: ROLE.ADMIN
+      permission: ROLE.ADMIN,
+      icon: AppstoreOutlined
     },
     children: [
       {
@@ -172,9 +167,10 @@ const originRouterConfig: RouterConfig[] = [
   {
     path: "/market",
     name: t("TXT_CODE_27594db8"),
-    component: LayoutContainer,
+    redirect: "/overview",
     meta: {
-      mainMenu: true,
+      mainMenu: false,
+      icon: ShopOutlined,
       permission: ROLE.ADMIN
     },
     children: [
@@ -194,6 +190,7 @@ const originRouterConfig: RouterConfig[] = [
     component: LayoutContainer,
     meta: {
       mainMenu: true,
+      icon: AreaChartOutlined,
       permission: ROLE.ADMIN
     }
   },
@@ -203,6 +200,7 @@ const originRouterConfig: RouterConfig[] = [
     component: LayoutContainer,
     meta: {
       mainMenu: true,
+      icon: TeamOutlined,
       permission: ROLE.ADMIN
     },
     children: [
@@ -222,7 +220,8 @@ const originRouterConfig: RouterConfig[] = [
     component: LayoutContainer,
     meta: {
       permission: ROLE.ADMIN,
-      mainMenu: true
+      mainMenu: true,
+      icon: ApartmentOutlined
     },
     children: [
       {
@@ -265,6 +264,7 @@ const originRouterConfig: RouterConfig[] = [
     meta: {
       permission: ROLE.ADMIN,
       mainMenu: true,
+      icon: SettingOutlined,
       customClass: ["nav-button-success"]
     }
   },
@@ -293,6 +293,7 @@ const originRouterConfig: RouterConfig[] = [
     meta: {
       permission: ROLE.USER,
       mainMenu: true,
+      icon: UserOutlined,
       onlyDisplayEditMode: true
     }
   },
@@ -302,6 +303,7 @@ const originRouterConfig: RouterConfig[] = [
     component: LoginPage,
     meta: {
       permission: ROLE.GUEST,
+      icon: LoginOutlined,
       onlyDisplayEditMode: true,
       customClass: ["nav-button-warning"]
     }
@@ -314,6 +316,7 @@ const originRouterConfig: RouterConfig[] = [
       permission: ROLE.ADMIN, // open page without permission
       mainMenu: true,
       onlyDisplayEditMode: true,
+      icon: LinkOutlined,
       customClass: ["nav-button-warning"]
     }
   },

@@ -57,7 +57,7 @@ const openPhoneMenu = (b = false) => {
           :key="item.path"
           class="nav-button"
           :class="[item.customClass, { 'nav-button-active': isRouteActive(item.path) }]"
-          @click="handleToPage(item.path)"
+          @click="item.meta.onclick ? (item.meta.onclick as () => void)() : handleToPage(item.path)"
         >
           <span>{{ item.name }}</span>
         </div>

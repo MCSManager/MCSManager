@@ -1,39 +1,15 @@
 <script setup lang="ts">
 import { useHeaderMenus } from "@/hooks/useHeaderMenus";
 import {
-  ApartmentOutlined,
-  AppstoreOutlined,
-  AreaChartOutlined,
   CloseOutlined,
-  LinkOutlined,
-  LoginOutlined,
-  MenuOutlined,
-  SettingOutlined,
-  ShopOutlined,
-  TeamOutlined,
-  UserOutlined
+  MenuOutlined
 } from "@ant-design/icons-vue";
-import type { Component } from "vue";
 import { ref } from "vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
 const { menus, handleToPage } = useHeaderMenus();
 const isExpanded = ref(false);
-
-const routePathIcons: Record<string, Component> = {
-  "/instances": AppstoreOutlined,
-  "/market": ShopOutlined,
-  "/overview": AreaChartOutlined,
-  "/users": TeamOutlined,
-  "/node": ApartmentOutlined,
-  "/settings": SettingOutlined,
-  "/customer": UserOutlined,
-  "/login": LoginOutlined,
-  "/_open_page": LinkOutlined
-};
-
-const getRouteIcon = (path: string): Component => routePathIcons[path] ?? MenuOutlined;
 
 const isActive = (path: string): boolean => {
   if (route.path === path) return true;
@@ -45,8 +21,13 @@ const toggleMenu = () => {
   isExpanded.value = !isExpanded.value;
 };
 
-const handleMenuItemClick = (path: string) => {
-  handleToPage(path);
+type HeaderMenuItem = (typeof menus.value)[number];
+const handleMenuItemClick = (item: HeaderMenuItem) => {
+  if (item.meta.onclick) {
+    (item.meta.onclick as () => void)();
+  } else {
+    handleToPage(item.path);
+  }
   isExpanded.value = false;
 };
 </script>
@@ -64,10 +45,10 @@ const handleMenuItemClick = (path: string) => {
           :key="item.path"
           class="fab-menu-item"
           :class="{ 'fab-menu-item--active': isActive(item.path) }"
-          @click="handleMenuItemClick(item.path)"
+          @click="handleMenuItemClick(item)"
         >
           <span class="fab-menu-icon-wrap">
-            <component :is="getRouteIcon(item.path)" class="fab-menu-icon" />
+            <component :is="item.icon ?? MenuOutlined" class="fab-menu-icon" />
           </span>
         </button>
       </div>

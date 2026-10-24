@@ -20,6 +20,7 @@ import {
 import { computed, h, onMounted, ref } from "vue";
 
 import BetweenMenus from "@/components/BetweenMenus.vue";
+import { openMarketDialog } from "@/components/fc";
 import { router } from "@/config/router";
 import { useInstanceTagSearch, useInstanceTagTips } from "@/hooks/useInstanceTag";
 import { useScreen } from "@/hooks/useScreen";
@@ -295,22 +296,8 @@ const handleChangeNode = async (item: NodeStatus) => {
   }
 };
 
-const toCreateAppPage = () => {
-  router.push({
-    path: "/market",
-    query: {
-      daemonId: currentRemoteNode.value?.uuid
-    }
-  });
-};
-
 const toMarketPage = () => {
-  router.push({
-    path: "/market",
-    query: {
-      daemonId: currentRemoteNode.value?.uuid
-    }
-  });
+  openMarketDialog().catch(() => undefined);
 };
 
 const toNodesPage = () => {
@@ -601,7 +588,7 @@ onMounted(async () => {
             <a-button
               type="primary"
               :disabled="!currentRemoteNode?.available"
-              @click="toCreateAppPage"
+              @click="toMarketPage"
             >
               {{ t("TXT_CODE_53408064") }}
             </a-button>
@@ -808,11 +795,6 @@ onMounted(async () => {
       >
         <div>
           <Empty :description="t('TXT_CODE_5415f009')" />
-        </div>
-        <div class="mt-20">
-          <a-button type="primary" @click="toMarketPage">
-            {{ t("TXT_CODE_871cb8bc") }}
-          </a-button>
         </div>
       </a-col>
     </a-row>

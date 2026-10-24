@@ -109,7 +109,7 @@ defineExpose({
           class="detail-search-keyword"
           style="max-width: 280px"
         />
-        <a-button v-if="detailList.length > 0" type="default" @click="handleBackToCategory">
+        <a-button v-if="!isCategoryView" type="default" @click="handleBackToCategory">
           <template #icon>
             <ArrowLeftOutlined />
           </template>
