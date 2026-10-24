@@ -17,7 +17,6 @@ const mocks = vi.hoisted(() => ({
   daemonUpgradeInfoExecute: vi.fn(),
   upgradeDaemonExecute: vi.fn(),
   connectNodeExecute: vi.fn(),
-  testFrontendSocket: vi.fn(),
   reportErrorMsg: vi.fn()
 }));
 
@@ -35,14 +34,6 @@ vi.mock("@/hooks/useOverviewInfo", () => ({
         remote: []
       }
     }
-  })
-}));
-
-vi.mock("@/hooks/useSocketIo", () => ({
-  SocketStatus: { Connected: "Connected", Connecting: "Connecting", Error: "Error" },
-  useSocketIoClient: () => ({
-    testFrontendSocket: mocks.testFrontendSocket,
-    socketStatus: { value: "Connected" }
   })
 }));
 
