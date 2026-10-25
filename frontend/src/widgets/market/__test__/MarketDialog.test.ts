@@ -58,7 +58,7 @@ vi.mock("@/widgets/market/useMarketTour", async () => {
 });
 
 vi.mock("@/widgets/setupApp/McPreset.vue", () => ({
-  default: { name: "McPreset", props: ["initialCategory"] }
+  default: { name: "McPreset", props: ["card", "initialCategory", "initialNode"] }
 }));
 
 vi.mock("@/widgets/setupApp/AppPackages.vue", () => ({
@@ -147,10 +147,48 @@ describe("MarketDialog", () => {
 
     const preset = wrapper.findComponent({ name: "McPreset" });
     expect(preset.props("initialCategory")).toEqual(category);
+    expect(preset.props("card").meta.daemonId).toBe("node-1");
+    expect(preset.props("initialNode")).toEqual({ uuid: "node-1" });
+    expect(mocks.openNodeSelectDialog).toHaveBeenCalledTimes(1);
 
     preset.vm.$emit("back");
     await flushPromises();
     expect(wrapper.findComponent({ name: "MarketCreateMethodStep" }).exists()).toBe(true);
+  });
+
+  it("reuses the selected node when switching from manual creation to presets", async () => {
+    const wrapper = mountDialog();
+    const node = {
+      uuid: "node-2",
+      system: { type: "Windows_NT" },
+      dockerPlatforms: ["linux/amd64"]
+    };
+    mocks.openNodeSelectDialog.mockResolvedValue(node);
+
+    wrapper.findComponent({ name: "AppPackages" }).vm.$emit("handle-select-category", {
+      title: "Minecraft",
+      gameType: "Minecraft"
+    });
+    await flushPromises();
+    wrapper.findComponent({ name: "MarketCreateMethodStep" }).vm.$emit("select", "IMPORT");
+    await flushPromises();
+    wrapper.findComponent({ name: "CreateInstanceForm" }).vm.$emit("back");
+    await flushPromises();
+    wrapper.findComponent({ name: "MarketCreateMethodStep" }).vm.$emit("select", "preset");
+    await flushPromises();
+
+    const preset = wrapper.findComponent({ name: "McPreset" });
+    expect(preset.props("card").meta.daemonId).toBe("node-2");
+    expect(preset.props("initialNode")).toEqual(node);
+
+    preset.vm.$emit("back");
+    await flushPromises();
+    wrapper.findComponent({ name: "MarketCreateMethodStep" }).vm.$emit("select", "DOCKER");
+    await flushPromises();
+
+    expect(wrapper.findComponent({ name: "CreateInstanceForm" }).props("daemonId")).toBe("node-2");
+    expect(mocks.getOverviewInfo).toHaveBeenCalledTimes(1);
+    expect(mocks.openNodeSelectDialog).toHaveBeenCalledTimes(1);
   });
 
   it("opens the existing form for manual methods and navigates after creation", async () => {
@@ -201,9 +239,25 @@ describe("MarketDialog", () => {
     const form = wrapper.findComponent({ name: "CreateInstanceForm" });
     expect(form.props("createMethod")).toBe("IMPORT");
     expect(form.props("daemonId")).toBe("route-node");
+
+    form.vm.$emit("back");
+    await flushPromises();
+    wrapper.findComponent({ name: "MarketCreateMethodStep" }).vm.$emit("select", "preset");
+    await flushPromises();
+    const preset = wrapper.findComponent({ name: "McPreset" });
+    expect(preset.props("card").meta.daemonId).toBe("route-node");
+
+    preset.vm.$emit("back");
+    await flushPromises();
+    wrapper.findComponent({ name: "MarketCreateMethodStep" }).vm.$emit("select", "IMPORT");
+    await flushPromises();
+    expect(wrapper.findComponent({ name: "CreateInstanceForm" }).props("daemonId")).toBe(
+      "route-node"
+    );
+    expect(mocks.openNodeSelectDialog).not.toHaveBeenCalled();
   });
 
-  it("handles an empty overview response without reading value from undefined", async () => {
+  it.each(["preset", "IMPORT"])("blocks %s creation when the overview is empty", async (method) => {
     mocks.getOverviewInfo.mockResolvedValueOnce(undefined);
     const wrapper = mountDialog();
 
@@ -212,10 +266,27 @@ describe("MarketDialog", () => {
       gameType: "Minecraft"
     });
     await flushPromises();
-    wrapper.findComponent({ name: "MarketCreateMethodStep" }).vm.$emit("select", "IMPORT");
+    wrapper.findComponent({ name: "MarketCreateMethodStep" }).vm.$emit("select", method);
     await flushPromises();
 
     expect(mocks.openNodeSelectDialog).not.toHaveBeenCalled();
     expect(wrapper.findComponent({ name: "CreateInstanceForm" }).exists()).toBe(false);
+    expect(wrapper.findComponent({ name: "McPreset" }).exists()).toBe(false);
+    expect(mocks.reportErrorMsg).toHaveBeenCalledWith("TXT_CODE_e3d96a26");
+  });
+
+  it("stays on method selection when preset node selection is cancelled", async () => {
+    mocks.openNodeSelectDialog.mockResolvedValue(undefined);
+    const wrapper = mountDialog();
+
+    wrapper.findComponent({ name: "AppPackages" }).vm.$emit("handle-select-category", {
+      gameType: "Minecraft"
+    });
+    await flushPromises();
+    wrapper.findComponent({ name: "MarketCreateMethodStep" }).vm.$emit("select", "preset");
+    await flushPromises();
+
+    expect(wrapper.findComponent({ name: "MarketCreateMethodStep" }).exists()).toBe(true);
+    expect(wrapper.findComponent({ name: "McPreset" }).exists()).toBe(false);
   });
 });

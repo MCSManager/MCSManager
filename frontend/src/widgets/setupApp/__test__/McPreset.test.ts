@@ -104,11 +104,9 @@ describe("McPreset", () => {
       setupInfo: { docker: {} }
     } as any;
 
-    wrapper.findComponent({ name: "TemplateNameDialog" }).vm.$emit(
-      "confirm",
-      "Test Server",
-      template
-    );
+    wrapper
+      .findComponent({ name: "TemplateNameDialog" })
+      .vm.$emit("confirm", "Test Server", template);
     await flushPromises();
 
     expect(mocks.executeCreateAsyncTask).toHaveBeenCalledTimes(1);
@@ -227,6 +225,37 @@ describe("McPreset", () => {
     expect(mocks.openNodeSelectDialog).toHaveBeenCalledWith(["linux/amd64"]);
     expect(mocks.executeCreateAsyncTask).toHaveBeenCalledWith(
       expect.objectContaining({ params: expect.objectContaining({ daemonId: "docker-node" }) })
+    );
+  });
+
+  it("uses the market-selected node for filtering and installation without selecting again", async () => {
+    mocks.initialDaemonId = "";
+    mocks.openNodeSelectDialog.mockResolvedValue({ uuid: "online-node-1" });
+    mocks.overviewNodes = [
+      { available: true, uuid: "online-node-1" },
+      { available: true, uuid: "online-node-2" }
+    ];
+    const node = {
+      uuid: "online-node-2",
+      system: { type: "Windows_NT" },
+      dockerPlatforms: ["linux/amd64"]
+    } as any;
+    const category = { gameType: "Minecraft" } as any;
+    const wrapper = mount(McPreset, {
+      props: { card: { meta: {} } as any, initialCategory: category, initialNode: node }
+    });
+    await flushPromises();
+
+    expect(mocks.handleSelectTopCategory).toHaveBeenCalledWith(category, node);
+    wrapper.findComponent({ name: "TemplateNameDialog" }).vm.$emit("confirm", "Test Server", {
+      setupInfo: { docker: {} }
+    });
+    await flushPromises();
+
+    expect(mocks.getOverviewInfo).not.toHaveBeenCalled();
+    expect(mocks.openNodeSelectDialog).not.toHaveBeenCalled();
+    expect(mocks.executeCreateAsyncTask).toHaveBeenCalledWith(
+      expect.objectContaining({ params: expect.objectContaining({ daemonId: "online-node-2" }) })
     );
   });
 });

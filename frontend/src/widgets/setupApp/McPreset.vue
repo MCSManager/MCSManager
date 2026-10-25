@@ -17,6 +17,7 @@ import { onMounted, ref } from "vue";
 const props = defineProps<{
   card: LayoutCard;
   initialCategory?: QuickStartPackages;
+  initialNode?: ComputedNodeInfo;
 }>();
 
 const emit = defineEmits<{
@@ -27,8 +28,8 @@ const emit = defineEmits<{
 const appPackages = ref<InstanceType<typeof AppPackages>>();
 
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
-let daemonId = getMetaOrRouteValue("daemonId", false) ?? "";
-let currentNode = ref<ComputedNodeInfo | undefined>(undefined);
+let daemonId = props.initialNode?.uuid ?? getMetaOrRouteValue("daemonId", false) ?? "";
+const currentNode = ref<ComputedNodeInfo | undefined>(props.initialNode);
 
 const installView = ref(false);
 const percentage = ref(0);
@@ -88,7 +89,7 @@ const getImagePlatformsFromDockerHub = async (imageName: string): Promise<string
  */
 const handleSelectCategory = async (item: QuickStartPackages) => {
   try {
-    let node: ComputedNodeInfo | undefined;
+    let node = currentNode.value;
     if (!daemonId) {
       const overview = await getOverviewInfo({ forceRequest: true });
       const onlineNodes = overview.value?.remote?.filter((item) => item.available) ?? [];

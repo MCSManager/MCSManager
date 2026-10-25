@@ -15,7 +15,7 @@ import McPreset from "@/widgets/setupApp/McPreset.vue";
 import { AppstoreAddOutlined, DatabaseOutlined } from "@ant-design/icons-vue";
 import { Divider, Flex } from "ant-design-vue";
 import Link from "ant-design-vue/es/typography/Link";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 const props = defineProps<{
   destroyComponent: MountComponent["destroyComponent"];
@@ -48,16 +48,17 @@ type MarketCreateMethod =
 const currentStep = ref(MarketStep.CATEGORY);
 const selectedCategory = ref<QuickStartPackages>();
 const selectedMethod = ref<QUICKSTART_METHOD>();
-const selectedDaemonId = ref(daemonId.value ?? "");
+const selectedNode = ref<ComputedNodeInfo>();
+const selectedDaemonId = computed(() => selectedNode.value?.uuid ?? daemonId.value ?? "");
 
-const marketCard: LayoutCard = {
+const marketCard = computed<LayoutCard>(() => ({
   id: "application-market-dialog",
   type: "Market",
   title: "",
   width: 12,
   height: "auto",
-  meta: {}
-};
+  meta: { daemonId: selectedDaemonId.value }
+}));
 
 const openEditor = () => {
   router.push("/market/editor");
@@ -70,13 +71,9 @@ const handleSelectCategory = (category: QuickStartPackages) => {
 };
 
 const handleSelectMethod = async (method: MarketCreateMethod) => {
-  if (method === "preset") {
-    currentStep.value = MarketStep.PRESET;
-    return;
-  }
   try {
     let node: ComputedNodeInfo | undefined;
-    if (!daemonId.value) {
+    if (!selectedDaemonId.value) {
       const overview = await getOverviewInfo({ forceRequest: true });
       const onlineNodes = overview?.value?.remote?.filter((item) => item.available) ?? [];
       if (onlineNodes.length === 0) {
@@ -89,7 +86,12 @@ const handleSelectMethod = async (method: MarketCreateMethod) => {
         reportErrorMsg(t("TXT_CODE_2de92a5d"));
         return;
       }
-      selectedDaemonId.value = node.uuid;
+      selectedNode.value = node;
+    }
+
+    if (method === "preset") {
+      currentStep.value = MarketStep.PRESET;
+      return;
     }
 
     selectedMethod.value = method;
@@ -102,11 +104,11 @@ const handleSelectMethod = async (method: MarketCreateMethod) => {
 
 const backToCategory = () => {
   selectedCategory.value = undefined;
+  selectedNode.value = undefined;
   currentStep.value = MarketStep.CATEGORY;
 };
 
 const backToMethod = () => {
-  selectedDaemonId.value = "";
   selectedMethod.value = undefined;
   currentStep.value = MarketStep.METHOD;
 };
@@ -181,6 +183,7 @@ defineExpose({
           v-else-if="currentStep === MarketStep.PRESET && selectedCategory"
           :card="marketCard"
           :initial-category="selectedCategory"
+          :initial-node="selectedNode"
           @back="backToMethod"
           @install-started="cancel"
         />
