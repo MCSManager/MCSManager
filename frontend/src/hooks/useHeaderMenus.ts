@@ -116,17 +116,19 @@ export function useHeaderMenus() {
         customClass: r.meta.customClass ?? []
       }));
 
-    routeEntries.splice(1, 0, {
-      name: t("TXT_CODE_27594db8"),
-      path: "/market",
-      icon: ShopOutlined,
-      meta: {
-        mainMenu: true,
-        permission: ROLE.ADMIN,
-        onclick: () => openMarketDialog().catch(() => undefined)
-      },
-      customClass: []
-    });
+    if (isAdmin.value) {
+      routeEntries.splice(1, 0, {
+        name: t("TXT_CODE_27594db8"),
+        path: "/market",
+        icon: ShopOutlined,
+        meta: {
+          mainMenu: true,
+          permission: ROLE.ADMIN,
+          onclick: () => openMarketDialog().catch(() => undefined)
+        },
+        customClass: []
+      });
+    }
 
     return routeEntries;
   });
