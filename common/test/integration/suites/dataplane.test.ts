@@ -26,8 +26,10 @@ import {
 
 // Panel unified data-gateway — BOTH-MODE integration suite (real daemon + real
 // panel, no mocks, no network — all local). Verifies that upload, download, and
-// terminal I/O work in BOTH `direct` (default) and `proxy` data-plane modes
-// against ONE freshly booted real daemon+panel pair.
+// terminal I/O work in BOTH `direct` and `proxy` data-plane modes against ONE
+// freshly booted real daemon+panel pair. The fresh-install default is `proxy`
+// (see the `Install-aware default for dataPlane` spec); the suite explicitly
+// flips to `direct` first so both modes are exercised end to end.
 //
 // This is the load-bearing "addr-driven decoupling" proof: the EXISTING test
 // helpers (uploadToDaemon, downloadFromDaemon, uploadFileChunked, createStream,
@@ -123,7 +125,7 @@ async function bothSee(s1: Stream, s2: Stream, substr: string): Promise<void> {
 }
 
 describe("dataplane: BOTH direct + proxy data-gateway (upload/download/terminal)", () => {
-  it("setup: instance RUNNING on node test.mjs (direct default)", async () => {
+  it("setup: instance RUNNING on node test.mjs (fresh-install default = proxy, then flip to direct)", async () => {
     // Ensure users: admin + u1 + u2 (perm 1 fallback — admin routes below are
     // reached via the KEY, not via world.admin's cookie). All three logins are
     // stored on world so later `it`s can use them.
@@ -181,10 +183,29 @@ describe("dataplane: BOTH direct + proxy data-gateway (upload/download/terminal)
     });
     expect(await getStatus()).toBe(RUNNING);
 
-    // DEFAULT mode must be "direct".
-    expect(await getDataPlane(), "default dataPlane mode must be direct").toBe("direct");
+    // Fresh-install default mode must be "proxy".
+    expect(await getDataPlane(), "fresh-install default dataPlane mode must be proxy").toBe("proxy");
 
-    // A freshly fetched upload passport must point to the DAEMON in direct mode.
+    // In the fresh-install default (proxy) mode, a freshly fetched upload
+    // passport must point to the PANEL.
+    const ppDefault = await getUploadPassport(di(), iu(), u1().cookie, u1().token, ".");
+    expect(isPanelAddr(ppDefault.addr), "default (proxy) upload addr must be the panel").toBe(true);
+    expect(isDaemonAddr(ppDefault.addr), "default (proxy) upload addr must NOT be the daemon").toBe(
+      false
+    );
+
+    // Flip to direct so the direct-mode tests below run in explicitly-set
+    // direct mode (mirroring the `flip to proxy` / `rollback to direct` flips
+    // later in the suite).
+    const setRes = await setDataPlane("direct");
+    expect(
+      setRes.httpStatus,
+      `setDataPlane(direct): ${JSON.stringify(setRes.raw).slice(0, 200)}`
+    ).toBe(200);
+    expect(await getDataPlane(), "dataPlane mode must now be direct").toBe("direct");
+    await sleep(300);
+
+    // A freshly fetched upload passport must now point to the DAEMON in direct mode.
     const ppCheck = await getUploadPassport(di(), iu(), u1().cookie, u1().token, ".");
     expect(isDaemonAddr(ppCheck.addr), "direct-mode upload addr must be the daemon").toBe(true);
     expect(isPanelAddr(ppCheck.addr), "direct-mode upload addr must NOT be the panel").toBe(false);

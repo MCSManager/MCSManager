@@ -1,12 +1,20 @@
 // Daemon self-update service.
 //
 // Triggered (via panel -> socket.io "upgrade/daemon") from the web UI. The
-// daemon fetches a manifest describing the latest available build, compares
-// the online version against its own package.json version, downloads the
-// daemon zip, extracts it, then OVERLAYS the entire package onto the install
-// directory (every file the package ships is copied over). The new build only
-// takes effect after a manual restart — the UI and the log tell the operator
-// to restart the daemon.
+// daemon fetches a manifest describing the latest available build (by default
+// the GitHub Release manifest, with the legacy mcsmanager.com manifest as
+// backup source), compares the online version against its own package.json
+// version, downloads the daemon update package (.tar.gz from the official
+// release, .zip from custom sources), extracts it, then OVERLAYS the entire
+// package onto the install directory (every file the package ships is copied
+// over). The new build only takes effect after a manual restart — the UI and
+// the log tell the operator to restart the daemon.
+//
+// Source resolution is a two-candidate list (updateSourceUrl, then
+// updateSourceUrlFallback): a fetch-level failure of one candidate moves on to
+// the next; a parseable manifest is used as-is. Version checking is
+// fail-closed: a failed fetch/parse or a malformed online version NEVER
+// reports "update available".
 //
 // Replacement is NOT a fixed whitelist: whatever the package contains
 // (app.js, package.json, lib/, language packs, ...) is overlaid; runtime-state
@@ -18,8 +26,10 @@ import {
   applyUpgradePackage,
   compareVersions,
   downloadToFile,
-  extractZip,
-  fetchJson
+  extractArchive,
+  fetchJsonFromSources,
+  isComparableVersion,
+  normalizeVersion
 } from "mcsmanager-common";
 import path from "path";
 import { globalConfiguration } from "../entity/config";
@@ -28,10 +38,11 @@ import logger from "./log";
 import { getVersion } from "./version";
 
 const STAGING_DIR = path.normalize(path.join(process.cwd(), "__upgrade_staging"));
-const ZIP_NAME = "daemon.zip";
+const ARCHIVE_BASENAME = "daemon";
 const EXTRACT_DIR_NAME = "extracted";
 const BACKUP_DIR_NAME = "backup";
 const DOWNLOAD_TIMEOUT_MS = 5 * 60 * 1000; // total download deadline (anti-TARPIT)
+const MANIFEST_TIMEOUT_MS = 15000; // per-source manifest fetch budget
 
 const log = (m: string) => logger.info(`[AutoUpdate Daemon] ${m}`);
 const errLog = (m: string) => logger.error(`[AutoUpdate Daemon] ${m}`);
@@ -65,61 +76,102 @@ export interface IUpgradeResult {
 }
 
 export interface IUpgradeRequestData {
-  // The panel forwards its own configured updateSourceUrl so the daemon can be
+  // The panel forwards its own configured source URLs so the daemon can be
   // updated from the panel UI without the operator editing the daemon config.
+  // Each forwarded field wins over its daemon-local counterpart.
   updateSourceUrl?: string;
+  updateSourceUrlFallback?: string;
+}
+
+interface IManifestFetch {
+  manifest: IManifest;
+  /** The source URL that actually served the manifest. */
+  sourceUrl: string;
 }
 
 let upgradeInProgress = false;
 
-function localUpdateSourceUrl(): string {
-  return (globalConfiguration.config.updateSourceUrl || "").trim();
+/** Effective source pair: forwarded override first, then daemon config. */
+function effectiveSourceUrls(override?: IUpgradeRequestData): { primary: string; fallback: string } {
+  return {
+    primary: (override?.updateSourceUrl || globalConfiguration.config.updateSourceUrl || "").trim(),
+    fallback: (
+      override?.updateSourceUrlFallback ||
+      globalConfiguration.config.updateSourceUrlFallback ||
+      ""
+    ).trim()
+  };
 }
 
-/** Effective update-source URL: forwarded override first, then daemon config. */
-function effectiveUpdateSourceUrl(override?: string): string {
-  return (override || localUpdateSourceUrl()).trim();
+/** First candidate of the source list ("" when the feature is disabled). */
+function firstCandidate(override?: IUpgradeRequestData): string {
+  const { primary, fallback } = effectiveSourceUrls(override);
+  return primary || fallback || "";
 }
 
-async function fetchManifest(overrideUrl?: string): Promise<IManifest | null> {
-  const url = effectiveUpdateSourceUrl(overrideUrl);
-  if (!url) return null;
-  return (await fetchJson(url, 15000)) as IManifest;
+async function fetchManifest(override?: IUpgradeRequestData): Promise<IManifestFetch> {
+  const { primary, fallback } = effectiveSourceUrls(override);
+  const { data, sourceUrl, usedFallback } = await fetchJsonFromSources(
+    primary,
+    fallback,
+    MANIFEST_TIMEOUT_MS
+  );
+  if (usedFallback) log(`Primary update source failed, using backup source: ${sourceUrl}`);
+  return { manifest: data as IManifest, sourceUrl };
+}
+
+/** Staging file name for a package URL, preserving the archive format. */
+function archiveFileNameFromUrl(url: string): string {
+  const lower = String(url || "").split("?")[0].split("#")[0].toLowerCase();
+  for (const ext of [".tar.gz", ".tgz", ".zip"]) {
+    if (lower.endsWith(ext)) return ARCHIVE_BASENAME + ext;
+  }
+  throw new Error(`Unsupported update package format: ${String(url || "")}`);
 }
 
 /** Report the current daemon version and whether a newer one is online. */
 export async function getUpgradeInfo(data?: IUpgradeRequestData): Promise<IUpgradeInfo> {
   const currentVersion = getVersion();
-  const updateSourceUrl = effectiveUpdateSourceUrl(data?.updateSourceUrl);
-  if (!updateSourceUrl) {
+  const primaryCandidate = firstCandidate(data);
+  if (!primaryCandidate) {
     return { configured: false, currentVersion, updateAvailable: false, updateSourceUrl: "" };
   }
   try {
-    const manifest = await fetchManifest(data?.updateSourceUrl);
+    const { manifest, sourceUrl } = await fetchManifest(data);
     const entry = manifest?.daemon;
     if (!entry) {
       return {
         configured: true,
         currentVersion,
         updateAvailable: false,
-        updateSourceUrl,
+        updateSourceUrl: sourceUrl,
         error: $t("TXT_CODE_AUTOUPDATE_B_MANIFEST_MISSING", { key: "daemon" })
+      };
+    }
+    // Fail-closed: a malformed advertised version is never offered as an update.
+    if (!isComparableVersion(entry.version)) {
+      return {
+        configured: true,
+        currentVersion,
+        updateAvailable: false,
+        updateSourceUrl: sourceUrl,
+        error: $t("TXT_CODE_AUTOUPDATE_B_VERSION_INVALID", { v: String(entry.version ?? "") })
       };
     }
     return {
       configured: true,
       currentVersion,
-      onlineVersion: entry.version,
+      onlineVersion: normalizeVersion(entry.version),
       onlineNotes: entry.notes,
-      updateAvailable: compareVersions(entry.version, currentVersion) > 0,
-      updateSourceUrl
+      updateAvailable: compareVersions(normalizeVersion(entry.version), normalizeVersion(currentVersion)) > 0,
+      updateSourceUrl: sourceUrl
     };
   } catch (e: any) {
     return {
       configured: true,
       currentVersion,
       updateAvailable: false,
-      updateSourceUrl,
+      updateSourceUrl: primaryCandidate,
       error: String(e?.message || e)
     };
   }
@@ -141,12 +193,15 @@ export async function performUpgrade(data?: IUpgradeRequestData): Promise<IUpgra
   const cwd = process.cwd();
 
   try {
-    const manifest = await fetchManifest(data?.updateSourceUrl);
+    const { manifest } = await fetchManifest(data);
     const entry = manifest?.daemon;
     if (!entry) throw new Error($t("TXT_CODE_AUTOUPDATE_B_MANIFEST_MISSING", { key: "daemon" }));
     const currentVersion = getVersion();
     if (!entry.url) throw new Error($t("TXT_CODE_AUTOUPDATE_B_NO_URL"));
-    if (compareVersions(entry.version, currentVersion) <= 0) {
+    if (!isComparableVersion(entry.version)) {
+      throw new Error($t("TXT_CODE_AUTOUPDATE_B_VERSION_INVALID", { v: String(entry.version ?? "") }));
+    }
+    if (compareVersions(normalizeVersion(entry.version), normalizeVersion(currentVersion)) <= 0) {
       upgradeInProgress = false;
       return {
         started: false,
@@ -160,9 +215,9 @@ export async function performUpgrade(data?: IUpgradeRequestData): Promise<IUpgra
     await fs.remove(STAGING_DIR);
     await fs.ensureDir(STAGING_DIR);
 
-    const zipPath = path.join(STAGING_DIR, ZIP_NAME);
+    const archivePath = path.join(STAGING_DIR, archiveFileNameFromUrl(entry.url));
     let lastLog = 0;
-    await downloadToFile(entry.url, zipPath, DOWNLOAD_TIMEOUT_MS, (received, total) => {
+    await downloadToFile(entry.url, archivePath, DOWNLOAD_TIMEOUT_MS, (received, total) => {
       const now = Date.now();
       if (total > 0 && now - lastLog > 2000) {
         lastLog = now;
@@ -178,7 +233,7 @@ export async function performUpgrade(data?: IUpgradeRequestData): Promise<IUpgra
 
     const extractDir = path.join(STAGING_DIR, EXTRACT_DIR_NAME);
     await fs.remove(extractDir);
-    await extractZip(zipPath, extractDir);
+    await extractArchive(archivePath, extractDir);
     log("Extraction complete. Overlaying package onto install dir...");
 
     let overlays: string[];

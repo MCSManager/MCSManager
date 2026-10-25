@@ -1,12 +1,20 @@
 // Panel (web) self-update service.
 //
 // Triggered from the Settings page via POST /api/upgrade/panel. The panel
-// fetches a manifest describing the latest available build, compares the
-// online version against its own package.json version, downloads the web zip,
-// extracts it, then OVERLAYS the entire package onto the install directory
-// (every file/dir the package ships — app.js, package.json, public/, etc. — is
-// copied over). The new build only takes effect after a manual restart — the
-// UI and the log tell the operator to restart the panel.
+// fetches a manifest describing the latest available build (by default the
+// GitHub Release manifest, with the legacy mcsmanager.com manifest as backup
+// source), compares the online version against its own package.json version,
+// downloads the web update package (.tar.gz from the official release, .zip
+// from custom sources), extracts it, then OVERLAYS the entire package onto the
+// install directory (every file/dir the package ships — app.js, package.json,
+// public/, etc. — is copied over). The new build only takes effect after a
+// manual restart — the UI and the log tell the operator to restart the panel.
+//
+// Source resolution is a two-candidate list (updateSourceUrl, then
+// updateSourceUrlFallback): a fetch-level failure of one candidate moves on to
+// the next; a parseable manifest is used as-is. Version checking is
+// fail-closed: a failed fetch/parse or a malformed online version NEVER
+// reports "update available".
 //
 // Replacement is NOT a fixed whitelist; runtime-state directories (data/,
 // logs/) are skipped. The overlay + transactional backup/rollback lives in
@@ -18,8 +26,10 @@ import {
   applyUpgradePackage,
   compareVersions,
   downloadToFile,
-  extractZip,
-  fetchJson
+  extractArchive,
+  fetchJsonFromSources,
+  isComparableVersion,
+  normalizeVersion
 } from "mcsmanager-common";
 import { $t } from "../i18n";
 import { systemConfig } from "../setting";
@@ -27,10 +37,11 @@ import { getVersion } from "../version";
 import { logger } from "./log";
 
 const STAGING_DIR = path.normalize(path.join(process.cwd(), "__upgrade_staging"));
-const ZIP_NAME = "web.zip";
+const ARCHIVE_BASENAME = "web";
 const EXTRACT_DIR_NAME = "extracted";
 const BACKUP_DIR_NAME = "backup";
 const DOWNLOAD_TIMEOUT_MS = 5 * 60 * 1000; // total download deadline (anti-TARPIT)
+const MANIFEST_TIMEOUT_MS = 15000; // per-source manifest fetch budget
 
 const log = (m: string) => logger.info(`[AutoUpdate Panel] ${m}`);
 const errLog = (m: string) => logger.error(`[AutoUpdate Panel] ${m}`);
@@ -63,51 +74,90 @@ export interface IUpgradeResult {
   message?: string;
 }
 
-let upgradeInProgress = false;
-
-function getUpdateSourceUrl(): string {
-  return (systemConfig?.updateSourceUrl || "").trim();
+interface IManifestFetch {
+  manifest: IManifest;
+  /** The source URL that actually served the manifest. */
+  sourceUrl: string;
 }
 
-async function fetchManifest(): Promise<IManifest | null> {
-  const url = getUpdateSourceUrl();
-  if (!url) return null;
-  return (await fetchJson(url, 15000)) as IManifest;
+let upgradeInProgress = false;
+
+function getSourceUrls(): { primary: string; fallback: string } {
+  return {
+    primary: (systemConfig?.updateSourceUrl || "").trim(),
+    fallback: (systemConfig?.updateSourceUrlFallback || "").trim()
+  };
+}
+
+/** First candidate of the source list ("" when the feature is disabled). */
+function firstCandidate(): string {
+  const { primary, fallback } = getSourceUrls();
+  return primary || fallback || "";
+}
+
+async function fetchManifest(): Promise<IManifestFetch> {
+  const { primary, fallback } = getSourceUrls();
+  const { data, sourceUrl, usedFallback } = await fetchJsonFromSources(
+    primary,
+    fallback,
+    MANIFEST_TIMEOUT_MS
+  );
+  if (usedFallback) log(`Primary update source failed, using backup source: ${sourceUrl}`);
+  return { manifest: data as IManifest, sourceUrl };
+}
+
+/** Staging file name for a package URL, preserving the archive format. */
+function archiveFileNameFromUrl(url: string): string {
+  const lower = String(url || "").split("?")[0].split("#")[0].toLowerCase();
+  for (const ext of [".tar.gz", ".tgz", ".zip"]) {
+    if (lower.endsWith(ext)) return ARCHIVE_BASENAME + ext;
+  }
+  throw new Error(`Unsupported update package format: ${String(url || "")}`);
 }
 
 /** Report the current panel version and whether a newer one is online. */
 export async function getUpgradeInfo(): Promise<IUpgradeInfo> {
   const currentVersion = getVersion();
-  const updateSourceUrl = getUpdateSourceUrl();
-  if (!updateSourceUrl) {
+  const primaryCandidate = firstCandidate();
+  if (!primaryCandidate) {
     return { configured: false, currentVersion, updateAvailable: false, updateSourceUrl: "" };
   }
   try {
-    const manifest = await fetchManifest();
+    const { manifest, sourceUrl } = await fetchManifest();
     const entry = manifest?.web;
     if (!entry) {
       return {
         configured: true,
         currentVersion,
         updateAvailable: false,
-        updateSourceUrl,
+        updateSourceUrl: sourceUrl,
         error: $t("TXT_CODE_AUTOUPDATE_B_MANIFEST_MISSING", { key: "web" })
+      };
+    }
+    // Fail-closed: a malformed advertised version is never offered as an update.
+    if (!isComparableVersion(entry.version)) {
+      return {
+        configured: true,
+        currentVersion,
+        updateAvailable: false,
+        updateSourceUrl: sourceUrl,
+        error: $t("TXT_CODE_AUTOUPDATE_B_VERSION_INVALID", { v: String(entry.version ?? "") })
       };
     }
     return {
       configured: true,
       currentVersion,
-      onlineVersion: entry.version,
+      onlineVersion: normalizeVersion(entry.version),
       onlineNotes: entry.notes,
-      updateAvailable: compareVersions(entry.version, currentVersion) > 0,
-      updateSourceUrl
+      updateAvailable: compareVersions(normalizeVersion(entry.version), normalizeVersion(currentVersion)) > 0,
+      updateSourceUrl: sourceUrl
     };
   } catch (e: any) {
     return {
       configured: true,
       currentVersion,
       updateAvailable: false,
-      updateSourceUrl,
+      updateSourceUrl: primaryCandidate,
       error: String(e?.message || e)
     };
   }
@@ -128,12 +178,15 @@ export async function performUpgrade(): Promise<IUpgradeResult> {
   const cwd = process.cwd();
 
   try {
-    const manifest = await fetchManifest();
+    const { manifest } = await fetchManifest();
     const entry = manifest?.web;
     if (!entry) throw new Error($t("TXT_CODE_AUTOUPDATE_B_MANIFEST_MISSING", { key: "web" }));
     if (!entry.url) throw new Error($t("TXT_CODE_AUTOUPDATE_B_NO_URL"));
+    if (!isComparableVersion(entry.version)) {
+      throw new Error($t("TXT_CODE_AUTOUPDATE_B_VERSION_INVALID", { v: String(entry.version ?? "") }));
+    }
     const currentVersion = getVersion();
-    if (compareVersions(entry.version, currentVersion) <= 0) {
+    if (compareVersions(normalizeVersion(entry.version), normalizeVersion(currentVersion)) <= 0) {
       upgradeInProgress = false;
       return { started: false, message: $t("TXT_CODE_AUTOUPDATE_B_LATEST_VER", { v: currentVersion }) };
     }
@@ -142,9 +195,9 @@ export async function performUpgrade(): Promise<IUpgradeResult> {
     await fs.remove(STAGING_DIR);
     await fs.ensureDir(STAGING_DIR);
 
-    const zipPath = path.join(STAGING_DIR, ZIP_NAME);
+    const archivePath = path.join(STAGING_DIR, archiveFileNameFromUrl(entry.url));
     let lastLog = 0;
-    await downloadToFile(entry.url, zipPath, DOWNLOAD_TIMEOUT_MS, (received, total) => {
+    await downloadToFile(entry.url, archivePath, DOWNLOAD_TIMEOUT_MS, (received, total) => {
       const now = Date.now();
       if (total > 0 && now - lastLog > 2000) {
         lastLog = now;
@@ -158,7 +211,7 @@ export async function performUpgrade(): Promise<IUpgradeResult> {
 
     const extractDir = path.join(STAGING_DIR, EXTRACT_DIR_NAME);
     await fs.remove(extractDir);
-    await extractZip(zipPath, extractDir);
+    await extractArchive(archivePath, extractDir);
     log("Extraction complete. Overlaying package onto install dir...");
 
     let overlays: string[];

@@ -5,7 +5,7 @@ import path from "path";
 import { v4 } from "uuid";
 import { diffConfig } from "../common/config_diff";
 import { MARKET_CACHE_FILE_PATH, SAVE_DIR_PATH } from "../const";
-import SystemConfig from "../entity/setting";
+import SystemConfig, { DataPlaneMode } from "../entity/setting";
 import { ROLE } from "../entity/user";
 import { $t, i18next } from "../i18n";
 import { speedLimit } from "../middleware/limit";
@@ -57,7 +57,12 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
       systemConfig.totpDriftToleranceSteps = config.totpDriftToleranceSteps;
     if (config.loginCheckIp != null) systemConfig.loginCheckIp = config.loginCheckIp;
     if (config.forwardType != null) systemConfig.forwardType = Number(config.forwardType);
-    if (config.dataPlane != null) systemConfig.dataPlane = config.dataPlane;
+    if (config.dataPlane != null) {
+      const mode = String(config.dataPlane);
+      if (mode !== DataPlaneMode.Direct && mode !== DataPlaneMode.Proxy)
+        throw new Error("dataPlane must be 'direct' or 'proxy'");
+      systemConfig.dataPlane = mode as DataPlaneMode;
+    }
     if (config.dataPort != null) systemConfig.dataPort = Number(config.dataPort);
     if (config.loginInfo != null) systemConfig.loginInfo = String(config.loginInfo);
     if (config.canFileManager != null) systemConfig.canFileManager = Boolean(config.canFileManager);
@@ -70,9 +75,11 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     if (config.panelId != null) systemConfig.panelId = String(config.panelId);
     if (config.enableApiKey != null) systemConfig.enableApiKey = config.enableApiKey;
 
-    // Update source (panel self-update manifest URL)
+    // Update source (panel self-update manifest URLs)
     if (config.updateSourceUrl != null)
       systemConfig.updateSourceUrl = String(config.updateSourceUrl);
+    if (config.updateSourceUrlFallback != null)
+      systemConfig.updateSourceUrlFallback = String(config.updateSourceUrlFallback);
 
     if (config.operationLogEnabled != null)
       systemConfig.operationLogEnabled = config.operationLogEnabled;

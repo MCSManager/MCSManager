@@ -5,21 +5,35 @@
 //
 //   A. "Already latest"        -> trigger with onlineVersion == current: no restart, message.
 //   B. Zip-Slip malicious zip  -> extractZip rejects the ../  entry; service stays up, files untouched.
-//   C. Panel happy update      -> app.js gets a UNIQUE content marker appended in the zip; after the
+//   B2. Missing app.js         -> applyUpgradePackage requiredFiles gate rejects before any overlay.
+//   B-TAR. Tar-Slip malicious tar.gz -> extractTarGz rejects the ../ entry (and link entries); no traversal written.
+//   E. Malformed online version -> fail-closed: no "update available" prompt, explicit update refused.
+//   F. Dead primary + healthy backup -> the backup source serves the update info.
+//   G. Malformed-version primary + healthy backup -> stays fail-closed (semantic problems never cross sources).
+//   C. Panel happy update      -> app.js gets a UNIQUE content marker appended in the package; after the
 //                                 update the on-disk app.js CONTAINS that marker (real content replaced),
 //                                 a NEW public/ file appears, an EXISTING public file is overwritten, the
 //                                 package.json version bumps, OVERLAY_MARKER lands, and the panel reboots
 //                                 from the new app.js (API ok, version reads new).
 //   D. Daemon happy update (forwarded) -> daemon app.js content marker lands, version bumps, marker lands.
 //
-// A/B/C/D are run on ONE fresh panel (in that order) so the no-mutation cases
-// (A,B) precede the mutating ones (C,D). Usage: node scripts/verify-auto-update-strict.mjs
+// All scenarios run on ONE fresh panel (in that order) so the no-mutation cases
+// precede the mutating ones (C,D). Usage: node scripts/verify-auto-update-strict.mjs
 
 import fs from "fs";
 import net from "net";
 import path from "path";
 import { spawn } from "child_process";
-import { killChild, killPattern, killPort, listZip, makeZip } from "./auto-update-test-utils.mjs";
+import {
+  bumpPatch,
+  killChild,
+  killPattern,
+  killPort,
+  listTarGz,
+  listZip,
+  makeZip,
+  writeTarGz
+} from "./auto-update-test-utils.mjs";
 
 const repo = path.resolve(import.meta.dirname, "..");
 const prod = path.join(repo, "production-code");
@@ -32,12 +46,19 @@ const PANEL = "http://localhost:23333";
 
 const ADMIN_USER = "admin";
 const ADMIN_PASS = "Admin#12345";
-const BASE_DAEMON = "4.19.0";
-const BASE_WEB = "10.19.0";
-const NEW_DAEMON = "4.19.1";
-const NEW_WEB = "10.19.1";
-const SLIP_WEB = "10.19.2"; // > current so performUpgrade proceeds to extractZip
-const NOAPP_WEB = "10.19.2"; // > current so performUpgrade proceeds to applyUpgradePackage
+// Baseline = repo package.json versions (restoreBaseline() copies them into
+// production-code); online versions = baseline + one patch (same rule as
+// scripts/build-update-packages.mjs).
+const repoVersion = (p) => String(JSON.parse(fs.readFileSync(path.join(repo, p), "utf-8")).version);
+const BASE_DAEMON = repoVersion("daemon/package.json");
+const BASE_WEB = repoVersion("panel/package.json");
+const NEW_DAEMON = bumpPatch(BASE_DAEMON);
+const NEW_WEB = bumpPatch(BASE_WEB);
+const SLIP_WEB = bumpPatch(NEW_WEB); // > current so performUpgrade proceeds to extraction
+const NOAPP_WEB = bumpPatch(NEW_WEB); // > current so performUpgrade proceeds to applyUpgradePackage
+// Naively-comparable "much newer" garbage: a pre-release suffix makes it
+// NON-comparable, so the update must NOT be offered (fail-closed rule).
+const BADVER_WEB = "999.0.0-evil";
 
 const APP_MARKER = (name) => `MCSM_STRICT_APP_MARKER_${name}`;
 const ROBOTS_MARKER = "MCSM_STRICT_ROBOTS_MARKER_panel";
@@ -272,6 +293,28 @@ function buildPackages() {
   } else {
     log("  (zip-slip test disabled: local zip tool normalised the ../  entry; guarding code remains, just not exercised here)");
   }
+  // malicious.tar.gz with a "../" entry (Tar-Slip). Crafted with writeTarGz so
+  // the traversal name is stored verbatim (system tar tools normalise it away).
+  {
+    const appSrc = fs.readFileSync(path.join(webDir, "app.js"), "utf-8");
+    const tgz = path.join(outDir, "malicious.tar.gz");
+    writeTarGz(tgz, [
+      { name: "app.js", content: appSrc },
+      { name: "../escape.txt", content: "should not be written outside\n" }
+    ]);
+    const listing = listTarGz(tgz);
+    if (!/\.\.\/escape\.txt/.test(listing)) throw new Error("crafted tar.gz lost its ../ entry");
+    fs.writeFileSync(
+      path.join(outDir, "manifest-tarslip.json"),
+      JSON.stringify({ daemon: { version: SLIP_WEB, url: `http://localhost:${PORT}/strict/malicious.tar.gz` }, web: { version: SLIP_WEB, url: `http://localhost:${PORT}/strict/malicious.tar.gz` } }, null, 2)
+    );
+  }
+  // manifest-badver.json: a malformed online version must be fail-closed —
+  // no "update available" prompt even though 999.x would naively compare newer.
+  fs.writeFileSync(
+    path.join(outDir, "manifest-badver.json"),
+    JSON.stringify({ daemon: { version: BADVER_WEB, url: `http://localhost:${PORT}/strict/web.zip` }, web: { version: BADVER_WEB, url: `http://localhost:${PORT}/strict/web.zip` } }, null, 2)
+  );
   log("strict packages built in " + outDir);
   return { slipSupported };
 }
@@ -310,12 +353,24 @@ async function main() {
     assert(login.status === 200 && typeof login.data === "string" && login.data !== "Logined", "login returns real token");
     token = login.data;
   }
-  const setSource = async (manifestFile) => {
+  const strictUrl = (manifestFile) => `http://localhost:${PORT}/strict/${manifestFile}`;
+  // Guaranteed-unreachable source (connection refused): exercises the
+  // backup-source fallback without ever touching the live internet.
+  const DEAD_URL = "http://127.0.0.1:1/manifest.json";
+  // Accepts a strict manifest file name (served under /strict/) or a full URL.
+  // ALWAYS manages BOTH source fields: updateSourceUrlFallback defaults to a
+  // live external host, so a failing primary must never leak a fetch to the
+  // internet during these runs.
+  const setSource = async (manifestFileOrUrl, fallbackUrl = "") => {
+    const primary = /^https?:/i.test(manifestFileOrUrl)
+      ? manifestFileOrUrl
+      : strictUrl(manifestFileOrUrl);
     const g = await httpReq("GET", "/api/overview/setting", undefined, token);
     const merged = { ...(typeof g.data === "string" ? {} : g.data || {}) };
-    merged.updateSourceUrl = `http://localhost:${PORT}/strict/${manifestFile}`;
+    merged.updateSourceUrl = primary;
+    merged.updateSourceUrlFallback = fallbackUrl;
     const r = await httpReq("PUT", "/api/overview/setting", merged, token);
-    assert(r.status === 200 || r.status === 204, `set source -> ${manifestFile}`);
+    assert(r.status === 200 || r.status === 204, `set source -> ${primary} (backup: ${fallbackUrl || "none"})`);
   };
   const baselineAppHasMarker = (dir, name) =>
     fs.readFileSync(path.join(dir, "app.js"), "utf-8").includes(APP_MARKER(name));
@@ -323,20 +378,23 @@ async function main() {
   // ----- SCENARIO 0: no update source configured (no mutation) -----
   log("\n== SCENARIO 0: no update source configured ==");
   {
-    // updateSourceUrl defaults to the official source ("fix: default addr") on
-    // BOTH sides, so the unconfigured path must clear the panel source and the
-    // daemon's local source (config is read at boot -> restart the daemon).
+    // BOTH source fields default to live sources ("fix: default addr") on BOTH
+    // sides, so the unconfigured path must clear both panel fields and both of
+    // the daemon's local fields (config is read at boot -> restart the daemon):
+    // with the two-candidate source list, one empty field is not enough.
     const g = await httpReq("GET", "/api/overview/setting", undefined, token);
     const merged = { ...(typeof g.data === "string" ? {} : g.data || {}) };
     merged.updateSourceUrl = "";
+    merged.updateSourceUrlFallback = "";
     const put = await httpReq("PUT", "/api/overview/setting", merged, token);
-    assert(put.status === 200 || put.status === 204, "cleared panel updateSourceUrl");
+    assert(put.status === 200 || put.status === 204, "cleared panel updateSourceUrl + updateSourceUrlFallback");
     killChild(procDaemon);
     killPort(24444);
     await sleep(500);
     const daemonCfgPath = path.join(daemonDir, "data", "Config", "global.json");
     const dCfg = JSON.parse(fs.readFileSync(daemonCfgPath, "utf-8"));
     dCfg.updateSourceUrl = "";
+    dCfg.updateSourceUrlFallback = "";
     fs.writeFileSync(daemonCfgPath, JSON.stringify(dCfg, null, 2));
     procDaemon = spawnProc("daemon", process.execPath, ["app.js"], daemonDir);
     await waitForPort(24444);
@@ -404,6 +462,73 @@ async function main() {
     assert(JSON.parse(fs.readFileSync(path.join(webDir, "package.json"), "utf-8")).version === BASE_WEB, "noapp: panel version still baseline");
     assert(!baselineAppHasMarker(webDir, "web"), "noapp: panel app.js untouched (no content marker)");
     assert(!fs.existsSync(path.join(webDir, "OVERLAY_MARKER.txt")), "noapp: rejected BEFORE any overlay (no marker written)");
+  }
+
+  // ----- SCENARIO B-TAR: tar-slip malicious tar.gz (rejected, no corruption) -----
+  log("\n== SCENARIO B-TAR: tar-slip malicious tar.gz ==");
+  await setSource("manifest-tarslip.json");
+  {
+    const info = await httpReq("GET", "/api/upgrade/panel_info", undefined, token);
+    assert(info.data?.updateAvailable === true && info.data?.onlineVersion === SLIP_WEB, "tarslip manifest: update available " + SLIP_WEB);
+    const r = await httpReq("POST", "/api/upgrade/panel", undefined, token);
+    assert(r.status === 500, "tarslip: endpoint returns 500 (aborted)");
+    log("  error body:", JSON.stringify(r.data));
+    assert(/tar-slip|unsupported tar entry/i.test(String((r.data && (r.data.message || r.data)) || "")), "tarslip: error mentions tar-slip");
+    assert(await panelUp(), "tarslip: panel stayed up (no restart)");
+    assert(JSON.parse(fs.readFileSync(path.join(webDir, "package.json"), "utf-8")).version === BASE_WEB, "tarslip: panel version still baseline");
+    assert(!baselineAppHasMarker(webDir, "web"), "tarslip: panel app.js untouched (no content marker)");
+    assert(!fs.existsSync(path.join(path.dirname(webDir), "escape.txt")), "tarslip: traversal file NOT written outside install dir");
+  }
+
+  // ----- SCENARIO E: malformed online version (fail-closed, no prompt) -----
+  log("\n== SCENARIO E: malformed online version (no prompt) ==");
+  await setSource("manifest-badver.json");
+  {
+    const info = await httpReq("GET", "/api/upgrade/panel_info", undefined, token);
+    assert(info.data?.configured === true, "badver: source configured");
+    assert(info.data?.updateAvailable === false, "badver: NO update prompt for malformed version (fail-closed)");
+    assert(!info.data?.onlineVersion, "badver: no onlineVersion advertised for malformed version");
+    const r = await httpReq("POST", "/api/upgrade/panel", undefined, token);
+    assert(r.status === 500, "badver: explicit update refused (500)");
+    log("  error body:", JSON.stringify(r.data));
+    assert(/valid version|invalid/i.test(String((r.data && (r.data.message || r.data)) || "")), "badver: error mentions invalid version");
+    assert(await panelUp(), "badver: panel stayed up (no restart)");
+    assert(JSON.parse(fs.readFileSync(path.join(webDir, "package.json"), "utf-8")).version === BASE_WEB, "badver: panel version still baseline");
+    assert(!baselineAppHasMarker(webDir, "web"), "badver: panel app.js untouched (no content marker)");
+  }
+
+  // ----- SCENARIO F: network-level failure falls back to the backup source -----
+  log("\n== SCENARIO F: dead primary + healthy backup -> served by the backup ==");
+  {
+    await setSource(DEAD_URL, strictUrl("manifest-strict.json"));
+    const info = await httpReq("GET", "/api/upgrade/panel_info", undefined, token);
+    assert(
+      info.data?.updateAvailable === true && info.data?.onlineVersion === NEW_WEB,
+      "fallback manifest: update available " + NEW_WEB
+    );
+    assert(
+      info.data?.updateSourceUrl === strictUrl("manifest-strict.json"),
+      "panel_info reports the backup URL as the serving source"
+    );
+  }
+
+  // ----- SCENARIO G: semantic manifest problems never cross sources -----
+  log("\n== SCENARIO G: malformed-version primary + healthy backup stays fail-closed ==");
+  {
+    // The primary serves a parseable manifest with a NON-comparable version and
+    // the backup advertises NEW_WEB: if the resolver wrongly retried the backup
+    // here, panel_info would offer the update. It must stay fail-closed.
+    await setSource("manifest-badver.json", strictUrl("manifest-strict.json"));
+    const info = await httpReq("GET", "/api/upgrade/panel_info", undefined, token);
+    assert(
+      info.data?.updateAvailable === false,
+      "semantic problem on the primary must NOT fall back to another source"
+    );
+    assert(
+      typeof info.data?.error === "string" && info.data.error.length > 0,
+      "malformed version still surfaces an error"
+    );
+    assert(!info.data?.onlineVersion, "no onlineVersion advertised across the source list");
   }
 
   // ----- SCENARIO C: panel happy content-update (REAL content replaced) -----
@@ -489,7 +614,10 @@ async function main() {
   if (slipSupported) log("B zip-slip            : rejected, service up, no traversal written      OK");
   else log("B zip-slip            : SKIPPED (local zip tool normalised ../ entry)");
   log("B2 missing app.js     : requiredFiles gate rejects, no overlay        OK");
-  log("B3 update disabled    : guarded, no restart, no overlay               OK");
+  log("B-TAR tar-slip        : rejected, service up, no traversal written    OK");
+  log("E malformed version   : fail-closed, no prompt, update refused        OK");
+  log("F dead primary        : healthy backup serves the update info         OK");
+  log("G semantic no-cross   : badver primary + healthy backup stays closed  OK");
   log("C panel content-update: app.js marker + new+overwritten public + ver  OK");
   log("D daemon content-update: app.js marker + version + overlay marker     OK");
   log("==============================================");

@@ -3,6 +3,16 @@ import os from "os";
 import path from "path";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+// Contract pin: the default update source. Defined as a literal (NOT imported
+// from mcsmanager-common) because a static import of that package would bind
+// StorageSubsystem.DATA_PATH at collection time �?before this file's
+// beforeAll() chdirs into the throw-away temp dir.
+const DEFAULT_UPDATE_SOURCE_URL =
+  "https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_update_manifest.json";
+// Contract pin: the default BACKUP update source (legacy mcsmanager.com
+// manifest hosting) — same no-import rule as above.
+const LEGACY_DEFAULT_UPDATE_SOURCE_URL = "https://mcsmanager.com/upgrade/manifest.json";
+
 // noOp logger: config.ts warns through it when chmod fails (must never throw).
 vi.mock("../../service/log", () => {
   const f: any = () => {};
@@ -83,5 +93,77 @@ describe("config file permission (access key lives in data/Config/global.json)",
 
     expect(() => globalConfiguration.store()).not.toThrow();
     expect(fs.readJsonSync(configFile)).toBeTruthy();
+  });
+});
+
+describe("update source default (GitHub Release manifest)", () => {
+  it("fresh config defaults to the official GitHub Release manifest", () => {
+    globalConfiguration.load();
+    expect(globalConfiguration.config.updateSourceUrl).toBe(DEFAULT_UPDATE_SOURCE_URL);
+  });
+
+  it("load() keeps the class default when the persisted config predates the field", () => {
+    fs.mkdirsSync(path.dirname(configFile));
+    fs.writeJsonSync(configFile, { version: 2, ip: "", port: 24444 });
+    globalConfiguration.load();
+    expect(globalConfiguration.config.updateSourceUrl).toBe(DEFAULT_UPDATE_SOURCE_URL);
+  });
+
+  it("load() preserves a persisted custom update source", () => {
+    fs.mkdirsSync(path.dirname(configFile));
+    fs.writeJsonSync(configFile, { updateSourceUrl: "https://mirror.example.com/manifest.json" });
+    globalConfiguration.load();
+    expect(globalConfiguration.config.updateSourceUrl).toBe(
+      "https://mirror.example.com/manifest.json"
+    );
+  });
+});
+
+describe("backup update source default (legacy mcsmanager.com manifest)", () => {
+  it("fresh config defaults to the legacy backup manifest", () => {
+    globalConfiguration.load();
+    expect(globalConfiguration.config.updateSourceUrlFallback).toBe(
+      LEGACY_DEFAULT_UPDATE_SOURCE_URL
+    );
+    expect(globalConfiguration.config.updateSourceUrlFallback).toBe(
+      "https://mcsmanager.com/upgrade/manifest.json"
+    );
+  });
+
+  it("load() keeps the class default when the persisted config predates the field", () => {
+    fs.mkdirsSync(path.dirname(configFile));
+    fs.writeJsonSync(configFile, {
+      version: 2,
+      ip: "",
+      port: 24444,
+      updateSourceUrl: "https://mirror.example.com/manifest.json"
+    });
+    globalConfiguration.load();
+    expect(globalConfiguration.config.updateSourceUrlFallback).toBe(
+      LEGACY_DEFAULT_UPDATE_SOURCE_URL
+    );
+    expect(globalConfiguration.config.updateSourceUrl).toBe(
+      "https://mirror.example.com/manifest.json"
+    );
+  });
+
+  it("load() preserves a persisted custom backup source", () => {
+    fs.mkdirsSync(path.dirname(configFile));
+    fs.writeJsonSync(configFile, {
+      updateSourceUrl: "https://mirror.example.com/manifest.json",
+      updateSourceUrlFallback: "https://backup.example.com/manifest.json"
+    });
+    globalConfiguration.load();
+    expect(globalConfiguration.config.updateSourceUrlFallback).toBe(
+      "https://backup.example.com/manifest.json"
+    );
+  });
+
+  it("load() preserves both source fields explicitly empty (feature disabled)", () => {
+    fs.mkdirsSync(path.dirname(configFile));
+    fs.writeJsonSync(configFile, { updateSourceUrl: "", updateSourceUrlFallback: "" });
+    globalConfiguration.load();
+    expect(globalConfiguration.config.updateSourceUrl).toBe("");
+    expect(globalConfiguration.config.updateSourceUrlFallback).toBe("");
   });
 });

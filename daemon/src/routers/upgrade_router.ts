@@ -10,7 +10,8 @@ import { routerApp } from "../service/router_app";
 import { getUpgradeInfo, performUpgrade } from "../service/upgrade_service";
 
 // Report whether a daemon self-update is available. The panel may forward its
-// own updateSourceUrl in `data` so the daemon does not need local config.
+// own source URLs (primary + backup) in `data` so the daemon does not need
+// local config.
 routerApp.on("upgrade/info", async (ctx, data) => {
   try {
     const info = await getUpgradeInfo(data);

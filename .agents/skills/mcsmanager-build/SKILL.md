@@ -85,7 +85,7 @@ cd <deploy-dir>\daemon; node --enable-source-maps --max-old-space-size=8192 app.
 cd <deploy-dir>\web;    node --enable-source-maps --max-old-space-size=8192 app.js   # add --open to auto-open the browser
 ```
 
-- `node_app.exe` in `prod-scripts/windows/start.bat` is the **node binary bundled with the official release package**; source-built artifacts use the system `node` directly (16+, CI runs 16.x/20.x; the verified environment in 2026-09 was node 22).
+- `node_app.exe` in `prod-scripts/windows/start.bat` is the **node binary bundled with the official release package**; source-built artifacts require Node.js 22.23.4 or newer (CI runs 22.x).
 - **Panel only** — `--Unsafe-Integration-Test-Mode=<key>` (name case-insensitive) disables panel auth: any request with an `x-request-api-key` header equal to `<key>` bypasses all permission checks. For automated integration tests only; never enable on production. See `DEVELOPMENT.md` §"Unsafe Integration-Test Mode".
 - Default ports: web panel **23333**, daemon **24444** (`ws://localhost:24444`).
 - **First startup**: when the user count is 0, the frontend enters the installation wizard (backend `/install` in `login_router.ts`), where you create the first admin account (permission 10). There is no default root password.

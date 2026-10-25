@@ -8,7 +8,7 @@
 
 [![--](https://img.shields.io/badge/Support%20Platform-Windows/Linux/Mac-green.svg)](https://github.com/MCSManager)
 [![Status](https://img.shields.io/badge/NPM-v8.9.14-blue.svg)](https://www.npmjs.com/)
-[![Status](https://img.shields.io/badge/Node-v16.20.2-blue.svg)](https://nodejs.org/en/download/)
+[![Status](https://img.shields.io/badge/Node-v22.23.4-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
 <p align="center">
@@ -66,7 +66,7 @@ MCSManager는 개인 서버 호스팅 및 **IDC 서비스 제공업체**의 판�
 
 제어판은 **`Windows`** 및 **`Linux`** 플랫폼 모두에서 실행됩니다. 별도의 데이터베이스 설치가 필요하지 않습니다. **`Node.js`** 런타임과 몇 가지 기본 **압축 해제 유틸리티**만 설치하면 됩니다.
 
-> **[Node.js 16.20.2](https://nodejs.org/en)** 이상이 필요합니다.
+> **[Node.js 22.23.4](https://nodejs.org/en)** 이상이 필요합니다.
 > 최적의 호환성과 안정성을 위해 **최신 LTS 버전** 사용을 권장합니다.
 
 <br />
@@ -120,12 +120,12 @@ systemctl stop mcsm-{web,daemon}  # 패널 중지
 cd /opt/
 
 # Step 2: (선택 사항) Node.js가 설치되어 있지 않은 경우 다운로드 및 설치
-wget https://nodejs.org/dist/v20.11.0/node-v20.11.0-linux-x64.tar.xz
-tar -xvf node-v20.11.0-linux-x64.tar.xz
+wget https://nodejs.org/dist/v22.23.4/node-v22.23.4-linux-x64.tar.xz
+tar -xvf node-v22.23.4-linux-x64.tar.xz
 
 # Node.js 및 npm을 시스템 경로에 연결
-ln -s /opt/node-v20.11.0-linux-x64/bin/node /usr/bin/node
-ln -s /opt/node-v20.11.0-linux-x64/bin/npm /usr/bin/npm
+ln -s /opt/node-v22.23.4-linux-x64/bin/node /usr/bin/node
+ln -s /opt/node-v22.23.4-linux-x64/bin/npm /usr/bin/npm
 
 # Step 3: MCSManager 설치 디렉토리 준비
 mkdir /opt/mcsmanager/

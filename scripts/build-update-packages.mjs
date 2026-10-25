@@ -1,4 +1,4 @@
-// Build the local "update" zip packages + manifest used to verify the auto-update feature.
+// Build the local "update" tar.gz packages + manifest used to verify the auto-update feature.
 //
 // The reported version is read at RUNTIME from package.json (see common/upgrade.ts
 // and daemon/panel version.ts), so the update package simply ships the current
@@ -6,19 +6,28 @@
 // process restarts, reads the bumped package.json, and reports the new version.
 //
 //   scripts/update-packages/manifest.json
-//   scripts/update-packages/daemon.zip  (app.js + app.js.map + package.json @ 4.19.1 + OVERLAY_MARKER.txt)
-//   scripts/update-packages/web.zip     (app.js + app.js.map + package.json @ 10.19.1 + public/ + OVERLAY_MARKER.txt)
+//   scripts/update-packages/daemon.tar.gz  (app.js + app.js.map + package.json @ <bumped> + OVERLAY_MARKER.txt)
+//   scripts/update-packages/web.tar.gz     (app.js + app.js.map + package.json @ <bumped> + public/ + OVERLAY_MARKER.txt)
 
 import fs from "fs";
 import path from "path";
-import { makeZip } from "./auto-update-test-utils.mjs";
+import { bumpPatch, makeTarGz } from "./auto-update-test-utils.mjs";
 
 const repo = path.resolve(import.meta.dirname, "..");
 const prod = path.join(repo, "production-code");
 const outDir = path.join(import.meta.dirname, "update-packages");
 
-const DAEMON_NEW_VERSION = "4.19.1";
-const WEB_NEW_VERSION = "10.19.1";
+const prodVersion = (name) =>
+  String(JSON.parse(fs.readFileSync(path.join(prod, name, "package.json"), "utf-8")).version);
+// The packages ship the CURRENT build with the version bumped one patch, so a
+// running install at the baseline version always sees the package as "newer".
+// Override with --daemon-version / --web-version when a specific number is needed.
+const args = new Map();
+for (let i = 2; i < process.argv.length; i += 2) {
+  if (process.argv[i]?.startsWith("--")) args.set(process.argv[i].slice(2), process.argv[i + 1] ?? "");
+}
+const DAEMON_NEW_VERSION = args.get("daemon-version") || bumpPatch(prodVersion("daemon"));
+const WEB_NEW_VERSION = args.get("web-version") || bumpPatch(prodVersion("web"));
 const PORT = 9999;
 
 // Per-entry release notes ("notes") shown by the web UI after a version scan.
@@ -70,7 +79,7 @@ function stageAndZip(name, newVersion, includePublic) {
   // proves "whatever the package ships gets overlaid".
   fs.writeFileSync(
     path.join(staging, "OVERLAY_MARKER.txt"),
-    `MCSManager auto-update overlay marker for ${name} v${newVersion}. This file is only ever shipped inside an update zip; its presence in the install dir proves the whole package was overlaid (not just a fixed file list).\n`
+    `MCSManager auto-update overlay marker for ${name} v${newVersion}. This file is only ever shipped inside an update package; its presence in the install dir proves the whole package was overlaid (not just a fixed file list).\n`
   );
   const entries = ["app.js", "app.js.map", "package.json", "OVERLAY_MARKER.txt"];
   if (includePublic) {
@@ -78,11 +87,13 @@ function stageAndZip(name, newVersion, includePublic) {
     entries.push("public");
   }
 
-  const zipPath = path.join(outDir, name + ".zip");
-  fs.rmSync(zipPath, { force: true });
-  makeZip(zipPath, entries, staging);
+  const packPath = path.join(outDir, name + ".tar.gz");
+  fs.rmSync(packPath, { force: true });
+  makeTarGz(packPath, entries, staging);
   fs.rmSync(staging, { recursive: true, force: true });
-  console.log(`${name}.zip -> v${newVersion}  (${(fs.statSync(zipPath).size / 1024 / 1024).toFixed(1)} MB)`);
+  console.log(
+    `${name}.tar.gz -> v${newVersion}  (${(fs.statSync(packPath).size / 1024 / 1024).toFixed(1)} MB)`
+  );
 }
 
 fs.rmSync(outDir, { recursive: true, force: true });
@@ -94,12 +105,12 @@ stageAndZip("web", WEB_NEW_VERSION, true);
 const manifest = {
   daemon: {
     version: DAEMON_NEW_VERSION,
-    url: `http://localhost:${PORT}/daemon.zip`,
+    url: `http://localhost:${PORT}/daemon.tar.gz`,
     notes: DAEMON_NOTES
   },
   web: {
     version: WEB_NEW_VERSION,
-    url: `http://localhost:${PORT}/web.zip`,
+    url: `http://localhost:${PORT}/web.tar.gz`,
     notes: WEB_NOTES
   }
 };

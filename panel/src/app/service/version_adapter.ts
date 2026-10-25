@@ -1,5 +1,5 @@
 import { t } from "i18next";
-import { GlobalVariable } from "mcsmanager-common";
+import { GlobalVariable, migrateLegacyUpdateSourceUrl } from "mcsmanager-common";
 import StorageSubsystem from "../common/system_storage";
 import { systemConfig } from "../setting";
 import { hasVersionChanged } from "../version";
@@ -53,8 +53,28 @@ function upgradePresetPackAddr() {
   }
 }
 
+/**
+ * The primary auto-update source moved from the legacy mcsmanager.com hosting
+ * to the official GitHub Release manifest (the same mcsmanager.com URL is now
+ * the default BACKUP source, `updateSourceUrlFallback`). A persisted primary
+ * `updateSourceUrl` still pointing at the legacy source is rewritten to the
+ * current default; any operator-customized URL is left untouched. Idempotent:
+ * after one rewrite the value no longer matches the legacy source.
+ */
+function upgradeUpdateSourceUrl() {
+  const config = systemConfig;
+  if (!config) return;
+  const migrated = migrateLegacyUpdateSourceUrl(config.updateSourceUrl);
+  if (migrated !== config.updateSourceUrl) {
+    logger.warn(`Upgrading update source addr from ${config.updateSourceUrl} to ${migrated}`);
+    config.updateSourceUrl = migrated;
+    StorageSubsystem.store("SystemConfig", "config", config);
+  }
+}
+
 function detectConfig() {
   upgradePresetPackAddr();
+  upgradeUpdateSourceUrl();
   readCategoryConfig("User", refactorUserConfig);
 }
 

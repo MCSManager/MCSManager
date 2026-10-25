@@ -14,7 +14,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
 
       - name: Install dependencies
         run: |
@@ -25,6 +25,11 @@ jobs:
 
       - name: Add binaries to production files
         run: wget --input-file=lib-urls.txt --directory-prefix=production-code/daemon/lib/
+
+      - name: Create update packages and manifest
+        run: node scripts/build-release-update-packages.mjs --tag "${GITHUB_REF_NAME}"
+        env:
+          RELEASE_BODY: ${{ github.event.release.body }}
 
       - name: Create linux and windows build
         run: |
@@ -43,7 +48,7 @@ jobs:
 
       - name: Copy node runtime to windows build
         run: |
-          wget https://nodejs.org/download/release/latest-v20.x/win-x64/node.exe -O dist_windows/daemon/node_app.exe
+          wget https://nodejs.org/download/release/latest-v22.x/win-x64/node.exe -O dist_windows/daemon/node_app.exe
           cp dist_windows/daemon/node_app.exe dist_windows/web/node_app.exe
 
       - name: Download MCSManager Desktop to windows build
@@ -53,14 +58,12 @@ jobs:
         run: |
           mv dist_linux/ mcsmanager/
           tar czf mcsmanager_linux_release.tar.gz mcsmanager/
-          tar --exclude='mcsmanager/daemon' --exclude='mcsmanager/start-daemon.sh' -czf mcsmanager_linux_web_only_release.tar.gz mcsmanager/
           tar --exclude='mcsmanager/web' --exclude='mcsmanager/start-web.sh' -czf mcsmanager_linux_daemon_only_release.tar.gz mcsmanager/
           rm -rf mcsmanager/
           mv dist_windows/ mcsmanager/
           zip -r mcsmanager_windows_release.zip mcsmanager/
           # desktop launcher ships in the full windows package only
           rm mcsmanager/mcsmanager-desktop.exe
-          zip -r mcsmanager_windows_web_only_release.zip mcsmanager/ -x "mcsmanager/daemon/*"
           zip -r mcsmanager_windows_daemon_only_release.zip mcsmanager/ -x "mcsmanager/web/*"
 
       - name: Upload assets to release
@@ -68,8 +71,9 @@ jobs:
         with:
           files: |
             mcsmanager_windows_release.zip
-            mcsmanager_windows_web_only_release.zip
             mcsmanager_windows_daemon_only_release.zip
             mcsmanager_linux_release.tar.gz
-            mcsmanager_linux_web_only_release.tar.gz
             mcsmanager_linux_daemon_only_release.tar.gz
+            mcsmanager_daemon_update.tar.gz
+            mcsmanager_web_update.tar.gz
+            mcsmanager_update_manifest.json

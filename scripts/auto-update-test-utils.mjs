@@ -7,6 +7,7 @@
 // Windows (which ships `tar.exe`/`netstat`/`taskkill` but none of the above).
 
 import fs from "fs";
+import zlib from "zlib";
 import { execSync } from "child_process";
 
 export const isWindows = process.platform === "win32";
@@ -33,6 +34,83 @@ export function makeZip(zipPath, entries, cwd) {
 export function listZip(zipPath) {
   if (isWindows) return execSync(`tar.exe -t -f ${quote(zipPath)}`, { encoding: "utf-8" });
   return execSync(`unzip -l ${quote(zipPath)}`, { encoding: "utf-8" });
+}
+
+const tarBin = () => (isWindows ? "tar.exe" : "tar");
+
+/**
+ * Create a gzip-compressed tar at `tgzPath` containing `entries` (paths
+ * relative to `cwd`). Both GNU tar and Windows' bsdtar accept the -czf form.
+ */
+export function makeTarGz(tgzPath, entries, cwd) {
+  fs.rmSync(tgzPath, { force: true });
+  const list = entries.map(quote).join(" ");
+  execSync(`${tarBin()} -czf ${quote(tgzPath)} -C ${quote(cwd)} ${list}`, {
+    cwd,
+    stdio: "ignore"
+  });
+}
+
+/** Return the tar.gz entry listing as text (used to assert package allowlists). */
+export function listTarGz(tgzPath) {
+  return execSync(`${tarBin()} -tzf ${quote(tgzPath)}`, { encoding: "utf-8" });
+}
+
+/**
+ * Bump the last numeric segment of a dotted version ("4.19.2" -> "4.19.3").
+ * Used by the update harnesses to derive an "online newer version" from the
+ * baseline package.json version instead of hardcoding version numbers.
+ */
+export function bumpPatch(version) {
+  const parts = String(version).split(".");
+  parts[parts.length - 1] = String((parseInt(parts[parts.length - 1], 10) || 0) + 1);
+  return parts.join(".");
+}
+
+// Minimal ustar writer (512-byte headers) + gzip, supporting arbitrary entry
+// names and types so malicious traversal/link entries can be crafted for the
+// extractTarGz guard tests (system tar tools normalise such names away).
+function tarHeader(entry, size) {
+  const buf = Buffer.alloc(512);
+  buf.write(entry.name, 0, 100, "utf-8");
+  buf.write("0000644\0", 100, 8, "utf-8");
+  buf.write("0000000\0", 108, 8, "utf-8");
+  buf.write("0000000\0", 116, 8, "utf-8");
+  buf.write(size.toString(8).padStart(11, "0") + "\0", 124, 12, "utf-8");
+  buf.write("00000000000\0", 136, 12, "utf-8");
+  buf.write("        ", 148, 8, "utf-8");
+  const typeflag =
+    entry.type === "directory" ? "5" : entry.type === "symlink" ? "2" : entry.type === "hardlink" ? "1" : "0";
+  buf.write(typeflag, 156, 1, "utf-8");
+  if (entry.linkname) buf.write(entry.linkname, 157, 100, "utf-8");
+  buf.write("ustar\0", 257, 6, "utf-8");
+  buf.write("00", 263, 2, "utf-8");
+  let sum = 0;
+  for (const b of buf) sum += b;
+  buf.write(sum.toString(8).padStart(6, "0") + "\0 ", 148, 8, "utf-8");
+  return buf;
+}
+
+/**
+ * Write a crafted .tar.gz at `tgzPath`. Each entry: { name, content?, type?,
+ * linkname? } where type is "file" (default), "directory", "symlink" or
+ * "hardlink". Names are stored verbatim (including "../" traversal names).
+ */
+export function writeTarGz(tgzPath, entries) {
+  const parts = [];
+  for (const e of entries) {
+    const data = Buffer.from(e.content ?? "", "utf-8");
+    const size = e.type === "file" || !e.type ? data.length : 0;
+    parts.push(tarHeader(e, size));
+    if (size) {
+      parts.push(data);
+      const pad = (512 - (size % 512)) % 512;
+      if (pad) parts.push(Buffer.alloc(pad));
+    }
+  }
+  parts.push(Buffer.alloc(1024));
+  fs.writeFileSync(tgzPath, zlib.gzipSync(Buffer.concat(parts)));
+  return tgzPath;
 }
 
 /**

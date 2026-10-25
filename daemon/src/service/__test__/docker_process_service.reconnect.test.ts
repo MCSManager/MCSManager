@@ -28,7 +28,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
  *    suite is active during the restart.
  *
  * Both suites drive the REAL `DockerProcessAdapter` against a real
- * `node:20-alpine` container running the interactive fixture `test.mjs`
+ * `node:22-alpine` container running the interactive fixture `test.mjs`
  * (line protocol: `sum <a> <b>` -> `SUM:<a+b>`, `exit` -> `BYE` + exit 0).
  *
  * Command delivery model: the adapter deliberately drops writes while the
@@ -86,7 +86,7 @@ const FIXTURE_APP = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
   "../../../test/fixtures/test.mjs"
 );
-const DOCKER_NODE_IMAGE = "node:20-alpine";
+const DOCKER_NODE_IMAGE = "node:22-alpine";
 const DOCKER_SOCKET = os.platform() === "win32" ? "//./pipe/docker_engine" : "/var/run/docker.sock";
 
 let tmpDir = "";

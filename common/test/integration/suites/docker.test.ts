@@ -13,6 +13,7 @@ import {
   saveState,
   getUploadPassport,
   uploadToDaemon,
+  setDataPlane,
   type Stream
 } from "../lib";
 
@@ -26,6 +27,11 @@ import {
 // Instance_router.integration.test.ts` (which drives the DAEMON in-process) and
 // verified against `daemon/src/service/docker_process_service.ts`
 // SetupDockerContainer — the only place the docker config fields are validated.
+//
+// Pinned to `direct` data-plane mode: the container terminal round-trips
+// (sum/echo via `test.mjs` on the attach stream) are asserted against the
+// daemon's own stream endpoint. Proxy-mode terminal bridging is covered by
+// dataplane.test.ts.
 //
 // Visible-skip design: every docker `it` is `it.skip` on non-Linux or unreachable
 // dockerd so vitest's verbose reporter shows SKIPPED (not silent passes). One
@@ -63,7 +69,7 @@ const RUNNING = 3;
 // cpuUsage, memory, memorySwap, memorySwappiness, labels, uploadSpeedLimit,
 // downloadSpeedLimit, gpu* fields. Ports are deliberately empty here (we do not
 // exercise port forwarding; an empty array is valid and avoids host port races).
-const NODE_IMAGE = "node:20-alpine";
+const NODE_IMAGE = "node:22-alpine";
 const CONTAINER_PREFIX = "mcsm-it-docker-";
 const LABEL_KEY = "mcsmanager.instance.uuid";
 const TEST_IMG_NAME = "mcsm-it-test";
@@ -117,6 +123,13 @@ async function ensureUsersOnce() {
   world.admin.uuid = await ensureUser("admin", world.key);
   world.u1.uuid = await ensureUser("u1", world.key);
   saveState();
+  // Pin dataPlane to `direct` so the container terminal round-trips below hit
+  // the daemon's own stream endpoint (the fresh-install default is `proxy`).
+  const setRes = await setDataPlane("direct");
+  expect(
+    setRes.httpStatus,
+    `setDataPlane(direct): ${JSON.stringify(setRes.raw).slice(0, 200)}`
+  ).toBe(200);
   usersReady = true;
 }
 
@@ -286,7 +299,7 @@ describe("docker instance + image integration (Linux + reachable dockerd only)",
 
       // Poll /environment/progress until the build settles (1=building,
       // 2=complete, -1=error). Allow generous time for the alpine pull on a
-      // cold cache (first CI run only — node:20-alpine for the lifecycle test
+      // cold cache (first CI run only — node:22-alpine for the lifecycle test
       // is the same image reused by the instance suite).
       await waitFor(
         async () => {
@@ -364,7 +377,7 @@ describe("docker instance + image integration (Linux + reachable dockerd only)",
   //    restart must produce a NEW container id (same name — the daemon's
   //    createContainerWithNameRetry waits for AutoRemove to release the name).
   dockerIt(
-    "docker instance full cycle: new processType=docker (node:20-alpine) → open RUNNING → command round-trip (echo/sum/pid via test.mjs) → stop graceful → kill → restart new container → delete",
+    "docker instance full cycle: new processType=docker (node:22-alpine) → open RUNNING → command round-trip (echo/sum/pid via test.mjs) → stop graceful → kill → restart new container → delete",
     async () => {
       await ensureUsersOnce();
       const cName = containerName("cycle");

@@ -17,7 +17,7 @@ import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import { arrayFilter } from "@/tools/array";
 import { pickLocalizedNotes } from "@/tools/localizedNotes";
 import { reportErrorMsg } from "@/tools/validator";
-import type { LayoutCard, Settings } from "@/types";
+import { DataPlaneMode, type LayoutCard, type Settings } from "@/types";
 import {
   ApiOutlined,
   BankOutlined,
@@ -185,11 +185,11 @@ const apiKeyAccessOptions = [
 const dataPlaneOptions = [
   {
     label: t("TXT_CODE_settings_dataPlane_direct"),
-    value: "direct"
+    value: DataPlaneMode.Direct
   },
   {
     label: t("TXT_CODE_settings_dataPlane_proxy"),
-    value: "proxy"
+    value: DataPlaneMode.Proxy
   }
 ];
 
@@ -1543,6 +1543,19 @@ onUnmounted(() => {
                       v-model:value="formData.updateSourceUrl"
                       style="max-width: 480px"
                       :placeholder="t('TXT_CODE_AUTOUPDATE_WEB_SOURCE_PH')"
+                    />
+                  </a-form-item>
+                  <a-form-item v-if="formData">
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_SOURCE_BACKUP") }}
+                    </a-typography-title>
+                    <a-typography-paragraph type="secondary">
+                      {{ t("TXT_CODE_AUTOUPDATE_WEB_SOURCE_BACKUP_DESC") }}
+                    </a-typography-paragraph>
+                    <a-input
+                      v-model:value="formData.updateSourceUrlFallback"
+                      style="max-width: 480px"
+                      :placeholder="t('TXT_CODE_AUTOUPDATE_WEB_SOURCE_BACKUP_PH')"
                     />
                   </a-form-item>
 

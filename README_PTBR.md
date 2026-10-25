@@ -8,7 +8,7 @@
 
 [![--](https://img.shields.io/badge/Support%20Platform-Windows/Linux/Mac-green.svg)](https://github.com/MCSManager)
 [![Status](https://img.shields.io/badge/NPM-v8.9.14-blue.svg)](https://www.npmjs.com/)
-[![Status](https://img.shields.io/badge/Node-v16.20.2-blue.svg)](https://nodejs.org/en/download/)
+[![Status](https://img.shields.io/badge/Node-v22.23.4-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
 <p align="center">
@@ -61,7 +61,7 @@ Também é adequado para qualquer atividade comercial, como provedores de servi�
 
 O painel de controle pode executar em plataformas `Windows` e `Linux`, não requer instalação de banco de dados, você só precisa instalar o ambiente `Node.js` e vários **comandos de descompactação**.
 
-Deve usar [Node.js 16.20.2](https://nodejs.org/en) ou superior, recomendamos usar a versão LTS mais recente.
+Deve usar [Node.js 22.23.4](https://nodejs.org/en) ou superior, recomendamos usar a versão LTS mais recente.
 
 <br />
 
@@ -112,13 +112,13 @@ systemctl stop mcsm-{web,daemon}  # Parar painel
 ```bash
 # Mudar para o diretório de instalação. Se não existir, por favor crie com 'mkdir /opt/' primeiro.
 cd /opt/
-# Baixar ambiente de execução (Node.js). Se você já tem Node.js 16+ instalado, por favor ignore este passo.
-wget https://nodejs.org/dist/v20.11.0/node-v20.11.0-linux-x64.tar.xz
+# Baixar ambiente de execução (Node.js). Se você já tem Node.js 22.23.4+ instalado, por favor ignore este passo.
+wget https://nodejs.org/dist/v22.23.4/node-v22.23.4-linux-x64.tar.xz
 # Extrair arquivo
-tar -xvf node-v20.11.0-linux-x64.tar.xz
+tar -xvf node-v22.23.4-linux-x64.tar.xz
 # Adicionar programa às variáveis de ambiente do sistema.
-ln -s /opt/node-v20.11.0-linux-x64/bin/node /usr/bin/node
-ln -s /opt/node-v20.11.0-linux-x64/bin/npm /usr/bin/npm
+ln -s /opt/node-v22.23.4-linux-x64/bin/node /usr/bin/node
+ln -s /opt/node-v22.23.4-linux-x64/bin/npm /usr/bin/npm
 
 # Preparar diretório de instalação.
 mkdir /opt/mcsmanager/

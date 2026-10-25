@@ -1,5 +1,5 @@
 ARG BUILDPLATFORM=linux/amd64
-FROM --platform=${BUILDPLATFORM} node:lts-alpine AS builder
+FROM --platform=${BUILDPLATFORM} node:22-alpine AS builder
 
 WORKDIR /src
 COPY . /src
@@ -9,7 +9,7 @@ RUN chmod a+x ./install-dependents.sh &&\
     ./install-dependents.sh &&\
     ./build.sh
 
-FROM node:lts-alpine
+FROM node:22-alpine
 
 WORKDIR /opt/mcsmanager/web
 

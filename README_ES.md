@@ -8,7 +8,7 @@
 
 [![--](https://img.shields.io/badge/Support%20Platform-Windows/Linux/Mac-green.svg)](https://github.com/MCSManager)
 [![Status](https://img.shields.io/badge/NPM-v8.9.14-blue.svg)](https://www.npmjs.com/)
-[![Status](https://img.shields.io/badge/Node-v16.20.2-blue.svg)](https://nodejs.org/en/download/)
+[![Status](https://img.shields.io/badge/Node-v22.23.4-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
 
 <p align="center">
@@ -61,7 +61,7 @@ También es adecuado para cualquier actividad comercial, como proveedores de ser
 
 El panel de control puede ejecutarse en plataformas `Windows` y `Linux`, no requiere instalación de base de datos, solo necesitas instalar el entorno `Node.js` y varios **comandos de descompresión**.
 
-Debes usar [Node.js 16.20.2](https://nodejs.org/en) o superior, recomendamos usar la última versión LTS.
+Debes usar [Node.js 22.23.4](https://nodejs.org/en) o superior, recomendamos usar la última versión LTS.
 
 <br />
 
@@ -112,13 +112,13 @@ systemctl stop mcsm-{web,daemon}  # Detener panel
 ```bash
 # Cambiar al directorio de instalación. Si no existe, por favor créalo con 'mkdir /opt/' primero.
 cd /opt/
-# Descargar entorno de ejecución (Node.js). Si ya tienes Node.js 16+ instalado, por favor ignora este paso.
-wget https://nodejs.org/dist/v20.11.0/node-v20.11.0-linux-x64.tar.xz
+# Descargar entorno de ejecución (Node.js). Si ya tienes Node.js 22.23.4+ instalado, por favor ignora este paso.
+wget https://nodejs.org/dist/v22.23.4/node-v22.23.4-linux-x64.tar.xz
 # Extraer archivo
-tar -xvf node-v20.11.0-linux-x64.tar.xz
+tar -xvf node-v22.23.4-linux-x64.tar.xz
 # Agregar programa a variables de entorno del sistema.
-ln -s /opt/node-v20.11.0-linux-x64/bin/node /usr/bin/node
-ln -s /opt/node-v20.11.0-linux-x64/bin/npm /usr/bin/npm
+ln -s /opt/node-v22.23.4-linux-x64/bin/node /usr/bin/node
+ln -s /opt/node-v22.23.4-linux-x64/bin/npm /usr/bin/npm
 
 # Preparar directorio de instalación.
 mkdir /opt/mcsmanager/

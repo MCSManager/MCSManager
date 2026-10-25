@@ -6,7 +6,6 @@ import { GLOBAL_INSTANCE_UUID } from "@/config/const";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import { useOverviewInfo, type ComputedNodeInfo } from "@/hooks/useOverviewInfo";
-import { SocketStatus, useSocketIoClient } from "@/hooks/useSocketIo";
 import { getCurrentLang, t } from "@/lang/i18n";
 import {
   connectNode,
@@ -27,15 +26,12 @@ import {
   CodeOutlined,
   FolderOpenOutlined,
   InfoCircleOutlined,
-  LoadingOutlined,
   ReloadOutlined,
   SettingOutlined
 } from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
 import { computed, defineProps, onMounted, ref, watch, type FunctionalComponent } from "vue";
 import NodeDetailDialog from "./NodeDetailDialog.vue";
-
-const { testFrontendSocket, socketStatus } = useSocketIoClient();
 
 const nodeDetailDialog = ref<InstanceType<typeof NodeDetailDialog>>();
 
@@ -156,17 +152,6 @@ const detailList = (node: ComputedNodeInfo) => [
     warnText: t("TXT_CODE_1c2efd38")
   },
   {
-    title: t("TXT_CODE_930d2524"),
-    value:
-      socketStatus.value === SocketStatus.Connected
-        ? t("TXT_CODE_e039b9b5")
-        : t("TXT_CODE_23a3bd72"),
-    warn: socketStatus.value === SocketStatus.Error,
-    success: socketStatus.value === SocketStatus.Connected,
-    loading: socketStatus.value === SocketStatus.Connecting,
-    warnText: t("TXT_CODE_6b4a27dd")
-  },
-  {
     title: t("TXT_CODE_3d602459"),
     value: node.instanceStatus
   },
@@ -278,7 +263,6 @@ const nodeOperations = computed(() =>
 );
 
 onMounted(() => {
-  testFrontendSocket(remoteNode.value);
   refreshDaemonUpgradeInfo();
 });
 
@@ -340,11 +324,6 @@ watch(
                   </template>
                   <span class="color-danger"><InfoCircleOutlined /> {{ detail.value }}</span>
                 </a-tooltip>
-                <span v-else-if="detail.loading">
-                  <div class="flex mt-4">
-                    <LoadingOutlined style="font-size: 18px" />
-                  </div>
-                </span>
                 <span v-else-if="detail.success">
                   <span class="color-success"><CheckCircleOutlined /> {{ detail.value }}</span>
                 </span>

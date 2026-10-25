@@ -1,13 +1,15 @@
 // End-to-end verification of the MCSManager auto-update feature.
 //
 // Orchestrates:
-//   1. Local update static server (manifest.json + daemon.zip + web.zip) on :9999
+//   1. Local update static server (manifest.json + daemon.tar.gz + web.tar.gz) on :9999
 //   2. A fresh daemon (product-code/daemon)
 //   3. A fresh panel  (product-code/web)
 //   4. Real HTTP calls against the panel API (install -> login -> upgrade endpoints)
 //      EXACTLY the endpoints the new web UI buttons hit, then asserts:
-//        - panel self-update: package overlaid (incl. an OVERLAY_MARKER), process stays up,\n//          a simulated manual restart makes the new version take effect (-> 10.19.1)
-//        - daemon self-update (forwarded panel->daemon): package overlaid, process stays up,\n//          a simulated manual restart makes the new version take effect (-> 4.19.1)
+//        - panel self-update: package overlaid (incl. an OVERLAY_MARKER), process stays up,
+//          a simulated manual restart makes the new version take effect
+//        - daemon self-update (forwarded panel->daemon): package overlaid, process stays up,
+//          a simulated manual restart makes the new version take effect
 //
 // Usage:  node scripts/verify-auto-update.mjs
 //
@@ -18,7 +20,7 @@ import fs from "fs";
 import net from "net";
 import path from "path";
 import { spawn, execSync } from "child_process";
-import { killChild, killPattern, killPort } from "./auto-update-test-utils.mjs";
+import { bumpPatch, killChild, killPattern, killPort } from "./auto-update-test-utils.mjs";
 
 const repo = path.resolve(import.meta.dirname, "..");
 const prod = path.join(repo, "production-code");
@@ -26,14 +28,21 @@ const daemonDir = path.join(prod, "daemon");
 const webDir = path.join(prod, "web");
 const logDir = path.join(import.meta.dirname, "update-packages");
 const MANIFEST_URL = "http://localhost:9999/manifest.json";
+// Guaranteed-unreachable source (connection refused): used to exercise the
+// backup-source fallback without ever touching the live internet.
+const DEAD_URL = "http://127.0.0.1:1/manifest.json";
 const PANEL = "http://localhost:23333";
 
 const ADMIN_USER = "admin";
 const ADMIN_PASS = "Admin#12345"; // satisfies validatePassword
-const BASE_DAEMON = "4.19.0";
-const BASE_WEB = "10.19.0";
-const NEW_DAEMON = "4.19.1";
-const NEW_WEB = "10.19.1";
+// Baseline = the versions in the repo package.json files (step 0 copies them
+// into production-code); "online" versions are the same with one patch bumped
+// (build-update-packages.mjs derives the same numbers from production-code).
+const repoVersion = (p) => String(JSON.parse(fs.readFileSync(path.join(repo, p), "utf-8")).version);
+const BASE_DAEMON = repoVersion("daemon/package.json");
+const BASE_WEB = repoVersion("panel/package.json");
+const NEW_DAEMON = bumpPatch(BASE_DAEMON);
+const NEW_WEB = bumpPatch(BASE_WEB);
 
 const cookies = {};
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -195,7 +204,7 @@ async function main() {
   // to re-run from the baseline version.
   fs.copyFileSync(path.join(repo, "daemon", "package.json"), path.join(daemonDir, "package.json"));
   fs.copyFileSync(path.join(repo, "panel", "package.json"), path.join(webDir, "package.json"));
-  log("  baseline restored: daemon 4.19.0 / panel 10.19.0");
+  log(`  baseline restored: daemon ${BASE_DAEMON} / panel ${BASE_WEB}`);
 
   log("step 1: build update packages + manifest");
   execSync("node scripts/build-update-packages.mjs", { stdio: "inherit", cwd: repo });
@@ -240,20 +249,23 @@ await waitForPort(23333);
     log("  token:", global.__token);
   }
 
-  log("step 6.5: clear updateSourceUrl -> GET /api/upgrade/panel_info expect configured:false");
+  log("step 6.5: clear BOTH source fields -> GET /api/upgrade/panel_info expect configured:false");
   {
-    // updateSourceUrl defaults to the official source ("fix: default addr"), so
-    // the "unconfigured" path must clear it first instead of assuming empty.
+    // updateSourceUrl/updateSourceUrlFallback default to live sources ("fix:
+    // default addr"), so the "unconfigured" path must clear BOTH of them
+    // instead of assuming empty: with the two-candidate source list, a single
+    // empty field no longer disables the feature.
     const g = await httpReq("GET", "/api/overview/setting", undefined, global.__token);
     const merged = { ...(typeof g.data === "string" ? {} : g.data || {}) };
     merged.updateSourceUrl = "";
+    merged.updateSourceUrlFallback = "";
     const c = await httpReq("PUT", "/api/overview/setting", merged, global.__token);
-    assert(c.status === 200 || c.status === 204 || c.status === 201, "setting PUT ok (cleared source)");
+    assert(c.status === 200 || c.status === 204 || c.status === 201, "setting PUT ok (cleared sources)");
     const r = await httpReq("GET", "/api/upgrade/panel_info", undefined, global.__token);
     assert(r.status === 200, "panel_info 200 (unconfigured)");
     assert(
       r.data?.configured === false && r.data?.updateAvailable === false,
-      "panel reports unconfigured after updateSourceUrl is cleared"
+      "panel reports unconfigured after BOTH source fields are cleared"
     );
   }
 
@@ -263,6 +275,9 @@ await waitForPort(23333);
     assert(g.status === 200, "GET setting 200");
     const merged = { ...(typeof g.data === "string" ? {} : g.data || {}) };
     merged.updateSourceUrl = MANIFEST_URL;
+    // Hermetic happy path: no backup armed (the default backup is a live
+    // external host and must never be reachable from this harness).
+    merged.updateSourceUrlFallback = "";
     const r = await httpReq("PUT", "/api/overview/setting", merged, global.__token);
     assert(r.status === 200 || r.status === 204 || r.status === 201, "setting PUT ok (" + r.status + ")");
   }
@@ -312,6 +327,85 @@ await waitForPort(23333);
     assert(
       typeof r.data?.onlineNotes?.zh_cn === "string" && r.data.onlineNotes.zh_cn.includes(NEW_DAEMON),
       "daemon_info onlineNotes contains the zh_cn locale"
+    );
+  }
+
+  // ---- backup source (updateSourceUrlFallback) resolution ----
+  log("step 10.5: dead primary + local backup -> update offered, served by the backup");
+  {
+    const g = await httpReq("GET", "/api/overview/setting", undefined, global.__token);
+    const merged = { ...(typeof g.data === "string" ? {} : g.data || {}) };
+    merged.updateSourceUrl = DEAD_URL;
+    merged.updateSourceUrlFallback = MANIFEST_URL;
+    const p = await httpReq("PUT", "/api/overview/setting", merged, global.__token);
+    assert(p.status === 200 || p.status === 204 || p.status === 201, "setting PUT ok (dead primary + backup)");
+
+    const r = await httpReq("GET", "/api/upgrade/panel_info", undefined, global.__token);
+    assert(r.status === 200, "panel_info 200 (fallback)");
+    assert(
+      r.data?.updateAvailable === true && r.data?.onlineVersion === NEW_WEB,
+      "panel_info serves the update from the backup source -> " + NEW_WEB
+    );
+    assert(
+      r.data?.updateSourceUrl === MANIFEST_URL,
+      "panel_info reports the backup URL as the serving source"
+    );
+
+    // the same fallback must work through the panel -> daemon forward
+    const d = await httpReq("GET", "/api/upgrade/daemon_info?uuid=" + daemonUuid, undefined, global.__token);
+    assert(d.status === 200, "daemon_info 200 (fallback)");
+    assert(
+      d.data?.updateAvailable === true && d.data?.onlineVersion === NEW_DAEMON,
+      "daemon_info serves the update from the forwarded backup source -> " + NEW_DAEMON
+    );
+    assert(
+      d.data?.updateSourceUrl === MANIFEST_URL,
+      "daemon_info reports the backup URL as the serving source"
+    );
+  }
+
+  log("step 10.6: both sources dead -> fail-closed (no update, error surfaced)");
+  {
+    const g = await httpReq("GET", "/api/overview/setting", undefined, global.__token);
+    const merged = { ...(typeof g.data === "string" ? {} : g.data || {}) };
+    merged.updateSourceUrl = DEAD_URL;
+    merged.updateSourceUrlFallback = DEAD_URL + ".backup";
+    const p = await httpReq("PUT", "/api/overview/setting", merged, global.__token);
+    assert(p.status === 200 || p.status === 204 || p.status === 201, "setting PUT ok (both dead)");
+
+    const r = await httpReq("GET", "/api/upgrade/panel_info", undefined, global.__token);
+    assert(r.status === 200, "panel_info 200 (all sources failed)");
+    assert(
+      r.data?.configured === true && r.data?.updateAvailable === false,
+      "panel_info stays fail-closed when every source fails"
+    );
+    assert(
+      typeof r.data?.error === "string" && r.data.error.length > 0,
+      "panel_info surfaces the aggregated fetch error"
+    );
+  }
+
+  log("step 10.7: restore happy-path sources + config-file visibility of updateSourceUrlFallback");
+  {
+    const g = await httpReq("GET", "/api/overview/setting", undefined, global.__token);
+    const merged = { ...(typeof g.data === "string" ? {} : g.data || {}) };
+    merged.updateSourceUrl = MANIFEST_URL;
+    merged.updateSourceUrlFallback = "";
+    const p = await httpReq("PUT", "/api/overview/setting", merged, global.__token);
+    assert(p.status === 200 || p.status === 204 || p.status === 201, "setting PUT ok (restored sources)");
+
+    const cfgPath = path.join(webDir, "data", "SystemConfig", "config.json");
+    const cfg = JSON.parse(fs.readFileSync(cfgPath, "utf-8"));
+    assert(
+      Object.prototype.hasOwnProperty.call(cfg, "updateSourceUrlFallback"),
+      "panel config file exposes updateSourceUrlFallback"
+    );
+    assert(cfg.updateSourceUrl === MANIFEST_URL, "panel config file records the primary source");
+
+    const r = await httpReq("GET", "/api/upgrade/panel_info", undefined, global.__token);
+    assert(
+      r.data?.updateAvailable === true && r.data?.onlineVersion === NEW_WEB,
+      "panel_info healthy again after restoring the sources"
     );
   }
 

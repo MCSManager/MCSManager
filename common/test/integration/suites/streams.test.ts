@@ -16,12 +16,20 @@ import {
   sleep,
   addFinding,
   saveState,
+  setDataPlane,
   type Stream
 } from "../lib";
 
 // Instance I/O streams — multi-socket integration suite (real daemon + real
 // panel over socket.io, no mocks, no network — all local: a `node test.mjs`
 // instance + socket.io clients connecting DIRECTLY to the daemon).
+//
+// This suite exercises the DAEMON's socket.io terminal semantics (forward set,
+// broadcast, injection, auth, stop), which are only observable in `direct`
+// data-plane mode — in `proxy` mode the panel's TerminalBridge owns the
+// browser-facing socket lifecycle. The suite therefore pins `dataPlane` to
+// `direct` in setup; proxy-mode terminal behavior is covered by
+// `dataplane.test.ts` ("proxy: terminal dual-socket broadcast + stdin + stop").
 //
 // Boots a FRESH REAL pair via globalSetup for this single suite. Self-contained:
 // the first `it` creates a `node test.mjs` instance via the integration-test key
@@ -171,6 +179,15 @@ describe("streams: instance I/O multi-socket (broadcast/injection/auth/stop)", (
       msg: "instance RUNNING after open"
     });
     expect(await getStatus()).toBe(RUNNING);
+
+    // Pin dataPlane to `direct` so the daemon-side socket.io semantics under
+    // test here are the ones actually exercised (the fresh-install default is
+    // `proxy`, which routes browser sockets through the panel's TerminalBridge).
+    const setRes = await setDataPlane("direct");
+    expect(
+      setRes.httpStatus,
+      `setDataPlane(direct): ${JSON.stringify(setRes.raw).slice(0, 200)}`
+    ).toBe(200);
   });
 
   // Review Focus #5 — dual-socket broadcast: open two channels+sockets, send
