@@ -1,4 +1,5 @@
-import { router, type RouterMetaInfo } from "@/config/router";
+import { openMarketDialog } from "@/components/fc";
+import { ROLE, router, type RouterMetaInfo } from "@/config/router";
 import { useAppRouters } from "@/hooks/useAppRouters";
 import { t } from "@/lang/i18n";
 import { logoutUser } from "@/services/apis/index";
@@ -17,6 +18,7 @@ import {
   LogoutOutlined,
   RedoOutlined,
   SaveOutlined,
+  ShopOutlined,
   UserOutlined
 } from "@ant-design/icons-vue";
 import { message, Modal, notification } from "ant-design-vue";
@@ -31,7 +33,9 @@ export type SidebarRouteEntry = {
   type: "route";
   path: string;
   name: string | symbol | undefined;
+  icon?: Component;
   customClass?: string[];
+  onclick?: () => void;
 };
 
 /** Sidebar item: app menu (no submenu) */
@@ -84,7 +88,7 @@ export function useHeaderMenus() {
   };
 
   const menus = computed(() => {
-    return router
+    const routeEntries = router
       .getRoutes()
       .filter((v) => {
         if (v.path === "/" || !v.name) return false;
@@ -107,9 +111,26 @@ export function useHeaderMenus() {
       .map((r) => ({
         name: r.name,
         path: r.path,
+        icon: (r.meta as RouterMetaInfo).icon,
         meta: r.meta,
         customClass: r.meta.customClass ?? []
       }));
+
+    if (isAdmin.value) {
+      routeEntries.splice(1, 0, {
+        name: t("TXT_CODE_27594db8"),
+        path: "/market",
+        icon: ShopOutlined,
+        meta: {
+          mainMenu: true,
+          permission: ROLE.ADMIN,
+          onclick: () => openMarketDialog().catch(() => undefined)
+        },
+        customClass: []
+      });
+    }
+
+    return routeEntries;
   });
 
   const appMenus = computed(() => {
@@ -262,7 +283,9 @@ export function useHeaderMenus() {
       type: "route",
       path: r.path,
       name: r.name,
-      customClass: Array.isArray(r.customClass) ? r.customClass : []
+      icon: r.icon,
+      customClass: Array.isArray(r.customClass) ? r.customClass : [],
+      onclick: (r.meta.onclick as () => void) ?? undefined
     }));
     const divider: SidebarDividerEntry = { type: "divider" };
     const appEntries: (SidebarAppEntry | SidebarAppDropdownEntry)[] = appMenus.value

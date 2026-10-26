@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { getFileConfigAddr } from "@/hooks/useFileManager";
-import { INSTANCE_TYPE_TRANSLATION, TYPE_MINECRAFT_BUNGEECORD } from "@/hooks/useInstance";
+import {
+  INSTANCE_TYPE_TRANSLATION,
+  TYPE_HYTALE,
+  TYPE_MINECRAFT_BEDROCK,
+  TYPE_MINECRAFT_BUNGEECORD,
+  TYPE_MINECRAFT_JAVA,
+  TYPE_STEAM_SERVER_UNIVERSAL,
+  TYPE_TERRARIA,
+  TYPE_UNIVERSAL
+} from "@/hooks/useInstance";
 import { QUICKSTART_ACTION_TYPE, QUICKSTART_METHOD } from "@/hooks/widgets/quickStartFlow";
 import { t } from "@/lang/i18n";
 import { createInstance as createInstanceApi, uploadAddress } from "@/services/apis/instance";
@@ -9,33 +18,36 @@ import { parseForwardAddress } from "@/tools/protocol";
 import { reportErrorMsg } from "@/tools/validator";
 import { defaultInstanceInfo } from "@/types/const";
 import {
+  ArrowLeftOutlined,
   CheckOutlined,
   CloseOutlined,
   InfoCircleOutlined,
   UploadOutlined
 } from "@ant-design/icons-vue";
-import type { FormInstance } from "ant-design-vue";
-import { message, Modal, type UploadProps } from "ant-design-vue";
+import { Flex, message, Modal, type FormInstance, type UploadProps } from "ant-design-vue";
 import type { Rule } from "ant-design-vue/es/form";
 import { computed, createVNode, onUnmounted, reactive, ref } from "vue";
 import DockerImageSelect from "../instance/dialogs/components/DockerImageSelect.vue";
 import SelectUnzipCode from "../instance/dialogs/SelectUnzipCode.vue";
 
 const selectUnzipCodeDialog = ref<InstanceType<typeof SelectUnzipCode>>();
-const emit = defineEmits(["nextStep"]);
 
 const props = defineProps<{
   createMethod: QUICKSTART_METHOD;
   daemonId: string;
+  appType?: string;
+}>();
+
+const emit = defineEmits<{
+  nextStep: [instanceUuid: string];
+  back: [];
 }>();
 
 const zipCode = ref("utf-8");
 const formRef = ref<FormInstance>();
 const formData = reactive<IGlobalInstanceConfig>(defaultInstanceInfo);
 
-const isImportMode = props.createMethod === QUICKSTART_METHOD.IMPORT;
-const isFileMode = props.createMethod === QUICKSTART_METHOD.FILE;
-const needUpload = isImportMode || isFileMode;
+const needUpload = props.createMethod === QUICKSTART_METHOD.IMPORT;
 
 function changeInstanceType(appType: string) {
   if (appType.includes(QUICKSTART_ACTION_TYPE.Minecraft)) {
@@ -62,6 +74,18 @@ function changeInstanceType(appType: string) {
   }
 }
 
+const appTypeInstanceTypes: Record<string, string> = {
+  [QUICKSTART_ACTION_TYPE.Minecraft]: TYPE_MINECRAFT_JAVA,
+  [QUICKSTART_ACTION_TYPE.Bedrock]: TYPE_MINECRAFT_BEDROCK,
+  [QUICKSTART_ACTION_TYPE.Hytale]: TYPE_HYTALE,
+  [QUICKSTART_ACTION_TYPE.Terraria]: TYPE_TERRARIA,
+  [QUICKSTART_ACTION_TYPE.SteamGameServer]: TYPE_STEAM_SERVER_UNIVERSAL,
+  [QUICKSTART_ACTION_TYPE.AnyApp]: TYPE_UNIVERSAL
+};
+
+formData.type = appTypeInstanceTypes[(props.appType ?? "").toLowerCase()] ?? TYPE_UNIVERSAL;
+changeInstanceType(formData.type);
+
 const rules: Record<string, Rule[]> = {
   nickname: [{ required: true, message: t("TXT_CODE_68a504b3") }],
   stopCommand: [{ required: true, message: t("TXT_CODE_83053cd5") }]
@@ -72,7 +96,7 @@ const uFile = ref<File>();
 const beforeUpload: UploadProps["beforeUpload"] = async (file) => {
   uFile.value = file;
 
-  if (isImportMode) {
+  if (needUpload) {
     const extName = file.name.split(".").pop()?.toLowerCase() || "";
     if (!["zip", "jar"].includes(extName)) return reportErrorMsg(t("TXT_CODE_808e5ad9"));
     selectUnzipCodeDialog.value?.openDialog();
@@ -148,8 +172,6 @@ const selectedFile = async () => {
   try {
     if (!formData.cwd) formData.cwd = ".";
     if (formData.docker.image) formData.processType = "docker";
-    if (isFileMode)
-      formData.startCommand = formData.startCommand.replace("${ProgramName}", uFile.value!.name);
     await getCfg({
       params: {
         upload_dir: ".",
@@ -169,7 +191,7 @@ const selectedFile = async () => {
       cfg.value.password,
       {
         overwrite: false,
-        unzip: isImportMode,
+        unzip: needUpload,
         code: zipCode.value
       },
       (task) => {
@@ -374,12 +396,11 @@ const createInstance = async () => {
             {{ t("TXT_CODE_4f387c5a") }}
           </a-typography-text>
         </a-typography-paragraph>
-        <!-- eslint-disable-next-line vue/html-quotes -->
         <a-textarea
           v-model:value="formData.updateCommand"
           :rows="2"
           style="min-height: 30px"
-          :placeholder="$t('TXT_CODE_36bd6348')"
+          :placeholder="t('TXT_CODE_36bd6348')"
         />
       </a-form-item>
 
@@ -413,72 +434,66 @@ const createInstance = async () => {
         </a-col>
       </a-row>
 
-      <a-form-item v-if="createMethod === QUICKSTART_METHOD.FILE">
-        <a-typography-title :level="5" class="require-field">
-          {{ t("TXT_CODE_444db70f") }}
-        </a-typography-title>
-        <a-typography-paragraph>
-          <a-typography-text type="secondary">
-            {{ t("TXT_CODE_fc4e2173") }}
-          </a-typography-text>
-        </a-typography-paragraph>
-        <a-upload
-          accept=".jar"
-          :before-upload="beforeUpload"
-          :max-count="1"
-          :change="selectedFile"
-          :disabled="percentComplete > 0"
-        >
-          <a-button type="primary" :loading="percentComplete > 0">
-            <upload-outlined v-if="percentComplete === 0" />
-            {{
-              percentComplete > 0
-                ? t("TXT_CODE_b625dbf0") + percentComplete + "%"
-                : t("TXT_CODE_335ba209")
-            }}
-          </a-button>
-        </a-upload>
-      </a-form-item>
-
-      <a-form-item v-else-if="createMethod === QUICKSTART_METHOD.IMPORT">
-        <a-typography-title :level="5" class="require-field">
-          {{ t("TXT_CODE_f9b6e61b") }}
-        </a-typography-title>
-        <a-typography-paragraph>
-          <a-typography-text type="secondary">
-            {{ t("TXT_CODE_510bd294") }}
-            <br />
-            {{ t("TXT_CODE_1561198c") }}
-          </a-typography-text>
-        </a-typography-paragraph>
-        <a-upload
-          accept=".zip"
-          :before-upload="beforeUpload"
-          :max-count="1"
-          :change="selectedFile"
-          :disabled="percentComplete > 0 || uploadFileInstance != undefined"
-        >
+      <template v-if="createMethod === QUICKSTART_METHOD.IMPORT">
+        <Flex justify="space-between" align="end">
+          <a-form-item class="mb-0">
+            <a-typography-title :level="5" class="require-field">
+              {{ t("TXT_CODE_f9b6e61b") }}
+            </a-typography-title>
+            <a-typography-paragraph>
+              <a-typography-text type="secondary">
+                {{ t("TXT_CODE_510bd294") }}
+                <br />
+                {{ t("TXT_CODE_1561198c") }}
+              </a-typography-text>
+            </a-typography-paragraph>
+            <a-upload
+              accept=".zip"
+              :before-upload="beforeUpload"
+              :max-count="1"
+              :change="selectedFile"
+              :disabled="percentComplete > 0 || uploadFileInstance != undefined"
+            >
+              <a-button
+                :disabled="!formData.nickname"
+                type="primary"
+                :loading="percentComplete > 0 || uploadFileInstance != undefined"
+              >
+                <upload-outlined v-if="percentComplete == 0 && uploadFileInstance == undefined" />
+                {{ percentText() }}
+              </a-button>
+            </a-upload>
+          </a-form-item>
           <a-button
-            :disabled="!formData.nickname"
-            type="primary"
-            :loading="percentComplete > 0 || uploadFileInstance != undefined"
+            :disabled="percentComplete > 0 || uploadFileInstance != undefined"
+            @click="emit('back')"
           >
-            <upload-outlined v-if="percentComplete == 0 && uploadFileInstance == undefined" />
-            {{ percentText() }}
+            <template #icon>
+              <ArrowLeftOutlined />
+            </template>
+            {{ t("TXT_CODE_c14b2ea3") }}
           </a-button>
-        </a-upload>
-      </a-form-item>
+        </Flex>
+      </template>
 
-      <a-form-item v-else>
-        <a-typography-paragraph class="mt-10">
+      <template v-else>
+        <a-typography-paragraph style="text-align: right">
           <a-typography-text>
-            <span>{{ t("TXT_CODE_7da6e84") }}</span>
+            {{ t("TXT_CODE_7da6e84") }}
           </a-typography-text>
         </a-typography-paragraph>
-        <a-button type="primary" :loading="createInstanceLoading" @click="finalConfirm">
-          {{ t("TXT_CODE_5a74975b") }}
-        </a-button>
-      </a-form-item>
+        <Flex justify="space-between" align="end">
+          <a-button @click="emit('back')">
+            <template #icon>
+              <ArrowLeftOutlined />
+            </template>
+            {{ t("TXT_CODE_c14b2ea3") }}
+          </a-button>
+          <a-button type="primary" :loading="createInstanceLoading" @click="finalConfirm">
+            {{ t("TXT_CODE_5a74975b") }}
+          </a-button>
+        </Flex>
+      </template>
     </a-form>
   </div>
 

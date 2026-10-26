@@ -522,40 +522,6 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
       ]
     },
     {
-      page: "/quickstart",
-      items: [
-        {
-          id: getRandomId(),
-          meta: {},
-          type: "QuickStartFlow",
-          title: t("TXT_CODE_9b99b72e"),
-          width: 8,
-          height: LayoutCardHeight.AUTO
-        }
-      ]
-    },
-    {
-      page: "/quickstart/minecraft",
-      items: [
-        {
-          id: getRandomId(),
-          meta: {},
-          type: "McPreset",
-          title: "",
-          width: 12,
-          height: LayoutCardHeight.AUTO
-        },
-        {
-          id: getRandomId(),
-          meta: {},
-          type: "EmptyCard",
-          title: "",
-          width: 12,
-          height: LayoutCardHeight.MINI
-        }
-      ]
-    },
-    {
       page: "/customer",
       items: [
         {

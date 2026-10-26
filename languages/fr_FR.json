@@ -3267,5 +3267,8 @@
   "TXT_CODE_file_ownership.invalidId": "{{label}} invalide dans le paramètre runAs de l'instance",
   "TXT_CODE_file_ownership.invalidTarget": "Accès refusé : cible de propriété invalide",
   "TXT_CODE_file_ownership.outsideWorkspace": "Accès refusé : la cible de propriété sort de l'espace de travail de l'instance",
-  "TXT_CODE_file_ownership.targetChanged": "Accès refusé : la cible de propriété a changé pendant la validation"
+  "TXT_CODE_file_ownership.targetChanged": "Accès refusé : la cible de propriété a changé pendant la validation",
+  "TXT_CODE_5a455c84": "Le panneau est prêt. Cliquez sur le bouton ci-dessous pour commencer.",
+  "TXT_CODE_637d8b7c": "Utiliser maintenant",
+  "TXT_CODE_dcdbc73": "Commencez avec des ressources existantes ou créez à partir de zéro. Choisissez une option pour continuer."
 }

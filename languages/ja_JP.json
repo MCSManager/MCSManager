@@ -3267,5 +3267,8 @@
   "TXT_CODE_file_ownership.invalidId": "インスタンスのrunAs設定の{{label}}が無効です",
   "TXT_CODE_file_ownership.invalidTarget": "アクセス拒否: 無効な所有権対象",
   "TXT_CODE_file_ownership.outsideWorkspace": "アクセス拒否: 所有権対象がインスタンスワークスペース外です",
-  "TXT_CODE_file_ownership.targetChanged": "アクセス拒否: 検証中に所有権対象が変更されました"
+  "TXT_CODE_file_ownership.targetChanged": "アクセス拒否: 検証中に所有権対象が変更されました",
+  "TXT_CODE_5a455c84": "パネルの準備が完了しました。下のボタンをクリックして開始してください。",
+  "TXT_CODE_637d8b7c": "今すぐ使用",
+  "TXT_CODE_dcdbc73": "既存のリソースから始めるか、ゼロから構築します。続行する方法を選択してください。"
 }

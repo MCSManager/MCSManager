@@ -2,15 +2,16 @@
 import type { Component } from "vue";
 
 defineProps<{
+  selected?: boolean;
   option: {
     label: string;
     icon: Component;
     description: string;
-    action: (e: Event) => void;
+    action: EventListener;
   };
 }>();
 
-const handleClick = (e: Event, action: (e: Event) => void) => {
+const handleClick = (e: Event, action: EventListener) => {
   action(e);
 };
 </script>
@@ -18,6 +19,7 @@ const handleClick = (e: Event, action: (e: Event) => void) => {
 <template>
   <div
     class="install-option-button"
+    :class="{ selected }"
     role="button"
     tabindex="0"
     @click="(e) => handleClick(e, option.action)"
@@ -53,8 +55,7 @@ const handleClick = (e: Event, action: (e: Event) => void) => {
     border-color 0.25s ease;
 
   &:hover {
-    transform: scale(1.03);
-    border-color: transparent;
+    // border-color: transparent;
     background: linear-gradient(
       135deg,
       var(--ai-gradient-from),
@@ -66,8 +67,14 @@ const handleClick = (e: Event, action: (e: Event) => void) => {
       0 4px 12px -4px rgba(6, 182, 212, 0.3);
   }
 
-  &:active {
-    transform: scale(1.01);
+  &.selected {
+    border-color: var(--color-blue-6);
+    // background: var(--color-blue-6);
+    box-shadow: 0 0 0 1px var(--color-blue-6);
+  }
+
+  &.selected .button-inner {
+    background: var(--color-gray-2);
   }
 
   .button-inner {
@@ -122,6 +129,14 @@ const handleClick = (e: Event, action: (e: Event) => void) => {
     font-size: 13px;
     color: var(--color-gray-7);
     line-height: 1.35;
+    max-height: 50px;
+    overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   .button-cta {

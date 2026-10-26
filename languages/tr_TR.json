@@ -3267,5 +3267,8 @@
   "TXT_CODE_file_ownership.invalidId": "Örnek runAs ayarında geçersiz {{label}}",
   "TXT_CODE_file_ownership.invalidTarget": "Erişim reddedildi: Geçersiz sahiplik hedefi",
   "TXT_CODE_file_ownership.outsideWorkspace": "Erişim reddedildi: Sahiplik hedefi örnek çalışma alanının dışına çıkıyor",
-  "TXT_CODE_file_ownership.targetChanged": "Erişim reddedildi: Doğrulama sırasında sahiplik hedefi değişti"
+  "TXT_CODE_file_ownership.targetChanged": "Erişim reddedildi: Doğrulama sırasında sahiplik hedefi değişti",
+  "TXT_CODE_5a455c84": "Panel hazır. Başlamak için aşağıdaki düğmeye tıklayın.",
+  "TXT_CODE_637d8b7c": "Şimdi kullan",
+  "TXT_CODE_dcdbc73": "Mevcut kaynaklarla başlayın veya sıfırdan oluşturun. Devam etmek için bir seçenek belirleyin."
 }

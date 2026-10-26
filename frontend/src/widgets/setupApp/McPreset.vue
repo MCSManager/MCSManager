@@ -4,6 +4,7 @@ import { router } from "@/config/router";
 import { useLayoutCardTools } from "@/hooks/useCardTools";
 import type { ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import { t } from "@/lang/i18n";
+import { overviewInfo } from "@/services/apis";
 import { getDockerHubImagePlatforms } from "@/services/apis/envImage";
 import { createAsyncTask } from "@/services/apis/instance";
 import { reportErrorMsg } from "@/tools/validator";
@@ -11,22 +12,24 @@ import type { LayoutCard, QuickStartPackages } from "@/types";
 import TemplateNameDialog from "@/widgets/instance/dialogs/TemplateNameDialog.vue";
 import AppPackages from "@/widgets/setupApp/AppPackages.vue";
 import { message } from "ant-design-vue";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 const props = defineProps<{
   card: LayoutCard;
+  initialCategory?: QuickStartPackages;
+  initialNode?: ComputedNodeInfo;
+}>();
+
+const emit = defineEmits<{
+  back: [];
+  "install-started": [];
 }>();
 
 const appPackages = ref<InstanceType<typeof AppPackages>>();
 
 const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
-let daemonId = getMetaOrRouteValue("daemonId", false) ?? "";
-let currentNode = ref<ComputedNodeInfo | undefined>(undefined);
-
-const isMarketPage = router.currentRoute.value.path.includes("/market");
-if (isMarketPage) {
-  daemonId = "";
-}
+let daemonId = props.initialNode?.uuid ?? getMetaOrRouteValue("daemonId", false) ?? "";
+const currentNode = ref<ComputedNodeInfo | undefined>(props.initialNode);
 
 const installView = ref(false);
 const percentage = ref(0);
@@ -46,6 +49,7 @@ const selectedTemplate = ref<QuickStartPackages | null>(null);
 const selectedTemplateType = ref<"normal" | "docker">("normal");
 
 const { state: newTaskInfo, execute: executeCreateAsyncTask } = createAsyncTask();
+const { execute: getOverviewInfo } = overviewInfo();
 
 /**
  * Get Docker image platforms from Docker Hub via backend proxy
@@ -85,19 +89,31 @@ const getImagePlatformsFromDockerHub = async (imageName: string): Promise<string
  */
 const handleSelectCategory = async (item: QuickStartPackages) => {
   try {
-    let node: ComputedNodeInfo | undefined;
+    let node = currentNode.value;
     if (!daemonId) {
-      node = await openNodeSelectDialog();
+      const overview = await getOverviewInfo({ forceRequest: true });
+      const onlineNodes = overview.value?.remote?.filter((item) => item.available) ?? [];
+      if (onlineNodes.length === 0) {
+        reportErrorMsg(t("TXT_CODE_e3d96a26"));
+        return false;
+      }
+
+      node =
+        onlineNodes.length === 1
+          ? (onlineNodes[0] as ComputedNodeInfo)
+          : await openNodeSelectDialog();
       if (!node) {
         reportErrorMsg(t("TXT_CODE_2de92a5d"));
-        return;
+        return false;
       }
       daemonId = node.uuid;
       currentNode.value = node;
     }
     appPackages.value?.handleSelectTopCategory(item, node);
+    return true;
   } catch (err: any) {
     console.error(err);
+    return false;
   }
 };
 
@@ -169,6 +185,7 @@ const handleTemplateConfirm = async (instanceName: string, template: QuickStartP
       eta: 0
     };
     await startDownloadTask();
+    emit("install-started");
   } catch (err: any) {
     console.error(err);
     return reportErrorMsg(err.message);
@@ -190,9 +207,19 @@ const startDownloadTask = async () => {
 };
 
 const handleBackToCategory = () => {
+  if (props.initialCategory) {
+    emit("back");
+    return;
+  }
   daemonId = "";
   currentNode.value = undefined;
 };
+
+onMounted(async () => {
+  if (props.initialCategory && !(await handleSelectCategory(props.initialCategory))) {
+    emit("back");
+  }
+});
 </script>
 
 <template>

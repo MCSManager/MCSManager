@@ -68,15 +68,6 @@ const setLang = (lang: string) => {
   setLanguage(formData.language, false);
 };
 
-const toQuickStart = () => {
-  toPage({
-    path: "/market",
-    query: {
-      from_install: 1
-    }
-  }).then(() => window.location.reload());
-};
-
 const toOverview = () => {
   toPage({
     path: "/",
@@ -229,35 +220,21 @@ const toOverview = () => {
       </template>
     </CardPanel>
   </div>
-  <div v-if="step === 3" class="install-page-container">
+  <div v-if="step === 3" class="install-page-container" style="text-align: center">
     <CardPanel :full-height="false" class="install-panel">
       <template #body>
-        <a-typography>
-          <a-typography-title :level="3">
-            {{ t("TXT_CODE_97be50a8") }}
-          </a-typography-title>
-          <a-typography-paragraph>
-            <a-typography-text>
-              {{ t("TXT_CODE_cd923ade") }}
-            </a-typography-text>
-          </a-typography-paragraph>
-        </a-typography>
-        <div class="final-btn mb-15" @click="toQuickStart">
-          <a-typography-title :level="5">
-            {{ t("TXT_CODE_6f98ccd7") }}
-          </a-typography-title>
-          <a-typography-text>
-            {{ t("TXT_CODE_b5ca0563") }}
-          </a-typography-text>
-        </div>
-        <div class="final-btn" @click="toOverview">
-          <a-typography-title :level="5">
-            {{ t("TXT_CODE_b69550bf") }}
-          </a-typography-title>
-          <a-typography-text>
-            {{ t("TXT_CODE_95df80df") }}
-          </a-typography-text>
-        </div>
+        <a-result
+          class="p-10"
+          status="success"
+          :title="t('TXT_CODE_97be50a8')"
+          :sub-title="t('TXT_CODE_5a455c84')"
+        >
+          <template #extra>
+            <a-button key="console" type="primary" @click="toOverview">
+              {{ t("TXT_CODE_637d8b7c") }}
+            </a-button>
+          </template>
+        </a-result>
       </template>
     </CardPanel>
   </div>

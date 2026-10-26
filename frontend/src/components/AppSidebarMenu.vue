@@ -6,19 +6,9 @@ import {
 } from "@/hooks/useHeaderMenus";
 import { useAppConfigStore } from "@/stores/useAppConfigStore";
 import {
-  ApartmentOutlined,
-  AppstoreOutlined,
-  AreaChartOutlined,
-  LinkOutlined,
-  LoginOutlined,
-  MenuOutlined,
-  SettingOutlined,
-  ShopOutlined,
-  TeamOutlined,
-  UserOutlined
+  MenuOutlined
 } from "@ant-design/icons-vue";
 import type { Key } from "ant-design-vue/es/table/interface";
-import type { Component } from "vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
@@ -30,23 +20,6 @@ const isRouteActive = (path: string): boolean => {
   if (route.path === path) return true;
   if (path === "/") return false;
   return route.path.startsWith(path + "/");
-};
-
-/** Sidebar icon for each route path */
-const routePathIcons: Record<string, Component> = {
-  "/instances": AppstoreOutlined,
-  "/market": ShopOutlined,
-  "/overview": AreaChartOutlined,
-  "/users": TeamOutlined,
-  "/node": ApartmentOutlined,
-  "/settings": SettingOutlined,
-  "/customer": UserOutlined,
-  "/login": LoginOutlined,
-  "/_open_page": LinkOutlined
-};
-
-const getRouteIcon = (path: string): Component => {
-  return routePathIcons[path] ?? MenuOutlined;
 };
 
 const getItemKey = (entry: SidebarEntry, index: number): string => {
@@ -75,9 +48,9 @@ const onAppDropdownClick = (item: SidebarAppDropdownEntry, info: { key: Key }) =
           v-else-if="entry.type === 'route'"
           class="sidebar-item"
           :class="[entry.customClass, { 'sidebar-item-active': isRouteActive(entry.path) }]"
-          @click.prevent="handleToPage(entry.path)"
+          @click.prevent="entry.onclick ? entry.onclick() : handleToPage(entry.path)"
         >
-          <component :is="getRouteIcon(entry.path)" class="sidebar-item-icon" />
+          <component :is="entry.icon ?? MenuOutlined" class="sidebar-item-icon" />
           <span class="sidebar-item-text">{{ entry.name }}</span>
         </a>
 
