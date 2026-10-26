@@ -3270,5 +3270,6 @@
   "TXT_CODE_file_ownership.targetChanged": "Acceso denegado: el destino de propiedad cambió durante la validación",
   "TXT_CODE_5a455c84": "El panel está listo. Haz clic en el botón de abajo para comenzar.",
   "TXT_CODE_637d8b7c": "Usar ahora",
-  "TXT_CODE_dcdbc73": "Comienza con recursos existentes o crea desde cero. Elige una opción para continuar."
+  "TXT_CODE_dcdbc73": "Comienza con recursos existentes o crea desde cero. Elige una opción para continuar.",
+  "TXT_CODE_c60e4ac2": "Enviar"
 }

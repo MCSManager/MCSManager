@@ -3277,5 +3277,6 @@
   "TXT_CODE_file_ownership.targetChanged": "访问被拒绝：所有权目标在验证过程中发生变化",
   "TXT_CODE_5a455c84": "面板已准备就绪，点击下方按钮即可开始使用",
   "TXT_CODE_637d8b7c": "立即使用",
-  "TXT_CODE_dcdbc73": "从已有资源开始，或从零搭建。选择适合你的方式，继续下一步。"
+  "TXT_CODE_dcdbc73": "从已有资源开始，或从零搭建。选择适合你的方式，继续下一步。",
+  "TXT_CODE_c60e4ac2": "发送"
 }

@@ -5,7 +5,7 @@ import { useXhrPollError } from "@/hooks/useXhrPollError";
 import { t } from "@/lang/i18n";
 import { getInstanceOutputLog } from "@/services/apis/instance";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
-import { CodeOutlined, DeleteOutlined, LoadingOutlined } from "@ant-design/icons-vue";
+import { CodeOutlined, DeleteOutlined, LoadingOutlined, SendOutlined } from "@ant-design/icons-vue";
 import { Terminal } from "@xterm/xterm";
 import { message } from "ant-design-vue";
 import { onMounted, ref } from "vue";
@@ -166,19 +166,29 @@ onMounted(async () => {
           </a-tag>
         </li>
       </div>
-      <a-input
-        ref="inputRef"
-        v-model:value="commandInputValue"
-        :placeholder="t('TXT_CODE_555e2c1b')"
-        autofocus
-        :disabled="containerState.isDesignMode || !isConnect"
-        @press-enter="handleSendCommand"
-        @keydown="handleHistorySelect"
-      >
-        <template #prefix>
-          <CodeOutlined style="font-size: 18px" />
-        </template>
-      </a-input>
+      <a-row :gutter="[12, 12]">
+        <a-col :xs="24" :sm="20" :md="22">
+          <a-input
+            ref="inputRef"
+            v-model:value="commandInputValue"
+            :placeholder="t('TXT_CODE_555e2c1b')"
+            autofocus
+            :disabled="containerState.isDesignMode || !isConnect"
+            @press-enter="handleSendCommand"
+            @keydown="handleHistorySelect"
+          >
+            <template #prefix>
+              <CodeOutlined style="font-size: 18px" />
+            </template>
+          </a-input>
+        </a-col>
+        <a-col :xs="24" :sm="4" :md="2">
+          <a-button block @click="handleSendCommand">
+            {{ t("TXT_CODE_c60e4ac2") }}
+            <SendOutlined />
+          </a-button>
+        </a-col>
+      </a-row>
     </div>
 
     <!-- Error Dialog -->

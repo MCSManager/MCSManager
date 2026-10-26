@@ -3270,5 +3270,6 @@
   "TXT_CODE_fef2078b": "使用者 <<operator_name>> 透過連結 <<file_name>> 下載了實例 <<instance_name>> 的檔案",
   "TXT_CODE_5a455c84": "面板已準備就緒，點擊下方按鈕即可開始使用",
   "TXT_CODE_637d8b7c": "立即使用",
-  "TXT_CODE_dcdbc73": "從現有資源開始，或從零開始建構。選擇適合的方式以繼續。"
+  "TXT_CODE_dcdbc73": "從現有資源開始，或從零開始建構。選擇適合的方式以繼續。",
+  "TXT_CODE_c60e4ac2": "傳送"
 }
