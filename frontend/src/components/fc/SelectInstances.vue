@@ -3,7 +3,11 @@ import { router } from "@/config/router";
 import { useScreen } from "@/hooks/useScreen";
 import { t } from "@/lang/i18n";
 import { remoteInstances, remoteNodeList } from "@/services/apis";
-import { computeNodeName } from "@/tools/nodes";
+import {
+  computeNodeName,
+  resolveStoredRemoteNode,
+  SELECTED_REMOTE_STORAGE_KEY
+} from "@/tools/nodes";
 import { reportErrorMsg } from "@/tools/validator";
 import type { MountComponent, NodeStatus } from "@/types";
 import type { AntColumnsType, AntTableCell } from "@/types/ant";
@@ -80,11 +84,10 @@ const initNodes = async () => {
   if (!nodes.value?.length) {
     return reportErrorMsg(t("TXT_CODE_e3d96a26"));
   }
-  if (localStorage.getItem("pageSelectedRemote")) {
-    currentRemoteNode.value = JSON.parse(localStorage.pageSelectedRemote);
-  } else {
-    currentRemoteNode.value = nodes.value[0];
-  }
+  currentRemoteNode.value = resolveStoredRemoteNode(
+    localStorage.getItem(SELECTED_REMOTE_STORAGE_KEY),
+    nodes.value ?? []
+  );
 };
 
 const initInstancesData = async () => {
@@ -138,7 +141,7 @@ const handleChangeNode = async (item: NodeStatus) => {
     operationForm.value.currentPage = 1;
     currentRemoteNode.value = item;
     await initInstancesData();
-    localStorage.setItem("pageSelectedRemote", JSON.stringify(item));
+    localStorage.setItem(SELECTED_REMOTE_STORAGE_KEY, JSON.stringify(item));
   } catch (err: any) {
     console.error(err.message);
   }
