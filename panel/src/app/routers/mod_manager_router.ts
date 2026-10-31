@@ -25,8 +25,6 @@ router.use(async (ctx, next) => {
     return await next();
   }
 
-  const instanceUuid = String(ctx.query.uuid || ctx.request.body?.uuid);
-  const daemonId = String(ctx.query.daemonId || ctx.request.body?.daemonId);
   const userUuid = getUserUuid(ctx);
 
   // Check global file manager setting
@@ -36,17 +34,35 @@ router.use(async (ctx, next) => {
     return;
   }
 
-  // Check instance access
-  if (instanceUuid && daemonId) {
-    if (isHaveInstanceByUuid(userUuid, daemonId, instanceUuid)) {
-      await next();
-    } else {
+  // Handlers read `daemonId`/`uuid` from the query string or the request body
+  // depending on the route, so BOTH sources must be validated. Otherwise a
+  // user could put an owned instance in one source and the target instance in
+  // the other to bypass the ownership check.
+  const targets: Array<[string, string]> = [];
+  const queryDaemonId = ctx.query.daemonId ? String(ctx.query.daemonId) : "";
+  const queryInstanceUuid = ctx.query.uuid ? String(ctx.query.uuid) : "";
+  const bodyDaemonId = ctx.request.body?.daemonId ? String(ctx.request.body.daemonId) : "";
+  const bodyInstanceUuid = ctx.request.body?.uuid ? String(ctx.request.body.uuid) : "";
+  if (queryDaemonId || queryInstanceUuid) {
+    targets.push([queryDaemonId, queryInstanceUuid]);
+  }
+  if (bodyDaemonId || bodyInstanceUuid) {
+    targets.push([bodyDaemonId, bodyInstanceUuid]);
+  }
+
+  if (targets.length === 0) {
+    await next();
+    return;
+  }
+
+  for (const [daemonId, instanceUuid] of targets) {
+    if (!isHaveInstanceByUuid(userUuid, daemonId, instanceUuid)) {
       ctx.status = 403;
       ctx.body = $t("TXT_CODE_permission.forbiddenInstance");
+      return;
     }
-  } else {
-    await next();
   }
+  await next();
 });
 
 router.get("/mc_versions", speedLimit(0.5), permission({ level: ROLE.USER }), async (ctx) => {
