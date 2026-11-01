@@ -3280,5 +3280,8 @@
   "TXT_CODE_dcdbc73": "从已有资源开始，或从零搭建。选择适合你的方式，继续下一步。",
   "TXT_CODE_c60e4ac2": "发送",
   "TXT_CODE_market.anyConsoleProgram": "任意控制台程序",
+  "TXT_CODE_market.uploadProgramZip": "上传程序 zip 文件",
+  "TXT_CODE_market.deployWithDockerImage": "使用 Docker 镜像部署",
+  "TXT_CODE_market.noFilesRequired": "无需任何文件",
   "TXT_CODE_instance.uploadFilesLater": "您可以后续通过文件管理上传运行程序所需的文件。"
 }

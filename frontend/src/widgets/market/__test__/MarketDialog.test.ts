@@ -66,7 +66,7 @@ vi.mock("@/widgets/setupApp/AppPackages.vue", () => ({
 }));
 
 vi.mock("@/widgets/market/MarketCreateMethodStep.vue", () => ({
-  default: { name: "MarketCreateMethodStep", props: ["categoryTitle"] }
+  default: { name: "MarketCreateMethodStep", props: ["categoryTitle", "consoleMode"] }
 }));
 
 vi.mock("@/widgets/setupApp/CreateInstanceForm.vue", () => ({
@@ -191,7 +191,7 @@ describe("MarketDialog", () => {
     expect(mocks.openNodeSelectDialog).toHaveBeenCalledTimes(1);
   });
 
-  it("opens the existing form directly for the pinned console category", async () => {
+  it("shows the three-method step for the pinned console category", async () => {
     const wrapper = mountDialog();
     const appPackages = wrapper.findComponent({ name: "AppPackages" });
     const fixedCategory = appPackages.props("fixedCategories")[0];
@@ -201,27 +201,36 @@ describe("MarketDialog", () => {
     appPackages.vm.$emit("handle-select-category", fixedCategory);
     await flushPromises();
 
-    const form = wrapper.findComponent({ name: "CreateInstanceForm" });
-    expect(form.exists()).toBe(true);
-    expect(form.props("createMethod")).toBe("EXIST");
-    expect(form.props("appType")).toBe("universal");
-    expect(mocks.openNodeSelectDialog).toHaveBeenCalledTimes(1);
-    expect(wrapper.findComponent({ name: "MarketCreateMethodStep" }).exists()).toBe(false);
+    const methodStep = wrapper.findComponent({ name: "MarketCreateMethodStep" });
+    expect(methodStep.exists()).toBe(true);
+    expect(methodStep.props("consoleMode")).toBe(true);
+    expect(methodStep.props("categoryTitle")).toBe("TXT_CODE_market.anyConsoleProgram");
+    expect(wrapper.findComponent({ name: "CreateInstanceForm" }).exists()).toBe(false);
+    expect(mocks.openNodeSelectDialog).not.toHaveBeenCalled();
   });
 
-  it("returns to the category list from the pinned console form", async () => {
-    const wrapper = mountDialog();
-    const appPackages = wrapper.findComponent({ name: "AppPackages" });
-    const fixedCategory = appPackages.props("fixedCategories")[0];
+  it.each(["IMPORT", "DOCKER", "EXIST"])(
+    "reuses the %s flow for the pinned console category",
+    async (method) => {
+      const wrapper = mountDialog();
+      const appPackages = wrapper.findComponent({ name: "AppPackages" });
 
-    appPackages.vm.$emit("handle-select-category", fixedCategory);
-    await flushPromises();
-    wrapper.findComponent({ name: "CreateInstanceForm" }).vm.$emit("back");
-    await flushPromises();
+      appPackages.vm.$emit("handle-select-category", appPackages.props("fixedCategories")[0]);
+      await flushPromises();
+      wrapper.findComponent({ name: "MarketCreateMethodStep" }).vm.$emit("select", method);
+      await flushPromises();
 
-    expect(wrapper.findComponent({ name: "AppPackages" }).exists()).toBe(true);
-    expect(wrapper.findComponent({ name: "MarketCreateMethodStep" }).exists()).toBe(false);
-  });
+      const form = wrapper.findComponent({ name: "CreateInstanceForm" });
+      expect(form.props("createMethod")).toBe(method);
+      expect(form.props("appType")).toBe("universal");
+      expect(mocks.openNodeSelectDialog).toHaveBeenCalledTimes(1);
+
+      form.vm.$emit("back");
+      await flushPromises();
+      expect(wrapper.findComponent({ name: "MarketCreateMethodStep" }).exists()).toBe(true);
+      expect(wrapper.findComponent({ name: "AppPackages" }).exists()).toBe(false);
+    }
+  );
 
   it("opens the existing form for manual methods and navigates after creation", async () => {
     const wrapper = mountDialog();

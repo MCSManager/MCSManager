@@ -113,12 +113,8 @@ const handleSelectMethod = async (method: MarketCreateMethod) => {
   }
 };
 
-const handleSelectCategory = async (category: QuickStartPackages) => {
+const handleSelectCategory = (category: QuickStartPackages) => {
   selectedCategory.value = category;
-  if (isAnyConsoleCategory(category)) {
-    await handleSelectMethod(QUICKSTART_METHOD.EXIST);
-    return;
-  }
   currentStep.value = MarketStep.METHOD;
 };
 
@@ -130,10 +126,6 @@ const backToCategory = () => {
 
 const backToMethod = () => {
   selectedMethod.value = undefined;
-  if (isAnyConsoleCategory(selectedCategory.value)) {
-    backToCategory();
-    return;
-  }
   currentStep.value = MarketStep.METHOD;
 };
 
@@ -201,6 +193,7 @@ defineExpose({
         <MarketCreateMethodStep
           v-else-if="currentStep === MarketStep.METHOD"
           :category-title="selectedCategory?.title"
+          :console-mode="isAnyConsoleCategory(selectedCategory)"
           @back="backToCategory"
           @select="handleSelectMethod"
         />

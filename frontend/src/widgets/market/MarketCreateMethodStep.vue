@@ -9,7 +9,7 @@ import {
   FileZipOutlined
 } from "@ant-design/icons-vue";
 import { Flex } from "ant-design-vue";
-import { ref, type Component } from "vue";
+import { computed, ref, type Component } from "vue";
 import InstallOptionButton from "./InstallOptionButton.vue";
 
 type MarketCreateMethod =
@@ -18,8 +18,9 @@ type MarketCreateMethod =
   | QUICKSTART_METHOD.DOCKER
   | QUICKSTART_METHOD.EXIST;
 
-defineProps<{
+const props = defineProps<{
   categoryTitle?: string;
+  consoleMode?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -37,36 +38,66 @@ interface MethodOption {
 
 const selectedMethod = ref<MarketCreateMethod>();
 
-const options: MethodOption[] = [
+const selectMethod = (method: MarketCreateMethod) => {
+  selectedMethod.value = method;
+};
+
+const defaultOptions: MethodOption[] = [
   {
     key: QUICKSTART_METHOD.IMPORT,
     label: t("TXT_CODE_1bfd647d"),
     description: t("TXT_CODE_f09da050"),
     icon: FileZipOutlined,
-    action: () => (selectedMethod.value = QUICKSTART_METHOD.IMPORT)
+    action: () => selectMethod(QUICKSTART_METHOD.IMPORT)
   },
   {
     key: "preset",
     label: t("TXT_CODE_9b45858c"),
     description: t("TXT_CODE_22814776"),
     icon: AppstoreAddOutlined,
-    action: () => (selectedMethod.value = "preset")
+    action: () => selectMethod("preset")
   },
   {
     key: QUICKSTART_METHOD.DOCKER,
     label: t("TXT_CODE_bae487e4"),
     description: t("TXT_CODE_b51bac6f"),
     icon: DropboxOutlined,
-    action: () => (selectedMethod.value = QUICKSTART_METHOD.DOCKER)
+    action: () => selectMethod(QUICKSTART_METHOD.DOCKER)
   },
   {
     key: QUICKSTART_METHOD.EXIST,
     label: t("TXT_CODE_c14caab"),
     description: t("TXT_CODE_b3844cf8"),
     icon: CodeOutlined,
-    action: () => (selectedMethod.value = QUICKSTART_METHOD.EXIST)
+    action: () => selectMethod(QUICKSTART_METHOD.EXIST)
   }
 ];
+
+const consoleOptions: MethodOption[] = [
+  {
+    key: QUICKSTART_METHOD.IMPORT,
+    label: t("TXT_CODE_market.uploadProgramZip"),
+    description: t("TXT_CODE_f09da050"),
+    icon: FileZipOutlined,
+    action: () => selectMethod(QUICKSTART_METHOD.IMPORT)
+  },
+  {
+    key: QUICKSTART_METHOD.DOCKER,
+    label: t("TXT_CODE_market.deployWithDockerImage"),
+    description: t("TXT_CODE_b51bac6f"),
+    icon: DropboxOutlined,
+    action: () => selectMethod(QUICKSTART_METHOD.DOCKER)
+  },
+  {
+    key: QUICKSTART_METHOD.EXIST,
+    label: t("TXT_CODE_market.noFilesRequired"),
+    description: t("TXT_CODE_b3844cf8"),
+    icon: CodeOutlined,
+    action: () => selectMethod(QUICKSTART_METHOD.EXIST)
+  }
+];
+
+const options = computed(() => (props.consoleMode ? consoleOptions : defaultOptions));
 
 const submit = () => {
   if (selectedMethod.value) emit("select", selectedMethod.value);

@@ -3280,5 +3280,8 @@
   "TXT_CODE_dcdbc73": "Start with existing resources or build from scratch. Choose an option to continue.",
   "TXT_CODE_c60e4ac2": "Send",
   "TXT_CODE_market.anyConsoleProgram": "Any Console Program",
+  "TXT_CODE_market.uploadProgramZip": "Upload program zip file",
+  "TXT_CODE_market.deployWithDockerImage": "Deploy with Docker image",
+  "TXT_CODE_market.noFilesRequired": "No files required",
   "TXT_CODE_instance.uploadFilesLater": "You can upload the files required to run the program later through File Management."
 }

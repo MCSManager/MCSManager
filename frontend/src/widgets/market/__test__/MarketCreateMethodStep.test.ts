@@ -4,9 +4,9 @@ import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import MarketCreateMethodStep from "../MarketCreateMethodStep.vue";
 
-const mountStep = () =>
+const mountStep = (props: Record<string, unknown> = { categoryTitle: "Minecraft" }) =>
   mount(MarketCreateMethodStep, {
-    props: { categoryTitle: "Minecraft" },
+    props,
     global: {
       stubs: {
         ARow: { template: "<div><slot /></div>" },
@@ -40,5 +40,19 @@ describe("MarketCreateMethodStep", () => {
     await wrapper.get('[data-testid="market-method-back"]').trigger("click");
 
     expect(wrapper.emitted("back")).toHaveLength(1);
+  });
+
+  it("offers only the three manual methods in console mode", async () => {
+    const wrapper = mountStep({ categoryTitle: "Any Console Program", consoleMode: true });
+
+    expect(wrapper.find('[data-testid="market-method-preset"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="market-method-IMPORT"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="market-method-DOCKER"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="market-method-EXIST"]').exists()).toBe(true);
+
+    await wrapper.get('[data-testid="market-method-EXIST"]').trigger("click");
+    await wrapper.get('[data-testid="market-method-next"]').trigger("click");
+
+    expect(wrapper.emitted("select")).toEqual([["EXIST"]]);
   });
 });
