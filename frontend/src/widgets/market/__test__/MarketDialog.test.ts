@@ -62,7 +62,7 @@ vi.mock("@/widgets/setupApp/McPreset.vue", () => ({
 }));
 
 vi.mock("@/widgets/setupApp/AppPackages.vue", () => ({
-  default: { name: "AppPackages" }
+  default: { name: "AppPackages", props: ["fixedCategories"] }
 }));
 
 vi.mock("@/widgets/market/MarketCreateMethodStep.vue", () => ({
@@ -70,7 +70,7 @@ vi.mock("@/widgets/market/MarketCreateMethodStep.vue", () => ({
 }));
 
 vi.mock("@/widgets/setupApp/CreateInstanceForm.vue", () => ({
-  default: { name: "CreateInstanceForm", props: ["createMethod", "daemonId"] }
+  default: { name: "CreateInstanceForm", props: ["createMethod", "daemonId", "appType"] }
 }));
 
 const mountDialog = () =>
@@ -189,6 +189,38 @@ describe("MarketDialog", () => {
     expect(wrapper.findComponent({ name: "CreateInstanceForm" }).props("daemonId")).toBe("node-2");
     expect(mocks.getOverviewInfo).toHaveBeenCalledTimes(1);
     expect(mocks.openNodeSelectDialog).toHaveBeenCalledTimes(1);
+  });
+
+  it("opens the existing form directly for the pinned console category", async () => {
+    const wrapper = mountDialog();
+    const appPackages = wrapper.findComponent({ name: "AppPackages" });
+    const fixedCategory = appPackages.props("fixedCategories")[0];
+
+    expect(fixedCategory.title).toBe("TXT_CODE_market.anyConsoleProgram");
+
+    appPackages.vm.$emit("handle-select-category", fixedCategory);
+    await flushPromises();
+
+    const form = wrapper.findComponent({ name: "CreateInstanceForm" });
+    expect(form.exists()).toBe(true);
+    expect(form.props("createMethod")).toBe("EXIST");
+    expect(form.props("appType")).toBe("universal");
+    expect(mocks.openNodeSelectDialog).toHaveBeenCalledTimes(1);
+    expect(wrapper.findComponent({ name: "MarketCreateMethodStep" }).exists()).toBe(false);
+  });
+
+  it("returns to the category list from the pinned console form", async () => {
+    const wrapper = mountDialog();
+    const appPackages = wrapper.findComponent({ name: "AppPackages" });
+    const fixedCategory = appPackages.props("fixedCategories")[0];
+
+    appPackages.vm.$emit("handle-select-category", fixedCategory);
+    await flushPromises();
+    wrapper.findComponent({ name: "CreateInstanceForm" }).vm.$emit("back");
+    await flushPromises();
+
+    expect(wrapper.findComponent({ name: "AppPackages" }).exists()).toBe(true);
+    expect(wrapper.findComponent({ name: "MarketCreateMethodStep" }).exists()).toBe(false);
   });
 
   it("opens the existing form for manual methods and navigates after creation", async () => {

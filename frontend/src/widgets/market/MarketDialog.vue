@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import anyConsoleProgramImage from "@/assets/any-console-program.svg";
 import { openNodeSelectDialog } from "@/components/fc";
 import { router } from "@/config/router";
 import { useDialog } from "@/hooks/useDialog";
 import type { ComputedNodeInfo } from "@/hooks/useOverviewInfo";
-import { QUICKSTART_METHOD } from "@/hooks/widgets/quickStartFlow";
+import { QUICKSTART_ACTION_TYPE, QUICKSTART_METHOD } from "@/hooks/widgets/quickStartFlow";
 import { t } from "@/lang/i18n";
 import { overviewInfo } from "@/services/apis";
 import { reportErrorMsg } from "@/tools/validator";
 import type { LayoutCard, MountComponent, QuickStartPackages } from "@/types";
+import { defaultQuickStartPackages } from "@/types/const";
 import MarketCreateMethodStep from "@/widgets/market/MarketCreateMethodStep.vue";
 import AppPackages from "@/widgets/setupApp/AppPackages.vue";
 import CreateInstanceForm from "@/widgets/setupApp/CreateInstanceForm.vue";
@@ -51,6 +53,20 @@ const selectedMethod = ref<QUICKSTART_METHOD>();
 const selectedNode = ref<ComputedNodeInfo>();
 const selectedDaemonId = computed(() => selectedNode.value?.uuid ?? daemonId.value ?? "");
 
+/** Pinned "any console program" entry, always shown first in the category list */
+const ANY_CONSOLE_CATEGORY_KEY = "market:any-console-program";
+const anyConsoleCategory: QuickStartPackages = {
+  ...defaultQuickStartPackages,
+  key: ANY_CONSOLE_CATEGORY_KEY,
+  title: t("TXT_CODE_market.anyConsoleProgram"),
+  gameType: QUICKSTART_ACTION_TYPE.AnyApp,
+  image: anyConsoleProgramImage,
+  isSummary: true
+};
+
+const isAnyConsoleCategory = (category?: QuickStartPackages) =>
+  category?.key === ANY_CONSOLE_CATEGORY_KEY;
+
 const marketCard = computed<LayoutCard>(() => ({
   id: "application-market-dialog",
   type: "Market",
@@ -63,11 +79,6 @@ const marketCard = computed<LayoutCard>(() => ({
 const openEditor = () => {
   router.push("/market/editor");
   cancel();
-};
-
-const handleSelectCategory = (category: QuickStartPackages) => {
-  selectedCategory.value = category;
-  currentStep.value = MarketStep.METHOD;
 };
 
 const handleSelectMethod = async (method: MarketCreateMethod) => {
@@ -102,6 +113,15 @@ const handleSelectMethod = async (method: MarketCreateMethod) => {
   }
 };
 
+const handleSelectCategory = async (category: QuickStartPackages) => {
+  selectedCategory.value = category;
+  if (isAnyConsoleCategory(category)) {
+    await handleSelectMethod(QUICKSTART_METHOD.EXIST);
+    return;
+  }
+  currentStep.value = MarketStep.METHOD;
+};
+
 const backToCategory = () => {
   selectedCategory.value = undefined;
   selectedNode.value = undefined;
@@ -110,6 +130,10 @@ const backToCategory = () => {
 
 const backToMethod = () => {
   selectedMethod.value = undefined;
+  if (isAnyConsoleCategory(selectedCategory.value)) {
+    backToCategory();
+    return;
+  }
   currentStep.value = MarketStep.METHOD;
 };
 
@@ -169,6 +193,7 @@ defineExpose({
         </div>
         <AppPackages
           v-if="currentStep === MarketStep.CATEGORY"
+          :fixed-categories="[anyConsoleCategory]"
           @handle-select-category="handleSelectCategory"
           @handle-select-template="() => {}"
           @handle-back-to-category="() => {}"

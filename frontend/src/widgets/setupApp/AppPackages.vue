@@ -12,6 +12,7 @@ const props = defineProps<{
   btnText?: string;
   showCustomBtn?: boolean;
   onlyDockerTemplate?: boolean;
+  fixedCategories?: QuickStartPackages[];
 }>();
 
 const emit = defineEmits<{
@@ -36,6 +37,9 @@ const isCategoryView = computed(() => searchForm.gameType === SEARCH_ALL_KEY);
 
 /** Detail list: filtered template list when not in category view */
 const detailList = computed(() => (isCategoryView.value ? [] : appList.value));
+
+/** Category cards, with pinned entries always shown first */
+const categoryCards = computed(() => [...(props.fixedCategories ?? []), ...appList.value]);
 
 const handleBackToCategory = () => {
   searchForm.gameType = SEARCH_ALL_KEY;
@@ -119,7 +123,7 @@ defineExpose({
     </a-col>
 
     <!-- Empty state - shown when no packages match current filters -->
-    <a-col v-if="appList.length === 0" :span="24">
+    <a-col v-if="!isCategoryView && appList.length === 0" :span="24">
       <div style="display: flex; justify-content: center; align-items: center; height: 40vh">
         <a-typography-paragraph :style="{ color: 'var(--color-gray-7)' }">
           {{ t("TXT_CODE_7356e569") }}
@@ -128,7 +132,7 @@ defineExpose({
     </a-col>
 
     <!-- Category 2: Detail list: table with back-to-category and search conditions -->
-    <template v-else-if="detailList.length > 0">
+    <template v-else-if="!isCategoryView">
       <a-col :span="24">
         <PackageDetailTable
           :data-source="detailList"
@@ -141,8 +145,8 @@ defineExpose({
     <!-- Category 1: Category cards -->
     <fade-up-animation v-else :delay="60">
       <a-col
-        v-for="(item, index) in appList"
-        :key="item.key"
+        v-for="(item, index) in categoryCards"
+        :key="item.key ?? item.title"
         :data-index="index"
         :span="24"
         :sm="24"
