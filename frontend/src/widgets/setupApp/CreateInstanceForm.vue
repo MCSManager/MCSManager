@@ -415,6 +415,11 @@ const createInstance = async () => {
             </a-typography-text>
           </a-typography-paragraph>
           <a-input v-model:value="formData.cwd" :placeholder="t('TXT_CODE_a85091a4')" />
+          <a-typography-paragraph style="margin-top: 8px">
+            <a-typography-text type="secondary">
+              {{ t("TXT_CODE_instance.uploadFilesLater") }}
+            </a-typography-text>
+          </a-typography-paragraph>
         </a-form-item>
       </a-form-item>
 
