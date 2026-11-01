@@ -3271,5 +3271,17 @@
   "TXT_CODE_5a455c84": "O painel está pronto. Clique no botão abaixo para começar.",
   "TXT_CODE_637d8b7c": "Usar agora",
   "TXT_CODE_dcdbc73": "Comece com recursos existentes ou crie do zero. Escolha uma opção para continuar.",
-  "TXT_CODE_c60e4ac2": "Enviar"
+  "TXT_CODE_c60e4ac2": "Enviar",
+  "TXT_CODE_SSO_ALLOWED_REDIRECT_HOSTS": "Hosts de redirecionamento permitidos",
+  "TXT_CODE_SSO_ALLOWED_REDIRECT_HOSTS_DESC": "Opcional. Lista de hosts permitidos separada por vírgulas, usada apenas quando a URL de callback está vazia e o modo de proxy reverso está habilitado. Somente esses hosts podem aparecer em um URI de redirecionamento derivado de cabeçalho; deixe vazio para não confiar em nenhum cabeçalho de solicitação.",
+  "TXT_CODE_settings_dataPlane": "Modo de Plano de Dados",
+  "TXT_CODE_settings_dataPlane_hint": "Conexão direta navegador→daemon ou proxy reverso do painel (a porta do daemon permanece privada; padrão em novas instalações). Instalações existentes mantêm o modo atual. As alterações entram em vigor sem reiniciar.",
+  "TXT_CODE_settings_dataPlane_direct": "Conexão Direta",
+  "TXT_CODE_settings_dataPlane_proxy": "Proxy do Painel",
+  "TXT_CODE_AUTOUPDATE_B_VERSION_INVALID": "Atualização recusada: a versão online \"{{v}}\" não é uma versão válida",
+  "TXT_CODE_market.anyConsoleProgram": "Qualquer Programa de Console",
+  "TXT_CODE_market.uploadProgramZip": "Enviar arquivo zip do programa",
+  "TXT_CODE_market.deployWithDockerImage": "Implantar com imagem Docker",
+  "TXT_CODE_market.noFilesRequired": "Nenhum arquivo necessário",
+  "TXT_CODE_instance.uploadFilesLater": "Você pode enviar posteriormente os arquivos necessários para executar o programa pelo Gerenciamento de Arquivos."
 }

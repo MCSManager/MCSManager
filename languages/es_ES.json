@@ -3271,5 +3271,17 @@
   "TXT_CODE_5a455c84": "El panel está listo. Haz clic en el botón de abajo para comenzar.",
   "TXT_CODE_637d8b7c": "Usar ahora",
   "TXT_CODE_dcdbc73": "Comienza con recursos existentes o crea desde cero. Elige una opción para continuar.",
-  "TXT_CODE_c60e4ac2": "Enviar"
+  "TXT_CODE_c60e4ac2": "Enviar",
+  "TXT_CODE_SSO_ALLOWED_REDIRECT_HOSTS": "Hosts de redirección permitidos",
+  "TXT_CODE_SSO_ALLOWED_REDIRECT_HOSTS_DESC": "Opcional. Lista blanca de hosts separada por comas que solo se usa cuando la URL de callback está vacía y el modo de proxy inverso está habilitado. Solo estos hosts pueden aparecer en un URI de redirección derivado de una cabecera; déjelo vacío para no confiar en ninguna cabecera de solicitud.",
+  "TXT_CODE_settings_dataPlane": "Modo de plano de datos",
+  "TXT_CODE_settings_dataPlane_hint": "Conexión directa navegador→daemon o proxy inverso del panel (el puerto del daemon permanece privado; predeterminado en instalaciones nuevas). Las instalaciones existentes mantienen su modo actual. Los cambios surten efecto sin reiniciar.",
+  "TXT_CODE_settings_dataPlane_direct": "Conexión directa",
+  "TXT_CODE_settings_dataPlane_proxy": "Proxy del panel",
+  "TXT_CODE_AUTOUPDATE_B_VERSION_INVALID": "Actualización rechazada: la versión en línea \"{{v}}\" no es una versión válida",
+  "TXT_CODE_market.anyConsoleProgram": "Cualquier programa de consola",
+  "TXT_CODE_market.uploadProgramZip": "Subir archivo zip del programa",
+  "TXT_CODE_market.deployWithDockerImage": "Desplegar con imagen de Docker",
+  "TXT_CODE_market.noFilesRequired": "No se requieren archivos",
+  "TXT_CODE_instance.uploadFilesLater": "Puede subir más tarde los archivos necesarios para ejecutar el programa mediante la gestión de archivos."
 }

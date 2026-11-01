@@ -3271,5 +3271,17 @@
   "TXT_CODE_5a455c84": "面板已準備就緒，點擊下方按鈕即可開始使用",
   "TXT_CODE_637d8b7c": "立即使用",
   "TXT_CODE_dcdbc73": "從現有資源開始，或從零開始建構。選擇適合的方式以繼續。",
-  "TXT_CODE_c60e4ac2": "傳送"
+  "TXT_CODE_c60e4ac2": "傳送",
+  "TXT_CODE_SSO_ALLOWED_REDIRECT_HOSTS": "允許的重新導向主機",
+  "TXT_CODE_SSO_ALLOWED_REDIRECT_HOSTS_DESC": "選用。僅當回呼位址為空且啟用反向代理模式時生效的逗號分隔主機白名單。只有白名單內的主機才允許出現在由請求標頭推導的重新導向 URI 中；留空表示不信任任何請求標頭。",
+  "TXT_CODE_settings_dataPlane": "資料平面模式",
+  "TXT_CODE_settings_dataPlane_hint": "瀏覽器直連 daemon 或經 panel 反向代理轉送（daemon 連接埠無需公開暴露，新安裝預設）。既有安裝保留目前的模式。切換後無需重新啟動即可立即生效。",
+  "TXT_CODE_settings_dataPlane_direct": "直接連線",
+  "TXT_CODE_settings_dataPlane_proxy": "面板代理",
+  "TXT_CODE_AUTOUPDATE_B_VERSION_INVALID": "已拒絕更新：線上版本 \"{{v}}\" 不是有效版本號",
+  "TXT_CODE_market.anyConsoleProgram": "任意主控台程式",
+  "TXT_CODE_market.uploadProgramZip": "上傳程式 zip 檔",
+  "TXT_CODE_market.deployWithDockerImage": "使用 Docker 映像部署",
+  "TXT_CODE_market.noFilesRequired": "無需任何檔案",
+  "TXT_CODE_instance.uploadFilesLater": "您可以後續透過檔案管理上傳執行程式所需的檔案。"
 }

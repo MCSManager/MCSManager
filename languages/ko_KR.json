@@ -3271,5 +3271,17 @@
   "TXT_CODE_5a455c84": "패널이 준비되었습니다. 아래 버튼을 클릭하여 시작하세요.",
   "TXT_CODE_637d8b7c": "지금 사용",
   "TXT_CODE_dcdbc73": "기존 리소스로 시작하거나 처음부터 구축하세요. 계속할 방법을 선택하세요.",
-  "TXT_CODE_c60e4ac2": "보내기"
+  "TXT_CODE_c60e4ac2": "보내기",
+  "TXT_CODE_SSO_ALLOWED_REDIRECT_HOSTS": "허용된 리디렉션 호스트",
+  "TXT_CODE_SSO_ALLOWED_REDIRECT_HOSTS_DESC": "선택 사항입니다. 콜백 URL이 비어 있고 리버스 프록시 모드가 활성화된 경우에만 사용되는 쉼표로 구분된 호스트 허용 목록입니다. 헤더에서 파생된 리디렉션 URI에는 이 호스트들만 나타날 수 있습니다. 비워 두면 요청 헤더를 신뢰하지 않습니다.",
+  "TXT_CODE_settings_dataPlane": "데이터 플레인 모드",
+  "TXT_CODE_settings_dataPlane_hint": "브라우저→데몬 직접 연결 또는 패널 리버스 프록시(데몬 포트는 비공개로 유지됨, 새 설치 시 기본값). 기존 설치에서는 현재 모드가 유지됩니다. 변경 사항은 재시작 없이 적용됩니다.",
+  "TXT_CODE_settings_dataPlane_direct": "직접 연결",
+  "TXT_CODE_settings_dataPlane_proxy": "패널 프록시",
+  "TXT_CODE_AUTOUPDATE_B_VERSION_INVALID": "업데이트 거부됨: 온라인 버전 \"{{v}}\"은(는) 유효한 버전이 아닙니다",
+  "TXT_CODE_market.anyConsoleProgram": "모든 콘솔 프로그램",
+  "TXT_CODE_market.uploadProgramZip": "프로그램 zip 파일 업로드",
+  "TXT_CODE_market.deployWithDockerImage": "Docker 이미지로 배포",
+  "TXT_CODE_market.noFilesRequired": "파일 필요 없음",
+  "TXT_CODE_instance.uploadFilesLater": "프로그램 실행에 필요한 파일은 나중에 파일 관리를 통해 업로드할 수 있습니다."
 }

@@ -3271,5 +3271,17 @@
   "TXT_CODE_5a455c84": "Panel hazır. Başlamak için aşağıdaki düğmeye tıklayın.",
   "TXT_CODE_637d8b7c": "Şimdi kullan",
   "TXT_CODE_dcdbc73": "Mevcut kaynaklarla başlayın veya sıfırdan oluşturun. Devam etmek için bir seçenek belirleyin.",
-  "TXT_CODE_c60e4ac2": "Gönder"
+  "TXT_CODE_c60e4ac2": "Gönder",
+  "TXT_CODE_SSO_ALLOWED_REDIRECT_HOSTS": "İzin Verilen Yönlendirme Ana Bilgisayarları",
+  "TXT_CODE_SSO_ALLOWED_REDIRECT_HOSTS_DESC": "İsteğe bağlı. Yalnızca Geri Çağırma URL'si boş ve ters proxy modu etkinleştirildiğinde kullanılan, virgülle ayrılmış ana bilgisayar izin listesi. Başlıktan türetilen yönlendirme URI'sinde yalnızca bu ana bilgisayarlar görünebilir; hiçbir istek başlığına güvenmemek için boş bırakın.",
+  "TXT_CODE_settings_dataPlane": "Veri Düzlemi Modu",
+  "TXT_CODE_settings_dataPlane_hint": "Tarayıcı→daemon doğrudan bağlantısı veya panel ters proxy (daemon bağlantı noktası özel kalır; yeni kurulumlarda varsayılan). Mevcut kurulumlar mevcut modlarını korur. Değişiklikler yeniden başlatma olmadan etkinleşir.",
+  "TXT_CODE_settings_dataPlane_direct": "Doğrudan Bağlantı",
+  "TXT_CODE_settings_dataPlane_proxy": "Panel Proxy",
+  "TXT_CODE_AUTOUPDATE_B_VERSION_INVALID": "Güncelleme reddedildi: çevrimiçi sürüm \"{{v}}\" geçerli bir sürüm değil",
+  "TXT_CODE_market.anyConsoleProgram": "Herhangi bir Konsol Programı",
+  "TXT_CODE_market.uploadProgramZip": "Program zip dosyasını yükle",
+  "TXT_CODE_market.deployWithDockerImage": "Docker imajıyla dağıt",
+  "TXT_CODE_market.noFilesRequired": "Dosya gerekmez",
+  "TXT_CODE_instance.uploadFilesLater": "Programı çalıştırmak için gereken dosyaları daha sonra Dosya Yönetimi aracılığıyla yükleyebilirsiniz."
 }

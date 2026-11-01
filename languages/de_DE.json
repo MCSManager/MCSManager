@@ -3271,5 +3271,17 @@
   "TXT_CODE_5a455c84": "Das Panel ist bereit. Klicken Sie auf die Schaltfläche unten, um zu beginnen.",
   "TXT_CODE_637d8b7c": "Jetzt verwenden",
   "TXT_CODE_dcdbc73": "Beginnen Sie mit vorhandenen Ressourcen oder bauen Sie von Grund auf neu. Wählen Sie eine Option, um fortzufahren.",
-  "TXT_CODE_c60e4ac2": "Senden"
+  "TXT_CODE_c60e4ac2": "Senden",
+  "TXT_CODE_SSO_ALLOWED_REDIRECT_HOSTS": "Erlaubte Weiterleitungs-Hosts",
+  "TXT_CODE_SSO_ALLOWED_REDIRECT_HOSTS_DESC": "Optional. Kommaseparierte Host-Allowlist, die nur verwendet wird, wenn die Callback-URL leer ist und der Reverse-Proxy-Modus aktiviert ist. Nur diese Hosts dürfen in einer aus einem Header abgeleiteten Weiterleitungs-URI erscheinen; leer lassen, um keinem Request-Header zu vertrauen.",
+  "TXT_CODE_settings_dataPlane": "Datenebenen-Modus",
+  "TXT_CODE_settings_dataPlane_hint": "Direkte Browser→Daemon-Verbindung oder Panel-Reverse-Proxy (Daemon-Port bleibt privat; Standard bei Neuinstallationen). Bestehende Installationen behalten ihren aktuellen Modus. Änderungen werden ohne Neustart wirksam.",
+  "TXT_CODE_settings_dataPlane_direct": "Direkte Verbindung",
+  "TXT_CODE_settings_dataPlane_proxy": "Panel-Proxy",
+  "TXT_CODE_AUTOUPDATE_B_VERSION_INVALID": "Update abgelehnt: Online-Version \"{{v}}\" ist keine gültige Version",
+  "TXT_CODE_market.anyConsoleProgram": "Beliebiges Konsolenprogramm",
+  "TXT_CODE_market.uploadProgramZip": "Programm-ZIP-Datei hochladen",
+  "TXT_CODE_market.deployWithDockerImage": "Mit Docker-Image bereitstellen",
+  "TXT_CODE_market.noFilesRequired": "Keine Dateien erforderlich",
+  "TXT_CODE_instance.uploadFilesLater": "Sie können die zum Ausführen des Programms erforderlichen Dateien später über die Dateiverwaltung hochladen."
 }
