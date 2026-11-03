@@ -191,7 +191,11 @@ describe("security: SSO redirect_uri must never be derived from untrusted header
   // (I1a) explicit ssoCallbackUrl wins unconditionally and headers are ignored.
   it("explicit ssoCallbackUrl wins: signed request headers cannot change redirect_uri", async () => {
     const fixed = "https://registered.example/api/auth/sso/callback";
-    await setSetting({ ssoCallbackUrl: fixed, reverseProxyMode: true, ssoAllowedRedirectHosts: "panel.example.com" });
+    await setSetting({
+      ssoCallbackUrl: fixed,
+      reverseProxyMode: true,
+      ssoAllowedRedirectHosts: "panel.example.com"
+    });
 
     const r = await authorize({
       "X-Forwarded-Host": "evil.example",
@@ -223,7 +227,9 @@ describe("security: SSO callback pins the authorize-time redirect_uri", () => {
         if (req.url === "/token") {
           tokenBody = body;
           res.writeHead(200, { "content-type": "application/json" });
-          res.end(JSON.stringify({ access_token: "integration-access-token", token_type: "Bearer" }));
+          res.end(
+            JSON.stringify({ access_token: "integration-access-token", token_type: "Bearer" })
+          );
         } else if (req.url === "/userinfo") {
           res.writeHead(200, { "content-type": "application/json" });
           res.end(JSON.stringify({ id: "sso-int-user", sub: "sso-int-user" }));
@@ -274,9 +280,7 @@ describe("security: SSO callback pins the authorize-time redirect_uri", () => {
     // The handler must have reached the token endpoint (proves it got past the
     // session/state checks and actually performed the exchange).
     expect(tokenBody, "the panel must POST to the token endpoint").toBeTruthy();
-    const sentRedirectUri = String(
-      new URLSearchParams(tokenBody).get("redirect_uri") || ""
-    );
+    const sentRedirectUri = String(new URLSearchParams(tokenBody).get("redirect_uri") || "");
     expect(sentRedirectUri, "token exchange must send a redirect_uri").toBeTruthy();
 
     // THE SECURITY ASSERTION: the exchange reuses the pinned value and ignores
@@ -291,5 +295,44 @@ describe("security: SSO callback pins the authorize-time redirect_uri", () => {
     // The callback also lands in the unbound -> bind flow (302 to /#/sso/bind),
     // confirming the exchange + userinfo path completed.
     expect(cb.status, `callback status: ${cb.status}`).toBe(302);
+  });
+});
+
+describe("SSO redirects must respect the panel path prefix", () => {
+  // When the panel is reverse-proxied under a path prefix (e.g. /mcsm/), every
+  // redirect that points at the frontend must include that prefix. A bare
+  // "/#/login" resolves against the site root and lands on whatever else is
+  // served there instead of the panel UI.
+  it("setup: enable SSO in OAuth2 mode under a /mcsm/ prefix", async () => {
+    await setSetting({
+      ssoEnabled: true,
+      ssoType: "oauth2",
+      ssoAuthorizeUrl: SSO_AUTHORIZE_URL,
+      ssoTokenUrl: "https://idp.example/token",
+      ssoUserinfoUrl: "https://idp.example/userinfo",
+      ssoClientId: "sso-int-client",
+      ssoClientSecret: "sso-int-secret",
+      ssoCallbackUrl: "",
+      ssoAllowedRedirectHosts: "",
+      reverseProxyMode: false,
+      prefix: "/mcsm/"
+    });
+  });
+
+  it("callback without a session redirects to the prefixed login page", async () => {
+    const cb = await axios.get(`${world.panelUrl}/api/auth/sso/callback`, {
+      params: { code: "INTEGRATION_CODE", state: "no-session" },
+      maxRedirects: 0,
+      validateStatus: () => true,
+      timeout: 30000
+    });
+
+    expect(cb.status, `callback status: ${cb.status}`).toBe(302);
+    const location = String(cb.headers.location || "");
+    expect(location, "redirect must carry the panel prefix").toMatch(/^\/mcsm\/#\//);
+  });
+
+  it("restore: clear the prefix", async () => {
+    await setSetting({ prefix: "" });
   });
 });

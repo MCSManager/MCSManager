@@ -24,6 +24,15 @@ const router = new Router({ prefix: "/auth/sso" });
 
 const SSO_BIND_SESSION_TTL = 10 * 60 * 1000;
 
+// Redirect to a frontend page. The frontend uses hash routing, so the path looks
+// like /#/login. When the panel is served under a `prefix` (e.g. /mcsm/), the
+// prefix must be prepended; otherwise the browser resolves the absolute path
+// against the site root and lands on a different service instead of the panel UI.
+function redirectToFrontend(ctx: Koa.ParameterizedContext, hashPath: string): void {
+  const prefix = (systemConfig?.prefix || "").replace(/\/+$/, "");
+  ctx.redirect(`${prefix}/${hashPath.replace(/^\/+/, "")}`);
+}
+
 function hasPendingSsoBind(ctx: Koa.ParameterizedContext): boolean {
   const ssoSub = ctx.session?.["ssoBindSub"];
   const ssoBindTimestamp = ctx.session?.["ssoBindTimestamp"];
@@ -84,7 +93,7 @@ router.get(
         sso_error: err.error || "sso_init_failed",
         sso_error_desc: oauthDesc
       });
-      ctx.redirect(`/#/login?${params.toString()}`);
+      redirectToFrontend(ctx, `#/login?${params.toString()}`);
     }
   }
 );
@@ -101,7 +110,7 @@ router.get(
     }
 
     if (!ctx.session) {
-      ctx.redirect("/#/login?sso_error=session_expired");
+      redirectToFrontend(ctx, "#/login?sso_error=session_expired");
       return;
     }
 
@@ -124,13 +133,13 @@ router.get(
 
     const isOAuth2 = systemConfig?.ssoType === "oauth2";
     if (!expectedState || !codeVerifier || !ssoRedirectUri || (!isOAuth2 && !expectedNonce)) {
-      ctx.redirect("/#/login?sso_error=invalid_sso_session");
+      redirectToFrontend(ctx, "#/login?sso_error=invalid_sso_session");
       return;
     }
 
     // Reject if the SSO flow took longer than 10 minutes
     if (!ssoTimestamp || Date.now() - ssoTimestamp > 10 * 60 * 1000) {
-      ctx.redirect("/#/login?sso_error=sso_session_expired");
+      redirectToFrontend(ctx, "#/login?sso_error=sso_session_expired");
       return;
     }
 
@@ -143,7 +152,7 @@ router.get(
       logger.error(`[SSO] IdP returned error: ${idpError} - ${idpDesc}`);
       const params = new URLSearchParams({ sso_error: idpError });
       if (idpDesc) params.set("sso_error_desc", idpDesc);
-      ctx.redirect(`/#/login?${params.toString()}`);
+      redirectToFrontend(ctx, `#/login?${params.toString()}`);
       return;
     }
 
@@ -182,7 +191,7 @@ router.get(
           login_result: true,
           login_method: "sso"
         });
-        ctx.redirect("/#/sso/callback");
+        redirectToFrontend(ctx, "#/sso/callback");
         return;
       }
 
@@ -191,7 +200,7 @@ router.get(
       ctx.session!["ssoBindTimestamp"] = Date.now();
       ctx.session!.save();
 
-      ctx.redirect("/#/sso/bind");
+      redirectToFrontend(ctx, "#/sso/bind");
     } catch (err: any) {
       const oauthError = err.error || "";
       const oauthDesc = err.error_description || "";
@@ -201,7 +210,7 @@ router.get(
         sso_error: oauthError || "sso_auth_failed",
         sso_error_desc: errDetail
       });
-      ctx.redirect(`/#/login?${params.toString()}`);
+      redirectToFrontend(ctx, `#/login?${params.toString()}`);
     }
   }
 );
