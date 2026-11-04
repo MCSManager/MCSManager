@@ -1,4 +1,4 @@
-﻿// Shared auto-update utilities for MCSManager daemon & panel.
+// Shared auto-update utilities for MCSManager daemon & panel.
 //
 // No new external dependencies are introduced here: everything uses Node
 // built-ins (http/https/fs/path/stream) plus packages that `common` already
@@ -84,6 +84,36 @@ export function normalizeVersion(v?: string): string {
  */
 export function isComparableVersion(v?: string): boolean {
   return /^\d+(\.\d+)*$/.test(normalizeVersion(v));
+}
+
+/**
+ * Daemon versions 4.20.0 and 4.21.0 were accidentally published in commits
+ * a5d5d34 / 30bb2d5 (v10.20.0 / v10.21.0) and subsequently reverted to 4.19.2
+ * in commit af67728 (v10.21.2). Treat those retracted versions as older than
+ * any valid 4.19.2+ release so affected nodes are not stuck reporting "already
+ * up to date".
+ */
+export const RETRACTED_DAEMON_VERSIONS: ReadonlySet<string> = new Set(["4.20.0", "4.21.0"]);
+
+/**
+ * Determine whether `onlineVersion` should be offered as an update over the
+ * running daemon `currentVersion`. Fail-closed when `onlineVersion` is not
+ * comparable. Normally requires `onlineVersion > currentVersion`, except when
+ * `currentVersion` is a retracted daemon version (4.20.0 / 4.21.0) and
+ * `onlineVersion` is a non-retracted release >= 4.19.2.
+ */
+export function isDaemonUpdateAvailable(onlineVersion?: string, currentVersion?: string): boolean {
+  if (!isComparableVersion(onlineVersion)) return false;
+  const onlineNorm = normalizeVersion(onlineVersion);
+  const currentNorm = normalizeVersion(currentVersion);
+  if (
+    RETRACTED_DAEMON_VERSIONS.has(currentNorm) &&
+    !RETRACTED_DAEMON_VERSIONS.has(onlineNorm) &&
+    compareVersions(onlineNorm, "4.19.2") >= 0
+  ) {
+    return true;
+  }
+  return compareVersions(onlineNorm, currentNorm) > 0;
 }
 
 /**

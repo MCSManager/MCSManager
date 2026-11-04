@@ -17,6 +17,7 @@ import * as router from "./service/router";
 import { printStartupBanner } from "./service/startup_banner";
 import InstanceSubsystem from "./service/system_instance";
 import "./service/system_visual_data";
+import { runStartupAutoUpdateIfEnabled } from "./service/upgrade_service";
 import uploadManager from "./service/upload_manager";
 import { getVersion, initVersionManager } from "./service/version";
 import versionAdapter from "./service/version_adapter";
@@ -60,6 +61,9 @@ if (fs.existsSync(LOCAL_PRESET_LANG_PATH)) {
   i18next.changeLanguage(lang);
 }
 logger.info($t("TXT_CODE_app.welcome"));
+
+// Optional startup self-update check (when config.autoUpdateOnStart is true or --auto-update is passed)
+void runStartupAutoUpdateIfEnabled();
 
 // Initialize HTTP service
 const koaApp = koa.initKoa();

@@ -36,9 +36,11 @@ export {
   fetchJson,
   fetchJsonFromSources,
   isComparableVersion,
+  isDaemonUpdateAvailable,
   LEGACY_DEFAULT_UPDATE_SOURCE_URL,
   migrateLegacyUpdateSourceUrl,
-  normalizeVersion
+  normalizeVersion,
+  RETRACTED_DAEMON_VERSIONS
 } from "./upgrade";
 export type { FetchedJsonResult } from "./upgrade";
 
