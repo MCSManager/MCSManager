@@ -15,7 +15,8 @@ WORKDIR /opt/mcsmanager/web
 
 COPY --from=builder /src/production-code/web/ /opt/mcsmanager/web/
 
-RUN npm install --production
+# build.sh uses BUNDLE=1; runtime dependencies are already inside app.js.
+RUN test -f app.js && test ! -e node_modules
 
 EXPOSE 23333
 
