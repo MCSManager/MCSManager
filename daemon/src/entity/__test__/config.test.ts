@@ -166,4 +166,15 @@ describe("backup update source default (legacy mcsmanager.com manifest)", () => 
     expect(globalConfiguration.config.updateSourceUrl).toBe("");
     expect(globalConfiguration.config.updateSourceUrlFallback).toBe("");
   });
+
+  it("defaults autoUpdateOnStart to false and preserves persisted true", () => {
+    fs.mkdirsSync(path.dirname(configFile));
+    fs.writeJsonSync(configFile, { version: 2, ip: "", port: 24444 });
+    globalConfiguration.load();
+    expect(globalConfiguration.config.autoUpdateOnStart).toBe(false);
+
+    fs.writeJsonSync(configFile, { version: 2, ip: "", port: 24444, autoUpdateOnStart: true });
+    globalConfiguration.load();
+    expect(globalConfiguration.config.autoUpdateOnStart).toBe(true);
+  });
 });

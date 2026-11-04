@@ -24,18 +24,18 @@
 import fs from "fs-extra";
 import {
   applyUpgradePackage,
-  compareVersions,
   downloadToFile,
   extractArchive,
   fetchJsonFromSources,
   isComparableVersion,
+  isDaemonUpdateAvailable,
   normalizeVersion
 } from "mcsmanager-common";
 import path from "path";
 import { globalConfiguration } from "../entity/config";
 import { $t } from "../i18n";
 import logger from "./log";
-import { getVersion } from "./version";
+import { getVersion, initVersionManager } from "./version";
 
 const STAGING_DIR = path.normalize(path.join(process.cwd(), "__upgrade_staging"));
 const ARCHIVE_BASENAME = "daemon";
@@ -163,7 +163,7 @@ export async function getUpgradeInfo(data?: IUpgradeRequestData): Promise<IUpgra
       currentVersion,
       onlineVersion: normalizeVersion(entry.version),
       onlineNotes: entry.notes,
-      updateAvailable: compareVersions(normalizeVersion(entry.version), normalizeVersion(currentVersion)) > 0,
+      updateAvailable: isDaemonUpdateAvailable(entry.version, currentVersion),
       updateSourceUrl: sourceUrl
     };
   } catch (e: any) {
@@ -201,7 +201,7 @@ export async function performUpgrade(data?: IUpgradeRequestData): Promise<IUpgra
     if (!isComparableVersion(entry.version)) {
       throw new Error($t("TXT_CODE_AUTOUPDATE_B_VERSION_INVALID", { v: String(entry.version ?? "") }));
     }
-    if (compareVersions(normalizeVersion(entry.version), normalizeVersion(currentVersion)) <= 0) {
+    if (!isDaemonUpdateAvailable(entry.version, currentVersion)) {
       upgradeInProgress = false;
       return {
         started: false,
@@ -271,5 +271,36 @@ export async function performUpgrade(data?: IUpgradeRequestData): Promise<IUpgra
     }
     upgradeInProgress = false;
     throw e;
+  }
+}
+
+/**
+ * Run a non-fatal daemon self-update check at startup when enabled via
+ * `config.autoUpdateOnStart` or the `--auto-update` CLI flag. If an update is
+ * applied on disk, refreshes the in-memory version from the newly overlaid
+ * `package.json`. Never throws so daemon startup continues even when offline.
+ */
+export async function runStartupAutoUpdateIfEnabled(
+  cliArgs: readonly string[] = process.argv
+): Promise<IUpgradeResult | null> {
+  const enabled =
+    Boolean(globalConfiguration.config.autoUpdateOnStart) || cliArgs.includes("--auto-update");
+  if (!enabled) return null;
+  if (!firstCandidate()) {
+    log("Startup auto-update skipped: no update source configured.");
+    return null;
+  }
+  log("Checking for daemon updates on startup...");
+  try {
+    const result = await performUpgrade();
+    if (result.started) {
+      initVersionManager();
+    } else if (result.message) {
+      log(result.message);
+    }
+    return result;
+  } catch (e: any) {
+    errLog(`Startup auto-update check failed (continuing startup): ${e?.message || e}`);
+    return null;
   }
 }

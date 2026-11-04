@@ -136,12 +136,12 @@ untouched (`string | Record<string, string>`).
 
 | Layer | File | Role |
 | --- | --- | --- |
-| shared | `common/src/upgrade.ts` | `compareVersions`/`normalizeVersion`/`isComparableVersion`, `fetchJson`, `fetchJsonFromSources` (primary→backup candidate list), `downloadToFile`, `extractArchive` (`extractTarGz` + `extractZip`, both with traversal guards), `applyUpgradePackage` (transactional overlay), `migrateLegacyUpdateSourceUrl` |
+| shared | `common/src/upgrade.ts` | `compareVersions`/`normalizeVersion`/`isComparableVersion`/`isDaemonUpdateAvailable` (incl. retracted `4.20.0`/`4.21.0` recovery), `fetchJson`, `fetchJsonFromSources` (primary→backup candidate list), `downloadToFile`, `extractArchive` (`extractTarGz` + `extractZip`, both with traversal guards), `applyUpgradePackage` (transactional overlay), `migrateLegacyUpdateSourceUrl` |
 | panel | `panel/src/app/service/upgrade_service.ts` | manifest fetch (uses `web` entry), fail-closed version compare, download/overlay (no auto-restart) |
 | panel | `panel/src/app/routers/upgrade_router.ts` | `/api/upgrade/panel_info`, `/api/upgrade/panel`, `/api/upgrade/daemon_info`, `/api/upgrade/daemon` (ADMIN only); forwards the panel's source URLs (primary + backup) to daemons |
-| daemon | `daemon/src/service/upgrade_service.ts` | same as panel side, for the `daemon` entry; each forwarded source field wins over its daemon-local counterpart |
+| daemon | `daemon/src/service/upgrade_service.ts` | same as panel side, for the `daemon` entry; each forwarded source field wins over its daemon-local counterpart; `runStartupAutoUpdateIfEnabled` for opt-in startup auto-update |
 | daemon | `daemon/src/routers/upgrade_router.ts` | socket.io `upgrade/info`, `upgrade/daemon` |
-| config | `panel/src/app/entity/setting.ts`, `daemon/src/entity/config.ts` | `updateSourceUrl` + `updateSourceUrlFallback` (defaults: GitHub Release manifest URL / legacy mcsmanager.com manifest URL; both empty ⇒ feature disabled); legacy *primary* migrated in both `version_adapter`s |
+| config | `panel/src/app/entity/setting.ts`, `daemon/src/entity/config.ts` | `updateSourceUrl` + `updateSourceUrlFallback` (defaults: GitHub Release manifest URL / legacy mcsmanager.com manifest URL; both empty ⇒ feature disabled) + daemon `autoUpdateOnStart` (default `false`); legacy *primary* migrated in both `version_adapter`s |
 | release | `scripts/build-release-update-packages.mjs`, `.github/workflows/release.yml` | packs `mcsmanager_{daemon,web}_update.tar.gz` + writes `mcsmanager_update_manifest.json` as release assets |
 | frontend API | `frontend/src/services/apis/index.ts` | `IUpgradeInfo` / `IUpgradeResult`, `getPanelUpgradeInfo`, `upgradePanel`, `getDaemonUpgradeInfo`, `upgradeDaemon` |
 | frontend UI | `frontend/src/widgets/Settings.vue` | auto-update tab: status tags, source URL inputs (primary + backup), update button, localized release-notes box |

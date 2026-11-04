@@ -12,9 +12,11 @@ import {
   extractTarGz,
   fetchJsonFromSources,
   isComparableVersion,
+  isDaemonUpdateAvailable,
   LEGACY_DEFAULT_UPDATE_SOURCE_URL,
   migrateLegacyUpdateSourceUrl,
-  normalizeVersion
+  normalizeVersion,
+  RETRACTED_DAEMON_VERSIONS
 } from "../upgrade";
 
 function tmpDir(prefix: string): string {
@@ -184,6 +186,38 @@ describe("isComparableVersion", () => {
     expect(isComparableVersion("latest")).toBe(false);
     expect(isComparableVersion("vv1.2.3")).toBe(false);
     expect(isComparableVersion("v")).toBe(false);
+  });
+});
+
+describe("isDaemonUpdateAvailable", () => {
+  it("offers an update when the online version is strictly newer", () => {
+    expect(isDaemonUpdateAvailable("4.19.3", "4.19.2")).toBe(true);
+    expect(isDaemonUpdateAvailable("v4.19.3", "4.19.2")).toBe(true);
+    expect(isDaemonUpdateAvailable("4.19.3", "4.19.3")).toBe(false);
+    expect(isDaemonUpdateAvailable("4.19.2", "4.19.3")).toBe(false);
+  });
+
+  it("allows updating from retracted daemon versions (4.20.0 / 4.21.0) to 4.19.2+", () => {
+    expect(RETRACTED_DAEMON_VERSIONS.has("4.20.0")).toBe(true);
+    expect(RETRACTED_DAEMON_VERSIONS.has("4.21.0")).toBe(true);
+    expect(isDaemonUpdateAvailable("4.19.2", "4.20.0")).toBe(true);
+    expect(isDaemonUpdateAvailable("4.19.3", "4.20.0")).toBe(true);
+    expect(isDaemonUpdateAvailable("4.19.2", "4.21.0")).toBe(true);
+    expect(isDaemonUpdateAvailable("4.19.3", "4.21.0")).toBe(true);
+    expect(isDaemonUpdateAvailable("v4.19.3", "v4.21.0")).toBe(true);
+  });
+
+  it("does not downgrade a retracted version to pre-fix versions or same retracted version", () => {
+    expect(isDaemonUpdateAvailable("4.19.1", "4.21.0")).toBe(false);
+    expect(isDaemonUpdateAvailable("4.18.0", "4.21.0")).toBe(false);
+    expect(isDaemonUpdateAvailable("4.21.0", "4.21.0")).toBe(false);
+    expect(isDaemonUpdateAvailable("4.20.0", "4.21.0")).toBe(false);
+  });
+
+  it("stays fail-closed when onlineVersion is malformed", () => {
+    expect(isDaemonUpdateAvailable("", "4.21.0")).toBe(false);
+    expect(isDaemonUpdateAvailable("latest", "4.21.0")).toBe(false);
+    expect(isDaemonUpdateAvailable("4.19.3-beta", "4.19.2")).toBe(false);
   });
 });
 

@@ -62,6 +62,9 @@ class Config {
   // primary source cannot be fetched or parsed. Feature disabled only when
   // BOTH source fields are empty.
   public updateSourceUrlFallback = LEGACY_DEFAULT_UPDATE_SOURCE_URL;
+  // Automatically check and apply daemon updates on startup when enabled
+  // (or when launched with the --auto-update CLI flag).
+  public autoUpdateOnStart = false;
 }
 
 // daemon configuration class
