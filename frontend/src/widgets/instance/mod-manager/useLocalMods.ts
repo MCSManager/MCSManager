@@ -8,17 +8,7 @@ import {
 import { message } from "ant-design-vue";
 import { computed, onUnmounted, reactive, ref, watch } from "vue";
 
-export function useLocalMods(
-  instanceId: string,
-  daemonId: string,
-  checkAndConfirm: (
-    type: string,
-    name: string,
-    data: any,
-    immediateFn: () => Promise<void>
-  ) => void,
-  addDeferredTask: (type: string, name: string, data: any) => void
-) {
+export function useLocalMods(instanceId: string, daemonId: string) {
   const loading = ref(false);
   const loadingExtra = ref(false);
   const mods = ref<any[]>([]);
@@ -152,29 +142,25 @@ export function useLocalMods(
       fileName: record.path || record.file
     };
 
-    const immediateFn = async () => {
-      try {
-        const { execute } = toggleModApi();
-        await execute({
-          data: toggleData
-        });
-        message.success(t("TXT_CODE_7f0c746d"));
-        if (record.enabled) {
-          record.file = record.file + ".disabled";
-          record.enabled = false;
-        } else {
-          record.file = record.file.slice(0, -".disabled".length);
-          record.enabled = true;
-        }
-        if (record.path) {
-          record.path = record.path.slice(0, record.path.lastIndexOf("/") + 1) + record.file;
-        }
-      } catch (err: any) {
-        message.error(err.message);
+    try {
+      const { execute } = toggleModApi();
+      await execute({
+        data: toggleData
+      });
+      message.success(t("TXT_CODE_7f0c746d"));
+      if (record.enabled) {
+        record.file = record.file + ".disabled";
+        record.enabled = false;
+      } else {
+        record.file = record.file.slice(0, -".disabled".length);
+        record.enabled = true;
       }
-    };
-
-    checkAndConfirm("toggle", record.file, toggleData, immediateFn);
+      if (record.path) {
+        record.path = record.path.slice(0, record.path.lastIndexOf("/") + 1) + record.file;
+      }
+    } catch (err: any) {
+      message.error(err.message);
+    }
   };
 
   const onDelete = async (record: any) => {
@@ -184,20 +170,16 @@ export function useLocalMods(
       fileName: record.path || record.file
     };
 
-    const immediateFn = async () => {
-      try {
-        const { execute } = deleteModApi();
-        await execute({
-          data: deleteData
-        });
-        message.success(t("TXT_CODE_7f0c746d"));
-        mods.value = mods.value.filter((m) => (m.path || m.file) !== (record.path || record.file));
-      } catch (err: any) {
-        message.error(err.message);
-      }
-    };
-
-    checkAndConfirm("delete", record.file, deleteData, immediateFn);
+    try {
+      const { execute } = deleteModApi();
+      await execute({
+        data: deleteData
+      });
+      message.success(t("TXT_CODE_7f0c746d"));
+      mods.value = mods.value.filter((m) => (m.path || m.file) !== (record.path || record.file));
+    } catch (err: any) {
+      message.error(err.message);
+    }
   };
 
   let timer: any = null;

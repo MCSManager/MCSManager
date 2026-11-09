@@ -20,12 +20,7 @@ beforeEach(() => {
   wrapper = mount(
     defineComponent({
       setup() {
-        local = useLocalMods(
-          "instance",
-          "daemon",
-          (_type, _name, _data, execute) => execute(),
-          vi.fn()
-        );
+        local = useLocalMods("instance", "daemon");
         return () => null;
       }
     })
