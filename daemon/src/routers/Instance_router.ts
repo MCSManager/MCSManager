@@ -670,12 +670,13 @@ routerApp.on("instance/mods/delete", async (ctx, data) => {
 });
 
 routerApp.on("instance/mods/install", async (ctx, data) => {
-  const { instanceUuid, url, fileName, type, fallbackUrl } = data;
+  const { instanceUuid, url, fileName, type, fallbackUrl, oldFileName } = data;
   try {
-    // async
-    modService.installMod(instanceUuid, url, fileName, type, {
-      fallbackUrl
-    });
+    modService
+      .installMod(instanceUuid, url, fileName, type, { fallbackUrl, oldFileName })
+      .catch((err) => {
+        logger.error(`[ModService] Instance ${instanceUuid} failed to install ${fileName}:`, err);
+      });
     protocol.response(ctx, true);
   } catch (err: any) {
     protocol.responseError(ctx, err, { disablePrint: true });
