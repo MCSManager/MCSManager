@@ -359,7 +359,7 @@ export function useModSearch(
               data: {
                 uuid: instanceId!,
                 daemonId: daemonId!,
-                fileName: existingMod.file
+                fileName: existingMod.path || existingMod.file
               }
             });
           } catch (e) {

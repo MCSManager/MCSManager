@@ -73,12 +73,12 @@ export function useLocalMods(
       // Keep existing extraInfo to avoid UI flickering
       const oldModsMap = new Map();
       mods.value.forEach((m) => {
-        if (m.file) oldModsMap.set(m.file, m);
+        if (m.file) oldModsMap.set(m.path || m.file, m);
         if (m.hash) oldModsMap.set(m.hash, m);
       });
 
       newMods.forEach((newMod) => {
-        const oldMod = oldModsMap.get(newMod.file) || oldModsMap.get(newMod.hash);
+        const oldMod = oldModsMap.get(newMod.path || newMod.file) || oldModsMap.get(newMod.hash);
         if (oldMod && oldMod.extraInfo) {
           newMod.extraInfo = oldMod.extraInfo;
         }
@@ -149,7 +149,7 @@ export function useLocalMods(
     const toggleData = {
       uuid: instanceId,
       daemonId: daemonId,
-      fileName: record.file
+      fileName: record.path || record.file
     };
 
     const immediateFn = async () => {
@@ -163,8 +163,11 @@ export function useLocalMods(
           record.file = record.file + ".disabled";
           record.enabled = false;
         } else {
-          record.file = record.file.replace(".disabled", "");
+          record.file = record.file.slice(0, -".disabled".length);
           record.enabled = true;
+        }
+        if (record.path) {
+          record.path = record.path.slice(0, record.path.lastIndexOf("/") + 1) + record.file;
         }
       } catch (err: any) {
         message.error(err.message);
@@ -178,7 +181,7 @@ export function useLocalMods(
     const deleteData = {
       uuid: instanceId,
       daemonId: daemonId,
-      fileName: record.file
+      fileName: record.path || record.file
     };
 
     const immediateFn = async () => {
@@ -188,7 +191,7 @@ export function useLocalMods(
           data: deleteData
         });
         message.success(t("TXT_CODE_7f0c746d"));
-        mods.value = mods.value.filter((m) => m.file !== record.file);
+        mods.value = mods.value.filter((m) => (m.path || m.file) !== (record.path || record.file));
       } catch (err: any) {
         message.error(err.message);
       }

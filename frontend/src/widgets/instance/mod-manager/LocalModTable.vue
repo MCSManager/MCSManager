@@ -28,7 +28,7 @@ const { isPhone } = useScreen();
     :loading="loading"
     :data-source="dataSource"
     :columns="columns"
-    row-key="file"
+    :row-key="(record: any) => record.path || record.file"
     class="mb-6"
     :size="isPhone ? 'small' : 'middle'"
     :pagination="pagination"

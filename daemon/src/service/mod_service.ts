@@ -17,6 +17,7 @@ export interface ModInfo {
   description: string;
   type: "mod" | "plugin" | "unknown";
   file: string;
+  path?: string;
   enabled: boolean;
   hash?: string;
   folder?: string;
@@ -266,6 +267,7 @@ export class ModService {
                   description: metadata?.description || "",
                   type: metadata?.type || defaultType,
                   file: file,
+                  path: `${dirName}/${file}`,
                   enabled: enabled,
                   hash: hash,
                   folder: dirName.toLowerCase()
@@ -278,6 +280,7 @@ export class ModService {
                   description: "",
                   type: defaultType,
                   file: file,
+                  path: `${dirName}/${file}`,
                   enabled: enabled,
                   folder: dirName.toLowerCase()
                 });
@@ -302,7 +305,7 @@ export class ModService {
 
     // Remove duplicates
     const uniqueResult = result.filter(
-      (v, i, a) => a.findIndex((t) => t.file === v.file && t.folder === v.folder) === i
+      (v, i, a) => a.findIndex((t) => t.path === v.path) === i
     );
 
     // Filter by folder if specified
@@ -336,34 +339,37 @@ export class ModService {
     };
   }
 
-  public async toggleMod(instanceUuid: string, fileName: string): Promise<void> {
+  private async resolveModPath(instanceUuid: string, fileName: string): Promise<string> {
     const instance = InstanceSubsystem.getInstance(instanceUuid)!;
     const cwd = instance.absoluteCwdPath();
     const fileManager = new FileManager(
       resolveMCDRServerRoot(instance.config.type, cwd) ?? cwd,
       instance.config?.fileCode
     );
-    if (!fileManager.checkPath(fileName)) throw new Error("Invalid file name");
-    const rootDir = fileManager.toAbsolutePath(".");
-
     const possibleDirs = ["mods", "plugins", "Mods", "Plugins"];
-    let filePath = "";
-
-    for (const dirName of possibleDirs) {
-      const p = path.join(rootDir, dirName, fileName);
-      if (await fs.pathExists(p)) {
-        filePath = p;
-        break;
-      }
+    const parts = fileName.split("/");
+    if (
+      parts.length > 2 ||
+      (parts.length === 2 && !possibleDirs.includes(parts[0])) ||
+      !parts.every((part) => part && part !== "." && part !== ".." && !part.includes("\\"))
+    ) {
+      throw new Error("Invalid file name");
     }
 
-    if (!filePath) {
-      throw new Error("File not found");
+    const candidates =
+      parts.length === 2 ? [fileName] : possibleDirs.map((dir) => `${dir}/${fileName}`);
+    for (const candidate of candidates) {
+      const filePath = fileManager.toAbsolutePath(candidate);
+      if (await fs.pathExists(filePath)) return filePath;
     }
+    throw new Error("File not found");
+  }
 
+  public async toggleMod(instanceUuid: string, fileName: string): Promise<void> {
+    const filePath = await this.resolveModPath(instanceUuid, fileName);
     let newPath: string;
     if (fileName.endsWith(".disabled")) {
-      newPath = filePath.replace(".disabled", "");
+      newPath = filePath.slice(0, -".disabled".length);
     } else {
       newPath = filePath + ".disabled";
     }
@@ -372,30 +378,7 @@ export class ModService {
   }
 
   public async deleteMod(instanceUuid: string, fileName: string): Promise<void> {
-    const instance = InstanceSubsystem.getInstance(instanceUuid)!;
-    const cwd = instance.absoluteCwdPath();
-    const fileManager = new FileManager(
-      resolveMCDRServerRoot(instance.config.type, cwd) ?? cwd,
-      instance.config?.fileCode
-    );
-    if (!fileManager.checkPath(fileName)) throw new Error("Invalid file name");
-    const rootDir = fileManager.toAbsolutePath(".");
-
-    const possibleDirs = ["mods", "plugins", "Mods", "Plugins"];
-    let filePath = "";
-
-    for (const dirName of possibleDirs) {
-      const p = path.join(rootDir, dirName, fileName);
-      if (await fs.pathExists(p)) {
-        filePath = p;
-        break;
-      }
-    }
-
-    if (!filePath) {
-      throw new Error("File not found");
-    }
-
+    const filePath = await this.resolveModPath(instanceUuid, fileName);
     await fs.remove(filePath);
   }
 
