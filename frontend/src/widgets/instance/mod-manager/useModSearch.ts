@@ -368,8 +368,6 @@ export function useModSearch(
       }
     };
 
-    // Note: checkAndConfirm logic is handled in ModManager.vue
-    // We pass immediateFn back or handle it via a callback
     return { type: "download", name: file.filename, data: downloadData, immediateFn };
   };
 

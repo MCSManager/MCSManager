@@ -23,7 +23,6 @@ import SearchModTable from "./mod-manager/SearchModTable.vue";
 
 import { Flex, message } from "ant-design-vue";
 import { throttle } from "lodash";
-import { useDeferredTasks } from "./mod-manager/useDeferredTasks";
 import { useLocalMods } from "./mod-manager/useLocalMods";
 import { useModConfig } from "./mod-manager/useModConfig";
 import { useModSearch } from "./mod-manager/useModSearch";
@@ -40,7 +39,7 @@ const { getMetaOrRouteValue } = useLayoutCardTools(props.card);
 const instanceId = getMetaOrRouteValue("instanceId");
 const daemonId = getMetaOrRouteValue("daemonId");
 
-const { instanceInfo, isRunning: isInstanceRunning } = useInstanceInfo({
+const { isRunning: isInstanceRunning } = useInstanceInfo({
   instanceId,
   daemonId,
   autoRefresh: true
@@ -48,104 +47,6 @@ const { instanceInfo, isRunning: isInstanceRunning } = useInstanceInfo({
 
 const activeKey = ref(TAB_KEY_MODS);
 const headerSearchQuery = ref("");
-
-const isWindows = computed(() => {
-  const config = instanceInfo.value?.config;
-  // 1. Check CRLF flag (2 is Windows)
-  if (config?.crlf === 2) return true;
-  // 2. Check CWD path format (if it starts with C:\ or contains backslash \, it's Windows)
-  const cwd = config?.cwd || "";
-  if (/^[a-zA-Z]:\\/.test(cwd) || cwd.includes("\\")) return true;
-  return false;
-});
-const isRunning = computed(() => {
-  const s = instanceInfo.value?.status;
-  return s === 2 || s === 3;
-});
-
-// Remove debug logs
-// watch([isWindows, isRunning], ([win, run]) => { ... });
-
-const checkAndConfirm = async (
-  type: string,
-  name: string,
-  data: any,
-  immediateFn: () => Promise<void>
-) => {
-  if (isWindows.value && isRunning.value) {
-    const { createVNode } = await import("vue");
-    const { Modal, Button } = await import("ant-design-vue");
-    const { ExclamationCircleOutlined } = await import("@ant-design/icons-vue");
-    Modal.confirm({
-      title: t("TXT_CODE_MOD_WIN_FILE_LOCK_TITLE"),
-      icon: createVNode(ExclamationCircleOutlined),
-      content: t("TXT_CODE_MOD_WIN_FILE_LOCK_DESC"),
-      okText: t("TXT_CODE_MOD_ADD_TO_QUEUE"),
-      cancelText: t("TXT_CODE_MOD_TRY_IMMEDIATELY"),
-      closable: true,
-      maskClosable: true,
-      footer: createVNode(
-        "div",
-        {
-          style: {
-            marginTop: "24px",
-            textAlign: "right",
-            display: "flex",
-            justifyContent: "flex-end",
-            gap: "8px"
-          }
-        },
-        [
-          createVNode(
-            Button,
-            {
-              onClick: () => {
-                Modal.destroyAll();
-              }
-            },
-            { default: () => t("TXT_CODE_a0451c97") }
-          ),
-          createVNode(
-            Button,
-            {
-              danger: true,
-              onClick: () => {
-                Modal.destroyAll();
-                immediateFn();
-              }
-            },
-            { default: () => t("TXT_CODE_MOD_TRY_IMMEDIATELY") }
-          ),
-          createVNode(
-            Button,
-            {
-              type: "primary",
-              onClick: () => {
-                Modal.destroyAll();
-                addDeferredTask(type, name, data);
-              }
-            },
-            { default: () => t("TXT_CODE_MOD_ADD_TO_QUEUE") }
-          )
-        ]
-      )
-    });
-  } else {
-    await immediateFn();
-  }
-};
-
-const {
-  deferredTasks,
-  autoExecute,
-  isExecuting,
-  addDeferredTask,
-  removeDeferredTask,
-  executeDeferredTask,
-  executeAllDeferredTasks
-} = useDeferredTasks(instanceId!, daemonId!, async () => {
-  await loadMods();
-});
 
 watch(
   () => isInstanceRunning.value,
@@ -167,7 +68,7 @@ const {
   onDelete,
   fileStatus,
   tablePagination
-} = useLocalMods(instanceId!, daemonId!, checkAndConfirm, addDeferredTask);
+} = useLocalMods(instanceId!, daemonId!);
 
 const getCurrentFolder = () => {
   if (activeKey.value === TAB_KEY_MODS) return "mods";
@@ -228,7 +129,7 @@ const openExternal = (mod: any) => {
 const handleDownload = async (version: any) => {
   const task = await onDownload(version);
   if (task) {
-    await checkAndConfirm(task.type, task.name, task.data, task.immediateFn);
+    await task.immediateFn();
   }
 };
 
@@ -505,22 +406,6 @@ onMounted(async () => {
                 </div>
               </div>
 
-              <a-alert
-                v-if="isWindows && isRunning"
-                type="warning"
-                show-icon
-                class="mb-4 mt-2 mod-manager-alert"
-              >
-                <template #message>
-                  <div class="text-left">
-                    <div class="font-bold">{{ t("TXT_CODE_MOD_WIN_FILE_LOCK_TITLE") }}</div>
-                    <div class="text-xs opacity-80 font-normal mt-1">
-                      {{ t("TXT_CODE_MOD_WIN_RUNNING_ALERT") }}
-                    </div>
-                  </div>
-                </template>
-              </a-alert>
-
               <a-tabs
                 v-model:activeKey="activeKey"
                 class="mod-manager-tabs"
@@ -759,15 +644,9 @@ onMounted(async () => {
     </a-row>
 
     <ModFloatingTools
-      v-model:deferred-tasks="deferredTasks"
-      v-model:auto-execute="autoExecute"
       :instance-id="instanceId!"
       :daemon-id="daemonId!"
       :file-status="fileStatus"
-      :is-executing="isExecuting"
-      @execute-task="executeDeferredTask"
-      @execute-all="executeAllDeferredTasks"
-      @remove-task="removeDeferredTask"
       @refresh="loadMods"
     />
 

@@ -16,19 +16,10 @@ import { message } from "ant-design-vue";
 const props = defineProps<{
   instanceId: string;
   daemonId: string;
-  deferredTasks: any[];
-  autoExecute: boolean;
   fileStatus: any;
-  isExecuting: boolean;
 }>();
 
 const emit = defineEmits<{
-  (e: "update:deferredTasks", value: any[]): void;
-  (e: "update:autoExecute", value: boolean): void;
-  (e: "executeTask", task: any): void;
-  (e: "executeAll"): void;
-  (e: "clearAll"): void;
-  (e: "removeTask", id: string): void;
   (e: "refresh"): void;
 }>();
 
