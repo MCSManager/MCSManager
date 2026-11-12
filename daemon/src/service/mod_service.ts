@@ -4,7 +4,7 @@ import StreamZip from "node-stream-zip";
 import path from "path";
 import toml from 'smol-toml';
 import yaml from "yaml";
-import downloadManager from "./download_manager";
+import downloadManager, { DOWNLOAD_STATUS } from "./download_manager";
 import { resolveMCDRServerRoot } from "./mcdr_service";
 import logger from "./log";
 import InstanceSubsystem from "./system_instance";
@@ -404,7 +404,7 @@ export class ModService {
     url: string,
     fileName: string,
     type: "mod" | "plugin",
-    options: { fallbackUrl?: string } = {}
+    options: { fallbackUrl?: string; oldFileName?: string } = {}
   ) {
     const instance = InstanceSubsystem.getInstance(instanceUuid)!;
     const cwd = instance.absoluteCwdPath();
@@ -425,6 +425,34 @@ export class ModService {
       }
     }
 
+    let oldPath: string | undefined;
+    if (options.oldFileName) {
+      const parts = options.oldFileName.split("/");
+      const oldName = parts[parts.length - 1];
+      if (
+        parts.length > 2 ||
+        (parts.length === 2 && !variants.includes(parts[0])) ||
+        !FileManager.checkFileName(oldName) ||
+        !/\.jar(\.disabled)?$/.test(oldName)
+      ) {
+        throw new Error("Invalid old mod file name");
+      }
+      const directories = parts.length === 2 ? [parts[0]] : variants;
+      for (const dir of directories) {
+        const candidate = fileManager.toAbsolutePath(path.join(dir, oldName));
+        if (await fs.pathExists(candidate)) {
+          oldPath = candidate;
+          saveDir = dir;
+          break;
+        }
+      }
+      if (!oldPath) throw new Error("Old mod file not found");
+      if (!FileManager.checkFileName(fileName) || !/\.jar$/.test(fileName)) {
+        throw new Error("Invalid mod file name");
+      }
+      if (oldName.endsWith(".disabled")) fileName += ".disabled";
+    }
+
     const relativePath = path.join(saveDir, fileName);
     if (!fileManager.checkPath(relativePath)) throw new Error("Invalid file path");
     const targetPath = fileManager.toAbsolutePath(relativePath);
@@ -434,7 +462,37 @@ export class ModService {
     );
     logger.info(`[ModService] Options: ${JSON.stringify(options)}`);
 
-    await downloadManager.downloadFromUrl(url, targetPath, options.fallbackUrl);
+    if (!oldPath) {
+      await downloadManager.downloadFromUrl(url, targetPath, options.fallbackUrl);
+      return;
+    }
+
+    if (targetPath !== oldPath && (await fs.pathExists(targetPath))) {
+      throw new Error("Replacement file already exists");
+    }
+    const stagingPath = fileManager.toAbsolutePath(
+      path.join(saveDir, `.${crypto.randomUUID()}.jar.part`)
+    );
+    try {
+      await downloadManager.downloadFromUrl(url, stagingPath, options.fallbackUrl);
+      const task = downloadManager.tasks.find((task) => task.path === stagingPath);
+      if (task?.status !== DOWNLOAD_STATUS.COMPLETED) {
+        throw new Error("Mod download was canceled or did not complete");
+      }
+      fileManager.checkPath(targetPath);
+      fileManager.checkPath(oldPath);
+      await fs.rename(stagingPath, targetPath);
+      if (targetPath !== oldPath) {
+        try {
+          await fs.remove(oldPath);
+        } catch (err) {
+          await fs.remove(targetPath);
+          throw err;
+        }
+      }
+    } finally {
+      await fs.remove(stagingPath);
+    }
   }
 
   public async getModConfig(

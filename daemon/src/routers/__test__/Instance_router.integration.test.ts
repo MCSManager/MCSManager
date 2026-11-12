@@ -716,3 +716,56 @@ describe("General process instance interactive lifecycle (real)", () => {
     expect(fs.existsSync(configPath)).toBe(false);
   }, 60000);
 });
+
+describe("background mod installation", () => {
+  it("acknowledges the request while the installation is still pending", async () => {
+    const { modService } = await import("../../service/mod_service");
+    let finish!: () => void;
+    vi.mocked(modService.installMod).mockReturnValueOnce(
+      new Promise<void>((resolve) => {
+        finish = resolve;
+      }),
+    );
+    const { socket } = invoke("instance/mods/install", {
+      instanceUuid: "instance",
+      url: "https://example.com/new.jar",
+      fileName: "new.jar",
+      type: "mod",
+      oldFileName: "old.jar",
+    });
+    await flush();
+    const packet = packetsFor(socket, "instance/mods/install")[0];
+    expect(packet.status).toBe(200);
+    expect(packet.data).toBe(true);
+    expect(modService.installMod).toHaveBeenLastCalledWith(
+      "instance",
+      "https://example.com/new.jar",
+      "new.jar",
+      "mod",
+      { oldFileName: "old.jar", fallbackUrl: undefined },
+    );
+    finish();
+  });
+
+  it("handles an installation failure after acknowledging the request", async () => {
+    const { modService } = await import("../../service/mod_service");
+    const logger = (await import("../../service/log")).default;
+    const error = vi.spyOn(logger, "error");
+    vi.mocked(modService.installMod).mockRejectedValueOnce(
+      new Error("download failed"),
+    );
+    const { socket } = invoke("instance/mods/install", {
+      instanceUuid: "instance",
+      url: "https://example.com/new.jar",
+      fileName: "new.jar",
+      type: "mod",
+    });
+    await flush();
+    expect(packetsFor(socket, "instance/mods/install")[0].status).toBe(200);
+    expect(error).toHaveBeenCalledWith(
+      expect.stringContaining("failed to install"),
+      expect.any(Error),
+    );
+    error.mockRestore();
+  });
+});

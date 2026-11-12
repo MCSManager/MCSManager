@@ -194,7 +194,7 @@ router.post(
   }),
   async (ctx) => {
     try {
-      const { daemonId, uuid, url, fileName, projectType, fallbackUrl, extraInfo } =
+      const { daemonId, uuid, url, fileName, projectType, fallbackUrl, extraInfo, oldFileName } =
         ctx.request.body;
 
       // Validate URL to prevent SSRF attacks
@@ -218,6 +218,7 @@ router.post(
         fileName,
         type: projectType,
         fallbackUrl,
+        oldFileName,
         extraInfo
       });
       ctx.body = result;

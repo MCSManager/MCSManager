@@ -1,6 +1,5 @@
 import { t } from "@/lang/i18n";
 import {
-  deleteModApi,
   downloadModApi,
   getMcVersionsApi,
   getModVersionsApi,
@@ -328,13 +327,21 @@ export function useModSearch(
       try {
         const mods = getMods();
         const currentProjectType = downloadData.projectType;
-        const existingMod = mods.find((m) => m.extraInfo?.project?.id === selectedMod.value?.id);
+        const existingMod = mods.find(
+          (m) =>
+            selectedMod.value?.id &&
+            m.extraInfo?.project?.id === selectedMod.value.id &&
+            (m.folder
+              ? m.folder === (currentProjectType === "plugin" ? "plugins" : "mods")
+              : m.type === currentProjectType)
+        );
 
         const { execute } = downloadModApi();
         await execute({
           data: {
             ...downloadData,
             projectType: currentProjectType,
+            oldFileName: existingMod?.path || existingMod?.file,
             extraInfo: {
               project: {
                 id: selectedMod.value?.id,
@@ -350,22 +357,6 @@ export function useModSearch(
             }
           }
         });
-
-        // If download starts successfully and there's an existing mod, delete it
-        if (existingMod) {
-          try {
-            const { execute: deleteOldMod } = deleteModApi();
-            await deleteOldMod({
-              data: {
-                uuid: instanceId!,
-                daemonId: daemonId!,
-                fileName: existingMod.file
-              }
-            });
-          } catch (e) {
-            console.warn("Failed to delete old mod version:", e);
-          }
-        }
 
         const targetTab =
           currentProjectType === "plugin" ? t("TXT_CODE_PLUGIN_LIST") : t("TXT_CODE_MOD_LIST");
