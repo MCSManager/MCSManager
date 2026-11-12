@@ -5,7 +5,7 @@ import path from "path";
 import { Throttle } from "stream-throttle";
 import { getCommonHeaders } from "../common/network";
 import { globalConfiguration } from "../entity/config";
-import { checkSafeUrl } from "../utils/url";
+import { resolveSafeUrl, type SafeUrlTarget } from "../utils/url";
 
 export const DOWNLOAD_STATUS = {
   DOWNLOADING: 0,
@@ -167,7 +167,10 @@ class DownloadManager {
     try {
       let currentUrl = url;
       for (let redirectCount = 0; ; redirectCount++) {
-        if (!(await checkSafeUrl(currentUrl))) {
+        let safeTarget: SafeUrlTarget;
+        try {
+          safeTarget = await resolveSafeUrl(currentUrl);
+        } catch (err) {
           throw new Error(`Refusing unsafe download URL: ${currentUrl}`);
         }
 
@@ -179,7 +182,18 @@ class DownloadManager {
           headers: getCommonHeaders(currentUrl),
           maxRedirects: 0,
           validateStatus: (status) => status >= 200 && status < 400,
-          signal: controller.signal
+          signal: controller.signal,
+          // Pin the address that resolveSafeUrl() validated. Without this the
+          // HTTP stack resolves the hostname again, which allows a DNS
+          // rebinding attack to connect to a private address after a public
+          // one passed validation.
+          lookup: (_hostname, options: any, callback) => {
+            if (options?.all) {
+              callback(null, [{ address: safeTarget.address, family: safeTarget.family }]);
+            } else {
+              callback(null, safeTarget.address, safeTarget.family);
+            }
+          }
         });
 
         if (response.status < 300) return response;
