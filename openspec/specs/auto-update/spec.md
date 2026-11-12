@@ -76,8 +76,12 @@ A side SHALL offer an update only when the manifest fetch and parse succeed and 
 - **THEN** the system offers the update and displays its release notes when present
 
 #### Scenario: Equal or older version is rejected
-- **WHEN** the advertised version is equal to or lower than the running version
+- **WHEN** the advertised version is equal to or lower than the running version (and the running daemon version is not a retracted `4.20.0`/`4.21.0` build)
 - **THEN** no update is offered and an explicit update attempt reports that the current version is already the latest
+
+#### Scenario: Retracted daemon versions (4.20.0 / 4.21.0) can update to 4.19.2+
+- **WHEN** the running daemon version is `4.20.0` or `4.21.0` (accidentally published in v10.20.0/v10.21.0 before reverting to `4.19.2` in v10.21.2) and the advertised version is a non-retracted release `>= 4.19.2`
+- **THEN** the daemon offers and applies the update to recover to the active `4.19.x` release line
 
 ### Requirement: Update package download and extraction
 An update SHALL download the entry's package to a staging area and extract it before any install-directory change. Both `.tar.gz`/`.tgz` and `.zip` packages SHALL be supported. Extraction MUST reject the whole package when any entry would escape the destination directory (absolute path or `..` traversal) or is a link entry, leaving the install directory untouched.
