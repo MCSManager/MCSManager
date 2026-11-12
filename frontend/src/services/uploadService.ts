@@ -83,6 +83,8 @@ export class UploadFiles {
       uploadService.update();
     } catch (err: any) {
       this.removing = true;
+      this.onEnd();
+      uploadService.update();
       return reportErrorMsg(err.response?.data || err.message);
     }
   }
@@ -325,7 +327,7 @@ class UploadService {
       }
       return;
     }
-    let removeFile = false;
+    let removeFile = !!this.files.get(this.current || "")?.removing;
     for (const task of this.task) {
       if (!task) continue;
       if (task.status == "removing") {
@@ -345,7 +347,7 @@ class UploadService {
       }
 
       for (let i = 0; i < UploadService.concurrency; i++) {
-        if (reachTaskEnd || !currentFile.prepared) {
+        if (reachTaskEnd || currentFile.removing || !currentFile.prepared) {
           break;
         }
         if (this.task[i] == undefined) {
@@ -366,22 +368,23 @@ class UploadService {
         uploadTask.retries = 0;
         uploadTask.start(); // async
       }
-      if (reachTaskEnd && currentFile.prepared && tasks == 0) {
+      if (reachTaskEnd && (currentFile.prepared || currentFile.removing) && tasks == 0) {
         const currentFile = this.files.get(this.current)!;
         currentFile.onEnd();
         if (!removeFile) {
           this.uploaded += 1;
         }
         this.files.delete(this.current);
-        if (removeFile) {
+        if (removeFile && currentFile.prepared) {
           message.error(t("TXT_CODE_c3adc044") + ": " + currentFile.file.name);
-        } else {
+        } else if (!removeFile) {
           message.success(currentFile.file.name + " " + t("TXT_CODE_773f36a0"));
         }
         while (this.files.size > 0) {
           const current = this.files.keys().next().value ?? "";
           const currentFile = this.files.get(current)!;
           if (currentFile.removing) {
+            currentFile.onEnd();
             this.files.delete(current);
             continue;
           }
