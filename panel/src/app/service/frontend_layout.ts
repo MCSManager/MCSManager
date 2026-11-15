@@ -68,6 +68,7 @@ function getDefaultFrontendLayoutConfig(): IPageLayoutConfig[] {
         pageTitle: "MCSManager Panel",
         logoImage: "",
         backgroundImage: "",
+        pBgUrl: "",
         sidebarPosition: "right"
       }
     },

@@ -15,7 +15,7 @@ import { WebglAddon } from "@xterm/addon-webgl";
 import { Terminal } from "@xterm/xterm";
 import EventEmitter from "eventemitter3";
 import type { Socket } from "socket.io-client";
-import { computed, onMounted, onUnmounted, ref, unref } from "vue";
+import { computed, onMounted, onUnmounted, ref, unref, watch } from "vue";
 import { makeSocketIo } from "./useSocketIo";
 import { createTerminalHistoryReplayGate } from "./terminalHistoryReplayGate";
 import { attachTerminalTouchControls } from "./useTerminalTouch";
@@ -68,6 +68,14 @@ export function useTerminal() {
   const state = ref<InstanceDetail>();
   const isReady = ref<boolean>(false);
   const terminal = ref<Terminal>();
+  watch(hasBgImage, (hasImage) => {
+    if (terminal.value) {
+      terminal.value.options.theme = {
+        ...terminal.value.options.theme,
+        background: hasImage ? "#00000000" : "#1e1e1e"
+      };
+    }
+  });
   const isConnect = ref<boolean>(false);
   const socketAddress = ref("");
   let isManualDisconnect = false;

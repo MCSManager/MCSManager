@@ -1777,6 +1777,8 @@
   "TXT_CODE_SETTINGS_LAYOUT_SIDEBAR_POSITION_LEFT": "Sidebar on the left",
   "TXT_CODE_SETTINGS_LAYOUT_SIDEBAR_POSITION_RIGHT": "Top header only",
   "TXT_CODE_SETTINGS_LAYOUT_SIDEBAR_POSITION_TITLE": "Main navigation position",
+  "TXT_CODE_SETTINGS_PHONE_BACKGROUND": "Phone background image",
+  "TXT_CODE_SETTINGS_PHONE_BACKGROUND_DESC": "Used on screens up to 992px wide. Leave empty to use the desktop background image.",
   "TXT_CODE_SOURCE": "Plug-in source",
   "TXT_CODE_STATUS": "Status",
   "TXT_CODE_TERRARIA_CONFIG_DESC": "Terraria Server Configuration",

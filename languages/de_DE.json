@@ -3012,6 +3012,8 @@
   "TXT_CODE_SETTINGS_LAYOUT_SIDEBAR_POSITION_LEFT": "Seitenleiste links",
   "TXT_CODE_SETTINGS_LAYOUT_SIDEBAR_POSITION_RIGHT": "Nur oberer Header",
   "TXT_CODE_SETTINGS_LAYOUT_SIDEBAR_POSITION_TITLE": "Hauptnavigationsposition",
+  "TXT_CODE_SETTINGS_PHONE_BACKGROUND": "Hintergrundbild für Mobilgeräte",
+  "TXT_CODE_SETTINGS_PHONE_BACKGROUND_DESC": "Wird auf Bildschirmen mit einer Breite von bis zu 992px verwendet. Leer lassen, um das Desktop-Hintergrundbild zu verwenden.",
   "TXT_CODE_SOURCE": "Plug-in-Quelle",
   "TXT_CODE_STATUS": "Status",
   "TXT_CODE_TERRARIA_CONFIG_DESC": "Terraria-Serverkonfiguration",
