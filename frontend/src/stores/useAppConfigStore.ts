@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import logo from "@/assets/logo.png";
+import { useScreen } from "@/hooks/useScreen";
 import { getCurrentLang, setLanguage } from "@/lang/i18n";
 import { AppTheme, THEME_KEY } from "@/types/const";
 import { createGlobalState, useBreakpoints, useLocalStorage, usePreferredDark } from "@vueuse/core";
@@ -34,7 +35,12 @@ export const useAppConfigStore = createGlobalState(() => {
     return false;
   });
 
-  const hasBgImage = ref(false);
+  const { isPhone } = useScreen();
+  const backgrounds = reactive({ backgroundImage: "", pBgUrl: "" });
+  const backgroundImage = computed(() =>
+    isPhone.value ? backgrounds.pBgUrl || backgrounds.backgroundImage : backgrounds.backgroundImage
+  );
+  const hasBgImage = computed(() => Boolean(backgroundImage.value));
 
   /** Main app nav layout: "left" = sidebar, "right" = top header only. Filled by initAppTheme(). */
   const sidebarPosition = ref<"left" | "right">("left");
@@ -46,25 +52,46 @@ export const useAppConfigStore = createGlobalState(() => {
     () => sidebarPosition.value === "left" && isWideEnoughForSidebar.value
   );
 
-  const setBackgroundImage = (url: string) => {
-    const body = document.querySelector("body");
-    if (body) {
-      body.style.backgroundSize = "cover";
-      body.style.backgroundPosition = "center";
-      body.style.backgroundRepeat = "no-repeat";
-      if (isDarkTheme.value) {
-        body.style.backgroundImage = `linear-gradient(135deg, rgba(0,0,0,0.65), rgba(0,0,0,0.65) 100%), url(${url})`;
-        body.classList.remove("app-light-extend-theme");
-        body.classList.add("app-dark-extend-theme");
-      } else {
-        body.style.backgroundImage = `linear-gradient(135deg, rgba(220,220,220,0.3), rgba(53,53,53,0.3) 100%), url(${url})`;
-        body.classList.remove("app-dark-extend-theme");
-        body.classList.add("app-light-extend-theme");
-      }
-
-      hasBgImage.value = true;
-    }
+  const setBackgroundImage = (
+    url: string,
+    target: "backgroundImage" | "pBgUrl" = "backgroundImage"
+  ) => {
+    backgrounds[target] = url;
   };
+
+  watch(
+    [backgroundImage, isDarkTheme],
+    ([url]) => {
+      const body = document.querySelector("body");
+      if (body) {
+        if (!url) {
+          body.style.removeProperty("background-image");
+          body.style.removeProperty("background-size");
+          body.style.removeProperty("background-position");
+          body.style.removeProperty("background-repeat");
+          body.classList.remove("app-light-extend-theme", "app-dark-extend-theme");
+          return;
+        }
+        body.style.backgroundSize = "cover";
+        body.style.backgroundPosition = "center";
+        body.style.backgroundRepeat = "no-repeat";
+        if (isDarkTheme.value) {
+          body.style.backgroundImage = `linear-gradient(135deg, rgba(0,0,0,0.65), rgba(0,0,0,0.65) 100%), url(${JSON.stringify(
+            url
+          )})`;
+          body.classList.remove("app-light-extend-theme");
+          body.classList.add("app-dark-extend-theme");
+        } else {
+          body.style.backgroundImage = `linear-gradient(135deg, rgba(220,220,220,0.3), rgba(53,53,53,0.3) 100%), url(${JSON.stringify(
+            url
+          )})`;
+          body.classList.remove("app-dark-extend-theme");
+          body.classList.add("app-light-extend-theme");
+        }
+      }
+    },
+    { immediate: true }
+  );
 
   const setLight = () => {
     theme.algorithm = antTheme.defaultAlgorithm;
@@ -80,7 +107,7 @@ export const useAppConfigStore = createGlobalState(() => {
 
   const resetTheme = () => (currentTheme.value = AppTheme.LIGHT);
 
-  const initAppTheme = async () => {
+  const applyTheme = () => {
     if (
       isNaN(currentTheme.value) ||
       currentTheme.value < AppTheme.AUTO ||
@@ -94,17 +121,20 @@ export const useAppConfigStore = createGlobalState(() => {
       [AppTheme.DARK]: () => setDark()
     };
     fn[currentTheme.value]?.();
+  };
 
+  const initAppTheme = async () => {
+    applyTheme();
     const frontendSettings = await getSettingsConfig();
-    if (frontendSettings?.theme?.backgroundImage)
-      setBackgroundImage(frontendSettings.theme.backgroundImage);
+    backgrounds.backgroundImage = frontendSettings?.theme?.backgroundImage ?? "";
+    backgrounds.pBgUrl = frontendSettings?.theme?.pBgUrl ?? "";
     const pos = frontendSettings?.theme?.sidebarPosition;
     sidebarPosition.value = pos === "left" || pos === "right" ? pos : "right";
   };
 
   const setTheme = (t: AppTheme) => {
     currentTheme.value = t;
-    initAppTheme();
+    applyTheme();
   };
 
   const changeLanguage = (lang: string) => {
@@ -123,7 +153,7 @@ export const useAppConfigStore = createGlobalState(() => {
 
   watch(isPreferredDark, () => {
     if (currentTheme.value === AppTheme.AUTO) {
-      initAppTheme();
+      applyTheme();
     }
   });
 
