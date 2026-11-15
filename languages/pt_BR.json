@@ -1777,6 +1777,8 @@
   "TXT_CODE_SETTINGS_LAYOUT_SIDEBAR_POSITION_LEFT": "Barra lateral à esquerda",
   "TXT_CODE_SETTINGS_LAYOUT_SIDEBAR_POSITION_RIGHT": "Apenas cabeçalho superior",
   "TXT_CODE_SETTINGS_LAYOUT_SIDEBAR_POSITION_TITLE": "Posição da navegação principal",
+  "TXT_CODE_SETTINGS_PHONE_BACKGROUND": "Imagem de fundo para celular",
+  "TXT_CODE_SETTINGS_PHONE_BACKGROUND_DESC": "Usada em telas de até 992px de largura. Deixe em branco para usar a imagem de fundo da versão para desktop.",
   "TXT_CODE_SOURCE": "Fonte do plugin",
   "TXT_CODE_STATUS": "Status",
   "TXT_CODE_TERRARIA_CONFIG_DESC": "Configuração do servidor Terraria",

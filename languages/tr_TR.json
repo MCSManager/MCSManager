@@ -1777,6 +1777,8 @@
   "TXT_CODE_SETTINGS_LAYOUT_SIDEBAR_POSITION_LEFT": "Kenar çubuğu solda",
   "TXT_CODE_SETTINGS_LAYOUT_SIDEBAR_POSITION_RIGHT": "Sadece üst başlık",
   "TXT_CODE_SETTINGS_LAYOUT_SIDEBAR_POSITION_TITLE": "Ana gezinti konumu",
+  "TXT_CODE_SETTINGS_PHONE_BACKGROUND": "Mobil arka plan görseli",
+  "TXT_CODE_SETTINGS_PHONE_BACKGROUND_DESC": "Genişliği 992px veya daha az olan ekranlarda kullanılır. Boş bırakılırsa masaüstü arka plan görseli kullanılır.",
   "TXT_CODE_SOURCE": "Eklenti kaynağı",
   "TXT_CODE_STATUS": "Durum",
   "TXT_CODE_TERRARIA_CONFIG_DESC": "Terraria Sunucu Yapılandırması",

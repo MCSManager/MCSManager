@@ -1777,6 +1777,8 @@
   "TXT_CODE_SETTINGS_LAYOUT_SIDEBAR_POSITION_LEFT": "Боковая панель слева",
   "TXT_CODE_SETTINGS_LAYOUT_SIDEBAR_POSITION_RIGHT": "Только верхний заголовок",
   "TXT_CODE_SETTINGS_LAYOUT_SIDEBAR_POSITION_TITLE": "Положение основной навигации",
+  "TXT_CODE_SETTINGS_PHONE_BACKGROUND": "Фоновое изображение для телефона",
+  "TXT_CODE_SETTINGS_PHONE_BACKGROUND_DESC": "Используется на экранах шириной не более 992px. Оставьте поле пустым, чтобы использовать фоновое изображение для компьютера.",
   "TXT_CODE_SOURCE": "Источник плагинов",
   "TXT_CODE_STATUS": "Статус",
   "TXT_CODE_TERRARIA_CONFIG_DESC": "Конфигурация сервера Terraria",
