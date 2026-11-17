@@ -25,7 +25,8 @@ WORKDIR /opt/mcsmanager/daemon
 
 COPY --from=builder /src/production-code/daemon/ /opt/mcsmanager/daemon/
 
-RUN npm install --production
+# build.sh uses BUNDLE=1; runtime dependencies are already inside app.js.
+RUN test -f app.js && test ! -e node_modules
 
 EXPOSE 24444
 
