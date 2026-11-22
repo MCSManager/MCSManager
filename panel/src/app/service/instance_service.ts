@@ -147,14 +147,53 @@ export async function getInstancesByUuid(
   };
 }
 
+/**
+ * Read the instance's authoritative process type from its node.
+ *
+ * The instance update route receives a full config object from the browser, so
+ * `config.processType` is attacker-controlled and must never be used to decide
+ * whether a low-privilege user may rewrite the start command. This helper asks
+ * the daemon that actually owns the instance instead. It fails closed: any
+ * transport/lookup error returns `undefined`, which the caller treats as "not
+ * docker" (i.e. no advanced fields may be changed).
+ */
+export async function getInstanceProcessTypeSafely(
+  daemonId?: string,
+  instanceUuid?: string
+): Promise<ProcessType | undefined> {
+  if (!daemonId || !instanceUuid) return undefined;
+  try {
+    const remoteService = RemoteServiceSubsystem.getInstance(daemonId);
+    if (!remoteService) return undefined;
+    const section = await new RemoteRequest(remoteService).request("instance/section", {
+      instanceUuids: [instanceUuid]
+    });
+    const processType = Array.isArray(section) ? section[0]?.config?.processType : undefined;
+    return processType === "docker" || processType === "general" ? processType : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Filter the fields a user is allowed to write into an instance config.
+ *
+ * `trustedProcessType` MUST come from the daemon (see
+ * `getInstanceProcessTypeSafely`), never from the request body: the start
+ * command of a non-Docker instance runs directly on the host, so allowing a
+ * regular user to change it means granting arbitrary command execution as the
+ * daemon user. `undefined` (unknown instance) is therefore treated as
+ * non-Docker.
+ */
 export function checkInstanceAdvancedParams(
   config: IGlobalInstanceConfig,
-  isTopPermission: boolean = false
+  isTopPermission: boolean = false,
+  trustedProcessType?: ProcessType
 ) {
   const canChangeCmd = systemConfig?.allowChangeCmd;
   if (!isTopPermission) {
     if (!canChangeCmd) return {};
-    if (config.processType !== "docker") return {};
+    if (trustedProcessType !== "docker") return {};
   }
 
   const startCommand = toText(config.startCommand);

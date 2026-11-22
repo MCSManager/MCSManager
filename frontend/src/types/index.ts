@@ -74,6 +74,8 @@ export interface NodeStatus {
   port: number;
   remarks: string;
   uuid: string;
+  /** Whether the node itself serves TLS (wss / https). */
+  ssl?: boolean;
 }
 
 export interface Settings {

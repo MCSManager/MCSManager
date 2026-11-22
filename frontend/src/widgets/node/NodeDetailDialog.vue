@@ -3,12 +3,14 @@ import NodeRemoteMappingEdit from "@/components/NodeRemoteMappingEdit.vue";
 import type { ComputedNodeInfo } from "@/hooks/useOverviewInfo";
 import { useRemoteNode } from "@/hooks/useRemoteNode";
 import { t } from "@/lang/i18n";
+import { remoteNodeList } from "@/services/apis";
 import { getValidatorErrorMsg, isLocalNetworkIP, reportErrorMsg } from "@/tools/validator";
 import { message, type FormInstance } from "ant-design-vue";
 import _ from "lodash";
 import { computed, reactive, ref } from "vue";
 
 const { addNode, deleteNode, updateNode } = useRemoteNode();
+const { execute: fetchRemoteNodes, state: remoteNodes } = remoteNodeList();
 
 const editMode = ref(false);
 const formRef = ref<FormInstance>();
@@ -21,6 +23,7 @@ const DEFAULT_CONFIG = {
   prefix: "",
   remarks: "Unnamed Node",
   apiKey: "",
+  ssl: false as boolean | undefined,
   language: "",
   uploadSpeedRate: 0,
   downloadSpeedRate: 0,
@@ -91,7 +94,12 @@ function ipNeedsMapping(ip: string) {
   return ip && ip.trim() !== "localhost" && isLocalNetworkIP(ip);
 }
 
-const openDialog = (data?: ComputedNodeInfo, uuid?: string) => {
+/** `a-switch` emits its `CheckedType` (boolean | string | number). */
+function onSslChecked(value: boolean | string | number) {
+  dialog.data.ssl = value === true;
+}
+
+const openDialog = async (data?: ComputedNodeInfo, uuid?: string) => {
   if (data && uuid) {
     daemonInfo.value = data;
     editMode.value = true;
@@ -102,8 +110,26 @@ const openDialog = (data?: ComputedNodeInfo, uuid?: string) => {
       port: data.port, // connection port
       daemonPort: data.config?.port ?? 24444, // listen port
       apiKey: "",
+      // Do not default this to `false`: an unreadable value must not silently
+      // switch a TLS node back to plain ws:// when the form is saved.
+      ssl: undefined,
       remoteMappings: data.remoteMappings ?? []
     };
+    // The overview payload does not expose panel-side node settings, so read
+    // the persisted TLS flag from the node list endpoint.
+    try {
+      await fetchRemoteNodes({ forceRequest: true });
+      const node = remoteNodes.value?.find((item) => item.uuid === uuid);
+      if (node) {
+        // Legacy configs have no explicit flag: mirror the scheme embedded in
+        // the node address, which takes precedence on the backend anyway.
+        const impliedSsl = /^(wss|https):\/\//i.test(String(node.ip ?? "").trim());
+        dialog.data.ssl = node.ssl ?? impliedSsl;
+      }
+    } catch {
+      // Keep `ssl` undefined: the PUT payload then omits it, keeping the
+      // persisted value instead of overwriting it.
+    }
   } else {
     editMode.value = false;
     dialog.data = _.cloneDeep(DEFAULT_CONFIG);
@@ -208,6 +234,15 @@ defineExpose({ openDialog });
               </a-typography-text>
             </a-typography-paragraph>
             <a-input v-model:value="dialog.data.port" />
+          </a-form-item>
+
+          <a-form-item :label="t('TXT_CODE_daemon_useTls')" name="ssl">
+            <a-typography-paragraph>
+              <a-typography-text type="secondary">
+                {{ t("TXT_CODE_daemon_useTlsInfo") }}
+              </a-typography-text>
+            </a-typography-paragraph>
+            <a-switch :checked="dialog.data.ssl === true" @update:checked="onSslChecked" />
           </a-form-item>
 
           <a-form-item :label="t('TXT_CODE_300c2ff4')" name="apiKey" :required="!editMode">

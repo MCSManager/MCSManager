@@ -27,7 +27,10 @@ export { arrayUnique } from "./array";
 
 export {
   applyUpgradePackage,
+  assertRedirectAllowed,
+  assertUpdateUrlAllowed,
   compareVersions,
+  computeFileSha256,
   DEFAULT_UPDATE_SOURCE_URL,
   downloadToFile,
   extractArchive,
@@ -36,11 +39,19 @@ export {
   fetchJson,
   fetchJsonFromSources,
   isComparableVersion,
+  isPrivateOrLoopbackHost,
   LEGACY_DEFAULT_UPDATE_SOURCE_URL,
   migrateLegacyUpdateSourceUrl,
-  normalizeVersion
+  normalizeSha256,
+  normalizeVersion,
+  UPDATE_MANIFEST_SCHEMA,
+  verifyUpdatePackageIntegrity
 } from "./upgrade";
-export type { FetchedJsonResult } from "./upgrade";
+export type {
+  FetchedJsonResult,
+  IUpdateIntegrityResult,
+  UpdateIntegrityStatus
+} from "./upgrade";
 
 export { removeTrail } from "./string_utils";
 

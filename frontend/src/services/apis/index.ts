@@ -217,6 +217,8 @@ export const editNode = useDefineApi<
       ip?: string;
       port?: number;
       remarks?: string;
+      /** Whether the node itself serves TLS (wss / https). */
+      ssl?: boolean;
       setting?: any;
     };
   },
@@ -233,6 +235,8 @@ export const addNode = useDefineApi<
       port: number;
       remarks: string;
       apiKey: string;
+      /** Whether the node itself serves TLS (wss / https). */
+      ssl?: boolean;
     };
   },
   any

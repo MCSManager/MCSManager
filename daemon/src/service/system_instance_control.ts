@@ -264,6 +264,14 @@ class InstanceControlSubsystem {
   }
 
   public deleteScheduleTask(instanceUuid: string, name: string) {
+    // The task name is part of the persisted file name
+    // (`data/TaskConfig/<instanceUuid>_<name>.json`). A name carrying a path
+    // separator or a parent-directory segment would let a remote caller address
+    // files outside that directory (e.g. the daemon's own global.json key), so
+    // it is validated here as well - registering a task already validates it.
+    if (!FileManager.checkFileName(name) || name.includes("..")) {
+      throw new Error($t("TXT_CODE_system_instance_control.illegalName"));
+    }
     const key = `${instanceUuid}`;
     this.deleteTask(key, name);
   }

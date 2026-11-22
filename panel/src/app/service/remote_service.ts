@@ -80,6 +80,9 @@ class RemoteServiceSubsystem extends UniversalRemoteSubsystem<RemoteService> {
     if (config.port) instance.config.port = config.port;
     if (config.prefix != null) instance.config.prefix = config.prefix;
     if (config.apiKey) instance.config.apiKey = config.apiKey;
+    // `undefined` means "not supplied by the caller": keep the persisted flag
+    // (legacy configs may not have it at all) instead of resetting it.
+    if (config.ssl !== undefined) instance.config.ssl = config.ssl;
     if (config.remoteMappings != null) instance.config.remoteMappings = config.remoteMappings;
     await Storage.getStorage().store("RemoteServiceConfig", instance.uuid, instance.config);
   }

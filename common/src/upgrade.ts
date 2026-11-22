@@ -1,4 +1,4 @@
-﻿// Shared auto-update utilities for MCSManager daemon & panel.
+// Shared auto-update utilities for MCSManager daemon & panel.
 //
 // No new external dependencies are introduced here: everything uses Node
 // built-ins (http/https/fs/path/stream) plus packages that `common` already
@@ -6,6 +6,7 @@
 // consume `common` from source (see webpack `resolve.alias` -> ../common/src),
 // so exporting from here makes these helpers available to both bundles.
 
+import crypto from "crypto";
 import fs from "fs-extra";
 import http from "http";
 import https from "https";
@@ -24,6 +25,16 @@ type LogFn = (msg: string) => void;
 /** Default update source: the manifest asset of the official GitHub Release. */
 export const DEFAULT_UPDATE_SOURCE_URL =
   "https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_update_manifest.json";
+
+/**
+ * Manifest schema version written by `scripts/build-release-update-packages.mjs`.
+ *
+ * Schema 2 adds a mandatory `sha256` digest per package entry. A manifest that
+ * declares this schema but omits a digest (or ships a malformed one) is rejected
+ * fail-closed by the panel/daemon upgrade services, so an update can never be
+ * applied from a package whose content was not pinned by the manifest.
+ */
+export const UPDATE_MANIFEST_SCHEMA = 2;
 
 /**
  * Default BACKUP update source: the legacy mcsmanager.com manifest hosting.
@@ -87,10 +98,89 @@ export function isComparableVersion(v?: string): boolean {
 }
 
 /**
+ * True for a host that is only reachable from the local machine or a private
+ * network: `localhost`, loopback / link-local / RFC1918 / CGNAT IPv4 literals
+ * and ULA / link-local IPv6 literals. Plain-HTTP update traffic to such a host
+ * cannot be intercepted by an off-host attacker, so it stays allowed (LAN
+ * mirrors, local test servers); every other host must use HTTPS.
+ */
+export function isPrivateOrLoopbackHost(hostname?: string): boolean {
+  const host = String(hostname ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/^\[/, "")
+    .replace(/\]$/, "");
+  if (!host) return false;
+  if (host === "localhost" || host.endsWith(".localhost")) return true;
+  const v4 = host.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  if (v4) {
+    const a = Number(v4[1]);
+    const b = Number(v4[2]);
+    if (a === 127 || a === 10) return true;
+    if (a === 192 && b === 168) return true;
+    if (a === 172 && b >= 16 && b <= 31) return true;
+    if (a === 169 && b === 254) return true;
+    if (a === 100 && b >= 64 && b <= 127) return true;
+    return false;
+  }
+  if (host === "::1") return true;
+  if (host.startsWith("fc") || host.startsWith("fd")) return true;
+  if (/^fe[89ab]/.test(host)) return true;
+  return false;
+}
+
+/**
+ * Validate an update source / package URL and return its parsed form.
+ *
+ * The update pipeline replaces the running `app.js` (and, for the daemon, the
+ * whole `lib/` directory) with the downloaded package, so a tampered response
+ * is remote code execution. HTTPS is therefore mandatory for every host that
+ * is reachable across a network; plain HTTP is accepted only for a loopback or
+ * private-network host (see `isPrivateOrLoopbackHost`). Any other protocol
+ * (file:, ftp:, data:, ...) is rejected.
+ */
+export function assertUpdateUrlAllowed(url?: string): URL {
+  const raw = String(url ?? "").trim();
+  let parsed: URL;
+  try {
+    parsed = new URL(raw);
+  } catch {
+    throw new Error(`Invalid update URL: "${raw}"`);
+  }
+  if (parsed.protocol === "https:") return parsed;
+  if (parsed.protocol === "http:") {
+    if (isPrivateOrLoopbackHost(parsed.hostname)) return parsed;
+    throw new Error(`Refusing plain-HTTP update URL, HTTPS is required: ${parsed.toString()}`);
+  }
+  throw new Error(`Unsupported update URL protocol "${parsed.protocol}": ${parsed.toString()}`);
+}
+
+/**
+ * Validate a redirect hop of an update download: the target must satisfy the
+ * same protocol policy as the original URL, and an HTTPS source may never be
+ * redirected to plain HTTP. The second rule is not covered by the general
+ * policy alone, because an HTTPS redirect to a *private* HTTP host would
+ * otherwise be accepted.
+ */
+export function assertRedirectAllowed(fromUrl: string | URL, nextUrl: string): string {
+  const from = typeof fromUrl === "string" ? assertUpdateUrlAllowed(fromUrl) : fromUrl;
+  assertUpdateUrlAllowed(nextUrl);
+  if (from.protocol === "https:" && nextUrl.startsWith("http:")) {
+    throw new Error(`Refusing HTTPS -> HTTP redirect downgrade: ${nextUrl}`);
+  }
+  return nextUrl;
+}
+
+/**
  * GET a URL as a stream, following up to `maxRedirects` 3xx redirects.
  * `inactivityTimeoutMs` (if > 0) is a socket-inactivity timeout for the connect
  * phase via Node's `req.setTimeout` (resets on each socket event). Resolves with
  * the final response stream (status < 400).
+ *
+ * Every hop is re-validated with `assertRedirectAllowed`, and an HTTPS -> HTTP
+ * redirect is always refused: update packages are executable content, so a
+ * source that redirects to a plain-text transport is either misconfigured or
+ * being tampered with.
  */
 function httpGetStream(
   url: string,
@@ -98,8 +188,15 @@ function httpGetStream(
   inactivityTimeoutMs = 0
 ): Promise<http.IncomingMessage> {
   return new Promise((resolve, reject) => {
-    const transport = url.startsWith("https:") ? https : http;
-    const req = transport.get(url, (res) => {
+    let parsed: URL;
+    try {
+      parsed = assertUpdateUrlAllowed(url);
+    } catch (e) {
+      reject(e);
+      return;
+    }
+    const transport = parsed.protocol === "https:" ? https : http;
+    const req = transport.get(parsed, (res) => {
       const status = res.statusCode || 0;
       if (status >= 300 && status < 400 && res.headers.location) {
         res.resume();
@@ -107,13 +204,19 @@ function httpGetStream(
           reject(new Error("Too many redirects"));
           return;
         }
-        const nextUrl = new URL(res.headers.location, url).toString();
+        let nextUrl: string;
+        try {
+          nextUrl = assertRedirectAllowed(parsed, new URL(res.headers.location, parsed).toString());
+        } catch (e) {
+          reject(e);
+          return;
+        }
         resolve(httpGetStream(nextUrl, maxRedirects - 1, inactivityTimeoutMs));
         return;
       }
       if (status >= 400) {
         res.resume();
-        reject(new Error(`HTTP ${status} for ${url}`));
+        reject(new Error(`HTTP ${status} for ${parsed.toString()}`));
         return;
       }
       resolve(res);
@@ -123,6 +226,63 @@ function httpGetStream(
       req.setTimeout(inactivityTimeoutMs, () => req.destroy(new Error(`Request inactivity timeout for ${url}`)));
     }
   });
+}
+
+/**
+ * Streaming SHA-256 of a file as lowercase hex. Used to pin an update package
+ * to the digest advertised by the update manifest.
+ */
+export async function computeFileSha256(filePath: string): Promise<string> {
+  return await new Promise<string>((resolve, reject) => {
+    const hash = crypto.createHash("sha256");
+    const rs = fs.createReadStream(filePath);
+    rs.on("data", (chunk) => hash.update(chunk));
+    rs.on("error", reject);
+    rs.on("end", () => resolve(hash.digest("hex")));
+  });
+}
+
+/** Normalize an expected SHA-256 digest; returns "" when it is not valid hex-64. */
+export function normalizeSha256(value?: string): string {
+  const digest = String(value ?? "")
+    .trim()
+    .toLowerCase();
+  return /^[0-9a-f]{64}$/.test(digest) ? digest : "";
+}
+
+export type UpdateIntegrityStatus = "ok" | "missing" | "invalid" | "mismatch";
+
+export interface IUpdateIntegrityResult {
+  status: UpdateIntegrityStatus;
+  /** Normalized digest advertised by the manifest ("" when absent/invalid). */
+  expected: string;
+  /** Digest actually computed over the downloaded file. */
+  actual: string;
+}
+
+/**
+ * Compare a downloaded update package against the digest advertised by the
+ * update manifest.
+ *
+ * - `ok`       digest present, well-formed and matching;
+ * - `missing`  the manifest carries no digest at all (legacy schema 1 manifest);
+ * - `invalid`  the digest is present but not a hex SHA-256;
+ * - `mismatch` the package content does not match the advertised digest.
+ *
+ * This function does not decide whether a missing digest is fatal: that depends
+ * on the manifest schema (see `UPDATE_MANIFEST_SCHEMA`), so the caller applies
+ * its own policy while the transport-agnostic work stays here.
+ */
+export async function verifyUpdatePackageIntegrity(
+  filePath: string,
+  expectedSha256?: string
+): Promise<IUpdateIntegrityResult> {
+  const rawExpected = String(expectedSha256 ?? "").trim();
+  const expected = normalizeSha256(rawExpected);
+  const actual = await computeFileSha256(filePath);
+  if (!rawExpected) return { status: "missing", expected: "", actual };
+  if (!expected) return { status: "invalid", expected: rawExpected, actual };
+  return { status: expected === actual ? "ok" : "mismatch", expected, actual };
 }
 
 /**

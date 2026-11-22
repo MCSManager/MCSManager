@@ -25,9 +25,28 @@ explicit**; nothing is downloaded or applied in the background.
 Both flows download an update package from an operator-configured **update
 source** (`updateSourceUrl`, a manifest URL — by default the manifest published
 on the official GitHub Release) and overlay the whole package onto the
-install directory. The new build takes effect only after a **manual restart**:
+install directory. The new version takes effect only after a **manual restart**:
 the UI shows a "restart to apply" modal and the process log records a
 reminder — nothing restarts by itself.
+
+> **Security model (why this pipeline can be trusted):** an update package
+> replaces `app.js` (and, on the daemon side, everything the package ships), so a
+> tampered response is remote code execution. Three rules are enforced in
+> `common/src/upgrade.ts` and apply to both panel and daemon:
+> 1. **HTTPS only** (`assertUpdateUrlAllowed`) — manifest and package URLs must
+>    be `https:`; plain `http:` is accepted only for loopback / private-network
+>    hosts (LAN mirror or local test server), where no off-host attacker can be
+>    on the path. Any other protocol is rejected.
+> 2. **No HTTPS → HTTP redirect downgrade** (`assertRedirectAllowed`) — every
+>    redirect hop is re-validated; (1) alone would still allow an HTTPS source to
+>    bounce to a *private* plain-HTTP host.
+> 3. **Package digest** — manifest schema 2 carries a `sha256` per entry and the
+>    downloaded archive is verified against it before extraction
+>    (`verifyUpdatePackageIntegrity`). A mismatch aborts the update; a schema-2
+>    manifest without a valid digest is rejected fail-closed
+>    (`TXT_CODE_AUTOUPDATE_B_HASH_MISSING` / `..._HASH_MISMATCH`). Legacy
+>    schema-1 manifests still work but log a warning that the package could not
+>    be verified.
 
 > **Update source (since the GitHub Release pipeline):** the default
 > `updateSourceUrl` is the update manifest asset of the official release,
@@ -87,9 +106,11 @@ serve the same schema from anywhere:
 
 ```json
 {
+  "schema": 2,
   "daemon": {
     "version": "4.18.4",
     "url": "https://github.com/MCSManager/MCSManager/releases/download/v10.18.4/mcsmanager_daemon_update.tar.gz",
+    "sha256": "9f2c…",
     "notes": {
       "en_us": "MCSManager Daemon v4.18.4\n- Bug fixes and performance improvements",
       "zh_cn": "MCSManager 守护进程 v4.18.4\n- 问题修复与性能改进"
@@ -98,20 +119,30 @@ serve the same schema from anywhere:
   "web": {
     "version": "10.18.4",
     "url": "https://github.com/MCSManager/MCSManager/releases/download/v10.18.4/mcsmanager_web_update.tar.gz",
+    "sha256": "1b84…",
     "notes": { "en_us": "...", "zh_cn": "..." }
   }
 }
 ```
 
+- **`schema`** *(optional, recommended)* — manifest schema version
+  (`UPDATE_MANIFEST_SCHEMA`). When it is `2` or higher, `sha256` is **mandatory**
+  for every entry; a schema-2 manifest with a missing/malformed digest is
+  rejected before anything is downloaded. A manifest without `schema` is treated
+  as schema 1 (legacy: no integrity metadata, a warning is logged).
 - **`version`** — dotted numeric string. Compared with `compareVersions()`
   (`common/src/upgrade.ts`): split on `.`, compare segment-wise numerically,
   missing segments count as `0`. This is intentionally **not** strict semver.
   An optional leading `v` is ignored (`normalizeVersion`). A version that is
   not dotted-numeric after that is **malformed** and fail-closed: it is never
   offered as an update (`isComparableVersion`).
-- **`url`** — full http/https URL of the update package (redirects are
-  followed). `.tar.gz`/`.tgz` (official packages) and `.zip` (custom sources)
-  are both accepted.
+- **`url`** — full **https** URL of the update package (redirects are followed,
+  but never downgraded to plain HTTP). `.tar.gz`/`.tgz` (official packages) and
+  `.zip` (custom sources) are both accepted.
+- **`sha256`** — lowercase hex SHA-256 of the package file, computed by
+  `scripts/build-release-update-packages.mjs` for the official release. The
+  downloaded archive is hashed and compared before extraction; a mismatch
+  aborts the update and leaves the install directory untouched.
 - **`notes`** *(optional)* — release notes of the new version, shown in the UI
   after a version scan:
   - Preferred form: a **locale → text map**. Keys are runtime locale codes
@@ -136,7 +167,7 @@ untouched (`string | Record<string, string>`).
 
 | Layer | File | Role |
 | --- | --- | --- |
-| shared | `common/src/upgrade.ts` | `compareVersions`/`normalizeVersion`/`isComparableVersion`, `fetchJson`, `fetchJsonFromSources` (primary→backup candidate list), `downloadToFile`, `extractArchive` (`extractTarGz` + `extractZip`, both with traversal guards), `applyUpgradePackage` (transactional overlay), `migrateLegacyUpdateSourceUrl` |
+| shared | `common/src/upgrade.ts` | `compareVersions`/`normalizeVersion`/`isComparableVersion`, `fetchJson`, `fetchJsonFromSources` (primary→backup candidate list), `downloadToFile`, `extractArchive` (`extractTarGz` + `extractZip`, both with traversal guards), `applyUpgradePackage` (transactional overlay), `migrateLegacyUpdateSourceUrl`, transport policy (`assertUpdateUrlAllowed`, `assertRedirectAllowed`, `isPrivateOrLoopbackHost`) and package integrity (`computeFileSha256`, `normalizeSha256`, `verifyUpdatePackageIntegrity`) |
 | panel | `panel/src/app/service/upgrade_service.ts` | manifest fetch (uses `web` entry), fail-closed version compare, download/overlay (no auto-restart) |
 | panel | `panel/src/app/routers/upgrade_router.ts` | `/api/upgrade/panel_info`, `/api/upgrade/panel`, `/api/upgrade/daemon_info`, `/api/upgrade/daemon` (ADMIN only); forwards the panel's source URLs (primary + backup) to daemons |
 | daemon | `daemon/src/service/upgrade_service.ts` | same as panel side, for the `daemon` entry; each forwarded source field wins over its daemon-local counterpart |
@@ -192,6 +223,23 @@ untouched (`string | Record<string, string>`).
   and device entries outright — a link could later redirect writes outside the
   destination. A violating entry aborts the whole extraction before the install
   directory is touched. node-stream-zip's own guard is a second layer.
+- **Transport policy (HTTPS, no downgrade).** `assertUpdateUrlAllowed` runs
+  before *every* request (manifest and package, including each redirect hop):
+  `https:` is required except for loopback / private-network hosts, and
+  `assertRedirectAllowed` refuses an `https:` → `http:` hop even when the target
+  is private. Rationale: the package is executable content; a source that
+  redirects to a plain-text transport is misconfigured at best. Operators who
+  once pointed `updateSourceUrl` at a public plain-HTTP mirror must move it to
+  HTTPS (or to a LAN address) — the failure is explicit and leaves the install
+  untouched.
+- **Package integrity (manifest schema 2).** The release script hashes each
+  package into the manifest; the update service hashes the download and refuses
+  to extract on mismatch, and refuses a schema-2 manifest whose digest is
+  missing or malformed. Digest verification is what closes the gap between "the
+  manifest was fetched over TLS" and "the bytes that landed in the staging
+  directory are the bytes the manifest describes" (mirror/proxy/storage
+  tampering). Schema-1 manifests (custom sources that were never regenerated)
+  keep working with a warning.
 - **Download deadline, not idle timeout.** `downloadToFile(url, dest, timeoutMs)`
   enforces a *total* deadline (5 min for update zips) so a slow-drip (TARPIT)
   source cannot hold the upgrade lock forever.
@@ -241,10 +289,14 @@ Run: `cd frontend && npm run type-check && npm run lint && npm test`.
 
 ### Shared unit tests (vitest)
 
-- `common/src/__test__/upgrade.test.ts` — `compareVersions` semantics and
+- `common/src/__test__/upgrade.test.ts` — `compareVersions` semantics,
   `fetchJsonFromSources` fallback behavior (primary success, backup on
   connection error / HTTP error / invalid JSON / timeout, empty primary,
-  duplicate collapse, aggregated all-fail error).
+  duplicate collapse, aggregated all-fail error), the transport policy
+  (`assertUpdateUrlAllowed`: HTTPS required, private-host exception, protocol
+  allowlist; `assertRedirectAllowed`: no HTTPS→HTTP downgrade) and the package
+  integrity helpers (`computeFileSha256`, `normalizeSha256`,
+  `verifyUpdatePackageIntegrity` ok/missing/invalid/mismatch).
 
 Run: `cd common && npm test`.
 
@@ -322,7 +374,7 @@ brace `{{v}}`. Notable keys:
 | `TXT_CODE_AUTOUPDATE_WEB_LATEST` | Settings tab | "New version available: {v}" tag |
 | `TXT_CODE_AUTOUPDATE_DAEMON_BTN` | Node card button group | "Update Daemon" |
 | `TXT_CODE_AUTOUPDATE_DAEMON_UPDATE_TIP` | Node card tooltip | "New version available: v{v}. Click the Update Daemon button..." |
-| `TXT_CODE_AUTOUPDATE_B_*` | backend errors | already-in-progress / already-latest / manifest missing / no url / apply failed |
+| `TXT_CODE_AUTOUPDATE_B_*` | backend errors | already-in-progress / already-latest / manifest missing / no url / apply failed / package digest missing or mismatched |
 
 Release-note texts inside the manifest are **not** i18n keys — they are
 operator-authored content, localized via the `notes` locale map (§3).

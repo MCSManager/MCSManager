@@ -22,6 +22,7 @@ import { CircularBuffer } from "../../common/string_cache";
 import StorageSubsystem from "../../common/system_storage";
 import { STEAM_CMD_PATH } from "../../const";
 import { $t } from "../../i18n";
+import { assertDockerConfigAllowed } from "../../service/docker_policy";
 import javaManager from "../../service/java_manager";
 import logger from "../../service/log";
 import InstanceCommand from "../commands/base/command";
@@ -157,6 +158,17 @@ export default class Instance extends EventEmitter {
 
   // Pass in instance configuration, loosely and dynamically set configuration items for instance parameters
   parameters(cfg: any, persistence = true) {
+    // The Docker configuration is untrusted input (it may come from a compromised
+    // panel), and every create/update request passes through this method. Validate
+    // it before anything is applied so a rejected request can never leave
+    // partially updated instance state behind.
+    if (cfg?.docker) {
+      assertDockerConfigAllowed(cfg.docker, {
+        allowDangerousOptions: globalConfiguration.config.allowDangerousDockerOptions,
+        workspacePath: this.config.cwd ? this.absoluteCwdPath() : undefined
+      });
+    }
+
     // If the instance type changes, default commands and lifecycle events must be reset
     if (cfg?.type && cfg?.type != this.config.type) {
       if (!this.isStoppedOrBusy())

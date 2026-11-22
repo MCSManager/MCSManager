@@ -9,7 +9,11 @@ import permission from "../middleware/permission";
 import validator from "../middleware/validator";
 import { updateInstanceWithAudit } from "../service/instance_config_audit";
 import { getInstanceNameSafely } from "../service/instance_name_service";
-import { checkInstanceAdvancedParams, getAppMarketList } from "../service/instance_service";
+import {
+  checkInstanceAdvancedParams,
+  getAppMarketList,
+  getInstanceProcessTypeSafely
+} from "../service/instance_service";
 import { getOperationLoggerOperator, operationLogger } from "../service/operation_logger";
 import { getUserPermission, getUserUuid } from "../service/passport_service";
 import { timeUuid } from "../service/password";
@@ -466,7 +470,13 @@ router.put(
       const isTopPermission = isTopPermissionByUuid(getUserUuid(ctx));
 
       let advancedConfig = {};
-      advancedConfig = checkInstanceAdvancedParams(config, isTopPermission);
+      // The processType in the request body is client-controlled: resolve the
+      // real one from the node that owns this instance before deciding whether
+      // the start/update command may be modified.
+      const trustedProcessType = isTopPermission
+        ? undefined
+        : await getInstanceProcessTypeSafely(daemonId ?? undefined, instanceUuid ?? undefined);
+      advancedConfig = checkInstanceAdvancedParams(config, isTopPermission, trustedProcessType);
 
       const finalConfig = {
         pingConfig: !isEmpty(config.pingConfig) ? pingConfig : null,
