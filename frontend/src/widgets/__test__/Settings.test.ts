@@ -15,10 +15,17 @@ const mocks = vi.hoisted(() => ({
   submitExecute: vi.fn(),
   upgradeInfoExecute: vi.fn(),
   upgradePanelExecute: vi.fn(),
-  getSettingsConfig: vi.fn(async () => ({ theme: {} })),
+  getSettingsConfig: vi.fn(
+    async (): Promise<IPageLayoutConfig> => ({
+      page: "__settings__",
+      items: [],
+      theme: { pageTitle: "", logoImage: "", backgroundImage: "" }
+    })
+  ),
   setSettingsConfig: vi.fn(),
   reportErrorMsg: vi.fn(),
-  useUploadFileDialog: vi.fn(async () => undefined)
+  useUploadFileDialog: vi.fn(async (): Promise<string | undefined> => undefined),
+  setBackgroundImage: vi.fn()
 }));
 
 vi.mock("@/services/apis", () => ({
@@ -38,7 +45,7 @@ vi.mock("@/stores/useLayoutConfig", () => ({
 vi.mock("@/stores/useAppConfigStore", () => ({
   useAppConfigStore: () => ({
     setLogoImage: vi.fn(),
-    setBackgroundImage: vi.fn()
+    setBackgroundImage: mocks.setBackgroundImage
   })
 }));
 
@@ -399,5 +406,136 @@ describe("Settings.vue auto update tab", () => {
     expect(mocks.upgradePanelExecute).toHaveBeenCalledTimes(1);
     expect(messageInfoSpy).toHaveBeenCalledWith("TXT_CODE_AUTOUPDATE_ALREADY_LATEST");
     expect(successSpy).not.toHaveBeenCalled();
+  });
+});
+
+describe("Settings.vue phone background", () => {
+  const originalLayout = (): IPageLayoutConfig => ({
+    page: "__settings__",
+    items: [],
+    theme: {
+      pageTitle: "Custom title",
+      logoImage: "logo.png",
+      backgroundImage: "desktop.png",
+      pBgUrl: "phone.png",
+      sidebarPosition: "left"
+    }
+  });
+
+  beforeEach(() => {
+    mocks.getSettingsConfig.mockResolvedValue(originalLayout());
+    mocks.useUploadFileDialog.mockResolvedValue(undefined);
+    vi.spyOn(Modal, "confirm").mockImplementation((() => ({})) as any);
+  });
+
+  const openAppearance = async () => {
+    await mountSettings();
+    const item = wrapper
+      .findAll(".left-menu > div")
+      .find((menu) => menu.text().includes("TXT_CODE_1c18acc0"));
+    await item!.trigger("click");
+    await flushPromises();
+  };
+
+  const section = (phone = true) => {
+    const key = phone ? "TXT_CODE_SETTINGS_PHONE_BACKGROUND" : "TXT_CODE_8ae0dc90";
+    const item = wrapper.findAll(".ant-form-item").find((field) => field.text().includes(key));
+    expect(item, `${key} controls exist`).toBeTruthy();
+    return item!;
+  };
+
+  const clickAction = async (key: string, phone = true) => {
+    await section(phone)
+      .findAll("button")
+      .find((button) => button.text().includes(key))!
+      .trigger("click");
+    await flushPromises();
+  };
+
+  const confirmSave = async () => {
+    const options = vi.mocked(Modal.confirm).mock.calls.at(-1)![0] as any;
+    await options.onOk();
+    await flushPromises();
+  };
+
+  it("loads the phone and desktop URLs independently", async () => {
+    await openAppearance();
+    expect((section().find("input").element as HTMLInputElement).value).toBe("phone.png");
+    expect((section(false).find("input").element as HTMLInputElement).value).toBe("desktop.png");
+    expect(section().text()).toContain("TXT_CODE_SETTINGS_PHONE_BACKGROUND_DESC");
+  });
+
+  it("saves a manually entered phone URL only after confirmation", async () => {
+    await openAppearance();
+    await section().find("input").setValue("https://example.com/portrait.png");
+    await clickAction("TXT_CODE_abfe9512");
+    expect(mocks.setSettingsConfig).not.toHaveBeenCalled();
+    await confirmSave();
+    const expected = originalLayout();
+    expected.theme!.pBgUrl = "https://example.com/portrait.png";
+    expect(mocks.setSettingsConfig).toHaveBeenCalledWith(expected);
+  });
+
+  it.each([true, false])(
+    "uploads the correct background and previews it (phone=%s)",
+    async (phone) => {
+      mocks.useUploadFileDialog.mockResolvedValue("/upload_files/new.png");
+      await openAppearance();
+      await clickAction("TXT_CODE_ae09d79d", phone);
+      expect((section(phone).find("input").element as HTMLInputElement).value).toBe(
+        "/upload_files/new.png"
+      );
+      expect((section(!phone).find("input").element as HTMLInputElement).value).toBe(
+        phone ? "desktop.png" : "phone.png"
+      );
+      expect(mocks.setBackgroundImage).toHaveBeenCalledWith(
+        "/upload_files/new.png",
+        phone ? "pBgUrl" : "backgroundImage"
+      );
+      expect(mocks.setSettingsConfig).not.toHaveBeenCalled();
+      await clickAction("TXT_CODE_abfe9512", phone);
+      await confirmSave();
+      expect(mocks.setSettingsConfig.mock.calls[0][0].theme).toMatchObject({
+        backgroundImage: phone ? "desktop.png" : "/upload_files/new.png",
+        pBgUrl: phone ? "/upload_files/new.png" : "phone.png"
+      });
+    }
+  );
+
+  it.each([true, false])("resets only the selected background (phone=%s)", async (phone) => {
+    await openAppearance();
+    await clickAction("TXT_CODE_50d471b2", phone);
+    expect(mocks.setSettingsConfig).not.toHaveBeenCalled();
+    await confirmSave();
+    const expected = originalLayout();
+    if (phone) expected.theme!.pBgUrl = "";
+    else expected.theme!.backgroundImage = "";
+    expect(mocks.setSettingsConfig).toHaveBeenCalledWith(expected);
+  });
+
+  it("leaves saved configuration and previews unchanged after cancellation", async () => {
+    await openAppearance();
+    await clickAction("TXT_CODE_ae09d79d");
+    expect((section().find("input").element as HTMLInputElement).value).toBe("phone.png");
+    expect(mocks.setBackgroundImage).not.toHaveBeenCalled();
+    await section().find("input").setValue("unsaved.png");
+    await clickAction("TXT_CODE_abfe9512");
+    expect(mocks.setSettingsConfig).not.toHaveBeenCalled();
+    expect((await mocks.getSettingsConfig()).theme!.pBgUrl).toBe("phone.png");
+  });
+
+  it("allows older configuration without pBgUrl to acquire a phone background", async () => {
+    const layout = originalLayout();
+    delete layout.theme!.pBgUrl;
+    mocks.getSettingsConfig.mockResolvedValue(layout);
+    await openAppearance();
+    expect((section().find("input").element as HTMLInputElement).value).toBe("");
+    await section().find("input").setValue("phone-new.png");
+    await clickAction("TXT_CODE_abfe9512");
+    await confirmSave();
+    expect(mocks.setSettingsConfig.mock.calls[0][0].theme).toMatchObject({
+      pBgUrl: "phone-new.png",
+      backgroundImage: "desktop.png"
+    });
   });
 });

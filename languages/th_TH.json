@@ -1777,6 +1777,8 @@
   "TXT_CODE_SETTINGS_LAYOUT_SIDEBAR_POSITION_LEFT": "แถบข้างด้านซ้าย",
   "TXT_CODE_SETTINGS_LAYOUT_SIDEBAR_POSITION_RIGHT": "เฉพาะส่วนหัวด้านบน",
   "TXT_CODE_SETTINGS_LAYOUT_SIDEBAR_POSITION_TITLE": "ตำแหน่งการนำทางหลัก",
+  "TXT_CODE_SETTINGS_PHONE_BACKGROUND": "ภาพพื้นหลังสำหรับมือถือ",
+  "TXT_CODE_SETTINGS_PHONE_BACKGROUND_DESC": "ใช้สำหรับหน้าจอที่มีความกว้างไม่เกิน 992px หากเว้นว่างไว้ จะใช้ภาพพื้นหลังสำหรับเดสก์ท็อป",
   "TXT_CODE_SOURCE": "แหล่งปลั๊กอิน",
   "TXT_CODE_STATUS": "สถานะ",
   "TXT_CODE_TERRARIA_CONFIG_DESC": "การกำหนดค่าเซิร์ฟเวอร์ Terraria",

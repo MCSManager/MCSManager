@@ -53,6 +53,7 @@ interface MySettings extends Settings {
   pageTitle?: string;
   logoUrl?: string;
   bgUrl?: string;
+  pBgUrl?: string;
   proLicenseKey?: string;
 }
 
@@ -283,18 +284,21 @@ const handleSaveLogoUrl = async (url?: string) => {
   });
 };
 
-const uploadBackground = async () => {
+const uploadBackground = async (field: "bgUrl" | "pBgUrl" = "bgUrl") => {
   const body = document.querySelector("body");
   if (formData.value && body) {
     const url = await useUploadFileDialog();
     if (url) {
-      formData.value.bgUrl = url;
-      setBackgroundImage(url);
+      formData.value[field] = url;
+      setBackgroundImage(url, field === "bgUrl" ? "backgroundImage" : "pBgUrl");
     }
   }
 };
 
-const handleSaveBgUrl = async (url?: string) => {
+const handleSaveBgUrl = async (
+  url?: string,
+  target: "backgroundImage" | "pBgUrl" = "backgroundImage"
+) => {
   Modal.confirm({
     title: t("TXT_CODE_c0606ef4"),
     content: t("TXT_CODE_cf95364f"),
@@ -303,7 +307,8 @@ const handleSaveBgUrl = async (url?: string) => {
       if (!cfg?.theme) {
         return reportErrorMsg(t("TXT_CODE_b89780e2"));
       }
-      cfg.theme.backgroundImage = url ?? formData.value?.bgUrl ?? "";
+      const field = target === "backgroundImage" ? "bgUrl" : "pBgUrl";
+      cfg.theme[target] = url ?? formData.value?.[field] ?? "";
       await setSettingsConfig(cfg);
     }
   });
@@ -316,7 +321,7 @@ const handleSaveSidebarPosition = async () => {
     return reportErrorMsg(t("TXT_CODE_b89780e2"));
   }
   if (!cfg.theme) {
-    cfg.theme = { pageTitle: "", logoImage: "", backgroundImage: "" };
+    cfg.theme = { pageTitle: "", logoImage: "", backgroundImage: "", pBgUrl: "" };
   }
   cfg.theme.sidebarPosition = sidebarPosition.value;
   await setSettingsConfig(cfg);
@@ -492,6 +497,7 @@ onMounted(async () => {
   if (cfg?.theme?.backgroundImage) {
     formData.value.bgUrl = cfg.theme.backgroundImage;
   }
+  formData.value.pBgUrl = cfg?.theme?.pBgUrl ?? "";
   if (cfg?.theme?.pageTitle) {
     formData.value.pageTitle = cfg.theme.pageTitle;
   } else {
@@ -778,6 +784,40 @@ onUnmounted(() => {
                       {{ t("TXT_CODE_abfe9512") }}
                     </a-button>
                     <a-button danger @click="handleSaveBgUrl('')">
+                      {{ t("TXT_CODE_50d471b2") }}
+                    </a-button>
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-typography-title :level="5">
+                      {{ t("TXT_CODE_SETTINGS_PHONE_BACKGROUND") }}
+                    </a-typography-title>
+                    <a-typography-paragraph>
+                      <a-typography-text type="secondary">
+                        <div>{{ t("TXT_CODE_SETTINGS_PHONE_BACKGROUND_DESC") }}</div>
+                        <div>{{ t("TXT_CODE_cf95364f") }}</div>
+                      </a-typography-text>
+                    </a-typography-paragraph>
+                    <a-typography-paragraph>
+                      <div class="flex">
+                        <a-input
+                          v-model:value="formData.pBgUrl"
+                          style="max-width: 320px"
+                          :placeholder="t('TXT_CODE_4ea93630')"
+                        />
+                        <a-button class="ml-6" @click="uploadBackground('pBgUrl')">
+                          {{ t("TXT_CODE_ae09d79d") }}
+                        </a-button>
+                      </div>
+                    </a-typography-paragraph>
+                    <a-button
+                      type="primary"
+                      class="mr-6"
+                      @click="handleSaveBgUrl(undefined, 'pBgUrl')"
+                    >
+                      {{ t("TXT_CODE_abfe9512") }}
+                    </a-button>
+                    <a-button danger @click="handleSaveBgUrl('', 'pBgUrl')">
                       {{ t("TXT_CODE_50d471b2") }}
                     </a-button>
                   </a-form-item>
