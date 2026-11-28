@@ -6,6 +6,7 @@ import { timeUuid } from "./password";
 import RemoteRequest from "./remote_command";
 import RemoteServiceSubsystem from "./remote_service";
 import type RemoteService from "../entity/remote_service";
+import { resolveRemoteServiceScheme, stripRemoteServiceScheme } from "../entity/entity_interface";
 import { systemConfig } from "../setting";
 import { verifyProxyToken } from "./gateway_token";
 
@@ -64,14 +65,38 @@ function stripPrefix(p: string): string {
   return p;
 }
 
-/** Build the daemon HTTP base URL: scheme://ip:port + canonicalPrefix. */
+/**
+ * Build the daemon HTTP base URL: scheme://host:port + canonicalPrefix.
+ *
+ * The transport scheme belongs to the NODE, not to the panel: a node served over
+ * TLS is reached with https, a plain node with http, regardless of whether the
+ * panel itself runs behind TLS. `config.addr` cannot be used here because it may
+ * itself carry a `wss://` prefix for browser-facing streams.
+ */
 function daemonBase(remoteService: RemoteService): string {
-  const scheme = systemConfig?.ssl ? "https" : "http";
-  return `${scheme}://${remoteService.config.addr}${remoteService.config.canonicalPrefix}`;
+  const secure =
+    resolveRemoteServiceScheme(remoteService.config.ip, remoteService.config.ssl) === "wss";
+  const host = stripRemoteServiceScheme(remoteService.config.ip);
+  return `${secure ? "https" : "http"}://${host}:${remoteService.config.port}${
+    remoteService.config.canonicalPrefix
+  }`;
 }
 
-function httpClient(): typeof http | typeof https {
-  return systemConfig?.ssl ? https : http;
+/** HTTP client matching the node's own transport scheme. */
+function httpClient(remoteService: RemoteService): typeof http | typeof https {
+  return resolveRemoteServiceScheme(remoteService.config.ip, remoteService.config.ssl) === "wss"
+    ? https
+    : http;
+}
+
+/**
+ * Extra request options for a daemon data-plane call. HTTPS requests mirror the
+ * node socket connection (`RemoteServiceConfig.connectOpts.rejectUnauthorized`
+ * is false there), so a node using a self-signed certificate keeps working for
+ * browser file transfers instead of failing only on this path.
+ */
+function daemonRequestOptions(remoteService: RemoteService): https.RequestOptions {
+  return httpClient(remoteService) === https ? { rejectUnauthorized: false } : {};
 }
 
 /** Daemon RESPONSE headers copied through to the browser. */
@@ -221,9 +246,13 @@ class ProxyDataPlaneImpl {
     const range = ctx.req.headers["range"];
     if (range) reqHeaders["range"] = range;
 
-    const daemonReq = httpClient().request(url, { method: "GET", headers: reqHeaders }, (daemonRes) => {
-      pipeResponse(ctx, daemonReq, daemonRes);
-    });
+    const daemonReq = httpClient(remoteService).request(
+      url,
+      { method: "GET", headers: reqHeaders, ...daemonRequestOptions(remoteService) },
+      (daemonRes) => {
+        pipeResponse(ctx, daemonReq, daemonRes);
+      }
+    );
     daemonReq.on("error", (err) => {
       logger.error("proxy download daemon error:", err.message);
       sendJson(ctx, 502, "Daemon error");
@@ -242,9 +271,13 @@ class ProxyDataPlaneImpl {
       const remoteService = RemoteServiceSubsystem.getInstance(mapping.daemonId);
       if (!remoteService) return sendJson(ctx, 502, "Daemon not found");
       const base = daemonBase(remoteService);
-      const daemonReq = httpClient().request(
+      const daemonReq = httpClient(remoteService).request(
         `${base}/upload-new/${encodeURIComponent(key)}?stop=true`,
-        { method: "POST", headers: forwardRequestHeaders(ctx) },
+        {
+          method: "POST",
+          headers: forwardRequestHeaders(ctx),
+          ...daemonRequestOptions(remoteService)
+        },
         (daemonRes: http.IncomingMessage) => {
           pipeResponse(ctx, daemonReq, daemonRes);
           daemonRes.on("end", () => uploadIdMap.delete(key));
@@ -278,9 +311,13 @@ class ProxyDataPlaneImpl {
 
     const base = daemonBase(remoteService);
     const url = `${base}/upload-new/${encodeURIComponent(daemonPass)}${ctx.search}`;
-    const daemonReq = httpClient().request(
+    const daemonReq = httpClient(remoteService).request(
       url,
-      { method: "POST", headers: forwardRequestHeaders(ctx) },
+      {
+        method: "POST",
+        headers: forwardRequestHeaders(ctx),
+        ...daemonRequestOptions(remoteService)
+      },
       (daemonRes: http.IncomingMessage) => {
         // Collect the (small) init JSON so we can extract the daemon writer id.
         const chunks: Buffer[] = [];
@@ -335,9 +372,13 @@ class ProxyDataPlaneImpl {
     const base = daemonBase(remoteService);
     // Forward query (offset). The multipart chunk passes through verbatim.
     const url = `${base}/upload-piece/${encodeURIComponent(id)}${ctx.search}`;
-    const daemonReq = httpClient().request(
+    const daemonReq = httpClient(remoteService).request(
       url,
-      { method: "POST", headers: forwardRequestHeaders(ctx) },
+      {
+        method: "POST",
+        headers: forwardRequestHeaders(ctx),
+        ...daemonRequestOptions(remoteService)
+      },
       (daemonRes: http.IncomingMessage) => {
         pipeResponse(ctx, daemonReq, daemonRes);
       }
@@ -366,9 +407,13 @@ class ProxyDataPlaneImpl {
 
     const base = daemonBase(remoteService);
     const url = `${base}/upload/${encodeURIComponent(daemonPass)}${ctx.search}`;
-    const daemonReq = httpClient().request(
+    const daemonReq = httpClient(remoteService).request(
       url,
-      { method: "POST", headers: forwardRequestHeaders(ctx) },
+      {
+        method: "POST",
+        headers: forwardRequestHeaders(ctx),
+        ...daemonRequestOptions(remoteService)
+      },
       (daemonRes: http.IncomingMessage) => {
         pipeResponse(ctx, daemonReq, daemonRes);
       }

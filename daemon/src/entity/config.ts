@@ -50,6 +50,17 @@ class Config {
   public whiteListPanelIp = false;
   public whiteListPanelIps = ["127.0.0.1", "::1"];
 
+  // Opt-in trust decision for dangerous Docker options (edited by hand in
+  // daemon/data/Config/global.json, default false). When false the daemon rejects
+  // privileged containers, dangerous capabilities (SYS_ADMIN, ALL, ...),
+  // "host"/"container:*" network modes and host device passthrough. Always
+  // rejected regardless of this switch: container-engine socket mounts, the
+  // daemon data directory, system roots and unsafe volume paths.
+  // Instances whose saved configuration already contains one of the opt-in options
+  // fail closed (they cannot be updated or started) until the operator either sets
+  // this to true or removes the option; see service/docker_policy.ts.
+  public allowDangerousDockerOptions = false;
+
   ssl = false;
   sslPemPath = "";
   sslKeyPath = "";

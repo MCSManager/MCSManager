@@ -29,7 +29,9 @@ import {
   extractArchive,
   fetchJsonFromSources,
   isComparableVersion,
-  normalizeVersion
+  normalizeVersion,
+  UPDATE_MANIFEST_SCHEMA,
+  verifyUpdatePackageIntegrity
 } from "mcsmanager-common";
 import { $t } from "../i18n";
 import { systemConfig } from "../setting";
@@ -52,8 +54,14 @@ interface IManifestEntry {
   // Release notes of the new version: a locale -> text map (keys like "en_us")
   // or a plain string used as a language-neutral fallback.
   notes?: string | Record<string, string>;
+  // SHA-256 of the package file. Mandatory from manifest schema 2 on (see
+  // UPDATE_MANIFEST_SCHEMA): the downloaded archive is rejected unless its
+  // content matches this digest.
+  sha256?: string;
 }
 interface IManifest {
+  // Manifest schema version; absent = legacy schema 1 (no integrity metadata).
+  schema?: number;
   daemon?: IManifestEntry;
   web?: IManifestEntry;
 }
@@ -79,7 +87,6 @@ interface IManifestFetch {
   /** The source URL that actually served the manifest. */
   sourceUrl: string;
 }
-
 let upgradeInProgress = false;
 
 function getSourceUrls(): { primary: string; fallback: string } {
@@ -113,6 +120,41 @@ function archiveFileNameFromUrl(url: string): string {
     if (lower.endsWith(ext)) return ARCHIVE_BASENAME + ext;
   }
   throw new Error(`Unsupported update package format: ${String(url || "")}`);
+}
+
+/**
+ * Enforce the package integrity policy for a downloaded update archive.
+ *
+ * From manifest schema 2 on, the digest is mandatory and a mismatch is fatal
+ * (the archive is not extracted or overlaid). A legacy schema 1 manifest is
+ * still accepted, but the operator gets a warning that the update could not be
+ * verified — the transport itself is HTTPS-only, see `assertUpdateUrlAllowed`.
+ */
+async function assertPackageIntegrity(
+  archivePath: string,
+  entry: IManifestEntry,
+  manifestSchema: number
+) {
+  const result = await verifyUpdatePackageIntegrity(archivePath, entry.sha256);
+  const requireDigest = manifestSchema >= UPDATE_MANIFEST_SCHEMA;
+  if (result.status === "mismatch") {
+    throw new Error(
+      $t("TXT_CODE_AUTOUPDATE_B_HASH_MISMATCH", {
+        expected: result.expected,
+        actual: result.actual
+      })
+    );
+  }
+  if (result.status === "invalid" || (result.status === "missing" && requireDigest)) {
+    throw new Error(
+      $t("TXT_CODE_AUTOUPDATE_B_HASH_MISSING", {
+        schema: String(manifestSchema),
+        key: "web"
+      })
+    );
+  }
+  if (result.status === "ok") log(`Package sha256 verified: ${result.actual}`);
+  else errLog("Update manifest provides no sha256 digest; the package could not be verified.");
 }
 
 /** Report the current panel version and whether a newer one is online. */
@@ -179,6 +221,7 @@ export async function performUpgrade(): Promise<IUpgradeResult> {
 
   try {
     const { manifest } = await fetchManifest();
+    const manifestSchema = Number(manifest?.schema) || 1;
     const entry = manifest?.web;
     if (!entry) throw new Error($t("TXT_CODE_AUTOUPDATE_B_MANIFEST_MISSING", { key: "web" }));
     if (!entry.url) throw new Error($t("TXT_CODE_AUTOUPDATE_B_NO_URL"));
@@ -207,7 +250,9 @@ export async function performUpgrade(): Promise<IUpgradeResult> {
         log(`Downloading... ${Math.round(received / 1024 / 1024)}MB (size unknown)`);
       }
     });
-    log("Download complete. Extracting...");
+    log("Download complete. Verifying package integrity...");
+    await assertPackageIntegrity(archivePath, entry, manifestSchema);
+    log("Extracting...");
 
     const extractDir = path.join(STAGING_DIR, EXTRACT_DIR_NAME);
     await fs.remove(extractDir);

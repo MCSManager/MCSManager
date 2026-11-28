@@ -1,4 +1,5 @@
 import { spawnSync } from "child_process";
+import crypto from "crypto";
 import fs from "fs-extra";
 import http from "http";
 import os from "os";
@@ -6,15 +7,22 @@ import path from "path";
 import zlib from "zlib";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
+  assertRedirectAllowed,
+  assertUpdateUrlAllowed,
   compareVersions,
+  computeFileSha256,
   DEFAULT_UPDATE_SOURCE_URL,
   extractArchive,
   extractTarGz,
   fetchJsonFromSources,
   isComparableVersion,
+  isPrivateOrLoopbackHost,
   LEGACY_DEFAULT_UPDATE_SOURCE_URL,
   migrateLegacyUpdateSourceUrl,
-  normalizeVersion
+  normalizeSha256,
+  normalizeVersion,
+  UPDATE_MANIFEST_SCHEMA,
+  verifyUpdatePackageIntegrity
 } from "../upgrade";
 
 function tmpDir(prefix: string): string {
@@ -211,6 +219,113 @@ describe("migrateLegacyUpdateSourceUrl", () => {
 
   it("pins the legacy URL as the default backup source value", () => {
     expect(LEGACY_DEFAULT_UPDATE_SOURCE_URL).toBe("https://mcsmanager.com/upgrade/manifest.json");
+  });
+});
+
+describe("update transport policy (assertUpdateUrlAllowed)", () => {
+  it("accepts HTTPS sources", () => {
+    expect(assertUpdateUrlAllowed(DEFAULT_UPDATE_SOURCE_URL).protocol).toBe("https:");
+    expect(assertUpdateUrlAllowed("https://mirror.example.com/pkg.tar.gz").hostname).toBe(
+      "mirror.example.com"
+    );
+  });
+
+  it("refuses plain HTTP to a public host (update traffic is executable content)", () => {
+    expect(() => assertUpdateUrlAllowed("http://mirror.example.com/manifest.json")).toThrow(
+      /plain-HTTP|HTTPS is required/i
+    );
+    expect(() => assertUpdateUrlAllowed("http://8.8.8.8/manifest.json")).toThrow(/HTTPS/i);
+  });
+
+  it("still allows plain HTTP to loopback / private-network hosts (LAN mirror, local test)", () => {
+    for (const url of [
+      "http://127.0.0.1:8080/manifest.json",
+      "http://localhost:8080/manifest.json",
+      "http://10.1.2.3/manifest.json",
+      "http://192.168.1.10/manifest.json",
+      "http://172.20.0.2/manifest.json"
+    ]) {
+      expect(assertUpdateUrlAllowed(url).protocol).toBe("http:");
+    }
+  });
+
+  it("refuses non-HTTP protocols and malformed URLs", () => {
+    expect(() => assertUpdateUrlAllowed("file:///etc/passwd")).toThrow(/Unsupported.*protocol/i);
+    expect(() => assertUpdateUrlAllowed("ftp://example.com/pkg.tar.gz")).toThrow(
+      /Unsupported.*protocol/i
+    );
+    expect(() => assertUpdateUrlAllowed("not a url")).toThrow(/Invalid update URL/i);
+    expect(() => assertUpdateUrlAllowed("")).toThrow(/Invalid update URL/i);
+  });
+
+  it("classifies private / loopback hosts", () => {
+    expect(isPrivateOrLoopbackHost("localhost")).toBe(true);
+    expect(isPrivateOrLoopbackHost("app.localhost")).toBe(true);
+    expect(isPrivateOrLoopbackHost("127.0.0.1")).toBe(true);
+    expect(isPrivateOrLoopbackHost("10.0.0.5")).toBe(true);
+    expect(isPrivateOrLoopbackHost("192.168.0.1")).toBe(true);
+    expect(isPrivateOrLoopbackHost("172.16.0.1")).toBe(true);
+    expect(isPrivateOrLoopbackHost("172.32.0.1")).toBe(false);
+    expect(isPrivateOrLoopbackHost("169.254.1.1")).toBe(true);
+    expect(isPrivateOrLoopbackHost("[::1]")).toBe(true);
+    expect(isPrivateOrLoopbackHost("fd00::1")).toBe(true);
+    expect(isPrivateOrLoopbackHost("github.com")).toBe(false);
+    expect(isPrivateOrLoopbackHost("8.8.8.8")).toBe(false);
+    expect(isPrivateOrLoopbackHost("")).toBe(false);
+  });
+
+  it("refuses an HTTPS -> HTTP redirect downgrade", () => {
+    // A private HTTP target passes the protocol policy on its own, so the
+    // downgrade rule is what has to reject this hop.
+    expect(() => assertRedirectAllowed("https://example.com/pkg", "http://127.0.0.1/pkg")).toThrow(
+      /redirect downgrade/i
+    );
+    expect(assertRedirectAllowed("https://example.com/a", "https://example.com/b")).toBe(
+      "https://example.com/b"
+    );
+    expect(assertRedirectAllowed("http://127.0.0.1/a", "http://127.0.0.1/b")).toBe(
+      "http://127.0.0.1/b"
+    );
+    // A redirect to a public plain-HTTP host is rejected by the base policy too.
+    expect(() => assertRedirectAllowed("https://example.com/a", "http://example.com/b")).toThrow(
+      /HTTPS|downgrade/i
+    );
+  });
+});
+
+describe("update package integrity (sha256)", () => {
+  const dir = tmpDir("mcsm-integrity-");
+  const file = path.join(dir, "pkg.tar.gz");
+  fs.writeFileSync(file, "package-content");
+
+  it("computes the same digest as node's crypto", async () => {
+    const expected = crypto.createHash("sha256").update("package-content").digest("hex");
+    expect(await computeFileSha256(file)).toBe(expected);
+  });
+
+  it("normalizes valid digests and rejects malformed ones", () => {
+    const digest = crypto.createHash("sha256").update("package-content").digest("hex");
+    expect(normalizeSha256(`  ${digest.toUpperCase()}  `)).toBe(digest);
+    expect(normalizeSha256("abc")).toBe("");
+    expect(normalizeSha256("")).toBe("");
+    expect(normalizeSha256(undefined)).toBe("");
+  });
+
+  it("reports ok / missing / invalid / mismatch", async () => {
+    const digest = crypto.createHash("sha256").update("package-content").digest("hex");
+    expect((await verifyUpdatePackageIntegrity(file, digest)).status).toBe("ok");
+    expect((await verifyUpdatePackageIntegrity(file)).status).toBe("missing");
+    expect((await verifyUpdatePackageIntegrity(file, "")).status).toBe("missing");
+    expect((await verifyUpdatePackageIntegrity(file, "not-a-digest")).status).toBe("invalid");
+    const other = crypto.createHash("sha256").update("tampered").digest("hex");
+    const mismatch = await verifyUpdatePackageIntegrity(file, other);
+    expect(mismatch.status).toBe("mismatch");
+    expect(mismatch.expected).toBe(other);
+    expect(mismatch.actual).toBe(digest);
+  });
+
+  it("declares schema 2 as the current manifest schema", () => {
+    expect(UPDATE_MANIFEST_SCHEMA).toBe(2);
   });
 });
 

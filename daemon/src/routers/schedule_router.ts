@@ -19,6 +19,10 @@ routerApp.on("schedule/list", (ctx, data) => {
 
 // delete the task plan
 routerApp.on("schedule/delete", (ctx, data) => {
-  InstanceControlSubsystem.deleteScheduleTask(data.instanceUuid, data.name);
-  protocol.response(ctx, true);
+  try {
+    InstanceControlSubsystem.deleteScheduleTask(data.instanceUuid, data.name);
+    protocol.response(ctx, true);
+  } catch (error: any) {
+    protocol.responseError(ctx, error);
+  }
 });

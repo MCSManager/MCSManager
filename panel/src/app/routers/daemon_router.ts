@@ -9,6 +9,26 @@ import RemoteServiceSubsystem from "../service/remote_service";
 
 const router = new Router({ prefix: "/service" });
 
+/**
+ * Coerce the optional per-node TLS flag from a request body. Returns
+ * `undefined` when the client did not send the field, so callers can keep the
+ * persisted value instead of silently overwriting it.
+ */
+function parseOptionalSslFlag(value: unknown): boolean | undefined {
+  if (value === undefined || value === null || value === "") return undefined;
+  if (typeof value === "boolean") return value;
+  if (typeof value === "number") {
+    if (value === 1) return true;
+    if (value === 0) return false;
+  }
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (["1", "true", "yes", "on"].includes(normalized)) return true;
+    if (["0", "false", "no", "off"].includes(normalized)) return false;
+  }
+  throw new Error(`Validator failed: "ssl" is not a boolean`);
+}
+
 // [Top-level Permission]
 // Get the list of remote services
 // Contains only service information, not a list of instance information
@@ -22,7 +42,8 @@ router.get("/remote_services_list", permission({ level: ROLE.ADMIN }), async (ct
       port: remoteService.config.port,
       prefix: remoteService.config.prefix,
       available: remoteService.available,
-      remarks: remoteService.config.remarks
+      remarks: remoteService.config.remarks,
+      ssl: remoteService.config.ssl
     });
   }
   ctx.body = result;
@@ -143,6 +164,7 @@ router.get("/remote_services", permission({ level: ROLE.ADMIN }), async (ctx) =>
       prefix: remoteService.config.prefix,
       available: remoteService.available,
       remarks: remoteService.config.remarks,
+      ssl: remoteService.config.ssl,
       instances: instancesInfo
     });
   }
@@ -157,13 +179,15 @@ router.post(
   validator({ body: { apiKey: String, port: Number, ip: String, remarks: String } }),
   async (ctx) => {
     const parameter = ctx.request.body;
+    const ssl = parseOptionalSslFlag(parameter.ssl);
     // do asynchronous registration
     const instance = await RemoteServiceSubsystem.registerRemoteService({
       apiKey: parameter.apiKey,
       port: parameter.port,
       ip: parameter.ip,
       prefix: parameter.prefix ?? "",
-      remarks: parameter.remarks ?? ""
+      remarks: parameter.remarks ?? "",
+      ssl
     });
 
     operationLogger.log("daemon_create", {
@@ -185,6 +209,7 @@ router.put(
     const uuid = String(ctx.request.query.uuid);
     const parameter = ctx.request.body || {};
     const daemonSetting = parameter?.setting || {};
+    const ssl = parseOptionalSslFlag(parameter.ssl);
     const daemon = RemoteServiceSubsystem.getInstance(uuid);
 
     if (daemonSetting && daemon?.available) {
@@ -204,6 +229,7 @@ router.put(
         ip: config.ip,
         prefix: config.prefix,
         remarks: config.remarks,
+        ssl: config.ssl,
         remoteMappings: JSON.parse(JSON.stringify(config.remoteMappings ?? []))
       };
     };
@@ -215,6 +241,7 @@ router.put(
       prefix: parameter.prefix ?? "",
       apiKey: parameter.apiKey,
       remarks: parameter.remarks,
+      ssl,
       remoteMappings: parameter.remoteMappings ?? []
     });
     const configAfter = snapshotDaemonConfig(uuid);

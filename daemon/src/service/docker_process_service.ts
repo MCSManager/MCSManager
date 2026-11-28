@@ -14,6 +14,7 @@
 import { t } from "i18next";
 import { commandStringToArray } from "../entity/commands/base/command_parser";
 import DockerPullCommand from "../entity/commands/docker/docker_pull";
+import { globalConfiguration } from "../entity/config";
 import Instance from "../entity/instance/instance";
 import { DefaultDocker } from "./docker_service";
 
@@ -27,6 +28,7 @@ import { IInstanceProcess } from "../entity/instance/interface";
 import { $t } from "../i18n";
 import { resolveDockerWorkspacePath } from "../tools/docker_workspace_path";
 import { AsyncTask } from "./async_task_service";
+import { assertDockerConfigAllowed } from "./docker_policy";
 import logger from "./log";
 import { NetworkLimitService } from "./network_limit_service";
 import InstanceSubsystem from "./system_instance";
@@ -179,6 +181,14 @@ export class SetupDockerContainer extends AsyncTask {
     const instance = this.instance;
     const customCommand = this.startCommand;
     const useImageOverride = Boolean(this.imageOverride?.trim());
+
+    // Second barrier: the policy is enforced when the configuration is written, but
+    // a configuration saved before this policy existed (or by an older daemon) must
+    // never be honored either. Cheap and pure — no side effects before it.
+    assertDockerConfigAllowed(instance.config.docker, {
+      allowDangerousOptions: globalConfiguration.config.allowDangerousDockerOptions,
+      workspacePath: instance.hasCwdPath() ? instance.absoluteCwdPath() : undefined
+    });
 
     if (!fs.existsSync(this.instance.absoluteCwdPath())) {
       await fs.mkdirs(instance.absoluteCwdPath());

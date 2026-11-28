@@ -90,3 +90,80 @@ describe("StorageSubsystem.list", () => {
     expect(StorageSubsystem.list("dummy_category")).toEqual(["valid-uuid"]);
   });
 });
+
+// A remote caller can influence storage identifiers: a scheduled-task name comes
+// straight from an HTTP query (`DELETE /protected_schedule?task_name=...`) and
+// is concatenated into `data/TaskConfig/<instanceUuid>_<name>.json`. These tests
+// pin the guard that keeps every storage operation inside `data/`.
+describe("StorageSubsystem data-directory guard", () => {
+  let victim: string;
+
+  const setupVictim = () => {
+    fs.mkdirsSync(path.join(tmpDir, "data", "Config"));
+    fs.mkdirsSync(path.join(tmpDir, "data", "TaskConfig"));
+    fs.writeFileSync(path.join(tmpDir, "data", "Config", "global.json"), '{"key":"secret"}');
+    fs.writeFileSync(path.join(tmpDir, "data", "TaskConfig", "inst_task.json"), "{}");
+    victim = path.join(tmpDir, "data", "Config", "global.json");
+    return victim;
+  };
+
+  it("refuses to delete a file outside the category (../../Config/global)", () => {
+    setupVictim();
+    expect(() =>
+      StorageSubsystem.delete("TaskConfig", "inst_../../Config/global")
+    ).toThrow();
+    expect(fs.existsSync(victim)).toBe(true);
+  });
+
+  it("refuses a traversal that goes through the category argument", () => {
+    setupVictim();
+    expect(() => StorageSubsystem.delete("../Config", "global")).toThrow();
+    expect(fs.existsSync(victim)).toBe(true);
+  });
+
+  it("refuses Windows-style separators in identifiers", () => {
+    setupVictim();
+    expect(() => StorageSubsystem.delete("TaskConfig", "inst_..\\..\\Config\\global")).toThrow();
+    expect(fs.existsSync(victim)).toBe(true);
+  });
+
+  it("still deletes a legitimate identifier", () => {
+    setupVictim();
+    StorageSubsystem.delete("TaskConfig", "inst_task");
+    expect(fs.existsSync(path.join(tmpDir, "data", "TaskConfig", "inst_task.json"))).toBe(false);
+    expect(fs.existsSync(victim)).toBe(true);
+  });
+
+  it("guards readFile / writeFile / deleteFile / fileExists / list", () => {
+    setupVictim();
+    expect(() => StorageSubsystem.readFile("../../etc/passwd")).toThrow();
+    expect(() => StorageSubsystem.readFile("/etc/passwd")).toThrow();
+    expect(() => StorageSubsystem.writeFile("../escaped.txt", "pwned")).toThrow();
+    expect(() => StorageSubsystem.deleteFile("../escaped.txt")).toThrow();
+    expect(fs.existsSync(path.join(tmpDir, "escaped.txt"))).toBe(false);
+    expect(StorageSubsystem.fileExists("../escaped.txt")).toBe(false);
+    expect(() => StorageSubsystem.list("../Config")).toThrow();
+  });
+
+  it("guards store / load / delete against an escaping category", () => {
+    setupVictim();
+    expect(() => StorageSubsystem.store("../Config", "evil", {})).toThrow();
+    expect(() => StorageSubsystem.store("TaskConfig", "../Config/global", {})).toThrow();
+    expect(() => StorageSubsystem.load("../Config", DummyConfig, "global")).toThrow();
+    expect(() => StorageSubsystem.load("TaskConfig", DummyConfig, "../Config/global")).toThrow();
+    expect(fs.readFileSync(victim, "utf-8")).toBe('{"key":"secret"}');
+  });
+
+  it("still supports nested categories (JavaData/<runtime>)", () => {
+    StorageSubsystem.store("JavaData/jdk-21", "java_info", { name: "jdk" });
+    expect(
+      fs.existsSync(path.join(tmpDir, "data", "JavaData", "jdk-21", "java_info.json"))
+    ).toBe(true);
+    const loaded = StorageSubsystem.load("JavaData/jdk-21", DummyConfig, "java_info");
+    expect(loaded).not.toBeNull();
+    StorageSubsystem.delete("JavaData/jdk-21", "java_info");
+    expect(fs.existsSync(path.join(tmpDir, "data", "JavaData", "jdk-21", "java_info.json"))).toBe(
+      false
+    );
+  });
+});

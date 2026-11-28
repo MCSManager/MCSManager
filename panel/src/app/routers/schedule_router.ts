@@ -12,6 +12,20 @@ import RemoteRequest from "../service/remote_command";
 import RemoteServiceSubsystem from "../service/remote_service";
 const router = new Router({ prefix: "/protected_schedule" });
 
+// A scheduled task name becomes part of a file name on the node
+// (`data/TaskConfig/<instanceUuid>_<name>.json`) and reaches the delete request
+// through the query string for DELETE /, so it must never carry a path
+// separator or a parent-directory segment. The daemon enforces the same rule;
+// validating here keeps a hostile name from ever leaving the panel.
+function assertSafeTaskName(raw: unknown) {
+  const name = String(raw ?? "").trim();
+  if (!name) throw new Error($t("TXT_CODE_router.schedule.invalidName"));
+  if (name.includes("..") || name.includes("/") || name.includes("\\")) {
+    throw new Error($t("TXT_CODE_router.schedule.invalidName"));
+  }
+  return name;
+}
+
 // Routing permission verification middleware
 router.use(async (ctx, next) => {
   const instanceUuid = String(ctx.query.uuid);
@@ -64,7 +78,7 @@ router.post(
       const task = ctx.request.body;
 
       // Scheduled task name needs file name format check
-      const name = String(task.name);
+      const name = assertSafeTaskName(task.name);
       FILENAME_BLACKLIST.forEach((ch) => {
         if (name.includes(ch)) throw new Error($t("TXT_CODE_router.schedule.invalidName"));
       });
@@ -104,7 +118,7 @@ router.delete(
     try {
       const daemonId = String(ctx.query.daemonId);
       const instanceUuid = String(ctx.query.uuid);
-      const name = String(ctx.query.task_name);
+      const name = assertSafeTaskName(ctx.query.task_name);
 
       operationLogger.log("instance_task_delete", {
         ...getOperationLoggerOperator(ctx),

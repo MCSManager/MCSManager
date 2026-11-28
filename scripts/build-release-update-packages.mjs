@@ -4,7 +4,7 @@
 //
 //   mcsmanager_daemon_update.tar.gz   (app.js, app.js.map, package.json at archive root)
 //   mcsmanager_web_update.tar.gz      (app.js, app.js.map, package.json, public/)
-//   mcsmanager_update_manifest.json   (auto-update manifest: per-side version/url/notes)
+//   mcsmanager_update_manifest.json   (auto-update manifest: per-side version/url/sha256/notes)
 //
 // The packages carry ONLY the built application code: no dependency trees, no
 // PTY/Zip-Tools binaries (daemon/lib), no Node.js runtime, no startup scripts.
@@ -13,6 +13,10 @@
 // The manifest keeps the auto-update schema consumed by
 // panel/daemon/src/service/upgrade_service.ts; its `url` fields are pinned to
 // the release tag so a manifest can never reference another release's packages.
+//
+// Manifest schema 2 adds a `sha256` digest per entry: the panel/daemon refuse to
+// extract an update package that does not match it (fail-closed), so a tampered
+// package can never be overlaid on the install directory.
 //
 // Usage:
 //   node scripts/build-release-update-packages.mjs --tag v10.21.2 [options]
@@ -26,6 +30,7 @@
 //   RELEASE_BODY env var is used when neither notes option is given.
 
 import { execFileSync } from "child_process";
+import crypto from "crypto";
 import fs from "fs";
 import path from "path";
 
@@ -111,7 +116,10 @@ for (const pkg of PACKAGES) {
 
 fs.mkdirSync(outDir, { recursive: true });
 
-const manifest = {};
+// Manifest schema 2: every entry carries the SHA-256 of its package so the
+// panel/daemon can verify the downloaded archive before overlaying it.
+const MANIFEST_SCHEMA = 2;
+const manifest = { schema: MANIFEST_SCHEMA };
 for (const pkg of PACKAGES) {
   const srcDir = path.join(prodDir, pkg.dir);
   const archivePath = path.join(outDir, pkg.archive);
@@ -119,9 +127,11 @@ for (const pkg of PACKAGES) {
   execFileSync("tar", ["-czf", archivePath, "-C", srcDir, ...pkg.files], { stdio: "ignore" });
   assertAllowlist(pkg, listArchive(archivePath));
 
+  const sha256 = crypto.createHash("sha256").update(fs.readFileSync(archivePath)).digest("hex");
   const entry = {
     version: versions[pkg.side],
-    url: `${REPO_URL}/releases/download/${tag}/${pkg.archive}`
+    url: `${REPO_URL}/releases/download/${tag}/${pkg.archive}`,
+    sha256
   };
   if (notes) entry.notes = notes;
   manifest[pkg.side] = entry;
@@ -131,7 +141,7 @@ for (const pkg of PACKAGES) {
       fs.statSync(archivePath).size /
       1024 /
       1024
-    ).toFixed(1)} MB, allowlist ok)`
+    ).toFixed(1)} MB, allowlist ok, sha256 ${sha256.slice(0, 12)}...)`
   );
 }
 
